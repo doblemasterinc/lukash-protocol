@@ -1,9 +1,11 @@
 # TODO — LUKASH
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
-1. **Contratos** — continuar revisión/auditoría de lógica y arrancar **Milestone 2**: integración real SPL/Jupiter, quema real, staking distributor, cNFT/Aura on-chain, fallback de oráculo (Switchboard). Auditoría externa = pre-mainnet (después).
-2. **Etapa 0 de lanzamiento** — producir (yo, gratis): **founding myth** (1 pág ES/EN/PT), **pitch deck** (sirve para Colosseum + grants + ángeles), **one-pager**, **copy de landing con waitlist**, **estructura de data room**. Empezar por el pitch deck.
-3. **Decidir** sub-estructura del 45% "Venta" (fair-launch puro vs seed chico) y **arrancar Superteam Earn + grant Finternet/Solana Foundation** (dinero no dilutivo).
+0. **DESPLIEGUE EN DEVNET** (lo que el usuario quiere ver): (a) desplegar el programa en Playground (connect wallet → `solana airdrop 2` → Deploy → Program ID en explorer devnet), (b) crear el token **$LUKA** SPL en devnet (LUKASH / LUKA / 6 dec / 10B / logo = isotipo) para verlo en el explorador. Guiar clic por clic (no se puede manejar el navegador desde aquí).
+1. **Herramientas gratis de seguridad**: correr Sec3 X-Ray + Trident (fuzzing) + clippy sobre el contrato; arreglar hallazgos.
+2. **Contratos Milestone 2**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
+3. **Etapa 0 de lanzamiento**: pitch deck (Colosseum + grants + ángeles), founding myth (ES/EN/PT), one-pager, landing con waitlist, data room. Arrancar **Superteam Earn + grant Finternet** + preparar **hackathon Colosseum** (fast-track al subsidio de audit Areta).
+4. **Decidir** sub-estructura del 45% "Venta" (fair puro vs seed chico).
 
 
 ## Sesión actual (2026-08-19) — Setup + Auditoría

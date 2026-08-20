@@ -18,3 +18,9 @@ Aprendizaje cross-proyecto: en Solana hay dinero no dilutivo (Superteam Earn/Ins
 
 ## 2026-08-20 — Compensación de partners: tokens vesteados, no Vault Sociedad
 Regla: tokens vesteados = pago por servicio (KOLs, MM). Vault Sociedad (equity) = solo para capital/largo plazo. No mezclar. Protege el patrimonio del fundador. (ADR-011 / decisión de diseño.)
+
+## 2026-08-20 (sesión 2) — El "100%" del Exit Fee/Anti-Whale es el DESTINO, no la penalización
+Confusión común: "100% al Vault" = todo el fee (5/3/1%) va a la reserva, NO una penalización del 100%. Aclarar siempre destino vs tasa. Anti-Whale: métrica por % de supply era brutal al inicio → corregido a % del pool + solo ventas (C10/ADR-012).
+
+## 2026-08-20 (sesión 2) — Auditoría con capital cero: gratis primero, luego subsidio
+Cross-proyecto (cualquier cripto propia): (1) herramientas gratis (Sec3 X-Ray, Trident fuzzing, clippy) bajan a la mitad el costo del audit humano; (2) **subsidio Areta $1M** para builders Solana (Colosseum = fast-track); (3) boutique $5-20K con descuento por llegar con tests; (4) Immunefi post-mainnet. NUNCA lanzar contratos que custodian fondos sin auditar en mainnet (la reserva es un honeypot).

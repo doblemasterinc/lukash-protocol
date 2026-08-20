@@ -39,3 +39,9 @@
 - Aclaración del **Jaguar Exit Fee**: el "100% al Vault" es el DESTINO del fee (5/3/1%), NO una penalización del 100%. Se mantiene **5% para Génesis** (ADR-012).
 - **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); fix del nombre de exención → nivel **Jaguar**. Se implementa en el Jaguar Shield (Milestone 2).
 - **Protocolo v4.3 finalizado** (10 correcciones de auditoría aplicadas C1-C10). Auditoría interna completa; auditoría externa (Halborn/OtterSec) queda como candado pre-mainnet.
+
+## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
+- **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
+- **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.
+- **Regla de seguridad clave:** en mainnet NUNCA contratos del Vault sin auditar (custodian fondos = honeypot). Devnet sí, libre.
+- **Próxima sesión:** desplegar en DEVNET (programa + token $LUKA para verlo) → herramientas gratis → Milestone 2 → Etapa 0 (pitch deck) + Superteam/Colosseum.
