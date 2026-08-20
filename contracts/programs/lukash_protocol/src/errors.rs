@@ -34,4 +34,12 @@ pub enum LukashError {
     QueueCooldown,
     #[msg("No hay quemas diferidas en cola")]
     EmptyQueue,
+    #[msg("Valor de oráculo inválido (precio o EMA30 en cero)")]
+    InvalidOracleValue,
+    #[msg("Tipo de cambio de parámetro inválido")]
+    InvalidChangeKind,
+    #[msg("Autoridad inválida (no puede ser la dirección por defecto)")]
+    InvalidAuthorityPubkey,
+    #[msg("Divisa inválida (debe ser 0=LUKA o 1=SOL/USDC)")]
+    InvalidCurrency,
 }

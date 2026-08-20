@@ -93,6 +93,7 @@ pub mod lukash_protocol {
         let config = &ctx.accounts.config;
         require!(!config.paused, LukashError::ProtocolPaused);
         require!(amount > 0, LukashError::ZeroAmount);
+        require!(currency <= 1, LukashError::InvalidCurrency);
 
         let fee_bps = compute_fee_bps(config.stage, motor, layer, currency, is_whitelist)?;
         let fee = mul_bps(amount, fee_bps)?;
@@ -183,6 +184,7 @@ pub mod lukash_protocol {
     /// El orquestador (keeper) actualiza precio y EMA30 desde el oráculo, y recalcula el modo del Throttle.
     /// En producción esto lo firma un rol keeper con validación Pyth+Switchboard; aquí lo firma la autoridad.
     pub fn update_oracle_state(ctx: Context<UpdateOracle>, luka_price: u64, ema30: u64) -> Result<()> {
+        require!(luka_price > 0 && ema30 > 0, LukashError::InvalidOracleValue);
         let state = &mut ctx.accounts.state;
         state.luka_price = luka_price;
         state.ema30 = ema30;
@@ -195,6 +197,7 @@ pub mod lukash_protocol {
     /// una vez cumplida la condición on-chain (es trustless — solo verifica el estado del Vault).
     pub fn switch_motor_b(ctx: Context<SwitchMotorB>) -> Result<()> {
         let config = &ctx.accounts.config;
+        require!(!config.paused, LukashError::ProtocolPaused);
         let state = &mut ctx.accounts.state;
         require!(state.motor_b_state == MOTOR_B_B0, LukashError::AlreadyB2);
         require!(state.vault_core_usd >= config.k_min_usd, LukashError::KminNotReached);
@@ -206,13 +209,14 @@ pub mod lukash_protocol {
 
     /// Encola un cambio de parámetro crítico (Timelock 48h). kind: 1=stage, 2=k_min, 3=authority.
     pub fn queue_admin_change(ctx: Context<AdminOnly>, kind: u8, value: u64, new_pubkey: Pubkey) -> Result<()> {
-        require!(kind >= 1 && kind <= 3, LukashError::InvalidStage);
+        require!(kind >= 1 && kind <= 3, LukashError::InvalidChangeKind);
         let now = Clock::get()?.unix_timestamp;
         let config = &mut ctx.accounts.config;
         config.pending_kind = kind;
         config.pending_value = value;
         config.pending_pubkey = new_pubkey;
         config.pending_execute_after = now.checked_add(config.timelock_seconds).ok_or(LukashError::MathOverflow)?;
+        emit!(AdminChangeQueued { kind, value, execute_after: config.pending_execute_after });
         Ok(())
     }
 
@@ -222,32 +226,42 @@ pub mod lukash_protocol {
         let config = &mut ctx.accounts.config;
         require!(config.pending_kind != 0, LukashError::NoPendingChange);
         require!(now >= config.pending_execute_after, LukashError::TimelockNotElapsed);
-        match config.pending_kind {
+        let kind = config.pending_kind;
+        match kind {
             1 => {
                 let s = u8::try_from(config.pending_value).map_err(|_| LukashError::InvalidStage)?;
                 require!(s >= 1 && s <= 4, LukashError::InvalidStage);
                 config.stage = s;
             }
-            2 => config.k_min_usd = config.pending_value,
-            3 => config.authority = config.pending_pubkey,
+            2 => {
+                require!(config.pending_value > 0, LukashError::InvalidChangeKind);
+                config.k_min_usd = config.pending_value;
+            }
+            3 => {
+                require!(config.pending_pubkey != Pubkey::default(), LukashError::InvalidAuthorityPubkey);
+                config.authority = config.pending_pubkey;
+            }
             _ => return err!(LukashError::NoPendingChange),
         }
         config.pending_kind = 0;
         config.pending_value = 0;
         config.pending_pubkey = Pubkey::default();
         config.pending_execute_after = 0;
+        emit!(AdminChangeExecuted { kind });
         Ok(())
     }
 
     /// Circuit Breaker: pausa/reactiva el protocolo (solo autoridad).
     pub fn set_pause(ctx: Context<AdminOnly>, paused: bool) -> Result<()> {
         ctx.accounts.config.paused = paused;
+        emit!(PauseSet { paused });
         Ok(())
     }
 
     /// Drena la cola de quema diferida (≤10%/semana) cuando el precio se ha normalizado.
     /// Permissionless: cualquiera puede gatillarlo si se cumplen las condiciones on-chain (es trustless).
     pub fn execute_deferred_burn(ctx: Context<ExecuteDeferredBurn>) -> Result<()> {
+        require!(!ctx.accounts.config.paused, LukashError::ProtocolPaused);
         let state = &mut ctx.accounts.state;
         // Solo se drena cuando el precio volvió a zona NORMAL o ACELERADO.
         require!(
@@ -402,6 +416,8 @@ pub struct AdminOnly<'info> {
 
 #[derive(Accounts)]
 pub struct ExecuteDeferredBurn<'info> {
+    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
     pub caller: Signer<'info>,
@@ -439,4 +455,21 @@ pub struct DeferredBurnExecuted {
     pub drained: u64,
     pub remaining: u64,
     pub ts: i64,
+}
+
+#[event]
+pub struct PauseSet {
+    pub paused: bool,
+}
+
+#[event]
+pub struct AdminChangeQueued {
+    pub kind: u8,
+    pub value: u64,
+    pub execute_after: i64,
+}
+
+#[event]
+pub struct AdminChangeExecuted {
+    pub kind: u8,
 }
