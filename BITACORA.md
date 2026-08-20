@@ -34,3 +34,8 @@
 - **Contratos Milestone 1 CONFIRMADO compilando** por Sebastián; lógica auditada; execute_deferred_burn añadido.
 - Repo Git propio creado y sincronizado en GitHub (privado).
 - **Próxima sesión:** (1) auditoría/revisión contratos + Milestone 2, (2) Etapa 0 (pitch deck, founding myth, one-pager, landing, data room), (3) arrancar Superteam + grants.
+
+## 2026-08-20 (sesión 2) — Corrección Anti-Whale + cierre del protocolo
+- Aclaración del **Jaguar Exit Fee**: el "100% al Vault" es el DESTINO del fee (5/3/1%), NO una penalización del 100%. Se mantiene **5% para Génesis** (ADR-012).
+- **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); fix del nombre de exención → nivel **Jaguar**. Se implementa en el Jaguar Shield (Milestone 2).
+- **Protocolo v4.3 finalizado** (10 correcciones de auditoría aplicadas C1-C10). Auditoría interna completa; auditoría externa (Halborn/OtterSec) queda como candado pre-mainnet.

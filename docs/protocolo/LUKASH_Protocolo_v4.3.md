@@ -22,6 +22,7 @@
 | C7 | **Los dos 70/30** | Ambiguos | **Split de Fee** (70% Core / 30% Sociedad) vs **Split de Yield** (70% reinversión / 30% R_op) |
 | C8 | **Ticker** | "$Lukas"/"$LUKA" mezclados en material viejo | **$LUKA** canónico |
 | C9 | **Cifras Monte Carlo** | Atribuidas al modelo v4.2 | Etiquetadas como **modelo conservador v3.1** — reconciliación pendiente (ver `audits/AUDITORIA_COMPLEMENTARIA.md`) |
+| C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Jaguar). Exit Fee se mantiene en 5% para Génesis. |
 
 ---
 
@@ -286,10 +287,10 @@ Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle 
 | Seguro Anti-Exploit | Hasta 5% del Vault (Halborn/OtterSec). Activo desde TGE |
 | Tridente Multisig | 3-de-3 para: activar Capa 3, cancelar Circuit Breaker LP, modificar K_min |
 | **Jaguar Exit Fee** | Dual: precio <0.7×EMA30 AND venta >0.3% supply/hora → 5%/3%/1% (Et.1/2/3). 100% al Vault Core |
-| **Anti-Whale** | 1-2% supply: 3% · 2-5%: 6% · >5%: 10% sobre el excedente. 100% al Vault Core |
+| **Anti-Whale** | **Solo VENTAS/transferencias** (no compras). Umbral por **% del pool de liquidez** (no del supply): 1-2% pool → 3% · 2-5% → 6% · >5% → 10%, **sobre el excedente**. 100% al Vault Core |
 | **Timelock 48h** | Obligatorio para cambiar K_min, fees, thresholds del Throttle, composición del Vault |
 
-Exit Fee/Anti-Whale exenciones: swaps internos Motor D, staking activo, LP en lock, MMs registrados, nivel Jaguar Maduro+.
+Exit Fee/Anti-Whale exenciones: swaps internos Motor D, staking activo, LP en lock, MMs registrados, nivel Jaguar (Aura máx).
 
 ---
 
@@ -334,7 +335,7 @@ Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle c
 | UCR | 20% de R_op → Recarga Forzada 15% yield/sem | |
 | Cap burn diario | 1% supply/día | Exceso al día siguiente |
 | Jaguar Exit Fee | precio<0.7×EMA30 AND venta>0.3% supply/h → 5/3/1% | 100% al Vault Core |
-| Anti-Whale | 1-2%:3% · 2-5%:6% · >5%:10% | 100% al Vault Core |
+| Anti-Whale | **Solo ventas** · **% del pool** (no supply): 1-2%→3% · 2-5%→6% · >5%→10% (sobre excedente) | 100% al Vault Core. Métrica por liquidez |
 | Timelock gobernanza | 48h | Parámetros críticos |
 | Aura niveles | Cachorro 0-499 · Rastreador 500-1999 · Cazador 2000-4999 · Alfa 5000-9999 · Jaguar 10000+ | Gate cNFT Jaguar Universal: ≥500 |
 | Supply objetivo / ENZ | 3,300M | PDA suspende quema |

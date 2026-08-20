@@ -69,6 +69,16 @@ Operar en **ES/EN/PT** (términos de marca no se traducen: LUKA/KASH/Aura/Jaguar
 Detalle y taglines en `brand/POSICIONAMIENTO_NARRATIVA.md`. Pendiente menor: unificar nombres de los 5 niveles
 de Aura (presentación: Cachorro/Rastreador/Guerrero/Líder/Jaguar vs spec: .../Cazador/Jaguar Maduro/Jaguar Sabio).
 
+## ADR-012: Corrección del Anti-Whale + Exit Fee 5% Génesis (2026-08-20) — Aprobado por Sebastián
+**Exit Fee:** se mantiene en **5% para el Génesis** (Et.1), 3%/1% en Et.2/3. Aclaración: el "100% al Vault" es
+el DESTINO del fee, no una penalización del 100% (el fee es 5/3/1%). Solo se activa en pánico real (precio
+<0.7×EMA30 AND venta >0.3% supply/hora) y exime a holders comprometidos.
+**Anti-Whale (corregido):** (1) aplica **solo a ventas/transferencias, NO a compras** (quieres ballenas
+comprando); (2) el umbral se mide por **% del pool de liquidez, no del supply** — la métrica de supply era
+brutal al inicio (1% supply ≈ $10K al TGE, ahogaba el volumen de lanzamiento) y laxa después. Tiers 3/6/10%
+sobre el excedente, 100% al Vault. (3) Fix del nombre de exención: "Emperor/Jaguar Maduro" → "Jaguar" (nivel
+máx de Aura). Aplicado en Protocolo v4.3 (C10). Se implementa en el Jaguar Shield (Milestone 2).
+
 ## ADR-011: Lanzamiento community-only (fair-launch) como ruta primaria; MM/influencers para después (2026-08-19)
 Con poco capital: **Ruta A = fair-launch comunidad-only** (liquidez propia lockeada/quemada en Meteora + volumen
 100% orgánico + anti-dump: vesting on-chain, Exit Fee, Anti-Whale). El **Market Maker se quita de todo material
