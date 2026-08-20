@@ -64,16 +64,23 @@ Reglas: Capa 0 exención absoluta · diferencial 0.5% siempre a favor de $LUKA �
 
 | Categoría | % | Cantidad | Seguridad |
 | --- | ---: | ---: | --- |
-| Venta (Seed + Public) | 45% | 4,500M | Vesting escalonado seed. Circulante desde TGE |
+| Venta (Seed → Public) | 45% | 4,500M | **Seed dinámico** (ADR-013): Seed ≤5% supply (≤500M), SAFE+warrant, vesting on-chain; ventana cierra en el TGE; lo no vendido **rueda a Public**. Public ≥40% (≥4,000M) fair-launch, circulante desde TGE |
 | Pool de Liquidez (LP) | 30% | 3,000M | Emparejados/quemados en Meteora. LP Fundador 365d lock |
-| Marketing / CEX | 10% | 1,000M | Multisig. KOLs y MM |
+| Marketing / CEX | 8% | 800M | Multisig. KOLs y MM |
 | Airdrops / Comunidad | 10% | 1,000M | Por hitos on-chain públicos |
 | Staking | 5% | 500M | Recompensa base. Financiado por Motor A |
+| **Equipo / Fundador** | 2% | 200M | On-chain pre-TGE. **Cliff 12m + lineal 48m** (espejo del Vault Sociedad). Alineación + gobernanza (ADR-014) |
 
 **ENZ (Fase 3):** al llegar a 3,300M, PDA on-chain suspende la quema; el valor capturado va a recompensas
 perpetuas de staking y distribución a la comunidad. $LUKA = acción preferente con dividendos del Vault.
 
-**Vesting equipo (no negociable):** publicado on-chain ANTES del TGE. <10% supply, cliff 18m, lineal 36m.
+**Vesting equipo (no negociable):** publicado on-chain ANTES del TGE. Bucket **Equipo/Fundador = 2%** (200M,
+<10% supply), **cliff 12m + lineal 48m** (espejo del Vault Sociedad). Fondeado recortando Marketing/CEX (10%→8%).
+
+**Compensación operativa del fundador (ADR-014):** el ingreso de corto plazo del fundador por operar el
+protocolo sale del bucket **O&M (15%)**, NO de los tokens de Equipo (vesteados) ni del Vault Sociedad
+(diferido). Tres capas: O&M = trabajo (corto plazo) · Equipo 2% = upside del token + gobernanza (largo,
+vesteado) · Vault Sociedad = patrimonio del negocio (largo).
 
 ---
 

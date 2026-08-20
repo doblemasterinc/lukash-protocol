@@ -1,0 +1,14 @@
+{
+  "name": "LUKASH",
+  "symbol": "LUKA",
+  "description": "Token deflacionario del ecosistema LUKASH sobre Solana, respaldado por el Vault KASH Core (reserva de activos duros auditable on-chain). Las finanzas del futuro, disponibles hoy para toda Latinoamerica. Token de devnet para pruebas.",
+  "image": "REEMPLAZAR_CON_URL_PUBLICA_DEL_ISOTIPO/isotipo.png",
+  "external_url": "https://lukash.io",
+  "attributes": [
+    { "trait_type": "network", "value": "solana-devnet" },
+    { "trait_type": "milestone", "value": "1" }
+  ],
+  "extensions": {
+    "website": "https://lukash.io"
+  }
+}

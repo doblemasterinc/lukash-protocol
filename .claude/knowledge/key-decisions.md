@@ -88,6 +88,26 @@ nunca cash**. Manual completo (ambas rutas + directorios MM e influencers + best
 `specs/05-manual-lanzamiento.md`. Contratos en un solo archivo para compilar en Playground: `contracts/playground/`.
 Trade-off honesto: sin MM el volumen depende 100% de la comunidad — más limpio pero más exigente (ver auditoría integral).
 
+## ADR-013: 45% Venta = Seed dinámico con rollover a Public (2026-08-20) — Aprobado por Sebastián
+El 45% "Venta (Seed → Public)" (4,500M) se dimensiona así: **Seed ≤5% del supply (≤500M, ~11% del 45%)**,
+vendido bajo SAFE + token warrant con descuento y **vesting escalonado on-chain** + disclosure público.
+**Ventana del Seed cierra en el TGE**; lo NO vendido **rueda automáticamente a Public** (fair-launch,
+circulante desde TGE), anunciado on-chain. **Public ≥40% del supply (≥4,000M).** Si Seed vendido = 0 → 100%
+del 45% es Public → "cero venta privada" es literalmente cierto (narrativa fair intacta). El Seed solo se
+activa si grants + Colosseum no cubren runway (coherente con financiación no-dilutiva primero, ADR-011).
+MM y KOLs NO salen de aquí: tienen su bolsa en el 10% Marketing/CEX. Aplicado en Protocolo v4.3 (tabla §supply).
+
+## ADR-014: Bucket Equipo/Fundador 2% + economía de fundador en 3 capas (2026-08-20) — Aprobado por Sebastián
+Se crea fila explícita **Equipo/Fundador = 2% (200M)**, fondeada recortando **Marketing/CEX 10%→8%** (KOLs/MM
+quedan con 800M, suficiente). Vesting **cliff 12m + lineal 48m** on-chain pre-TGE (espejo del Vault Sociedad;
+cliff 12m reemplaza el 18m "no negociable" anterior — decisión consciente del fundador, sigue siendo creíble).
+Resuelve el hueco de la tabla (antes sumaba 100% sin fila de Equipo). Razón: NO es ingreso (para eso está el
+O&M), es **alineación + gobernanza + upside del token** (el Vault Sociedad da upside del negocio, no del precio
+de $LUKA — son streams distintos). **Economía de fundador en 3 capas:** (1) **O&M 15%** = compensación operativa
+por trabajar (corto plazo); (2) **Equipo 2%** = upside del token + voz en DAO (largo, vesteado); (3) **Vault
+Sociedad ≥10% del 30%** = patrimonio del negocio (largo). Se descartó 0% (pureza fair-launch) por la señal de
+"sin piel en el juego" que incomoda a ángeles/Colosseum. Aplicado en v4.3 (tabla §supply + vesting).
+
 ## ADR-P01: Vault KASH Core 100% Solana-nativo — composición RESUELTA (Protocolo v4.3)
 Composición canónica (suma 100%): cBTC 35% · SOL 15% · SOL/LST 20% · USDC reserva 25% · USDC lending 5%.
 Los oráculos (PYTH/Switchboard/Jupiter) son **infraestructura operativa (O&M), no reserva** (resuelve la

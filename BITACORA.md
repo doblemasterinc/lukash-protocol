@@ -38,6 +38,16 @@
 ## 2026-08-20 (sesión 2) — Corrección Anti-Whale + cierre del protocolo
 - Aclaración del **Jaguar Exit Fee**: el "100% al Vault" es el DESTINO del fee (5/3/1%), NO una penalización del 100%. Se mantiene **5% para Génesis** (ADR-012).
 - **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); fix del nombre de exención → nivel **Jaguar**. Se implementa en el Jaguar Shield (Milestone 2).
+
+## 2026-08-20 (sesión 3) — Token $LUKA vivo en devnet + tokenomics de fundador
+- **🐆 HITO: Token $LUKA CREADO en devnet.** Mint `2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr` (SPL clásico, 6 dec, supply 10B), visible en el explorador. Mint authority = wallet Playground.
+  - La versión de `spl-token` de Playground es vieja: NO soporta `--enable-metadata` ni `--program-2022`. Token creado clásico. **Metadata (nombre/logo) pendiente vía Metaplex** (hostear `luka.json`+isotipo público, firmar con wallet Playground / metaboss).
+- **Deploy del programa BLOQUEADO por faucet:** requiere **2.12 SOL**, solo se consiguió 1 SOL; faucet devnet respondió **429 (límite/seco)** todo el día (web pide GitHub con antigüedad; CLI rate-limited; bug "body stream" del RPC default). Reintentar con Helius RPC / otra IP / esperar. Deploy queda "cargado" en `contracts/playground/RUNBOOK_DEVNET.md` (copiar-pegar).
+- **Insight de Sebastián — "farmear aura":** convergencia cultural gratis con la marca (Aura ya nombrada). Adoptado como **copy core** → `brand/AURA_FARMEO_POSICIONAMIENTO.md`. Estética pixel tipo DefiLand = candidata para F2; mini-juego plataformas estilo Mario = **diferido** (mucho dev, distrae del átomo).
+- **Etapa 0 arrancada:** `docs/etapa-0/ONE_PAGER_es.md` (pieza madre, hook "farmea tu Aura", marco de utilidad sin promesa de retornos). Faltan EN/PT + founding myth + landing + deck.
+- **ADR-013:** el 45% "Venta (Seed → Public)" se dimensiona como **Seed dinámico**: Seed ≤5% supply (SAFE+warrant, vesting on-chain), ventana cierra en el TGE, **lo no vendido rueda a Public**; Public ≥40% fair-launch. Seed opcional (solo si grants+Colosseum no dan runway).
+- **ADR-014:** nueva fila **Equipo/Fundador 2%** (200M, de Marketing 10%→8%), **cliff 12m + lineal 48m** (espejo del Vault Sociedad). Economía de fundador en **3 capas**: O&M (ingreso corto plazo) · Equipo 2% (upside del token + gobernanza) · Vault Sociedad ≥10% del 30% (patrimonio). Resuelve el hueco de la tabla (ahora suma 100%). Tabla v4.3 + CLAUDE.md actualizados.
+- **Próxima sesión:** (1) metadata del token (hostear isotipo+luka.json, Metaplex/metaboss → nombre/logo en explorer), (2) deploy del programa (juntar 2.12 SOL), (3) continuar Etapa 0 (EN/PT, founding myth, landing con waitlist, deck).
 - **Protocolo v4.3 finalizado** (10 correcciones de auditoría aplicadas C1-C10). Auditoría interna completa; auditoría externa (Halborn/OtterSec) queda como candado pre-mainnet.
 
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas

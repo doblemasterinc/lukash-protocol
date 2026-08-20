@@ -24,3 +24,12 @@ Confusión común: "100% al Vault" = todo el fee (5/3/1%) va a la reserva, NO un
 
 ## 2026-08-20 (sesión 2) — Auditoría con capital cero: gratis primero, luego subsidio
 Cross-proyecto (cualquier cripto propia): (1) herramientas gratis (Sec3 X-Ray, Trident fuzzing, clippy) bajan a la mitad el costo del audit humano; (2) **subsidio Areta $1M** para builders Solana (Colosseum = fast-track); (3) boutique $5-20K con descuento por llegar con tests; (4) Immunefi post-mainnet. NUNCA lanzar contratos que custodian fondos sin auditar en mainnet (la reserva es un honeypot).
+
+## 2026-08-20 (sesión 3) — Faucet devnet es un cuello de botella real; separar deploy de creación de token
+El faucet devnet estuvo en 429/seco todo el día (web pide GitHub con antigüedad; CLI rate-limited por IP; bug "body stream already read" del RPC default de Playground). **Deploy de programa Anchur ~2.12 SOL** (no basta 1). **Crear+acuñar un token SPL cuesta <0.1 SOL.** Lección: cuando el SOL escasea, priorizar el token (win visible barato) sobre el deploy; para más SOL usar RPC propio de Helius (evita también el bug de stream) o cambiar de IP.
+
+## 2026-08-20 (sesión 3) — `spl-token` de Playground es viejo: sin metadata on-chain
+No soporta `--enable-metadata` ni `--program-2022`. Token se crea clásico SPL; nombre/símbolo/logo requieren **Metaplex Token Metadata** aparte (metaboss local con keypair exportado, o script TS). La metadata necesita **URI pública** (imagen+JSON hosteados). Lección: para "token con nombre y logo en el explorador" no basta el CLI; planear el paso Metaplex + hosting desde el inicio.
+
+## 2026-08-20 (sesión 3) — Economía de fundador en 3 capas (no pedirle a un vehículo lo que no da)
+Cross-proyecto (cripto propia): separar (1) **O&M** = ingreso por trabajar (corto plazo), (2) **tokens de equipo** vesteados = upside del token + gobernanza (largo), (3) **equity/Vault** = patrimonio del negocio (largo). Los tokens de equipo NO son ingreso temprano (van con cliff). Un fundador con 0% de su token levanta alarma en ángeles ("sin piel en el juego"): mejor bolsa pequeña, transparente y muy vesteada. (ADR-014.)

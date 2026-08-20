@@ -54,7 +54,7 @@ mundo institucional ya construye.
 - SIEMPRE timelocks (48h) en parámetros críticos: K_min, fees, thresholds Throttle, composición Vault.
 - La distribución de fees debe ser ATÓMICA (una transacción) — sin riesgo de extracción parcial.
 - Disclaimer on-chain obligatorio en metadata de cNFT: no garantiza rendimientos ni protección de capital.
-- Vesting del equipo publicado on-chain ANTES del TGE (cliff 18m, lineal 36m, <10% supply).
+- Vesting del equipo publicado on-chain ANTES del TGE. Bucket Equipo/Fundador 2% (200M), cliff 12m + lineal 48m (ADR-014).
 - Auditoría Halborn/OtterSec pre-TGE es requisito NO negociable.
 
 ## Convenciones

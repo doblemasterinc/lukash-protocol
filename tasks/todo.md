@@ -1,11 +1,11 @@
 # TODO — LUKASH
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
-0. **DESPLIEGUE EN DEVNET** (lo que el usuario quiere ver): (a) desplegar el programa en Playground (connect wallet → `solana airdrop 2` → Deploy → Program ID en explorer devnet), (b) crear el token **$LUKA** SPL en devnet (LUKASH / LUKA / 6 dec / 10B / logo = isotipo) para verlo en el explorador. Guiar clic por clic (no se puede manejar el navegador desde aquí).
-1. **Herramientas gratis de seguridad**: correr Sec3 X-Ray + Trident (fuzzing) + clippy sobre el contrato; arreglar hallazgos.
-2. **Contratos Milestone 2**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
-3. **Etapa 0 de lanzamiento**: pitch deck (Colosseum + grants + ángeles), founding myth (ES/EN/PT), one-pager, landing con waitlist, data room. Arrancar **Superteam Earn + grant Finternet** + preparar **hackathon Colosseum** (fast-track al subsidio de audit Areta).
-4. **Decidir** sub-estructura del 45% "Venta" (fair puro vs seed chico).
+0. **DEVNET**: [x] Token $LUKA creado (Mint `2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr`, SPL 6 dec, 10B). [ ] **Metadata nombre/logo** vía Metaplex (hostear `brand/token-metadata/luka.json` + isotipo público → metaboss/TS firmando con wallet Playground). [ ] **Deploy del programa**: requiere **2.12 SOL** (faucet en 429; reintentar Helius RPC / otra IP). Copiar-pegar en `contracts/playground/RUNBOOK_DEVNET.md`.
+1. **Etapa 0 (continuar)**: [x] one-pager ES. [ ] traducir EN/PT, [ ] founding myth (ES/EN/PT), [ ] landing con waitlist, [ ] pitch deck (Colosseum/grants/ángeles), [ ] data room. Arrancar **Superteam Earn + grant Finternet** + preparar **Colosseum**.
+2. **Herramientas gratis de seguridad**: correr Sec3 X-Ray + Trident (fuzzing) + clippy sobre el contrato; arreglar hallazgos.
+3. **Contratos Milestone 2**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
+4. [x] **Sub-estructura del 45% "Venta"** decidida → Seed dinámico→Public (ADR-013) + fila Equipo/Fundador 2% (ADR-014).
 
 
 ## Sesión actual (2026-08-19) — Setup + Auditoría
