@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH Protocol v4.2 — Token Flow Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Chakra+Petch:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #060B14;
+  --bg2:     #0D1526;
+  --bg3:     #111E35;
+  --panel:   rgba(13,21,38,0.92);
+  --green:   #1D9E75;
+  --green2:  #22C98E;
+  --blue:    #185FA5;
+  --blue2:   #2080D4;
+  --gold:    #BA7517;
+  --gold2:   #E09020;
+  --red:     #C0392B;
+  --red2:    #E8453A;
+  --purple:  #7B2FBE;
+  --purple2: #A050E0;
+  --teal:    #0E7490;
+  --teal2:   #14B8D8;
+  --text:    #B8CDE8;
+  --muted:   #3A5070;
+  --bright:  #D8EAF8;
+  --border:  rgba(29,158,117,0.18);
+  --bblue:   rgba(24,95,165,0.2);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Chakra Petch',sans-serif;color:var(--text);display:flex;flex-direction:column;}
+
+/* scanlines */
+body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);}
+
+/* ── HEADER ── */
+header{
+  flex-shrink:0;height:48px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  background:linear-gradient(90deg,rgba(24,95,165,0.2),rgba(29,158,117,0.1),rgba(24,95,165,0.05));
+  border-bottom:1px solid var(--border);
+  position:relative;z-index:10;
+}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--blue2) 30%,var(--green2) 70%,transparent);}
+.logo{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;letter-spacing:5px;
+  background:linear-gradient(135deg,var(--green2) 30%,var(--blue2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sub{font-size:9px;letter-spacing:3px;color:var(--muted);margin-top:-2px;font-family:'Share Tech Mono',monospace;}
+.hdr-pills{display:flex;gap:8px;align-items:center;}
+.pill{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;
+  padding:3px 10px;border:1px solid currentColor;border-radius:1px;transition:all .25s;}
+.pill-g{color:var(--green2);border-color:rgba(34,201,142,0.4);background:rgba(34,201,142,0.08);}
+.pill-b{color:var(--blue2);border-color:rgba(32,128,212,0.4);background:rgba(32,128,212,0.08);}
+.pill-gold{color:var(--gold2);border-color:rgba(224,144,32,0.4);background:rgba(224,144,32,0.08);}
+.pill-r{color:var(--red2);border-color:rgba(232,69,58,0.35);background:rgba(232,69,58,0.07);}
+.hdr-right{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;line-height:1.8;}
+.hdr-right em{color:var(--green2);font-style:normal;}
+
+/* ── LAYOUT ── */
+.app{flex:1;display:grid;grid-template-columns:210px 1fr 230px;overflow:hidden;}
+
+/* ── SIDEBAR PANELS ── */
+.sidebar{overflow-y:auto;border-right:1px solid var(--border);background:var(--panel);}
+.sidebar.right{border-right:none;border-left:1px solid var(--border);}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--green);border-radius:2px;}
+
+.sec{padding:11px 13px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.sec-title{font-size:9px;font-weight:600;letter-spacing:2.5px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:9px;font-family:'Share Tech Mono',monospace;}
+
+/* button groups */
+.bgrp{display:flex;gap:3px;flex-wrap:wrap;}
+.btn{flex:1;min-width:44px;padding:5px 4px;
+  font-family:'Orbitron',monospace;font-size:8px;font-weight:600;letter-spacing:.5px;
+  border:1px solid var(--muted);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;border-radius:1px;text-transform:uppercase;}
+.btn:hover{border-color:var(--text);color:var(--text);}
+.on-g{border-color:var(--green2)!important;color:var(--green2)!important;background:rgba(34,201,142,0.12)!important;box-shadow:0 0 10px rgba(34,201,142,0.2);}
+.on-b{border-color:var(--blue2)!important;color:var(--blue2)!important;background:rgba(32,128,212,0.12)!important;}
+.on-r{border-color:var(--red2)!important;color:var(--red2)!important;background:rgba(232,69,58,0.12)!important;}
+.on-gold{border-color:var(--gold2)!important;color:var(--gold2)!important;background:rgba(224,144,32,0.12)!important;}
+.on-teal{border-color:var(--teal2)!important;color:var(--teal2)!important;background:rgba(20,184,216,0.12)!important;}
+.on-p{border-color:var(--purple2)!important;color:var(--purple2)!important;background:rgba(160,80,224,0.12)!important;}
+
+/* sliders */
+.sl-wrap{margin-bottom:10px;}
+.sl-hdr{display:flex;justify-content:space-between;margin-bottom:5px;}
+.sl-name{font-size:10px;color:var(--text);font-weight:500;}
+.sl-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green2);}
+input[type=range]{width:100%;height:3px;-webkit-appearance:none;appearance:none;
+  background:linear-gradient(90deg,var(--green) var(--p,0%),var(--bg3) var(--p,0%));
+  border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;
+  border-radius:50%;background:var(--green2);border:2px solid var(--bg);cursor:pointer;
+  box-shadow:0 0 7px rgba(34,201,142,0.6);}
+
+/* dist grid */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:6px;}
+.dcell{padding:6px 7px;border-radius:1px;border:1px solid;}
+.dcell .dn{font-size:9px;letter-spacing:.5px;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+.dcell .dv{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;margin-top:1px;}
+
+/* sim controls */
+.timeline-ticks{display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:3px;}
+.play-row{display:flex;gap:3px;margin-top:7px;}
+.spd-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold2);
+  margin-top:6px;padding:4px 8px;background:rgba(224,144,32,0.07);border-left:2px solid var(--gold2);}
+
+/* throttle indicator */
+.throttle-bar{display:flex;gap:2px;margin-top:6px;}
+.tb-seg{flex:1;height:5px;border-radius:1px;transition:opacity .3s;}
+.tb-seg.active{box-shadow:0 0 6px currentColor;}
+
+/* ── CENTER CANVAS ── */
+.canvas-wrap{position:relative;overflow:hidden;background:var(--bg);}
+#cv{display:block;}
+.overlay-stage{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:2.5px;
+  padding:4px 14px;border:1px solid;border-radius:1px;backdrop-filter:blur(4px);transition:all .3s;}
+.overlay-year{position:absolute;top:12px;right:14px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold2);
+  background:rgba(186,117,23,0.1);border:1px solid rgba(186,117,23,0.3);
+  padding:3px 10px;border-radius:1px;}
+.kmin-bar-wrap{position:absolute;bottom:12px;left:14px;right:14px;}
+.kmin-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);
+  display:flex;justify-content:space-between;margin-bottom:3px;}
+.kmin-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.kmin-fill{height:100%;border-radius:2px;transition:width .6s;
+  background:linear-gradient(90deg,var(--blue2),var(--green2));}
+.shield-tag{position:absolute;bottom:32px;right:14px;
+  font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;color:var(--gold);
+  border:1px solid rgba(186,117,23,0.25);padding:2px 7px;background:rgba(186,117,23,0.05);}
+
+/* ── RIGHT METRICS ── */
+.mcard{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,0.04);position:relative;}
+.mcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;}
+.mc-g::before{background:var(--green2);}
+.mc-b::before{background:var(--blue2);}
+.mc-gold::before{background:var(--gold2);}
+.mc-r::before{background:var(--red2);}
+.mc-p::before{background:var(--purple2);}
+.mc-t::before{background:var(--teal2);}
+.mname{font-size:8px;font-weight:600;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:2px;font-family:'Share Tech Mono',monospace;}
+.mval{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;line-height:1.2;}
+.mv-g{color:var(--green2);}
+.mv-b{color:var(--blue2);}
+.mv-gold{color:var(--gold2);}
+.mv-r{color:var(--red2);}
+.mv-p{color:var(--purple2);}
+.mv-t{color:var(--teal2);}
+.msub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+
+/* fee motor rows */
+.frow{display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.flbl{font-size:10px;font-weight:600;width:58px;font-family:'Share Tech Mono',monospace;}
+.ftrack{flex:1;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.fbar{height:100%;border-radius:2px;transition:width .5s;}
+.famt{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);width:44px;text-align:right;}
+
+/* vault composition */
+.vi{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.vdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.vname{font-size:10px;color:var(--text);flex:1;font-family:'Share Tech Mono',monospace;}
+.vpct{font-size:10px;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+
+/* 5Y progress */
+.prog-wrap{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.prog-tks{display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:4px;}
+.prog-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--blue2),var(--green2));transition:width .5s;}
+.prog-kmin{position:absolute;top:0;bottom:0;width:2px;background:var(--gold2);opacity:.6;}
+.kmin-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--gold);
+  margin-top:3px;text-align:right;}
+
+/* statusbar */
+.statusbar{flex-shrink:0;display:flex;gap:18px;align-items:center;
+  padding:5px 18px;background:rgba(4,7,16,0.96);
+  border-top:1px solid rgba(29,158,117,0.12);
+  font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);}
+.sdot{width:5px;height:5px;border-radius:50%;display:inline-block;margin-right:4px;}
+.sg{background:var(--green2);box-shadow:0 0 5px var(--green2);animation:pulse 2s infinite;}
+.sb{background:var(--blue2);}
+.sgold{background:var(--gold2);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.mode-info{font-size:9px;color:var(--muted);line-height:1.5;margin-top:6px;
+  font-family:'Share Tech Mono',monospace;padding:5px 7px;
+  background:rgba(32,128,212,0.06);border-left:1px solid rgba(32,128,212,0.3);}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">LUKASH</div>
+    <div class="logo-sub">PROTOCOL v4.2 · TOKEN FLOW SIMULATOR</div>
+  </div>
+  <div class="hdr-pills">
+    <div class="pill pill-b" id="hpill-stage">ETAPA 1 — GÉNESIS</div>
+    <div class="pill pill-gold" id="hpill-mode">B0 ACUMULACIÓN</div>
+    <div class="pill pill-g" id="hpill-throttle">NORMAL 100%</div>
+    <div class="pill pill-r" id="hpill-market">◼ NEUTRAL</div>
+  </div>
+  <div class="hdr-right">
+    SUPPLY: <em id="h-supply">10.00B</em> · DÍA: <em id="h-day">0</em> · AÑO: <em id="h-yr">0.0</em>
+  </div>
+</header>
+
+<div class="app">
+
+<!-- ══ LEFT SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sec">
+    <div class="sec-title">Régimen de Mercado</div>
+    <div class="bgrp">
+      <button class="btn" id="b-bull" onclick="setMarket('BULL')">▲ BULL</button>
+      <button class="btn on-b" id="b-neut" onclick="setMarket('NEUTRAL')">◼ NEUTRO</button>
+      <button class="btn" id="b-bear" onclick="setMarket('BEAR')">▼ BEAR</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Escenario Monte Carlo</div>
+    <div class="bgrp">
+      <button class="btn" id="b-cons" onclick="setScenario('CONSERV')">CONSERV</button>
+      <button class="btn on-b" id="b-base" onclick="setScenario('BASE')">BASE</button>
+      <button class="btn" id="b-agr" onclick="setScenario('AGRESIVO')">AGRESIVO</button>
+    </div>
+    <div id="sc-lbl" style="margin-top:7px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);line-height:1.6;">
+      Vault Y5: <span style="color:var(--blue2)">$37.2M</span> · P(B2&lt;Y2): <span style="color:var(--green2)">86.1%</span><br>
+      Espiral transición: <span style="color:var(--gold2)">~1.4%</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Etapa del Protocolo</div>
+    <div class="bgrp" style="flex-wrap:wrap;">
+      <button class="btn on-b" id="b-e1" onclick="setStage(1)" style="min-width:60px;">ET.1</button>
+      <button class="btn" id="b-e2a" onclick="setStage('2A')" style="min-width:60px;">ET.2A</button>
+      <button class="btn" id="b-e2b" onclick="setStage('2B')" style="min-width:60px;">ET.2B</button>
+      <button class="btn" id="b-e3" onclick="setStage(3)" style="min-width:60px;">ET.3</button>
+      <button class="btn" id="b-e4" onclick="setStage(4)" style="min-width:60px;">ET.4 DAO</button>
+    </div>
+    <div class="mode-info" id="stage-info">
+      Motor A activo. Fee 4%/2.5% WL. Vault en acumulación. LP Fundador 365d lock.
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Motor B — Estado</div>
+    <div class="bgrp">
+      <button class="btn on-b" id="b-b0" onclick="setMotorB('B0')">B0 BURN</button>
+      <button class="btn" id="b-b2" onclick="setMotorB('B2')">B2 RECIRC</button>
+    </div>
+    <div class="mode-info" id="mode-info" style="border-left-color:rgba(32,128,212,0.3);">
+      B0: 35% LP → BURN PERMANENTE a null. K &lt; $25M.
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Throttle Dinámico (EMA30)</div>
+    <div class="bgrp">
+      <button class="btn" id="b-tacl" onclick="setThrottle('ACELERADO')">125%</button>
+      <button class="btn on-b" id="b-tnrm" onclick="setThrottle('NORMAL')">100%</button>
+      <button class="btn" id="b-tcon" onclick="setThrottle('CONSERV')">60%</button>
+      <button class="btn" id="b-tdef" onclick="setThrottle('DEFENSIVO')">25%</button>
+    </div>
+    <div class="throttle-bar">
+      <div class="tb-seg" id="tb1" style="background:var(--red2);color:var(--red2)"></div>
+      <div class="tb-seg active" id="tb2" style="background:var(--green2);color:var(--green2)"></div>
+      <div class="tb-seg" id="tb3" style="background:var(--gold2);color:var(--gold2)"></div>
+      <div class="tb-seg" id="tb4" style="background:var(--red);" ></div>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px;" id="throttle-note">
+      Cola diferida: <span id="cola-pct" style="color:var(--gold2)">0%</span> · R_op: <span id="rop-pct" style="color:var(--green2)">100%</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Distribución 35/35/15/15</div>
+    <div class="dgrid">
+      <div class="dcell" style="border-color:rgba(32,128,212,0.3);background:rgba(32,128,212,0.07);">
+        <div class="dn">ASSET LAYER</div>
+        <div class="dv" style="color:var(--blue2);">35%</div>
+        <div style="font-size:8px;color:var(--muted);margin-top:1px;">→ Vault Core</div>
+      </div>
+      <div class="dcell" style="border-color:rgba(232,69,58,0.3);background:rgba(232,69,58,0.07);">
+        <div class="dn">LIQ. LAYER</div>
+        <div class="dv" id="lp-label-dist" style="color:var(--red2);">35%</div>
+        <div style="font-size:8px;color:var(--muted);margin-top:1px;" id="lp-dest">→ BURN (B0)</div>
+      </div>
+      <div class="dcell" style="border-color:rgba(224,144,32,0.3);background:rgba(224,144,32,0.07);">
+        <div class="dn">O&M LAYER</div>
+        <div class="dv" style="color:var(--gold2);">15%</div>
+        <div style="font-size:8px;color:var(--muted);margin-top:1px;">→ Wallet O&M</div>
+      </div>
+      <div class="dcell" style="border-color:rgba(34,201,142,0.3);background:rgba(34,201,142,0.07);">
+        <div class="dn">REWARD LAYER</div>
+        <div class="dv" style="color:var(--green2);">15%</div>
+        <div style="font-size:8px;color:var(--muted);margin-top:1px;">→ Stakers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Parámetros</div>
+    <div class="sl-wrap">
+      <div class="sl-hdr"><span class="sl-name">Vol. Motor A (diario)</span><span class="sl-val" id="sv-va">$5M</span></div>
+      <input type="range" id="sl-va" min="500" max="20000" value="5000" oninput="onSl(this,'sv-va',v=>fU(v*1000))">
+    </div>
+    <div class="sl-wrap">
+      <div class="sl-hdr"><span class="sl-name">Usuarios Activos App</span><span class="sl-val" id="sv-us">1K</span></div>
+      <input type="range" id="sl-us" min="0" max="2000" value="1" oninput="onSl(this,'sv-us',v=>fK(v*1000))">
+    </div>
+    <div class="sl-wrap">
+      <div class="sl-hdr"><span class="sl-name">Precio $LUKA × TGE</span><span class="sl-val" id="sv-px">1.0×</span></div>
+      <input type="range" id="sl-px" min="5" max="3000" value="100" oninput="onSl(this,'sv-px',v=>(v/100).toFixed(1)+'×')">
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Simulación 5 Años</div>
+    <div class="timeline-ticks"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+    <input type="range" id="sl-day" min="0" max="1825" value="0" style="margin-bottom:6px;"
+      oninput="scrub(+this.value)">
+    <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold2);margin-bottom:4px;">
+      <span>DÍA <span id="d-disp">0</span></span>
+      <span>AÑO <span id="yr-disp">0.00</span></span>
+    </div>
+    <div class="play-row">
+      <button class="btn" style="flex:2;" id="b-play" onclick="togglePlay()">▶ PLAY</button>
+      <button class="btn" id="b-s1" onclick="setSpd(1)">1×</button>
+      <button class="btn on-gold" id="b-s10" onclick="setSpd(10)">10×</button>
+      <button class="btn" id="b-s30" onclick="setSpd(30)">30×</button>
+      <button class="btn" onclick="resetSim()">↺</button>
+    </div>
+    <div class="spd-note" id="spd-note">⚡ 10× — 1 año en ~18 seg</div>
+  </div>
+
+</aside>
+
+<!-- ══ CENTER CANVAS ══ -->
+<div class="canvas-wrap">
+  <canvas id="cv"></canvas>
+  <div class="overlay-stage pill-b" id="ov-stage" style="border-color:rgba(32,128,212,0.5);color:var(--blue2);background:rgba(32,128,212,0.12);">
+    ETAPA 1 — GÉNESIS · MOTOR A
+  </div>
+  <div class="overlay-year" id="ov-year">AÑO 0.0</div>
+  <div class="kmin-bar-wrap">
+    <div class="kmin-label">
+      <span style="color:var(--muted)">K(t) → K_min $25M</span>
+      <span id="kmin-pct-lbl" style="color:var(--green2)">0%</span>
+    </div>
+    <div class="kmin-track">
+      <div class="kmin-fill" id="kmin-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="shield-tag">⬡ JAGUAR SHIELD v4.2</div>
+</div>
+
+<!-- ══ RIGHT SIDEBAR ══ -->
+<aside class="sidebar right">
+
+  <div style="padding:8px 13px 4px;border-bottom:1px solid var(--border);
+    font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:3px;color:var(--muted);">
+    ⬡ MÉTRICAS EN VIVO
+  </div>
+
+  <!-- 5Y progress -->
+  <div class="prog-wrap">
+    <div class="prog-tks"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+    <div class="prog-track">
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+      <div class="prog-kmin" style="left:calc(10% * (20.9/37.2))"></div>
+    </div>
+    <div class="kmin-lbl">K_min $25M · Vault Y5 mediana</div>
+  </div>
+
+  <div class="mcard mc-b">
+    <div class="mname">Vault KASH Core K(t)</div>
+    <div class="mval mv-b" id="m-vault">$0.00M</div>
+    <div class="msub">+<span id="m-vd" style="color:var(--green2)">$0</span>/día · <span id="m-vmode">B0 acum</span></div>
+  </div>
+
+  <div class="mcard mc-g">
+    <div class="mname">Precio KASH P_th</div>
+    <div class="mval mv-g" id="m-pkash">$0.000000</div>
+    <div class="msub">= Vault ÷ Supply · <span id="m-pxmult" style="color:var(--gold2)">0×</span> TGE</div>
+  </div>
+
+  <div class="mcard mc-r">
+    <div class="mname">Supply Circulante</div>
+    <div class="mval mv-r" id="m-supply">10.00B</div>
+    <div class="msub">Quemado: <span id="m-burned" style="color:var(--red2)">0.00B</span> · Meta: 3.3B</div>
+  </div>
+
+  <div class="mcard mc-gold">
+    <div class="mname">Stakers (Reward 15%)</div>
+    <div class="mval mv-gold" id="m-staking">$0</div>
+    <div class="msub">Acumulado desde TGE</div>
+  </div>
+
+  <div class="mcard mc-gold">
+    <div class="mname">O&M Wallet (15%)</div>
+    <div class="mval mv-gold" id="m-om">$0</div>
+    <div class="msub">Infraestructura operativa</div>
+  </div>
+
+  <div class="mcard mc-p">
+    <div class="mname">R_op (Idle 30% yield)</div>
+    <div class="mval mv-p" id="m-rop">$0</div>
+    <div class="msub">Reserva estabilización. No fluye.</div>
+  </div>
+
+  <div class="mcard mc-t">
+    <div class="mname">Cola Diferida Burn</div>
+    <div class="mval mv-t" id="m-cola">0.00B</div>
+    <div class="msub">Se ejecuta 10%/semana al NORMAL</div>
+  </div>
+
+  <!-- Fees por motor -->
+  <div style="padding:8px 13px 4px;border-bottom:1px solid var(--border);border-top:1px solid var(--border);
+    font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:3px;color:var(--muted);">
+    ⬡ FEES HOY
+  </div>
+  <div style="padding:9px 13px;border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div class="frow">
+      <span class="flbl" style="color:var(--green2)">A·SOL</span>
+      <div class="ftrack"><div class="fbar" id="fb-A" style="background:var(--green2);width:60%"></div></div>
+      <span class="famt" id="fa-A">$0</span>
+    </div>
+    <div class="frow">
+      <span class="flbl" style="color:var(--blue2)">B·$LUKA</span>
+      <div class="ftrack"><div class="fbar" id="fb-B" style="background:var(--blue2);width:30%"></div></div>
+      <span class="famt" id="fa-B">$0</span>
+    </div>
+    <div class="frow">
+      <span class="flbl" style="color:var(--gold2)">C·USDC</span>
+      <div class="ftrack"><div class="fbar" id="fb-C" style="background:var(--gold2);width:0%"></div></div>
+      <span class="famt" id="fa-C">—</span>
+    </div>
+    <div class="frow">
+      <span class="flbl" style="color:var(--red2)">D·Multi</span>
+      <div class="ftrack"><div class="fbar" id="fb-D" style="background:var(--red2);width:5%"></div></div>
+      <span class="famt" id="fa-D">$0</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding-top:5px;border-top:1px solid rgba(255,255,255,0.05);">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);">TOTAL/DÍA</span>
+      <span id="fa-tot" style="font-family:'Orbitron',monospace;font-size:11px;color:var(--green2);">$0</span>
+    </div>
+  </div>
+
+  <!-- Vault composition -->
+  <div style="padding:8px 13px 4px;border-bottom:1px solid var(--border);
+    font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:3px;color:var(--muted);">
+    ⬡ VAULT — COMPOSICIÓN
+  </div>
+  <div style="padding:9px 13px;border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div class="vi"><div class="vdot" style="background:#F7931A"></div><span class="vname">cBTC (Reserva Profunda)</span><span class="vpct">35%</span></div>
+    <div class="vi"><div class="vdot" style="background:var(--blue2)"></div><span class="vname">SOL Nativo</span><span class="vpct">15%</span></div>
+    <div class="vi"><div class="vdot" style="background:var(--green2)"></div><span class="vname">LST (JitoSOL+mSOL)</span><span class="vpct">20%</span></div>
+    <div class="vi"><div class="vdot" style="background:#26A65B"></div><span class="vname">USDC Reserva Capa 1</span><span class="vpct">25%</span></div>
+    <div class="vi"><div class="vdot" style="background:var(--gold2)"></div><span class="vname">USDC Lending</span><span class="vpct">5%</span></div>
+    <div class="vi"><div class="vdot" style="background:var(--muted)"></div><span class="vname">PYTH+JTO+JUP</span><span class="vpct">5%</span></div>
+  </div>
+
+  <!-- Jaguar Shield status -->
+  <div style="padding:9px 13px;">
+    <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);margin-bottom:7px;">⬡ JAGUAR SHIELD</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;">
+      <span style="font-family:'Share Tech Mono'">Exit Fee (&lt;0.7×EMA30)</span>
+      <span id="jef-st" style="font-family:'Share Tech Mono';color:var(--gold2)">INACTIVO</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;">
+      <span style="font-family:'Share Tech Mono'">Anti-Whale</span>
+      <span style="font-family:'Share Tech Mono';color:var(--green2)">ACTIVO</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;">
+      <span style="font-family:'Share Tech Mono'">Timelock gobernanza</span>
+      <span style="font-family:'Share Tech Mono';color:var(--blue2)">48h</span>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /app -->
+
+<div class="statusbar">
+  <span><span class="sdot sg"></span>SOLANA MAINNET</span>
+  <span><span class="sdot sb"></span>PYTH ORACLE</span>
+  <span><span class="sdot sgold"></span>K_MIN: $25M · RUINA: 0.0% · ESPIRAL TRANSICIÓN: ~1.4%</span>
+  <span style="margin-left:auto;font-family:'Share Tech Mono';font-size:9px;" id="sb-r">T+0d · Y0.00 · Vault $0</span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  LUKASH PROTOCOL v4.2 — SIMULADOR CORRECTO
+//  Distribución 35/35/15/15 real:
+//    35% Asset Layer  → Vault Core (compra Hard Assets)
+//    35% Liq. Layer   → BURN en B0 / Recirculación LP en B2
+//    15% O&M Layer    → Wallet operativa
+//    15% Reward Layer → Stakers en $LUKA
+//  Motor C solo activo en Etapa 3
+//  Precio KASH = Vault / Supply circulante
+// ═══════════════════════════════════════════════════════════════════
+
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+// ── STATE ──
+const G = {
+  market:'NEUTRAL', scenario:'BASE', stage:1, motorB:'B0',
+  throttle:'NORMAL', day:0, playing:false, speed:10, interval:null,
+  volA:5000, users:1, priceMult:1.0,
+  vault:0, staking:0, om:0, burnedUSD:0, rop:0, cola:0,
+  burnedTokens:0, supply:10e9,
+  fA:0, fB:0, fC:0, fD:0, feesDay:0,
+  vaultDaily:0, particles:[], nodes:{}, time:0,
+};
+
+// ── SCENARIO DATA (Monte Carlo results) ──
+const SCEN = {
+  CONSERV: {
+    vaultY1:20.9e6/3, fMult:0.35, vaultY5:117e6,
+    info:'Y5: $117M · P(B2<Y2): 15.4% · Espiral: 13.7%'
+  },
+  BASE: {
+    vaultY1:20.9e6, fMult:1.0, vaultY5:37.2e6,
+    info:'Y5: $37.2M (mediana) · P(B2<Y2): 86.1% · Espiral transición: ~1.4%'
+  },
+  AGRESIVO: {
+    vaultY1:20.9e6*2.3, fMult:3.5, vaultY5:156.3e6,
+    info:'Y5: $156.3M (P95) · P(B2<Y2): 100% · Espiral: 0%'
+  },
+};
+const MKT = {
+  BULL:    {spd:2.2, fM:1.5, label:'▲ BULL'},
+  NEUTRAL: {spd:1.0, fM:1.0, label:'◼ NEUTRAL'},
+  BEAR:    {spd:0.45,fM:0.5, label:'▼ BEAR'},
+};
+const THROTTLE = {
+  ACELERADO: {burn:1.25, cola:0,    rop:1.00, label:'ACELERADO 125%'},
+  NORMAL:    {burn:1.00, cola:0,    rop:1.00, label:'NORMAL 100%'},
+  CONSERV:   {burn:0.60, cola:0.40, rop:0.60, label:'CONSERV 60%'},
+  DEFENSIVO: {burn:0.25, cola:0.75, rop:0.25, label:'DEFENSIVO 25%'},
+};
+const STAGE_INFO = {
+  1:  'Motor A activo. Fee 4%/2.5% WL. B y C y D inactivos. LP Fundador 365d lock.',
+  '2A':'Motor A + B0 + D activos. App lanzada. K < $25M. Throttle activo.',
+  '2B':'Motor A + B2 + D activos. K ≥ $25M. Switch automático on-chain.',
+  3:  'Motor A + B2 + C + D activos. ENZ en curso. Supply ~3.3B.',
+  4:  'DAO activo. Emisión Neta Cero. Quema suspendida. Recirculación perpetua.',
+};
+const SPD_NOTE = {
+  1:  '1× — 1 año en ~3 min',
+  10: '10× — 1 año en ~18 seg',
+  30: '30× — 5 años en ~30 seg',
+};
+
+// ── NODE LAYOUT ──
+// Columna 1 (izq): Motores  →  Columna 2: Nodo central FEE POOL
+// →  Columna 3: Distribuidor 35/35/15/15
+// →  Columna 4 (der): 4 destinos (Asset/Vault, Burn/LP, O&M, Staking)
+function buildNodes(W, H) {
+  const col1=W*0.10, col2=W*0.30, col3=W*0.54, col4=W*0.80;
+  const rows = [H*0.20, H*0.38, H*0.56, H*0.74];
+
+  G.nodes = {
+    // ── Motores (col1) ──
+    MA: {x:col1, y:rows[0], label:'MOTOR A',  sub:'SOL · 4%/2.5%WL', c:'#22C98E', r:20},
+    MB: {x:col1, y:rows[1], label:'MOTOR B',  sub:'$LUKA · 2.5%/1.5%WL', c:'#2080D4', r:20},
+    MC: {x:col1, y:rows[2], label:'MOTOR C',  sub:'USDC · 0.5%', c:'#E09020', r:20},
+    MD: {x:col1, y:rows[3], label:'MOTOR D',  sub:'Multi · 4 Capas', c:'#E8453A', r:20},
+
+    // ── Fee Pool central (col2) ──
+    FEE: {x:col2, y:H*0.47, label:'FEE POOL', sub:'Colector Atómico', c:'#A050E0', r:26},
+
+    // ── Distribuidor (col3) ──
+    DIST: {x:col3, y:H*0.47, label:'DIST', sub:'35/35/15/15', c:'#14B8D8', r:22},
+
+    // ── Destinos (col4) ──
+    VAULT:   {x:col4, y:H*0.18, label:'VAULT CORE', sub:'35% Asset Layer', c:'#2080D4', r:24},
+    BURNLP:  {x:col4, y:H*0.38, label:'BURN/LP',    sub:'35% Liq. Layer',  c:'#E8453A', r:22},
+    OM:      {x:col4, y:H*0.58, label:'O&M',         sub:'15% Operativo',   c:'#E09020', r:20},
+    STAKING: {x:col4, y:H*0.78, label:'STAKING',     sub:'15% Reward',      c:'#22C98E', r:20},
+
+    // ── R_op (flotante) ──
+    ROP: {x:W*0.80, y:H*0.07, label:'R_op', sub:'30% yield idle', c:'#A050E0', r:13},
+  };
+}
+
+// ── PARTICLE ──
+class P {
+  constructor(from, to, color, sz=3, spf=1) {
+    this.f=from; this.t=to; this.c=color; this.sz=sz; this.spf=spf;
+    this.tt=0; this.trail=[]; this.done=false; this.x=0; this.y=0;
+    const h=color.replace('#','');
+    this.r=parseInt(h.slice(0,2),16);
+    this.g=parseInt(h.slice(2,4),16);
+    this.b=parseInt(h.slice(4,6),16);
+  }
+  update() {
+    const n1=G.nodes[this.f], n2=G.nodes[this.t];
+    if(!n1||!n2){this.done=true;return;}
+    this.tt=Math.min(1,this.tt+0.014*this.spf);
+    const cxb=(n1.x+n2.x)/2+(n2.y-n1.y)*0.18;
+    const cyb=(n1.y+n2.y)/2-(n2.x-n1.x)*0.18;
+    const u=1-this.tt;
+    this.x=u*u*n1.x+2*u*this.tt*cxb+this.tt*this.tt*n2.x;
+    this.y=u*u*n1.y+2*u*this.tt*cyb+this.tt*this.tt*n2.y;
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>12) this.trail.shift();
+    if(this.tt>=1) this.done=true;
+  }
+  draw() {
+    if(!this.x) return;
+    for(let i=1;i<this.trail.length;i++){
+      const a=(i/this.trail.length)*0.4;
+      ctx.beginPath();
+      ctx.strokeStyle=`rgba(${this.r},${this.g},${this.b},${a})`;
+      ctx.lineWidth=this.sz*0.5;
+      ctx.moveTo(this.trail[i-1].x,this.trail[i-1].y);
+      ctx.lineTo(this.trail[i].x,this.trail[i].y);
+      ctx.stroke();
+    }
+    ctx.shadowBlur=10; ctx.shadowColor=this.c;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);
+    ctx.fillStyle=this.c; ctx.fill();
+    ctx.shadowBlur=0;
+  }
+}
+
+function mk(f,t,c,sz,spf){ G.particles.push(new P(f,t,c,sz,spf)); }
+
+// ── SPAWN LOGIC — ARQUITECTURA CORRECTA ──
+// FLUJO REAL:
+// Motor → FEE POOL (colector) → DIST (35/35/15/15) → {VAULT, BURN/LP, O&M, STAKING}
+// Vault → R_op (30% yield idle, no fluye de vuelta)
+function spawn() {
+  const mkt = MKT[G.market];
+  const sc  = SCEN[G.scenario];
+  const thr = THROTTLE[G.throttle];
+  const spd = mkt.spd;
+  const fm  = mkt.fM * sc.fMult;
+  const uF  = Math.max(0.05, G.users/100);
+  const vF  = G.volA/5000;
+  const base= spd * fm * uF * vF;
+
+  // ── Motores → FEE POOL ──
+  // Motor A: siempre activo desde Etapa 1
+  if(Math.random()<0.40*base) mk('MA','FEE','#22C98E',3.5,spd*0.95);
+
+  // Motor B: activo desde Etapa 2A
+  const bActive = ['2A','2B',3,4].includes(G.stage);
+  if(bActive && Math.random()<0.22*base) mk('MB','FEE','#2080D4',3.0,spd*0.9);
+
+  // Motor C: solo Etapa 3
+  const cActive = [3,4].includes(G.stage);
+  if(cActive && Math.random()<0.15*base) mk('MC','FEE','#E09020',2.5,spd*0.85);
+
+  // Motor D: activo desde Etapa 2A
+  const dActive = ['2A','2B',3,4].includes(G.stage);
+  if(dActive && Math.random()<0.12*base) mk('MD','FEE','#E8453A',2.0,spd*0.8);
+
+  // ── FEE POOL → DIST ──
+  if(Math.random()<0.55*base) mk('FEE','DIST','#A050E0',3.0,spd*1.1);
+
+  // ── DIST → 4 DESTINOS (siempre 35/35/15/15) ──
+  // 35% Asset Layer → Vault Core
+  if(Math.random()<0.35*base) mk('DIST','VAULT','#2080D4',3.2,spd*1.0);
+
+  // 35% Liq. Layer → BURN (B0) o LP (B2/3/4)
+  const burnColor = G.motorB==='B0' ? '#E8453A' : '#22C98E';
+  if(Math.random()<0.35*base) mk('DIST','BURNLP',burnColor,3.0,spd*1.0);
+
+  // 15% O&M
+  if(Math.random()<0.15*base) mk('DIST','OM','#E09020',2.2,spd*0.95);
+
+  // 15% Staking
+  if(Math.random()<0.15*base) mk('DIST','STAKING','#22C98E',2.2,spd*0.95);
+
+  // Vault → R_op (30% del yield, idle)
+  if(Math.random()<0.04*spd) mk('VAULT','ROP','#A050E0',1.5,0.5);
+
+  // Cola diferida: en CONSERV/DEFENSIVO algunas partículas se "quedan"
+  if((G.throttle==='CONSERV'||G.throttle==='DEFENSIVO') && Math.random()<0.06*spd) {
+    // Partícula pequeña que flota cerca del DIST (cola acumulada)
+    mk('DIST','ROP','#14B8D8',1.5,0.35);
+  }
+
+  // B2: recirculación LP de vuelta al pool (inercia estructural)
+  if(G.motorB==='B2' && Math.random()<0.08*spd) mk('BURNLP','VAULT','#22C98E',2.0,spd*0.7);
+
+  if(G.particles.length>250) G.particles=G.particles.slice(-200);
+}
+
+// ── DRAW CONNECTIONS ──
+function drawConns() {
+  const links = [
+    ['MA','FEE','#22C98E'],
+    ['MB','FEE','#2080D4'],
+    ['MC','FEE','#E09020'],
+    ['MD','FEE','#E8453A'],
+    ['FEE','DIST','#A050E0'],
+    ['DIST','VAULT','#2080D4'],
+    ['DIST','BURNLP', G.motorB==='B0'?'#E8453A':'#22C98E'],
+    ['DIST','OM','#E09020'],
+    ['DIST','STAKING','#22C98E'],
+    ['VAULT','ROP','#A050E0'],
+  ];
+  if(G.motorB==='B2') links.push(['BURNLP','VAULT','#22C98E']);
+
+  ctx.setLineDash([3,8]);
+  for(const [f,t,c] of links) {
+    const n1=G.nodes[f], n2=G.nodes[t];
+    if(!n1||!n2) continue;
+    const hx=parseInt(c.slice(1,3),16), hy=parseInt(c.slice(3,5),16), hz=parseInt(c.slice(5,7),16);
+    const cxb=(n1.x+n2.x)/2+(n2.y-n1.y)*0.18;
+    const cyb=(n1.y+n2.y)/2-(n2.x-n1.x)*0.18;
+    ctx.beginPath(); ctx.moveTo(n1.x,n1.y);
+    ctx.quadraticCurveTo(cxb,cyb,n2.x,n2.y);
+    ctx.strokeStyle=`rgba(${hx},${hy},${hz},0.13)`;
+    ctx.lineWidth=1; ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+// ── DRAW NODE ──
+function drawNode(n, key) {
+  const r=n.r||20;
+  const hx=parseInt(n.c.slice(1,3),16);
+  const hy=parseInt(n.c.slice(3,5),16);
+  const hz=parseInt(n.c.slice(5,7),16);
+  const pulse=1+0.055*Math.sin(G.time*0.042+(key.charCodeAt(0)||0)*0.9);
+
+  // Halo
+  const halo=ctx.createRadialGradient(n.x,n.y,r*0.5,n.x,n.y,r*2.5);
+  halo.addColorStop(0,`rgba(${hx},${hy},${hz},0.15)`);
+  halo.addColorStop(1,'transparent');
+  ctx.beginPath(); ctx.arc(n.x,n.y,r*2.3,0,Math.PI*2);
+  ctx.fillStyle=halo; ctx.fill();
+
+  // Ring
+  ctx.beginPath(); ctx.arc(n.x,n.y,r*pulse,0,Math.PI*2);
+  ctx.strokeStyle=`rgba(${hx},${hy},${hz},0.5)`;
+  ctx.lineWidth=1.5; ctx.stroke();
+
+  // Fill
+  const fill=ctx.createRadialGradient(n.x-r*0.25,n.y-r*0.25,0,n.x,n.y,r*0.95);
+  fill.addColorStop(0,`rgba(${hx},${hy},${hz},0.35)`);
+  fill.addColorStop(1,`rgba(${hx},${hy},${hz},0.08)`);
+  ctx.beginPath(); ctx.arc(n.x,n.y,r*0.93,0,Math.PI*2);
+  ctx.fillStyle=fill; ctx.fill();
+  ctx.strokeStyle=`rgba(${hx},${hy},${hz},0.85)`; ctx.lineWidth=1.5; ctx.stroke();
+
+  // Inactive overlay
+  const stageActive = {
+    MA: true,
+    MB: ['2A','2B',3,4].includes(G.stage),
+    MC: [3,4].includes(G.stage),
+    MD: ['2A','2B',3,4].includes(G.stage),
+  };
+  if(key in stageActive && !stageActive[key]) {
+    ctx.beginPath(); ctx.arc(n.x,n.y,r*0.93,0,Math.PI*2);
+    ctx.fillStyle='rgba(4,7,16,0.65)'; ctx.fill();
+  }
+
+  // BURNLP label changes by mode
+  if(key==='BURNLP') {
+    n.sub = G.motorB==='B0' ? '35% → BURN NULL' : '35% → RECIRC LP';
+  }
+
+  // Labels
+  ctx.textAlign='center'; ctx.shadowBlur=0;
+  const small=['ROP'].includes(key);
+  ctx.font=`${small?'6px':'bold 8px'} 'Orbitron',monospace`;
+  ctx.fillStyle=n.c; ctx.fillText(n.label,n.x,n.y-(small?2:4));
+  ctx.font=`${small?'7px':'8px'} 'Share Tech Mono',monospace`;
+  ctx.fillStyle='rgba(184,205,232,0.55)'; ctx.fillText(n.sub,n.x,n.y+(small?7:8));
+
+  // Live value on VAULT
+  if(key==='VAULT') {
+    ctx.font=`bold 9px 'Orbitron',monospace`;
+    ctx.fillStyle='#22C98E'; ctx.fillText(fU(G.vault),n.x,n.y+20);
+  }
+  ctx.textAlign='left';
+}
+
+// ── GRID ──
+function drawGrid() {
+  const W=cv.width, H=cv.height;
+  ctx.strokeStyle='rgba(20,95,165,0.05)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // Center glow
+  const cg=ctx.createRadialGradient(W*0.54,H*0.47,40,W*0.54,H*0.47,220);
+  cg.addColorStop(0,'rgba(160,80,224,0.05)'); cg.addColorStop(1,'transparent');
+  ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
+}
+
+// ── RENDER LOOP ──
+function render() {
+  const W=cv.width, H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#060B14';
+  ctx.fillRect(0,0,W,H);
+  drawGrid();
+  drawConns();
+  spawn();
+  G.particles=G.particles.filter(p=>!p.done);
+  for(const p of G.particles){p.update();p.draw();}
+  for(const [k,n] of Object.entries(G.nodes)) drawNode(n,k);
+  // Day stamp
+  ctx.textAlign='right'; ctx.fillStyle='rgba(184,205,232,0.15)';
+  ctx.font=`9px 'Share Tech Mono',monospace`;
+  ctx.fillText(`T+${G.day}d`,W-10,H-44);
+  ctx.textAlign='left';
+  G.time++;
+  requestAnimationFrame(render);
+}
+
+// ── COMPUTE METRICS per step ──
+function computeStep(stepDays) {
+  const mkt = MKT[G.market];
+  const sc  = SCEN[G.scenario];
+  const thr = THROTTLE[G.throttle];
+  const uF  = Math.max(0.05, G.users/100);
+  const vF  = G.volA/5000;
+
+  // ── FEES DIARIOS POR MOTOR (tasas reales del protocolo) ──
+  // Motor A: fee 4% sobre volumen SOL
+  const feeRate_A = G.stage===1 ? 0.040 : (G.stage==='2A'||G.stage==='2B') ? 0.025 : 0.025;
+  G.fA = G.volA * 1000 * feeRate_A * mkt.fM * sc.fMult;
+
+  // Motor B: fee 2.5% sobre transacciones app en $LUKA
+  const bOn = ['2A','2B',3,4].includes(G.stage);
+  const feeRate_B = (G.stage==='2A'||G.stage==='2B') ? 0.025 : 0.015;
+  G.fB = bOn ? G.volA*1000*0.25*feeRate_B*mkt.fM*uF*sc.fMult : 0;
+
+  // Motor C: fee 0.5% — solo Etapa 3
+  const cOn = [3,4].includes(G.stage);
+  G.fC = cOn ? G.volA*1000*0.40*0.005*mkt.fM*uF*sc.fMult : 0;
+
+  // Motor D: promedio entre capas, activo desde 2A
+  const dOn = ['2A','2B',3,4].includes(G.stage);
+  G.fD = dOn ? G.volA*1000*0.08*0.025*mkt.fM*uF*sc.fMult : 0;
+
+  G.feesDay = G.fA+G.fB+G.fC+G.fD;
+  const dailyFees = G.feesDay * stepDays;
+
+  // ── DISTRIBUCIÓN 35/35/15/15 — SIEMPRE IGUAL ──
+  const assetLayer   = dailyFees * 0.35; // → Vault Core
+  const liqLayer     = dailyFees * 0.35; // → BURN (B0) o LP (B2)
+  const omLayer      = dailyFees * 0.15; // → O&M
+  const rewardLayer  = dailyFees * 0.15; // → Stakers
+
+  // 35% Asset Layer va al Vault Core (70% Core / 30% Sociedad)
+  G.vault   += assetLayer * 0.70;
+  G.om      += omLayer;
+  G.staking += rewardLayer;
+
+  // 35% Liq. Layer:
+  if(G.motorB==='B0') {
+    // B0: BURN permanente a null
+    const burnUSD = liqLayer * thr.burn;
+    const deferUSD= liqLayer * thr.cola;
+    const priceNow= 0.0001 * G.priceMult;
+    G.burnedTokens += burnUSD / priceNow;
+    G.cola         += deferUSD / priceNow; // en tokens
+    G.burnedUSD    += burnUSD;
+    G.supply = Math.max(3.3e9, 10e9 - G.burnedTokens);
+    // Ejecutar cola diferida (10%/semana)
+    if(G.throttle==='NORMAL'||G.throttle==='ACELERADO') {
+      const execCola = G.cola * 0.10 / 7 * stepDays;
+      G.cola = Math.max(0, G.cola - execCola);
+      G.burnedTokens += execCola;
+      G.supply = Math.max(3.3e9, 10e9 - G.burnedTokens);
+    }
+  } else {
+    // B2: recirculación LP (no quema, refuerza liquidez)
+    G.vault += liqLayer * 0.25; // parte vuelve al vault por inercia
+  }
+
+  // Yield natural del Vault: LST 6-8%, USDC lending 4-8%
+  const vaultYieldDay = G.vault * 0.07 / 365;
+  G.vault   += vaultYieldDay * 0.70; // 70% reinversión
+  G.rop     += vaultYieldDay * 0.30; // 30% → R_op (IDLE, no fluye)
+
+  // Precio KASH = Vault / Supply
+  const pKash = G.vault / Math.max(G.supply, 1);
+  const pKashMult = pKash / 0.0001;
+
+  // ENZ: si supply <= 3.3B
+  if(G.supply<=3.3e9 && G.stage!==4) {
+    // Activar mode ENZ (informativo)
+  }
+
+  // Jaguar Exit Fee
+  const jefActive = G.priceMult < 0.7;
+
+  return {pKash, pKashMult, jefActive};
+}
+
+// ── UPDATE UI ──
+function updateUI(pKash, pKashMult, jefActive) {
+  const d = G.day;
+  document.getElementById('m-vault').textContent  = fU(G.vault);
+  document.getElementById('m-vd').textContent     = fU(G.feesDay*0.35*0.70)+'/día';
+  document.getElementById('m-vmode').textContent  = G.motorB==='B0'?'B0 acum':'B2 recirc';
+  document.getElementById('m-pkash').textContent  = '$'+(pKash).toFixed(6);
+  document.getElementById('m-pxmult').textContent = pKashMult.toFixed(1)+'×';
+  document.getElementById('m-supply').textContent = fB(G.supply);
+  document.getElementById('m-burned').textContent = fB(G.burnedTokens);
+  document.getElementById('m-staking').textContent= fU(G.staking);
+  document.getElementById('m-om').textContent     = fU(G.om);
+  document.getElementById('m-rop').textContent    = fU(G.rop);
+  document.getElementById('m-cola').textContent   = fB(G.cola);
+
+  const tot = G.fA+G.fB+G.fC+G.fD||1;
+  document.getElementById('fb-A').style.width=(G.fA/tot*100)+'%';
+  document.getElementById('fb-B').style.width=(G.fB/tot*100)+'%';
+  document.getElementById('fb-C').style.width=(G.fC/tot*100)+'%';
+  document.getElementById('fb-D').style.width=(G.fD/tot*100)+'%';
+  document.getElementById('fa-A').textContent=fU(G.fA);
+  document.getElementById('fa-B').textContent=G.fB>0?fU(G.fB):'—';
+  document.getElementById('fa-C').textContent=G.fC>0?fU(G.fC):'—';
+  document.getElementById('fa-D').textContent=G.fD>0?fU(G.fD):'—';
+  document.getElementById('fa-tot').textContent=fU(G.feesDay);
+
+  document.getElementById('h-supply').textContent=fB(G.supply);
+  document.getElementById('h-day').textContent=d;
+  document.getElementById('h-yr').textContent=(d/365).toFixed(1);
+  document.getElementById('d-disp').textContent=d;
+  document.getElementById('yr-disp').textContent=(d/365).toFixed(2);
+  document.getElementById('sl-day').value=d;
+  document.getElementById('prog-fill').style.width=(d/1825*100)+'%';
+  document.getElementById('ov-year').textContent='AÑO '+(d/365).toFixed(1);
+  document.getElementById('sb-r').textContent=`T+${d}d · Y${(d/365).toFixed(2)} · ${fU(G.vault)}`;
+
+  // K_min progress
+  const kPct = Math.min(100, G.vault/25e6*100);
+  document.getElementById('kmin-fill').style.width=kPct+'%';
+  document.getElementById('kmin-pct-lbl').textContent=kPct.toFixed(1)+'%';
+
+  document.getElementById('jef-st').textContent=jefActive?'ACTIVO':'INACTIVO';
+  document.getElementById('jef-st').style.color=jefActive?'var(--red2)':'var(--gold2)';
+}
+
+// ── CONTROLS ──
+function setMarket(m) {
+  G.market=m;
+  const mp={BULL:['b-bull','on-g'],NEUTRAL:['b-neut','on-b'],BEAR:['b-bear','on-r']};
+  for(const [k,[id,cls]] of Object.entries({BULL:['b-bull','on-g'],NEUTRAL:['b-neut','on-b'],BEAR:['b-bear','on-r']})){
+    document.getElementById(id).className='btn'+(k===m?' '+cls:'');
+  }
+  const labels={BULL:'▲ BULL',NEUTRAL:'◼ NEUTRAL',BEAR:'▼ BEAR'};
+  const pills={BULL:'pill pill-g',NEUTRAL:'pill pill-r',BEAR:'pill pill-r'};
+  document.getElementById('hpill-market').textContent=labels[m];
+}
+
+function setScenario(s) {
+  G.scenario=s;
+  const mp={CONSERV:'b-cons',BASE:'b-base',AGRESIVO:'b-agr'};
+  const cls={CONSERV:'on-gold',BASE:'on-b',AGRESIVO:'on-g'};
+  for(const [k,id] of Object.entries(mp)){
+    document.getElementById(id).className='btn'+(k===s?' '+cls[k]:'');
+  }
+  document.getElementById('sc-lbl').innerHTML=
+    SCEN[s].info.replace('Y5:','<span style="color:var(--blue2)">Y5:</span>');
+  resetSim();
+}
+
+function setStage(st) {
+  G.stage=st;
+  const mp={1:'b-e1','2A':'b-e2a','2B':'b-e2b',3:'b-e3',4:'b-e4'};
+  const cls={1:'on-b','2A':'on-b','2B':'on-g',3:'on-gold',4:'on-p'};
+  for(const [k,id] of Object.entries(mp)){
+    document.getElementById(id).className='btn'+(String(k)===String(st)?' '+cls[k]:'');
+  }
+  // Auto-set motorB
+  if(st==='2B'||st===3||st===4) setMotorB('B2'); else setMotorB('B0');
+  document.getElementById('stage-info').textContent=STAGE_INFO[st];
+  const stageLabels={1:'ETAPA 1 — GÉNESIS · MOTOR A','2A':'ETAPA 2A — APP · B0','2B':'ETAPA 2B — B2 · K≥$25M',3:'ETAPA 3 — SOBERANÍA · MOTOR C',4:'ETAPA 4 — DAO · ENZ'};
+  document.getElementById('ov-stage').textContent=stageLabels[st];
+  document.getElementById('hpill-stage').textContent=stageLabels[st];
+}
+
+function setMotorB(m) {
+  G.motorB=m;
+  document.getElementById('b-b0').className='btn'+(m==='B0'?' on-r':'');
+  document.getElementById('b-b2').className='btn'+(m==='B2'?' on-g':'');
+  document.getElementById('mode-info').textContent=
+    m==='B0'
+    ? 'B0: 35% LP → BURN PERMANENTE a null. K < $25M.'
+    : 'B2: 35% LP → RECIRCULACIÓN LP. Precio por inercia estructural.';
+  document.getElementById('hpill-mode').textContent=m==='B0'?'B0 BURN':'B2 RECIRC';
+  document.getElementById('lp-dest').textContent=m==='B0'?'→ BURN (B0)':'→ LP (B2)';
+}
+
+function setThrottle(t) {
+  G.throttle=t;
+  const mp={ACELERADO:'b-tacl',NORMAL:'b-tnrm',CONSERV:'b-tcon',DEFENSIVO:'b-tdef'};
+  const cls={ACELERADO:'on-g',NORMAL:'on-b',CONSERV:'on-gold',DEFENSIVO:'on-r'};
+  for(const[k,id] of Object.entries(mp)){
+    document.getElementById(id).className='btn'+(k===t?' '+cls[k]:'');
+  }
+  const th=THROTTLE[t];
+  document.getElementById('cola-pct').textContent=(th.cola*100).toFixed(0)+'%';
+  document.getElementById('rop-pct').textContent=(th.rop*100).toFixed(0)+'%';
+  document.getElementById('hpill-throttle').textContent=th.label;
+  // throttle bar
+  const segs=['tb1','tb2','tb3','tb4'];
+  const active={ACELERADO:0,NORMAL:1,CONSERV:2,DEFENSIVO:3};
+  segs.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.classList.toggle('active',i===active[t]);
+  });
+}
+
+function setSpd(s) {
+  G.speed=s;
+  const mp={1:'b-s1',10:'b-s10',30:'b-s30'};
+  const cls={1:'on-g',10:'on-gold',30:'on-r'};
+  for(const[k,id] of Object.entries(mp)){
+    document.getElementById(id).className='btn spd-btn'+(+k===s?' '+cls[k]:'');
+  }
+  document.getElementById('spd-note').textContent='⚡ '+SPD_NOTE[s];
+  if(G.playing){clearInterval(G.interval);startInterval();}
+}
+
+function onSl(el,vid,fmt) {
+  const v=+el.value,mn=+el.min,mx=+el.max;
+  el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%');
+  document.getElementById(vid).textContent=fmt(v);
+  if(el.id==='sl-va') G.volA=v;
+  if(el.id==='sl-us') G.users=v;
+  if(el.id==='sl-px') G.priceMult=v/100;
+}
+
+function startInterval() {
+  G.interval=setInterval(()=>{
+    const step=G.speed;
+    const newDay=Math.min(1825,G.day+step);
+    if(newDay===G.day){togglePlay();return;}
+    G.day=newDay;
+    const {pKash,pKashMult,jefActive}=computeStep(step);
+    updateUI(pKash,pKashMult,jefActive);
+    if(G.day>=1825) togglePlay();
+  },80);
+}
+
+function togglePlay() {
+  G.playing=!G.playing;
+  const btn=document.getElementById('b-play');
+  if(G.playing){
+    btn.textContent='⏸ PAUSE'; btn.className='btn on-g';
+    startInterval();
+  } else {
+    btn.textContent='▶ PLAY'; btn.className='btn';
+    clearInterval(G.interval);
+  }
+}
+
+function scrub(d) {
+  G.day=d;
+  document.getElementById('d-disp').textContent=d;
+  document.getElementById('yr-disp').textContent=(d/365).toFixed(2);
+  // Recalculate cumulative
+  const sc=SCEN[G.scenario];
+  const mkt=MKT[G.market];
+  const thr=THROTTLE[G.throttle];
+  const uF=Math.max(0.05,G.users/100);
+  const vF=G.volA/5000;
+  const feeRate_A=G.stage===1?0.040:0.025;
+  const fA=G.volA*1000*feeRate_A*mkt.fM*sc.fMult;
+  const bOn=['2A','2B',3,4].includes(G.stage);
+  const fB=bOn?G.volA*1000*0.25*0.025*mkt.fM*uF*sc.fMult:0;
+  const cOn=[3,4].includes(G.stage);
+  const fC=cOn?G.volA*1000*0.40*0.005*mkt.fM*uF*sc.fMult:0;
+  const dOn=['2A','2B',3,4].includes(G.stage);
+  const fD=dOn?G.volA*1000*0.08*0.025*mkt.fM*uF*sc.fMult:0;
+  const dailyFees=fA+fB+fC+fD;
+
+  G.fA=fA;G.fB=fB;G.fC=fC;G.fD=fD;G.feesDay=dailyFees;
+
+  const asset=dailyFees*0.35*d;
+  const liq  =dailyFees*0.35*d;
+  const omD  =dailyFees*0.15*d;
+  const rewD =dailyFees*0.15*d;
+
+  G.vault=asset*0.70;
+  G.om=omD; G.staking=rewD;
+  const pr=0.0001*G.priceMult;
+  G.burnedTokens=G.motorB==='B0'?liq*thr.burn/pr:0;
+  G.cola=G.motorB==='B0'?liq*thr.cola/pr:0;
+  G.supply=Math.max(3.3e9,10e9-G.burnedTokens);
+  // Yield compuesto
+  const yieldTotal=G.vault*0.07/365*d;
+  G.vault+=yieldTotal*0.70;
+  G.rop=yieldTotal*0.30;
+  // B2 recirc
+  if(G.motorB==='B2') G.vault+=liq*0.25;
+  G.burnedUSD=liq*thr.burn;
+
+  const pKash=G.vault/Math.max(G.supply,1);
+  const pKashMult=pKash/0.0001;
+  const jefActive=G.priceMult<0.7;
+  updateUI(pKash,pKashMult,jefActive);
+}
+
+function resetSim() {
+  G.playing=false; clearInterval(G.interval);
+  document.getElementById('b-play').textContent='▶ PLAY';
+  document.getElementById('b-play').className='btn';
+  G.day=0; G.vault=0; G.staking=0; G.om=0; G.burnedUSD=0;
+  G.rop=0; G.cola=0; G.burnedTokens=0; G.supply=10e9; G.particles=[];
+  document.getElementById('sl-day').value=0;
+  scrub(0);
+}
+
+// ── FORMATTERS ──
+function fU(v){
+  if(v==null||isNaN(v)) return '$0';
+  if(v>=1e9) return '$'+(v/1e9).toFixed(2)+'B';
+  if(v>=1e6) return '$'+(v/1e6).toFixed(2)+'M';
+  if(v>=1e3) return '$'+(v/1e3).toFixed(0)+'K';
+  return '$'+Math.round(v);
+}
+function fK(v){
+  if(v>=1e6) return (v/1e6).toFixed(1)+'M';
+  if(v>=1e3) return (v/1e3).toFixed(0)+'K';
+  return String(v);
+}
+function fB(v){
+  if(v>=1e9) return (v/1e9).toFixed(2)+'B';
+  if(v>=1e6) return (v/1e6).toFixed(1)+'M';
+  return Math.round(v).toLocaleString();
+}
+
+// ── RESIZE ──
+function resize(){
+  const el=cv.parentElement;
+  cv.width=el.clientWidth; cv.height=el.clientHeight;
+  buildNodes(cv.width,cv.height);
+}
+window.addEventListener('resize',resize);
+
+// ── INIT ──
+resize();
+setMarket('NEUTRAL');
+setScenario('BASE');
+setStage(1);
+setMotorB('B0');
+setThrottle('NORMAL');
+setSpd(10);
+
+// Init slider CSS
+['sl-va','sl-us','sl-px','sl-day'].forEach(id=>{
+  const el=document.getElementById(id);
+  const v=+el.value,mn=+el.min,mx=+el.max;
+  el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%');
+});
+
+// Fix button class for spd
+['b-s1','b-s10','b-s30'].forEach(id=>{
+  document.getElementById(id).classList.add('spd-btn');
+});
+
+scrub(0);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH Protocol v4.2 — Simulador de Flujos</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Chakra+Petch:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050A15;--bg2:#0C1525;--bg3:#101E38;
+  --g:#1C9870;--g2:#20C486;
+  --b:#1557A0;--b2:#1E78CC;
+  --gold:#B57215;--gold2:#DA8E1C;
+  --r:#BE3728;--r2:#E44035;
+  --p:#7226B8;--p2:#9E48D8;
+  --t:#0D7090;--t2:#12B4D4;
+  --amb:#C08010;--amb2:#ECA020;
+  --lp:#188060;--lp2:#22C896;  /* LP verde distinto del burn */
+  --burn:#A0200A;--burn2:#D43020; /* BURN rojo oscuro */
+  --text:#B0CCEC;--muted:#364E6E;--bright:#D4E8F8;
+  --brd:rgba(28,152,112,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Chakra Petch',sans-serif;color:var(--text);display:flex;flex-direction:column;}
+body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);}
+
+/* HEADER */
+header{flex-shrink:0;height:46px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  background:linear-gradient(90deg,rgba(21,87,160,0.2),rgba(28,152,112,0.1),rgba(21,87,160,0.04));
+  border-bottom:1px solid var(--brd);position:relative;z-index:10;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--g2) 70%,transparent);}
+.logo{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;letter-spacing:5px;
+  background:linear-gradient(135deg,var(--g2) 30%,var(--b2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-s{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);}
+.hpills{display:flex;gap:5px;align-items:center;}
+.hp{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1px;
+  padding:3px 8px;border:1px solid currentColor;border-radius:1px;transition:all .3s;}
+.hr{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;line-height:1.8;}
+.hr em{color:var(--g2);font-style:normal;}
+
+/* EVENT BANNER */
+.event-banner{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:1000;
+  font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;
+  padding:8px 24px;border:1px solid currentColor;border-radius:2px;
+  backdrop-filter:blur(8px);pointer-events:none;
+  transition:opacity .5s;opacity:0;}
+.eb-show{opacity:1!important;}
+
+/* APP */
+.app{flex:1;display:grid;grid-template-columns:196px 1fr 244px;overflow:hidden;}
+
+/* SIDEBARS */
+.sb{overflow-y:auto;border-right:1px solid var(--brd);background:rgba(12,21,37,0.96);}
+.sb.r{border-right:none;border-left:1px solid var(--brd);}
+.sb::-webkit-scrollbar{width:3px;}
+.sb::-webkit-scrollbar-thumb{background:var(--g);border-radius:2px;}
+
+.sc{padding:10px 11px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.st{font-size:8.5px;font-weight:600;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:7px;font-family:'Share Tech Mono',monospace;}
+.bg{display:flex;gap:3px;}
+.b{flex:1;padding:5px 3px;font-family:'Orbitron',monospace;font-size:7.5px;font-weight:600;
+  letter-spacing:.5px;border:1px solid var(--muted);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;border-radius:1px;text-transform:uppercase;}
+.b:hover{border-color:var(--text);color:var(--text);}
+.og{border-color:var(--g2)!important;color:var(--g2)!important;background:rgba(32,196,134,0.11)!important;}
+.ob{border-color:var(--b2)!important;color:var(--b2)!important;background:rgba(30,120,204,0.11)!important;}
+.or{border-color:var(--r2)!important;color:var(--r2)!important;background:rgba(228,64,53,0.11)!important;}
+.ogold{border-color:var(--gold2)!important;color:var(--gold2)!important;background:rgba(218,142,28,0.11)!important;}
+.op{border-color:var(--p2)!important;color:var(--p2)!important;background:rgba(158,72,216,0.11)!important;}
+.oamb{border-color:var(--amb2)!important;color:var(--amb2)!important;background:rgba(236,160,32,0.11)!important;}
+.oburn{border-color:var(--burn2)!important;color:var(--burn2)!important;background:rgba(212,48,32,0.11)!important;}
+.olp{border-color:var(--lp2)!important;color:var(--lp2)!important;background:rgba(34,200,150,0.11)!important;}
+
+input[type=range]{width:100%;height:3px;-webkit-appearance:none;appearance:none;
+  background:linear-gradient(90deg,var(--g) var(--p,0%),var(--bg3) var(--p,0%));
+  border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;
+  border-radius:50%;background:var(--g2);border:2px solid var(--bg);
+  box-shadow:0 0 7px rgba(32,196,134,0.5);cursor:pointer;}
+.sw{margin-bottom:9px;}
+.sh{display:flex;justify-content:space-between;margin-bottom:4px;}
+.sn{font-size:10px;color:var(--text);}
+.sv{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--g2);}
+
+.ibox{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);
+  margin-top:5px;padding:4px 7px;line-height:1.5;border-left:2px solid;}
+.snote{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--amb2);
+  margin-top:5px;padding:3px 7px;background:rgba(236,160,32,0.06);border-left:2px solid var(--amb2);}
+
+/* STAGE TIMELINE */
+.stage-timeline{display:flex;gap:2px;margin-top:5px;}
+.stg{flex:1;padding:4px 2px;text-align:center;font-family:'Orbitron',monospace;
+  font-size:7px;font-weight:700;border:1px solid var(--muted);color:var(--muted);
+  border-radius:1px;transition:all .4s;cursor:default;}
+.stg.active{box-shadow:0 0 8px currentColor;}
+.stg.done{opacity:.5;}
+
+/* PLAY */
+.tl{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;
+  font-size:8px;color:var(--muted);margin-bottom:3px;}
+.pr{display:flex;gap:3px;margin-top:5px;}
+
+/* DIST GRID */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:5px;}
+.dc{padding:5px 6px;border:1px solid;border-radius:1px;}
+.dn{font-size:8px;color:var(--muted);font-family:'Share Tech Mono',monospace;letter-spacing:.5px;}
+.dv{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;margin-top:1px;}
+.ds{font-size:7.5px;color:var(--muted);margin-top:1px;}
+
+/* CANVAS */
+.cw{position:relative;overflow:hidden;}
+#cv{display:block;}
+.ov-st{position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:2px;
+  padding:4px 12px;border:1px solid;border-radius:1px;backdrop-filter:blur(4px);white-space:nowrap;}
+.ov-yr{position:absolute;top:11px;right:11px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold2);
+  background:rgba(181,114,21,0.1);border:1px solid rgba(181,114,21,0.3);padding:3px 9px;border-radius:1px;}
+.kbar-w{position:absolute;bottom:9px;left:11px;right:11px;}
+.kbar-l{display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:3px;}
+.kbar-t{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
+.kbar-f{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--b2),var(--g2));transition:width .6s;}
+.shield-tag{position:absolute;bottom:28px;right:11px;
+  font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;color:var(--gold);
+  border:1px solid rgba(181,114,21,0.2);padding:2px 6px;background:rgba(181,114,21,0.05);}
+
+/* RIGHT */
+.mc{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.04);position:relative;}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;}
+.mc-b::before{background:var(--b2);}  .mc-g::before{background:var(--g2);}
+.mc-r::before{background:var(--r2);}  .mc-gold::before{background:var(--gold2);}
+.mc-p::before{background:var(--p2);}  .mc-t::before{background:var(--t2);}
+.mc-amb::before{background:var(--amb2);} .mc-lp::before{background:var(--lp2);}
+.mc-burn::before{background:var(--burn2);}
+.mn{font-size:7.5px;font-weight:600;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:2px;font-family:'Share Tech Mono',monospace;}
+.mv{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;line-height:1.15;transition:all .3s;}
+.mv-b{color:var(--b2);} .mv-g{color:var(--g2);} .mv-r{color:var(--r2);}
+.mv-gold{color:var(--gold2);} .mv-p{color:var(--p2);} .mv-t{color:var(--t2);}
+.mv-amb{color:var(--amb2);} .mv-lp{color:var(--lp2);} .mv-burn{color:var(--burn2);}
+.ms{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:2px;}
+.ms em{font-style:normal;}
+
+.fr{display:flex;align-items:center;gap:4px;margin-bottom:5px;}
+.fl{font-size:9px;font-weight:600;width:54px;font-family:'Share Tech Mono',monospace;}
+.ft{flex:1;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.fb{height:100%;border-radius:2px;transition:width .5s;}
+.fa{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);width:42px;text-align:right;}
+
+.vi{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.vd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.vn{font-size:8.5px;color:var(--text);flex:1;font-family:'Share Tech Mono',monospace;}
+.vp{font-size:8.5px;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+
+.pw{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.ptk{display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:4px;}
+.pt{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--b2),var(--g2));transition:width .4s;}
+
+.rsh{padding:6px 11px 4px;border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);
+  font-family:'Orbitron',monospace;font-size:7.5px;font-weight:700;letter-spacing:2.5px;color:var(--muted);}
+
+@keyframes blink{0%,100%{opacity:1;}40%{opacity:.2;}}
+.blink{animation:blink .5s ease;}
+
+/* status bar */
+.statusbar{flex-shrink:0;display:flex;gap:14px;align-items:center;
+  padding:5px 14px;background:rgba(3,6,14,0.97);
+  border-top:1px solid rgba(28,152,112,0.09);
+  font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;margin-right:4px;}
+.dg{background:var(--g2);box-shadow:0 0 4px var(--g2);animation:pulse 2s infinite;}
+.db{background:var(--b2);} .dgold{background:var(--gold2);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+</style>
+</head>
+<body>
+
+<!-- EVENT BANNER -->
+<div class="event-banner" id="ev-banner">⚡ TRANSICIÓN</div>
+
+<header>
+  <div>
+    <div class="logo">LUKASH</div>
+    <div class="logo-s">PROTOCOL v4.2 · SIMULADOR DE FLUJOS CON TRANSICIONES AUTOMÁTICAS</div>
+  </div>
+  <div class="hpills">
+    <div class="hp" id="hp-st"  style="color:var(--b2);border-color:rgba(30,120,204,.4);background:rgba(30,120,204,.08);">ET.1 GÉNESIS</div>
+    <div class="hp" id="hp-mo"  style="color:var(--burn2);border-color:rgba(212,48,32,.4);background:rgba(212,48,32,.08);">B0 BURN</div>
+    <div class="hp" id="hp-thr" style="color:var(--g2);border-color:rgba(32,196,134,.35);background:rgba(32,196,134,.07);">NORMAL 100%</div>
+    <div class="hp" id="hp-mkt" style="color:var(--b2);border-color:rgba(30,120,204,.4);background:rgba(30,120,204,.08);">◼ NEUTRAL</div>
+    <div class="hp" id="hp-mes" style="color:var(--amb2);border-color:rgba(236,160,32,.4);background:rgba(236,160,32,.08);">MES 0</div>
+  </div>
+  <div class="hr">SUPPLY: <em id="h-sup">10.00B</em> · DÍA: <em id="h-d">0</em> · AÑO: <em id="h-yr">0.0</em></div>
+</header>
+
+<div class="app">
+
+<!-- ══════ LEFT ══════ -->
+<aside class="sb">
+
+<div class="sc">
+  <div class="st">Mercado</div>
+  <div class="bg">
+    <button class="b" id="b-bull" onclick="setMkt('BULL')">▲ BULL</button>
+    <button class="b ob" id="b-neut" onclick="setMkt('NEUTRAL')">◼ NEUTRO</button>
+    <button class="b" id="b-bear" onclick="setMkt('BEAR')">▼ BEAR</button>
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Escenario Monte Carlo</div>
+  <div class="bg">
+    <button class="b" id="b-sc-c" onclick="setSc('CONSERV')">CONSERV</button>
+    <button class="b ob" id="b-sc-b" onclick="setSc('BASE')">BASE</button>
+    <button class="b" id="b-sc-a" onclick="setSc('AGRESIVO')">AGRESIVO</button>
+  </div>
+  <div class="ibox" id="sc-info" style="border-color:rgba(30,120,204,.35);">
+    Y5 mediana: $37.2M · P(B2&lt;Y2): 86.1%
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Etapas — Auto-transición en Play</div>
+  <div class="stage-timeline">
+    <div class="stg active" id="stg-1"  style="color:var(--b2);border-color:var(--b2);">ET.1</div>
+    <div class="stg" id="stg-2a" style="color:var(--muted);border-color:var(--muted);">2A</div>
+    <div class="stg" id="stg-2b" style="color:var(--muted);border-color:var(--muted);">2B</div>
+    <div class="stg" id="stg-3"  style="color:var(--muted);border-color:var(--muted);">ET.3</div>
+    <div class="stg" id="stg-4"  style="color:var(--muted);border-color:var(--muted);">DAO</div>
+  </div>
+  <div class="ibox" id="st-info" style="border-color:rgba(30,120,204,.3);">Motor A · 4%/2.5%WL · B,C,D inactivos</div>
+</div>
+
+<div class="sc">
+  <div class="st">Throttle Dinámico (EMA30)</div>
+  <div class="bg">
+    <button class="b" id="bt-ac" onclick="setThr('ACELERADO')">125%</button>
+    <button class="b ob" id="bt-no" onclick="setThr('NORMAL')">100%</button>
+    <button class="b" id="bt-co" onclick="setThr('CONSERV')">60%</button>
+    <button class="b" id="bt-de" onclick="setThr('DEFENSIVO')">25%</button>
+  </div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:5px;">
+    Cola diferida: <span id="thr-cola" style="color:var(--gold2)">0%</span>
+    &nbsp;·&nbsp; R_op activa: <span id="thr-rop" style="color:var(--g2)">100%</span>
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Distribución 35/35/15/15</div>
+  <div class="dg">
+    <div class="dc" style="border-color:rgba(30,120,204,.3);background:rgba(30,120,204,.07);">
+      <div class="dn">VAULT CORE</div>
+      <div class="dv" style="color:var(--b2)">70%</div>
+      <div class="ds">del Asset Layer</div>
+    </div>
+    <div class="dc" style="border-color:rgba(236,160,32,.3);background:rgba(236,160,32,.07);">
+      <div class="dn">VAULT SOC.</div>
+      <div class="dv" style="color:var(--amb2)">30%</div>
+      <div class="ds">del Asset Layer</div>
+    </div>
+    <div class="dc" style="border-color:rgba(212,48,32,.3);background:rgba(212,48,32,.07);" id="dc-liq">
+      <div class="dn">BURN (B0)</div>
+      <div class="dv" style="color:var(--burn2)" id="dc-liq-v">35%</div>
+      <div class="ds" id="dc-liq-s">→ null permanente</div>
+    </div>
+    <div class="dc" style="border-color:rgba(32,196,134,.3);background:rgba(32,196,134,.07);">
+      <div class="dn">O&M · STAKING</div>
+      <div class="dv" style="color:var(--g2)">15+15</div>
+      <div class="ds">Wallet · Stakers</div>
+    </div>
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Parámetros de entrada</div>
+  <div class="sw">
+    <div class="sh"><span class="sn">Vol. Motor A / día</span><span class="sv" id="sv-va">$5M</span></div>
+    <input type="range" id="sl-va" min="500" max="25000" value="5000" oninput="onSl(this,'sv-va',v=>fU(v*1000))">
+  </div>
+  <div class="sw">
+    <div class="sh"><span class="sn">Usuarios App</span><span class="sv" id="sv-us">1K</span></div>
+    <input type="range" id="sl-us" min="0" max="2000" value="1" oninput="onSl(this,'sv-us',v=>fK(v*1000))">
+  </div>
+  <div class="sw">
+    <div class="sh"><span class="sn">Precio × TGE</span><span class="sv" id="sv-px">1.0×</span></div>
+    <input type="range" id="sl-px" min="5" max="3000" value="100" oninput="onSl(this,'sv-px',v=>(v/100).toFixed(1)+'×')">
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Simulación 5 Años</div>
+  <div class="tl"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+  <input type="range" id="sl-day" min="0" max="1825" value="0" style="margin-bottom:5px;"
+    oninput="if(!G.playing)scrub(+this.value)">
+  <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--amb2);margin-bottom:4px;">
+    <span>DÍA <span id="d-d">0</span></span>
+    <span>MES <span id="d-m">0</span></span>
+    <span>AÑO <span id="d-y">0.00</span></span>
+  </div>
+  <div class="pr">
+    <button class="b" style="flex:2;" id="b-play" onclick="togglePlay()">▶ PLAY</button>
+    <button class="b" id="b-1x" onclick="setSpd(1)">1×</button>
+    <button class="b oamb" id="b-5x" onclick="setSpd(5)">5×</button>
+    <button class="b" id="b-15x" onclick="setSpd(15)">15×</button>
+    <button class="b" onclick="resetSim()">↺</button>
+  </div>
+  <div class="snote" id="spd-note">⚡ 5× · 1 año ≈ 2 min · métricas/mes</div>
+</div>
+
+</aside>
+
+<!-- ══════ CANVAS ══════ -->
+<div class="cw">
+  <canvas id="cv"></canvas>
+  <div class="ov-st" id="ov-st" style="color:var(--b2);border-color:rgba(30,120,204,.45);background:rgba(30,120,204,.1);">
+    ETAPA 1 — GÉNESIS · MOTOR A
+  </div>
+  <div class="ov-yr" id="ov-yr">AÑO 0.0</div>
+  <div class="kbar-w">
+    <div class="kbar-l">
+      <span>K(t) → K_min $25M</span>
+      <span id="kpct" style="color:var(--g2)">0.0%</span>
+    </div>
+    <div class="kbar-t"><div class="kbar-f" id="kbar" style="width:0%"></div></div>
+  </div>
+  <div class="shield-tag">⬡ JAGUAR SHIELD v4.2</div>
+</div>
+
+<!-- ══════ RIGHT ══════ -->
+<aside class="sb r">
+
+<div style="padding:6px 11px 4px;border-bottom:1px solid var(--brd);
+  font-family:'Orbitron',monospace;font-size:7.5px;font-weight:700;letter-spacing:2.5px;color:var(--muted);">
+  ⬡ MÉTRICAS · ACTUALIZ. MENSUAL
+</div>
+
+<div class="pw">
+  <div class="ptk"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+  <div class="pt"><div class="pf" id="pf" style="width:0%"></div></div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px;text-align:right;">
+    <span id="yr-pct">0.0%</span> del horizonte 5 años
+  </div>
+</div>
+
+<!-- Vault Core -->
+<div class="mc mc-b">
+  <div class="mn">⬡ Vault KASH Core K(t)</div>
+  <div class="mv mv-b" id="m-vc">$0.00</div>
+  <div class="ms">Δ/mes: <em id="m-vc-d" style="color:var(--g2)">$0</em> · <span id="m-vc-st">ET.1 B0</span></div>
+</div>
+
+<!-- Vault Sociedad -->
+<div class="mc mc-amb">
+  <div class="mn">⬡ Vault KASH Sociedad</div>
+  <div class="mv mv-amb" id="m-vs">$0.00</div>
+  <div class="ms" id="m-vs-ms">Lock: hito $30M Core o mes 12</div>
+</div>
+
+<!-- Precio KASH -->
+<div class="mc mc-g">
+  <div class="mn">Precio KASH P_th = Core ÷ Supply</div>
+  <div class="mv mv-g" id="m-pk">$0.000000</div>
+  <div class="ms"><em id="m-pkx" style="color:var(--gold2)">0×</em> TGE ($0.0001)</div>
+</div>
+
+<!-- Supply -->
+<div class="mc mc-r">
+  <div class="mn">Supply Circulante $LUKA</div>
+  <div class="mv mv-r" id="m-sup">10.00B</div>
+  <div class="ms">Quemado: <em id="m-brn" style="color:var(--burn2)">0.00B</em> · Meta ENZ: 3.3B</div>
+</div>
+
+<div class="rsh">⬡ BURN & LIQUIDEZ (separados)</div>
+
+<!-- BURN -->
+<div class="mc mc-burn">
+  <div class="mn">🔥 Burn → null (35% Liq · B0)</div>
+  <div class="mv mv-burn" id="m-burnv">$0</div>
+  <div class="ms">Activo en B0. Deflación agresiva.</div>
+</div>
+
+<!-- LP POOL -->
+<div class="mc mc-lp">
+  <div class="mn">💧 LP Pool Recirculación (35% Liq · B2)</div>
+  <div class="mv mv-lp" id="m-lpv">$0</div>
+  <div class="ms">Activo en B2. Inercia estructural.</div>
+</div>
+
+<div class="rsh">⬡ DISTRIBUCIÓN FEES</div>
+
+<!-- Staking -->
+<div class="mc mc-g">
+  <div class="mn">Reward Layer 15% → Stakers</div>
+  <div class="mv mv-g" id="m-stk">$0</div>
+  <div class="ms">$LUKA → stakers activos</div>
+</div>
+
+<!-- O&M -->
+<div class="mc mc-gold">
+  <div class="mn">O&M Layer 15% → Operativo</div>
+  <div class="mv mv-gold" id="m-om">$0</div>
+  <div class="ms">Swap inmediato SOL/USDC</div>
+</div>
+
+<!-- R_op -->
+<div class="mc mc-p">
+  <div class="mn">R_op Idle — 30% yield Core</div>
+  <div class="mv mv-p" id="m-rop">$0</div>
+  <div class="ms">Reserva USDC — NO fluye al sistema</div>
+</div>
+
+<div class="rsh">⬡ FEES / DÍA</div>
+<div style="padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.04);">
+  <div class="fr"><span class="fl" style="color:var(--g2)">A·SOL</span>
+    <div class="ft"><div class="fb" id="fb-A" style="background:var(--g2);width:60%"></div></div>
+    <span class="fa" id="fa-A">$0</span></div>
+  <div class="fr"><span class="fl" style="color:var(--b2)">B·$LUKA</span>
+    <div class="ft"><div class="fb" id="fb-B" style="background:var(--b2);width:0%"></div></div>
+    <span class="fa" id="fa-B">—</span></div>
+  <div class="fr"><span class="fl" style="color:var(--gold2)">C·USDC</span>
+    <div class="ft"><div class="fb" id="fb-C" style="background:var(--gold2);width:0%"></div></div>
+    <span class="fa" id="fa-C">—</span></div>
+  <div class="fr"><span class="fl" style="color:var(--r2)">D·Multi</span>
+    <div class="ft"><div class="fb" id="fb-D" style="background:var(--r2);width:0%"></div></div>
+    <span class="fa" id="fa-D">—</span></div>
+  <div style="display:flex;justify-content:space-between;padding-top:5px;border-top:1px solid rgba(255,255,255,0.05);">
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);">TOTAL/DÍA</span>
+    <span id="fa-tot" style="font-family:'Orbitron',monospace;font-size:11px;color:var(--g2);">$0</span>
+  </div>
+</div>
+
+<div class="rsh">⬡ VAULT CORE — COMPOSICIÓN</div>
+<div style="padding:8px 11px;">
+  <div class="vi"><div class="vd" style="background:#F7931A"></div><span class="vn">cBTC (Reserva Profunda)</span><span class="vp">35%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--b2)"></div><span class="vn">SOL Nativo</span><span class="vp">15%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--g2)"></div><span class="vn">LST JitoSOL+mSOL</span><span class="vp">20%</span></div>
+  <div class="vi"><div class="vd" style="background:#28A864"></div><span class="vn">USDC Reserva Capa 1</span><span class="vp">25%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--gold2)"></div><span class="vn">USDC Lending</span><span class="vp">5%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--muted)"></div><span class="vn">PYTH+JTO+JUP</span><span class="vp">5%</span></div>
+</div>
+
+</aside>
+</div><!-- /app -->
+
+<div class="statusbar">
+  <span><span class="dot dg"></span>SOLANA MAINNET</span>
+  <span><span class="dot db"></span>PYTH ORACLE</span>
+  <span><span class="dot dgold"></span>K_MIN $25M · ENZ @ 3.3B · RUINA 0.0% · ESPIRAL TRANS ~1.4%</span>
+  <span style="margin-left:auto;" id="sb">T+0d · Core $0 · Soc $0 · P_KASH $0.0000</span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  LUKASH Protocol v4.2 — Simulador de Flujos v5
+//  TRANSICIONES AUTOMÁTICAS en Play según condiciones on-chain reales:
+//
+//  ET.1  → TGE. Solo Motor A. Fee 4%/2.5%WL. B0 activo (aunque B inactivo).
+//  ET.2A → App lanzada. Motor A+B0+D. Fee A:4%, B:2.5%. Activa según escenario.
+//  ET.2B → K(t) ≥ $25M. Switch B0→B2 automático. Motor A+B2+D.
+//  ET.3  → K > $50M. Motor A+B2+C+D. Fee A:2.5%, C:0.5%. ENZ inminente.
+//  ET.4  → Supply ≤ 3.3B ó día ≥ 1825. DAO. Quema suspendida.
+//
+//  BURN y LP: nodos SEPARADOS en canvas y métricas separadas.
+//  35% Liq. Layer → BURN en B0 / LP Pool en B2.
+//
+//  Velocidad: 5× = 1 año ≈ 2 min reales.
+//  Métricas derecha: actualizan cada mes simulado.
+// ═══════════════════════════════════════════════════════════════════
+
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+// ── ESTADO GLOBAL ──
+const G = {
+  mkt:'NEUTRAL', sc:'BASE', thr:'NORMAL',
+  stage:1, motorB:'B0',
+  day:0, lastMonth:-2,
+  playing:false, spd:5, itvl:null,
+  // sliders
+  volA:5000, users:1, pxMult:1.0,
+  // acumuladores
+  vaultCore:0, vaultSoc:0,
+  burnUSD:0, lpPool:0,
+  staking:0, om:0, rop:0, cola:0,
+  burnedTok:0, supply:10e9,
+  fA:0, fB:0, fC:0, fD:0, feesDay:0,
+  // métricas mensuales delta
+  vcPrev:0, vsPrev:0,
+  // hito sociedad
+  hitSocDay:-1,
+  // canvas
+  particles:[], nodes:{}, time:0,
+  // transiciones
+  lastStageEvent:'',
+};
+
+// ── PARÁMETROS PROTOCOLO ──
+const MKT = {
+  BULL:{spd:2.0,fM:1.5,lbl:'▲ BULL'},
+  NEUTRAL:{spd:1.0,fM:1.0,lbl:'◼ NEUTRAL'},
+  BEAR:{spd:0.5,fM:0.5,lbl:'▼ BEAR'},
+};
+
+// Condiciones de transición por escenario
+// App launch day: cuando empieza ET.2A
+// B2 threshold: $25M Vault Core
+// ET.3 threshold: $50M Vault Core
+// Escenario afecta volumen/fees → velocidad de llegada a umbrales
+const SC_CFG = {
+  CONSERV:{
+    fMult:0.38,
+    appLaunchDay:180, // día en que se lanza la app
+    info:'Y5: $117M · P(B2<Y2): 15.4% · Espiral transición: 13.7%',
+  },
+  BASE:{
+    fMult:1.00,
+    appLaunchDay:90,
+    info:'Y5: $37.2M (mediana) · P(B2<Y2): 86.1% · ~1.4%',
+  },
+  AGRESIVO:{
+    fMult:3.20,
+    appLaunchDay:45,
+    info:'Y5: $156.3M (P95) · P(B2<Y2): 100% · 0%',
+  },
+};
+
+const THR_CFG = {
+  ACELERADO:{burn:1.25,cola:0.00,ropF:1.0,lbl:'ACELERADO 125%'},
+  NORMAL:   {burn:1.00,cola:0.00,ropF:1.0,lbl:'NORMAL 100%'},
+  CONSERV:  {burn:0.60,cola:0.40,ropF:0.6,lbl:'CONSERV 60%'},
+  DEFENSIVO:{burn:0.25,cola:0.75,ropF:0.25,lbl:'DEFENSIVO 25%'},
+};
+
+const STAGE_INFO = {
+  1:  'Motor A activo · Fee 4%/2.5%WL · B, C, D inactivos · LP Fundador 365d lock',
+  '2A':'Motor A+B0+D · App lanzada · Fee A:4% B:2.5% D:3% · K<$25M · Throttle activo',
+  '2B':'Motor A+B2+D · K≥$25M · B0→B2 switch on-chain · Fee A:2.5%',
+  3:  'Motor A+B2+C+D · K>$50M · Fee C:0.5% · ENZ en curso · Supply→3.3B',
+  4:  'DAO activo · Emisión Neta Cero · Quema suspendida · Recirculación perpetua',
+};
+
+const SPD_CFG = {
+  1:  {ms:640,days:1,note:'1× · 1 año ≈ 4 min · métricas/mes'},
+  5:  {ms:320,days:1,note:'5× · 1 año ≈ 2 min · métricas/mes'},
+  15: {ms:100,days:1,note:'15× · 1 año ≈ 37 seg · métricas/mes'},
+};
+
+// ── CALCULAR FEES DIARIOS SEGÚN ETAPA ──
+function calcFees() {
+  const m = MKT[G.mkt], sc = SC_CFG[G.sc];
+  const uF = Math.max(0.05, G.users/100);
+
+  // Motor A: siempre activo
+  // ET.1: 4% | ET.2: 2.5% | ET.3+: 2.5%
+  const rA = G.stage===1 ? 0.040 : 0.025;
+  G.fA = G.volA * 1000 * rA * m.fM * sc.fMult;
+
+  // Motor B: activo ET.2A en adelante
+  // Fee 2.5% en ET.2, 1.5% en ET.3+
+  const bOn = ['2A','2B',3,4].includes(G.stage);
+  const rB  = (G.stage==='2A'||G.stage==='2B') ? 0.025 : 0.015;
+  G.fB = bOn ? G.volA*1000*0.28*rB*m.fM*uF*sc.fMult : 0;
+
+  // Motor C: solo ET.3+. Fee 0.5%
+  const cOn = [3,4].includes(G.stage);
+  G.fC = cOn ? G.volA*1000*0.50*0.005*m.fM*uF*sc.fMult : 0;
+
+  // Motor D: ET.2A en adelante. Promedio capas 2%
+  const dOn = ['2A','2B',3,4].includes(G.stage);
+  G.fD = dOn ? G.volA*1000*0.10*0.020*m.fM*uF*sc.fMult : 0;
+
+  G.feesDay = G.fA + G.fB + G.fC + G.fD;
+}
+
+// ── SIMULAR UN DÍA ──
+function simDay() {
+  calcFees();
+  const th = THR_CFG[G.thr];
+  const pr = 0.0001 * G.pxMult;
+
+  // 35% Asset Layer → split 70/30 entre Core y Sociedad
+  const asset = G.feesDay * 0.35;
+  G.vaultCore += asset * 0.70;
+  G.vaultSoc  += asset * 0.30;
+
+  // 35% Liq. Layer
+  const liq = G.feesDay * 0.35;
+  if (G.motorB === 'B0') {
+    // BURN permanente (con throttle)
+    const bAmt = liq * th.burn;
+    const dAmt = liq * th.cola;
+    G.burnUSD   += bAmt;
+    G.burnedTok += bAmt / pr;
+    G.cola      += dAmt / pr;
+    // Ejecutar cola (10%/semana = 10%/7d)
+    if (G.thr === 'NORMAL' || G.thr === 'ACELERADO') {
+      const exec = G.cola * (0.10/7);
+      G.cola = Math.max(0, G.cola - exec);
+      G.burnedTok += exec;
+      G.burnUSD   += exec * pr;
+    }
+  } else {
+    // B2: recirculación LP
+    G.lpPool    += liq;
+    // Parte de la recirc refuerza el Core por inercia estructural
+    G.vaultCore += liq * 0.18;
+  }
+
+  // 15% O&M
+  G.om      += G.feesDay * 0.15;
+  // 15% Staking
+  G.staking += G.feesDay * 0.15;
+
+  // Supply
+  G.supply = Math.max(3.3e9, 10e9 - G.burnedTok);
+
+  // Yield natural del Vault Core:
+  //   LST (20%) ~ 7% APY | USDC Lending (5%) ~ 5% APY → ponderado ~7% del Core
+  const cYield = G.vaultCore * 0.07 / 365;
+  G.vaultCore += cYield * 0.70; // 70% reinversión compuesta
+  G.rop       += cYield * 0.30; // 30% → R_op IDLE
+
+  // Yield Sociedad: 100% capitalizable
+  G.vaultSoc += G.vaultSoc * 0.07 / 365;
+
+  // Hito Sociedad: K≥$30M o día 365
+  if (G.hitSocDay < 0 && (G.vaultCore >= 30e6 || G.day >= 365)) {
+    G.hitSocDay = G.day;
+  }
+}
+
+// ── TRANSICIÓN AUTOMÁTICA DE ETAPA ──
+function checkTransitions() {
+  const sc = SC_CFG[G.sc];
+
+  // ET.1 → ET.2A: app launch day
+  if (G.stage === 1 && G.day >= sc.appLaunchDay) {
+    applyStage('2A');
+    fireEvent('🚀 ETAPA 2A — APP LANZADA · MOTOR B0 + D ACTIVOS', 'var(--b2)');
+  }
+
+  // ET.2A → ET.2B: K ≥ $25M
+  if (G.stage === '2A' && G.vaultCore >= 25e6) {
+    applyStage('2B');
+    fireEvent('⚡ K(t) ≥ $25M · SWITCH B0→B2 · ETAPA 2B ACTIVADA', 'var(--g2)');
+  }
+
+  // ET.2B → ET.3: K > $50M
+  if (G.stage === '2B' && G.vaultCore >= 50e6) {
+    applyStage(3);
+    fireEvent('🌐 K > $50M · MOTOR C ACTIVO · ETAPA 3 SOBERANÍA', 'var(--gold2)');
+  }
+
+  // ET.3 → ET.4: Supply ≤ 3.3B ó fin del horizonte
+  if (G.stage === 3 && (G.supply <= 3.3e9 || G.day >= 1820)) {
+    applyStage(4);
+    fireEvent('🏛️ EMISIÓN NETA CERO · DAO ACTIVADO · ETAPA 4', 'var(--p2)');
+  }
+}
+
+function applyStage(st) {
+  G.stage = st;
+  // B switch
+  if (['2B',3,4].includes(st)) {
+    G.motorB = 'B2';
+    updMotorBUI();
+  }
+  updStageUI(st);
+}
+
+function fireEvent(msg, color) {
+  const el = document.getElementById('ev-banner');
+  el.textContent = msg;
+  el.style.color = color;
+  el.style.borderColor = color;
+  el.style.background = color.replace('var(','').replace(')','').trim()+'11';
+  el.style.background = 'rgba(20,30,50,0.92)';
+  el.classList.add('eb-show');
+  setTimeout(()=>el.classList.remove('eb-show'), 4000);
+}
+
+// ── ACTUALIZAR UI ETAPA ──
+const STAGE_COLORS = {
+  1:'var(--b2)', '2A':'var(--b2)', '2B':'var(--g2)', 3:'var(--gold2)', 4:'var(--p2)'
+};
+const STAGE_LABELS = {
+  1:'ET.1 GÉNESIS', '2A':'ET.2A APP', '2B':'ET.2B MADUREZ', 3:'ET.3 SOBERANÍA', 4:'ET.4 DAO'
+};
+const STAGE_OV = {
+  1:'ETAPA 1 — GÉNESIS · MOTOR A',
+  '2A':'ETAPA 2A — APP · B0+D ACTIVOS',
+  '2B':'ETAPA 2B — K≥$25M · B2 SWITCH',
+  3:'ETAPA 3 — SOBERANÍA · MOTOR C',
+  4:'ETAPA 4 — DAO · ENZ ACTIVADO',
+};
+
+function updStageUI(st) {
+  const c = STAGE_COLORS[st];
+  document.getElementById('hp-st').textContent = STAGE_LABELS[st];
+  document.getElementById('hp-st').style.cssText = `color:${c};border-color:${c}44;background:${c}10;`;
+
+  const ov = document.getElementById('ov-st');
+  ov.textContent = STAGE_OV[st];
+  ov.style.color = c; ov.style.borderColor = c+'55'; ov.style.background = c+'12';
+
+  document.getElementById('st-info').textContent = STAGE_INFO[st];
+
+  // Timeline highlights
+  const stgMap = {1:'stg-1','2A':'stg-2a','2B':'stg-2b',3:'stg-3',4:'stg-4'};
+  const stgOrder = [1,'2A','2B',3,4];
+  const curIdx = stgOrder.indexOf(st);
+  stgOrder.forEach((s,i) => {
+    const el = document.getElementById(stgMap[s]);
+    if (i < curIdx) { el.className='stg done'; el.style.cssText=`color:var(--muted);border-color:var(--muted);`; }
+    else if (i === curIdx) { el.className='stg active'; el.style.cssText=`color:${c};border-color:${c};box-shadow:0 0 8px ${c};`; }
+    else { el.className='stg'; el.style.cssText=`color:var(--muted);border-color:var(--muted);`; }
+  });
+
+  // Liq layer label
+  updMotorBUI();
+}
+
+function updMotorBUI() {
+  const isB2 = G.motorB === 'B2';
+  document.getElementById('hp-mo').textContent = isB2 ? 'B2 RECIRC LP' : 'B0 BURN';
+  document.getElementById('dc-liq').querySelector('.dn').textContent = isB2 ? 'LP POOL (B2)' : 'BURN (B0)';
+  document.getElementById('dc-liq-s').textContent = isB2 ? '→ Recirculación' : '→ null permanente';
+  document.getElementById('dc-liq').style.borderColor = isB2 ? 'rgba(34,200,150,.3)' : 'rgba(212,48,32,.3)';
+  document.getElementById('dc-liq').style.background  = isB2 ? 'rgba(34,200,150,.07)' : 'rgba(212,48,32,.07)';
+  const dv = document.getElementById('dc-liq-v');
+  dv.style.color = isB2 ? 'var(--lp2)' : 'var(--burn2)';
+}
+
+// ── UPDATE UI MÉTRICAS (solo cuando cambia mes) ──
+function updMetrics(force=false) {
+  const mes = Math.floor(G.day/30);
+  if (!force && mes === G.lastMonth) return;
+  G.lastMonth = mes;
+
+  const pK = G.vaultCore / Math.max(G.supply, 1);
+  const pKx = pK / 0.0001;
+
+  // Blink
+  ['m-vc','m-vs','m-pk','m-sup','m-stk','m-om','m-rop','m-burnv','m-lpv'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('blink'); void el.offsetWidth; el.classList.add('blink');
+  });
+
+  // Delta mensual
+  const vcDelta = G.vaultCore - G.vcPrev;
+  G.vcPrev = G.vaultCore; G.vsPrev = G.vaultSoc;
+
+  document.getElementById('m-vc').textContent    = fU(G.vaultCore);
+  document.getElementById('m-vc-d').textContent  = '+'+fU(vcDelta);
+  document.getElementById('m-vc-st').textContent = `ET.${G.stage} ${G.motorB}`;
+  document.getElementById('m-vs').textContent    = fU(G.vaultSoc);
+
+  // Estado lock sociedad
+  const msHito = G.hitSocDay>=0 ? Math.floor(G.hitSocDay/30) : -1;
+  const msLiq  = msHito>=0 ? msHito+13 : -1;
+  if (G.hitSocDay<0) {
+    document.getElementById('m-vs-ms').textContent='Lock: hito $30M Core o mes 12';
+  } else if (mes < msLiq) {
+    document.getElementById('m-vs-ms').textContent=`Hito mes ${msHito} · Líquido desde mes ${msLiq} · Vesting 48m`;
+  } else {
+    document.getElementById('m-vs-ms').textContent='⚡ DISTRIBUCIÓN ACTIVA · Líquido perpetuo';
+    document.getElementById('m-vs-ms').style.color='var(--g2)';
+  }
+
+  document.getElementById('m-pk').textContent    = '$'+pK.toFixed(6);
+  document.getElementById('m-pkx').textContent   = pKx.toFixed(1)+'×';
+  document.getElementById('m-sup').textContent   = fB(G.supply);
+  document.getElementById('m-brn').textContent   = fB(G.burnedTok);
+  document.getElementById('m-burnv').textContent = fU(G.burnUSD);
+  document.getElementById('m-lpv').textContent   = fU(G.lpPool);
+  document.getElementById('m-stk').textContent   = fU(G.staking);
+  document.getElementById('m-om').textContent    = fU(G.om);
+  document.getElementById('m-rop').textContent   = fU(G.rop);
+
+  const tot = G.fA+G.fB+G.fC+G.fD||1;
+  document.getElementById('fb-A').style.width=(G.fA/tot*100)+'%';
+  document.getElementById('fb-B').style.width=(G.fB/tot*100)+'%';
+  document.getElementById('fb-C').style.width=(G.fC/tot*100)+'%';
+  document.getElementById('fb-D').style.width=(G.fD/tot*100)+'%';
+  document.getElementById('fa-A').textContent = fU(G.fA);
+  document.getElementById('fa-B').textContent = G.fB>0?fU(G.fB):'—';
+  document.getElementById('fa-C').textContent = G.fC>0?fU(G.fC):'—';
+  document.getElementById('fa-D').textContent = G.fD>0?fU(G.fD):'—';
+  document.getElementById('fa-tot').textContent = fU(G.feesDay);
+}
+
+// ── UPDATE HEADER/CANVAS (cada tick) ──
+function updHeader() {
+  const d=G.day, mes=Math.floor(d/30), yr=d/365;
+  document.getElementById('h-sup').textContent = fB(G.supply);
+  document.getElementById('h-d').textContent   = d;
+  document.getElementById('h-yr').textContent  = yr.toFixed(1);
+  document.getElementById('hp-mes').textContent= 'MES '+mes;
+  document.getElementById('d-d').textContent   = d;
+  document.getElementById('d-m').textContent   = mes;
+  document.getElementById('d-y').textContent   = yr.toFixed(2);
+  document.getElementById('sl-day').value      = d;
+  document.getElementById('pf').style.width    = (d/1825*100)+'%';
+  document.getElementById('yr-pct').textContent= (d/1825*100).toFixed(1)+'%';
+  document.getElementById('ov-yr').textContent = 'AÑO '+yr.toFixed(1);
+  const kP = Math.min(100, G.vaultCore/25e6*100);
+  document.getElementById('kbar').style.width  = kP+'%';
+  document.getElementById('kpct').textContent  = kP.toFixed(1)+'%';
+  document.getElementById('sb').textContent    =
+    `T+${d}d · Core ${fU(G.vaultCore)} · Soc ${fU(G.vaultSoc)} · P_KASH $${(G.vaultCore/Math.max(G.supply,1)).toFixed(5)}`;
+}
+
+// ── PLAY ──
+function startItvl() {
+  const cfg = SPD_CFG[G.spd];
+  G.itvl = setInterval(()=>{
+    if (G.day >= 1825) { togglePlay(); return; }
+    G.day = Math.min(1825, G.day + cfg.days);
+    simDay();
+    checkTransitions();
+    updHeader();
+    updMetrics();
+    if (G.day >= 1825) togglePlay();
+  }, cfg.ms);
+}
+
+function togglePlay() {
+  G.playing = !G.playing;
+  const btn = document.getElementById('b-play');
+  if (G.playing) {
+    btn.textContent='⏸ PAUSE'; btn.className='b og';
+    startItvl();
+  } else {
+    btn.textContent='▶ PLAY'; btn.className='b';
+    clearInterval(G.itvl);
+  }
+}
+
+// ── SCRUB (manual) — recalcula cumulativo ──
+function scrub(d) {
+  G.day=d;
+  // Reset acumuladores y recalcular
+  const sc=SC_CFG[G.sc], m=MKT[G.mkt], th=THR_CFG[G.thr];
+  const uF=Math.max(0.05,G.users/100);
+  const pr=0.0001*G.pxMult;
+
+  G.vaultCore=0;G.vaultSoc=0;G.burnUSD=0;G.lpPool=0;
+  G.staking=0;G.om=0;G.rop=0;G.cola=0;G.burnedTok=0;G.supply=10e9;
+  G.hitSocDay=-1;G.vcPrev=0;G.vsPrev=0;G.lastMonth=-2;
+
+  // Determinar etapa en función del día
+  let stageAtD=1;
+  if(d>=sc.appLaunchDay) stageAtD='2A';
+  G.stage=stageAtD; G.motorB='B0'; // empezar, se irá ajustando
+
+  // Simular día a día (rápido, sin canvas)
+  for(let i=1;i<=d;i++){
+    G.day=i;
+    // auto-transitions
+    if(G.stage===1 && i>=sc.appLaunchDay) { G.stage='2A'; }
+    if(G.stage==='2A' && G.vaultCore>=25e6) { G.stage='2B'; G.motorB='B2'; }
+    if(G.stage==='2B' && G.vaultCore>=50e6) { G.stage=3; }
+    if(G.stage===3 && (G.supply<=3.3e9||i>=1820)) { G.stage=4; }
+
+    // fees
+    const rA=G.stage===1?0.040:0.025;
+    const fA=G.volA*1000*rA*m.fM*sc.fMult;
+    const bOn=['2A','2B',3,4].includes(G.stage);
+    const rB=(G.stage==='2A'||G.stage==='2B')?0.025:0.015;
+    const fB2=bOn?G.volA*1000*0.28*rB*m.fM*uF*sc.fMult:0;
+    const cOn=[3,4].includes(G.stage);
+    const fC2=cOn?G.volA*1000*0.50*0.005*m.fM*uF*sc.fMult:0;
+    const dOn=['2A','2B',3,4].includes(G.stage);
+    const fD2=dOn?G.volA*1000*0.10*0.020*m.fM*uF*sc.fMult:0;
+    const fees=fA+fB2+fC2+fD2;
+
+    const asset=fees*0.35;
+    G.vaultCore+=asset*0.70;G.vaultSoc+=asset*0.30;
+    const liq=fees*0.35;
+    if(G.motorB==='B0'){
+      const ba=liq*th.burn,da=liq*th.cola;
+      G.burnUSD+=ba;G.burnedTok+=ba/pr;G.cola+=da/pr;
+      if(G.thr==='NORMAL'||G.thr==='ACELERADO'){
+        const ex=G.cola*(0.10/7);G.cola=Math.max(0,G.cola-ex);G.burnedTok+=ex;G.burnUSD+=ex*pr;
+      }
+    } else {
+      G.lpPool+=liq;G.vaultCore+=liq*0.18;
+    }
+    G.om+=fees*0.15;G.staking+=fees*0.15;
+    G.supply=Math.max(3.3e9,10e9-G.burnedTok);
+    const cy=G.vaultCore*0.07/365;
+    G.vaultCore+=cy*0.70;G.rop+=cy*0.30;
+    G.vaultSoc+=G.vaultSoc*0.07/365;
+    if(G.hitSocDay<0&&(G.vaultCore>=30e6||i>=365)) G.hitSocDay=i;
+  }
+  G.day=d;
+  calcFees();
+  updStageUI(G.stage);
+  updMotorBUI();
+  updHeader();
+  updMetrics(true);
+}
+
+// ── CONTROLES ──
+function setMkt(m) {
+  G.mkt=m;
+  const mp={BULL:'b-bull',NEUTRAL:'b-neut',BEAR:'b-bear'};
+  const cl={BULL:'og',NEUTRAL:'ob',BEAR:'or'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(k===m?' '+cl[k]:'');
+  document.getElementById('hp-mkt').textContent=MKT[m].lbl;
+}
+function setSc(s) {
+  G.sc=s;
+  const mp={CONSERV:'b-sc-c',BASE:'b-sc-b',AGRESIVO:'b-sc-a'};
+  const cl={CONSERV:'ogold',BASE:'ob',AGRESIVO:'og'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(k===s?' '+cl[k]:'');
+  document.getElementById('sc-info').textContent=SC_CFG[s].info;
+  resetSim();
+}
+function setThr(t) {
+  G.thr=t;
+  const mp={ACELERADO:'bt-ac',NORMAL:'bt-no',CONSERV:'bt-co',DEFENSIVO:'bt-de'};
+  const cl={ACELERADO:'og',NORMAL:'ob',CONSERV:'ogold',DEFENSIVO:'or'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(k===t?' '+cl[k]:'');
+  const th=THR_CFG[t];
+  document.getElementById('thr-cola').textContent=(th.cola*100)+'%';
+  document.getElementById('thr-rop').textContent =(th.ropF*100)+'%';
+  document.getElementById('hp-thr').textContent  =th.lbl;
+}
+function setSpd(s) {
+  G.spd=s;
+  const mp={1:'b-1x',5:'b-5x',15:'b-15x'};
+  const cl={1:'og',5:'oamb',15:'or'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(+k===s?' '+cl[k]:'');
+  document.getElementById('spd-note').textContent='⚡ '+SPD_CFG[s].note;
+  if(G.playing){clearInterval(G.itvl);startItvl();}
+}
+function onSl(el,vid,fmt) {
+  const v=+el.value,mn=+el.min,mx=+el.max;
+  el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%');
+  document.getElementById(vid).textContent=fmt(v);
+  if(el.id==='sl-va') G.volA=v;
+  if(el.id==='sl-us') G.users=v;
+  if(el.id==='sl-px') G.pxMult=v/100;
+}
+function resetSim() {
+  G.playing=false; clearInterval(G.itvl);
+  document.getElementById('b-play').textContent='▶ PLAY';
+  document.getElementById('b-play').className='b';
+  G.day=0;G.stage=1;G.motorB='B0';
+  G.vaultCore=0;G.vaultSoc=0;G.burnUSD=0;G.lpPool=0;
+  G.staking=0;G.om=0;G.rop=0;G.cola=0;G.burnedTok=0;
+  G.supply=10e9;G.hitSocDay=-1;G.vcPrev=0;G.vsPrev=0;G.lastMonth=-2;
+  G.particles=[];
+  document.getElementById('sl-day').value=0;
+  updStageUI(1); updMotorBUI();
+  scrub(0);
+}
+
+// ═══════ CANVAS ENGINE ═══════
+function buildNodes(W,H) {
+  // Columnas: Motores | FEE POOL | DIST | Core+Soc | BURN | LP | O&M | Staking
+  const c1=W*0.09, c2=W*0.28, c3=W*0.50;
+  // Col 4 split: arriba Core+Soc, abajo BURN/LP/OM/STAKING
+  const c4a=W*0.73, c4b=W*0.86;
+  G.nodes = {
+    MA:   {x:c1,y:H*0.17,lbl:'MOTOR A',sub:'SOL 4%→2.5%',  c:'#20C486',r:18},
+    MB:   {x:c1,y:H*0.36,lbl:'MOTOR B',sub:'$LUKA 2.5%',   c:'#1E78CC',r:18},
+    MC:   {x:c1,y:H*0.55,lbl:'MOTOR C',sub:'USDC 0.5%',    c:'#DA8E1C',r:18},
+    MD:   {x:c1,y:H*0.73,lbl:'MOTOR D',sub:'Multi 4 capas', c:'#E44035',r:18},
+    FEE:  {x:c2,y:H*0.45,lbl:'FEE POOL',sub:'Colector atómico',c:'#9E48D8',r:24},
+    DIST: {x:c3,y:H*0.45,lbl:'DIST',   sub:'35/35/15/15',  c:'#12B4D4',r:22},
+    // Asset Layer destinos
+    VCORE:{x:c4a,y:H*0.16,lbl:'VAULT CORE',sub:'70% Asset · Soberana',c:'#1E78CC',r:21},
+    VSOC: {x:c4a,y:H*0.34,lbl:'VAULT SOC', sub:'30% Asset · Equity',  c:'#ECA020',r:19},
+    // Liq Layer — SEPARADOS
+    BURN: {x:c4b,y:H*0.52,lbl:'BURN',  sub:'35% Liq · B0',  c:'#D43020',r:18},
+    LP:   {x:c4b,y:H*0.68,lbl:'LP POOL',sub:'35% Liq · B2', c:'#22C896',r:18},
+    // O&M y Staking
+    OM:   {x:c4a,y:H*0.76,lbl:'O&M',   sub:'15% Operativo', c:'#DA8E1C',r:17},
+    STAK: {x:c4a,y:H*0.91,lbl:'STAKING',sub:'15% Reward',   c:'#20C486',r:17},
+    // R_op
+    ROP:  {x:W*0.73,y:H*0.06,lbl:'R_op',sub:'30% yield',   c:'#9E48D8',r:12},
+  };
+}
+
+class Pt {
+  constructor(f,t,c,sz=3,sp=1){
+    this.f=f;this.t=t;this.c=c;this.sz=sz;this.sp=sp;
+    this.tt=0;this.trail=[];this.done=false;this.x=0;this.y=0;
+    const h=c.replace('#','');
+    this.r=parseInt(h.slice(0,2),16);this.g2=parseInt(h.slice(2,4),16);this.b=parseInt(h.slice(4,6),16);
+  }
+  upd(){
+    const n1=G.nodes[this.f],n2=G.nodes[this.t];
+    if(!n1||!n2){this.done=true;return;}
+    this.tt=Math.min(1,this.tt+0.013*this.sp);
+    const bx=(n1.x+n2.x)/2+(n2.y-n1.y)*0.16;
+    const by=(n1.y+n2.y)/2-(n2.x-n1.x)*0.16;
+    const u=1-this.tt;
+    this.x=u*u*n1.x+2*u*this.tt*bx+this.tt*this.tt*n2.x;
+    this.y=u*u*n1.y+2*u*this.tt*by+this.tt*this.tt*n2.y;
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>12)this.trail.shift();
+    if(this.tt>=1)this.done=true;
+  }
+  drw(){
+    if(!this.x)return;
+    for(let i=1;i<this.trail.length;i++){
+      const a=(i/this.trail.length)*0.38;
+      ctx.beginPath();ctx.strokeStyle=`rgba(${this.r},${this.g2},${this.b},${a})`;
+      ctx.lineWidth=this.sz*0.5;
+      ctx.moveTo(this.trail[i-1].x,this.trail[i-1].y);ctx.lineTo(this.trail[i].x,this.trail[i].y);ctx.stroke();
+    }
+    ctx.shadowBlur=9;ctx.shadowColor=this.c;
+    ctx.beginPath();ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);
+    ctx.fillStyle=this.c;ctx.fill();ctx.shadowBlur=0;
+  }
+}
+
+function spawn(){
+  const m=MKT[G.mkt],sc=SC_CFG[G.sc];
+  const uF=Math.max(0.05,G.users/100);
+  const base=m.spd*m.fM*sc.fMult*uF*(G.volA/5000);
+  const sp=m.spd;
+  const mk=(f,t,c,sz,s)=>G.particles.push(new Pt(f,t,c,sz,s));
+
+  // Motores → FEE POOL
+  if(Math.random()<0.36*base) mk('MA','FEE','#20C486',3.5,sp*0.9);
+  if(['2A','2B',3,4].includes(G.stage)&&Math.random()<0.20*base) mk('MB','FEE','#1E78CC',3.0,sp*0.85);
+  if([3,4].includes(G.stage)&&Math.random()<0.13*base) mk('MC','FEE','#DA8E1C',2.5,sp*0.8);
+  if(['2A','2B',3,4].includes(G.stage)&&Math.random()<0.09*base) mk('MD','FEE','#E44035',2.0,sp*0.75);
+
+  // FEE → DIST
+  if(Math.random()<0.48*base) mk('FEE','DIST','#9E48D8',3.0,sp*1.05);
+
+  // DIST → VCORE (35%×70%)
+  if(Math.random()<0.24*base) mk('DIST','VCORE','#1E78CC',3.0,sp);
+  // DIST → VSOC (35%×30%)
+  if(Math.random()<0.10*base) mk('DIST','VSOC','#ECA020',2.5,sp);
+
+  // DIST → BURN (B0) XOR LP (B2) — completamente separados
+  if(G.motorB==='B0') {
+    if(Math.random()<0.33*base) mk('DIST','BURN','#D43020',2.8,sp);
+  } else {
+    if(Math.random()<0.33*base) mk('DIST','LP','#22C896',2.8,sp);
+    // LP → VCORE (inercia estructural B2)
+    if(Math.random()<0.07*sp) mk('LP','VCORE','#22C896',2.0,sp*0.65);
+  }
+
+  // DIST → O&M
+  if(Math.random()<0.14*base) mk('DIST','OM','#DA8E1C',2.0,sp*0.95);
+  // DIST → STAKING
+  if(Math.random()<0.14*base) mk('DIST','STAK','#20C486',2.0,sp*0.95);
+
+  // VCORE → R_op (yield idle 30%)
+  if(Math.random()<0.04*sp) mk('VCORE','ROP','#9E48D8',1.5,0.5);
+
+  if(G.particles.length>260) G.particles=G.particles.slice(-200);
+}
+
+function drawConns(){
+  const links=[
+    ['MA','FEE','#20C486'],['MB','FEE','#1E78CC'],['MC','FEE','#DA8E1C'],['MD','FEE','#E44035'],
+    ['FEE','DIST','#9E48D8'],
+    ['DIST','VCORE','#1E78CC'],['DIST','VSOC','#ECA020'],
+    ['DIST','BURN','#D43020'],['DIST','LP','#22C896'],
+    ['DIST','OM','#DA8E1C'],['DIST','STAK','#20C486'],
+    ['VCORE','ROP','#9E48D8'],
+  ];
+  if(G.motorB==='B2') links.push(['LP','VCORE','#22C896']);
+  ctx.setLineDash([3,8]);
+  for(const[f,t,c] of links){
+    const n1=G.nodes[f],n2=G.nodes[t];if(!n1||!n2)continue;
+    const h=c.replace('#','');
+    const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+    const bx=(n1.x+n2.x)/2+(n2.y-n1.y)*0.16;
+    const by=(n1.y+n2.y)/2-(n2.x-n1.x)*0.16;
+    // Dimm if inactive
+    let alpha=0.11;
+    if(f==='MB'&&!['2A','2B',3,4].includes(G.stage)) alpha=0.03;
+    if(f==='MC'&&![3,4].includes(G.stage)) alpha=0.03;
+    if(f==='MD'&&!['2A','2B',3,4].includes(G.stage)) alpha=0.03;
+    if((t==='BURN')&&G.motorB==='B2') alpha=0.03;
+    if((t==='LP')&&G.motorB==='B0') alpha=0.03;
+    ctx.beginPath();ctx.moveTo(n1.x,n1.y);ctx.quadraticCurveTo(bx,by,n2.x,n2.y);
+    ctx.strokeStyle=`rgba(${r},${g},${b},${alpha})`;ctx.lineWidth=1;ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+function drawNode(n,key){
+  const r=n.r||18;
+  const h=n.c.replace('#','');
+  const nr=parseInt(h.slice(0,2),16),ng=parseInt(h.slice(2,4),16),nb=parseInt(h.slice(4,6),16);
+  const pulse=1+0.05*Math.sin(G.time*0.04+(key.charCodeAt(0)||0)*0.85);
+
+  // Inactive check
+  const inactive={
+    MB:!['2A','2B',3,4].includes(G.stage),
+    MC:![3,4].includes(G.stage),
+    MD:!['2A','2B',3,4].includes(G.stage),
+    BURN:G.motorB==='B2',
+    LP:G.motorB==='B0',
+  };
+
+  const dim = inactive[key]||false;
+  const alpha = dim?0.22:1;
+
+  // Halo
+  const halo=ctx.createRadialGradient(n.x,n.y,r*0.5,n.x,n.y,r*2.3);
+  halo.addColorStop(0,`rgba(${nr},${ng},${nb},${dim?0.04:0.14})`);halo.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.arc(n.x,n.y,r*2.1,0,Math.PI*2);ctx.fillStyle=halo;ctx.fill();
+
+  // Ring
+  ctx.beginPath();ctx.arc(n.x,n.y,r*pulse,0,Math.PI*2);
+  ctx.strokeStyle=`rgba(${nr},${ng},${nb},${dim?0.2:0.5})`;ctx.lineWidth=1.5;ctx.stroke();
+
+  // Fill
+  const fill=ctx.createRadialGradient(n.x-r*0.25,n.y-r*0.25,0,n.x,n.y,r*0.93);
+  fill.addColorStop(0,`rgba(${nr},${ng},${nb},${dim?0.10:0.33})`);
+  fill.addColorStop(1,`rgba(${nr},${ng},${nb},${dim?0.03:0.08})`);
+  ctx.beginPath();ctx.arc(n.x,n.y,r*0.92,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
+  ctx.strokeStyle=`rgba(${nr},${ng},${nb},${dim?0.25:0.82})`;ctx.lineWidth=1.4;ctx.stroke();
+
+  // Inactive overlay
+  if(dim){
+    ctx.beginPath();ctx.arc(n.x,n.y,r*0.92,0,Math.PI*2);
+    ctx.fillStyle='rgba(5,10,21,0.55)';ctx.fill();
+  }
+
+  // Labels
+  ctx.textAlign='center';ctx.shadowBlur=0;
+  const sm=r<15;
+  const fa=dim?0.35:1;
+  ctx.font=`${sm?'6px':'bold 7.5px'} 'Orbitron',monospace`;
+  ctx.fillStyle=`rgba(${nr},${ng},${nb},${fa})`;
+  ctx.fillText(n.lbl,n.x,n.y-(sm?2:4));
+  ctx.font=`${sm?'6px':'7.5px'} 'Share Tech Mono',monospace`;
+  ctx.fillStyle=`rgba(176,204,236,${dim?0.25:0.52})`;
+  ctx.fillText(n.sub,n.x,n.y+(sm?7:7));
+
+  // Live values
+  if(key==='VCORE'){
+    ctx.font="bold 8px 'Orbitron',monospace";ctx.fillStyle='#20C486';
+    ctx.fillText(fU(G.vaultCore),n.x,n.y+18);
+  }
+  if(key==='VSOC'){
+    ctx.font="bold 7px 'Orbitron',monospace";ctx.fillStyle='#ECA020';
+    ctx.fillText(fU(G.vaultSoc),n.x,n.y+17);
+  }
+  ctx.textAlign='left';
+}
+
+function drawGrid(){
+  const W=cv.width,H=cv.height;
+  ctx.strokeStyle='rgba(20,90,160,0.05)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=46){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=46){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  const cg=ctx.createRadialGradient(W*.50,H*.45,50,W*.50,H*.45,210);
+  cg.addColorStop(0,'rgba(158,72,216,0.04)');cg.addColorStop(1,'transparent');
+  ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);
+}
+
+function render(){
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#050A15';ctx.fillRect(0,0,W,H);
+  drawGrid();drawConns();spawn();
+  G.particles=G.particles.filter(p=>!p.done);
+  for(const p of G.particles){p.upd();p.drw();}
+  for(const[k,n] of Object.entries(G.nodes)) drawNode(n,k);
+  ctx.textAlign='right';ctx.fillStyle='rgba(176,204,236,0.12)';
+  ctx.font="8px 'Share Tech Mono',monospace";
+  ctx.fillText(`T+${G.day}d`,cv.width-9,cv.height-32);
+  ctx.textAlign='left';
+  G.time++;
+  requestAnimationFrame(render);
+}
+
+// ── FORMATTERS ──
+function fU(v){
+  if(!v||isNaN(v))return '$0';
+  if(v>=1e9)return '$'+(v/1e9).toFixed(2)+'B';
+  if(v>=1e6)return '$'+(v/1e6).toFixed(2)+'M';
+  if(v>=1e3)return '$'+(v/1e3).toFixed(0)+'K';
+  return '$'+Math.round(v);
+}
+function fK(v){
+  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
+  if(v>=1e3)return(v/1e3).toFixed(0)+'K';
+  return String(v||0);
+}
+function fB(v){
+  if(v>=1e9)return(v/1e9).toFixed(2)+'B';
+  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
+  return Math.round(v||0).toLocaleString();
+}
+
+// ── INIT ──
+function resize(){
+  const el=cv.parentElement;
+  cv.width=el.clientWidth;cv.height=el.clientHeight;
+  buildNodes(cv.width,cv.height);
+}
+window.addEventListener('resize',resize);
+resize();
+
+// Init controls
+setMkt('NEUTRAL');setSc('BASE');setThr('NORMAL');setSpd(5);
+['sl-va','sl-us','sl-px','sl-day'].forEach(id=>{
+  const el=document.getElementById(id);
+  const v=+el.value,mn=+el.min,mx=+el.max;
+  el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%');
+});
+['b-1x','b-5x','b-15x'].forEach(id=>document.getElementById(id).classList.add('b'));
+updStageUI(1);updMotorBUI();
+scrub(0);
+render();
+</script>
+</body>
+</html>

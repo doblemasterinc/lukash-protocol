@@ -1,0 +1,1824 @@
+LUKASH PROTOCOL
+
+BUSINESS MODEL CANVAS
+
+v4.2 — Las Finanzas del Futuro, Disponibles Hoy para Toda Latinoamérica
+
+Identidad Cultural · Experiencia Financiera Gamificada · Manadas como
+Economía Comunitaria · Todo LATAM + Brasil + España
+
+Monte Carlo: 5,000 iteraciones · Riesgo de Ruina: 0.0% · Fase 1: $500K
+
+Ing. Sebastián Botero Pabón | Marzo 2026
+
+CONFIDENCIAL · USO EXCLUSIVO PARA INVERSORES
+
+  ---------------- ---------------- ---------------- ----------------
+  Vault Mediana 5  Riesgo de Ruina   P(B2 < Año 2)    Espiral Muerte
+        años                                           (transición)
+
+  $37.2M (P25–P75:   0.0% — 5,000   86.1% antes del    ~1.4% riesgo
+   $18.9M–$67.1M)    trayectorias        Año 2          B0→B2. B2
+                                                       consolidado:
+                                                          <0.5%
+  ---------------- ---------------- ---------------- ----------------
+
+SOBRE ESTE DOCUMENTO — CAMBIOS v4.1 → v4.2
+
+El BMC v4.2 incorpora los ajustes estratégicos derivados del análisis
+con datos reales de mercado 2024–2025 (Nubank, Global Findex 2025,
+RWA/Tokenización, Credicorp IIF 2024) y la corrección de precisión
+técnica sobre la R_op y la espiral de muerte.
+
+  -------------- --------------- --------------- ------------------------
+       Área           v4.1            v4.2            Justificación
+
+    CAC — tres    CAC único $3    Et.1: $5–$9 |     Nubank: $7 CAC en
+     niveles        (ambiguo)      Et.2 viral:      2023–2024. 80–90%
+                                     $3–$5 |      clientes por referido
+                                    Orgánico     orgánico. Los $3 aplican
+                                  objetivo: $1   solo al flywheel maduro.
+
+  Inversión Fase  $800,000 USD    $500,000 USD      Viable con diseño
+        1                                          técnico colaborativo
+                                                  previo. Equipo mínimo
+                                                   2–3 devs. LP mínimo
+                                                    viable con Market
+                                                         Makers.
+
+  Inversión Fase $6,500,000 USD  $2,000,000 USD     Con flywheel viral
+        2                          — 400–500K         (Manadas = CAC
+                                    usuarios     ~$1/miembro adicional),
+                                                    400–500K usuarios
+                                                   activos mensuales es
+                                                       alcanzable.
+
+  Inversión Fase $12,000,000 USD $5,000,000 USD  Con Vault co-financiando
+        3                                         desde Etapa 2, $5M es
+                                                  suficiente para Jaguar
+                                                  Pay + licencias + RWA.
+
+    Geografía       Colombia,     Todo LATAM +   LatAm fintech: $71,360M
+                     México,        Brasil +      en 2024 → $125,880M en
+                   Argentina,      España. El       2033. Brasil: 200M
+                    Venezuela     Salvador como   personas. El Salvador:
+                                       hub           hub CNAD activo.
+                                  Centroamérica  
+
+       Dato       Dato genérico   Global Findex   7 de 10 tienen cuenta
+   estadístico                       2025 +       digital. Solo 3 de 10
+                                  Credicorp IIF   accede a instrumentos
+                                     2024 +       reales de crecimiento.
+                                  tokenización   RWA: $5B→$24B en 3 años
+                                 RWA verificados         (+380%).
+
+    Narrativa     'El banco que   'Las finanzas   LUKASH no es un banco
+    discursos      LATAM nunca     del futuro,     alternativo — es la
+                      tuvo'        disponibles    puerta de entrada a la
+                                      hoy'           infraestructura
+                                                 financiera on-chain que
+                                                  el mundo institucional
+                                                  ya está construyendo.
+
+  R_op en Motor   'Compensación      R_op no     En B0 el tramo LP quema
+  B (CORRECCIÓN) Vault vía R_op'  interviene en   directamente sin USDC.
+                      en B2      el flujo normal    En B2 el precio se
+                                 del Motor B0 ni   recupera por inercia
+                                       B2         estructural (Motor A +
+                                                 Exit Fee + Anti-Whale +
+                                                 cola diferida). La R_op
+                                                 se acumula idle y no es
+                                                    necesaria para la
+                                                   operación cotidiana.
+
+    Espiral de   Sin distinción     Riesgo de      En B2 el Vault no se
+   Muerte 1.4%      de etapa       transición       toca para defender
+                                  B0→B2. En B2      precio. La inercia
+                                   consolidado        estructural es
+                                      <0.5%       suficiente. Redención
+                                                 soberana queda para DAO
+                                                       en Etapa 3.
+  -------------- --------------- --------------- ------------------------
+
++----------------------------------------------------------------+
+| 01 PROPUESTA DE VALOR                                          |
+|                                                                |
+| Las Finanzas del Futuro · Disponibles Hoy · Para Toda          |
+| Latinoamérica                                                  |
++----------------------------------------------------------------+
+
+El sistema financiero global está migrando a blockchain. No es una
+predicción — es un proceso en marcha. BlackRock, Franklin Templeton,
+Siemens, Apollo: las instituciones más grandes del planeta ya
+tokenizaron activos reales en cadena. LUKASH no llega a competir con la
+banca tradicional: llega a ser la primera puerta de entrada de 650
+millones de latinoamericanos a esa nueva infraestructura financiera —
+construida sobre Solana, respaldada por activos duros, y diseñada para
+la cultura y la economía de la región.
+
+1.1 El Contexto — La Mayor Migración de Capital de la Historia
+
+La tokenización de activos del mundo real (RWA) es el cambio estructural
+más importante en finanzas desde la creación de los fondos mutuos. No es
+especulación. Es infraestructura. Y ya está ocurriendo.
+
+  -------------------- --------------------------------------------
+       Indicador                     Dato verificado
+
+      Mercado RWA             $5,000 millones — experimentos
+   tokenizado en 2022    institucionales (Venturebloxx / RWA.xyz)
+
+      Mercado RWA       $24,000 millones — crecimiento de 380% en
+      tokenizado a       tres años (RedStone, Gauntlet, RWA.xyz,
+    mediados de 2025                   junio 2025)
+
+  Proyección BCG para      $16 billones en activos tokenizados.
+          2030           Standard Chartered proyecta $30 billones
+                                        para 2034
+
+  Quiénes ya lo hacen   BlackRock (fondo BUIDL $2,900M on-chain),
+          hoy            Franklin Templeton (fondos tokenizados),
+                          Siemens (bono €300M on-chain), Apollo
+                          (crédito privado tokenizado). No es el
+                                    futuro — es 2025.
+
+  Claridad regulatoria  EEUU: Ley GENIUS para activos tokenizados.
+      global 2025       Hong Kong: Ordenanza de Stablecoins agosto
+                          2025. Europa: MiCA activo. El entorno
+                            regulatorio global converge hacia
+                                       blockchain.
+
+   La brecha en LatAm    7 de cada 10 adultos en LatAm tiene una
+     (Global Findex       cuenta digital. Pero solo 3 de cada 10
+  2025 + Credicorp IIF accede a instrumentos financieros reales que
+         2024)           le permiten crecer. Brecha activa: ~260
+                                  millones de personas.
+  -------------------- --------------------------------------------
+
+  LA TESIS: Si el sistema financiero global está migrando a blockchain,
+  y 260 millones de latinoamericanos están excluidos del sistema
+  financiero avanzado, la oportunidad es construir la puerta de entrada
+  a esa migración para esos 260 millones. Eso es LUKASH — las finanzas
+  del futuro, disponibles hoy.
+
+1.2 El Estándar KASH — La Reserva Soberana que No Para de Crecer
+
+El corazón del protocolo: cada transacción construye una reserva de
+activos duros reales. Bitcoin nativo. Dólares digitales. SOL con
+rendimiento. Verificable por cualquier persona en tiempo real. Sin
+intermediarios. Sin papeles. Sin promesas.
+
+  PRECIO KASH (P_th) = Valor Total del Vault / Supply Circulante
+
+  El piso de valor que el protocolo garantiza con activos reales. Crece
+  con cada transacción. Verificable on-chain en tiempo real.
+
+  -------- ----------------- ------------- ------------- ------------
+    Año     Vault (mediana,     Supply      Precio KASH  Múltiplo vs
+               escenario       (mediana)                 TGE $0.0001
+               neutral)                                  
+
+   Año 1        $20.9M        3.3B $LUKA      $0.0063        63x
+
+   Año 2        $29.6M        3.3B $LUKA      $0.0090        90x
+
+   Año 3        $33.7M        3.3B $LUKA      $0.0102        102x
+
+   Año 5        $37.2M        3.3B $LUKA      $0.0113        113x
+  -------- ----------------- ------------- ------------- ------------
+
+Fuente: Simulación Monte Carlo — 5,000 iteraciones, 1,825 días. P25–P75
+del Vault a 5 años: $18.9M–$67.1M. Riesgo de ruina total: 0.0%.
+
+1.3 La Experiencia — Las Finanzas del Futuro No Parecen Banco
+
+La banca tradicional genera fricción: formularios, filas, rechazo,
+opacidad. Las finanzas del futuro generan motivación: progresión,
+recompensas, comunidad, transparencia total. LUKASH construye esa
+experiencia sobre una infraestructura blockchain real.
+
+  --------------- ----------------------- --------------------------
+     Elemento          Lo que parece         Lo que es realmente
+    gamificado                            
+
+   Jaguar Score    Un sistema de logros      Historial financiero
+     (niveles      como en un videojuego  on-chain no transferible.
+   Cub→Emperor)                            Define acceso a tasas e
+                                          instrumentos. Nadie puede
+                                            quitárselo al usuario.
+
+  Jungle Arena —  Un juego de habilidades    Educación financiera
+    Misiones de         financieras        progresiva. Cada misión
+       Caza                                enseña conceptos reales:
+                                          ahorro, riesgo, liquidez,
+                                             DeFi. El aprendizaje
+                                          desbloquea instrumentos de
+                                              mayor rendimiento.
+
+  La Bóveda / El  Un marcador que toda la   Dashboard del Vault en
+  Fuego / La Cola comunidad sigue en vivo   lenguaje humano. Crea
+                                          urgencia de participación
+                                             genuina, verificable
+                                                  on-chain.
+
+    cNFT 'Fuego    Un NFT coleccionable     Instrumento financiero
+   Jaguar #1247'   con identidad visual     tokenizado on-chain —
+                           única            equivalente a un CDT o
+                                           participación en fondo.
+                                          APY variable, transferible
+                                            en mercado secundario.
+
+     Duelos de     Un torneo de equipos     Ranking de rendimiento
+      Manadas         con puntuación           financiero entre
+                                          comunidades. Motor viral:
+                                           competición entre pares
+                                            con stakes financieros
+                                                   reales.
+
+  Bet & Win $LUKA  Apuestas de habilidad     Mercado de inversión
+                      entre usuarios      activa gamificado. Gestión
+                                           de riesgo con piel en el
+                                            juego. Motor D Capa 2.
+  --------------- ----------------------- --------------------------
+
+1.4 $LUKA como Identidad Cultural — Pagar es un Acto de Pertenencia
+
+En el ecosistema de Manadas, pagar con $LUKA no es elegir un medio de
+pago. Es una declaración: soy parte de este ecosistema, confío en este
+protocolo, y mis transacciones lo fortalecen. El diferencial de 0.5% de
+descuento (Motor D Capa 2) no es la razón — es la confirmación de que
+tomó la decisión correcta.
+
+  LOS CUATRO ACTOS DE IDENTIDAD $LUKA
+
+  1. Pago en $LUKA (Capa 2 Motor D): 'Elijo fortalecer el protocolo del
+  que soy parte. Mis transacciones queman $LUKA o fortalecen la
+  liquidez.'
+
+  2. Holding del cNFT Jaguar Universal: 'Tengo un instrumento de
+  inversión on-chain — mi Score lo prueba. Suma 10 pts/semana
+  automáticamente.'
+
+  3. Participación activa en Manada: 'Mi comunidad económica existe
+  on-chain, con contratos inteligentes y sin banco intermediario.'
+
+  4. Score nivel Emperor (5,000+ pts): 'Construi una reputacion
+  financiera que ningun intermediario me puede dar ni quitar. Accedo a
+  instrumentos RWA y T-bills tokenizados.'
+
+1.5 Las Manadas — La Economia Comunitaria del Futuro On-Chain
+
+En Latinoamerica existen decadas de tradicion de ahorro colectivo
+informal: las 'natilleras' en Colombia, las 'tandas' en Mexico, las
+'juntas' en Peru. LUKASH no inventa este comportamiento — lo lleva a la
+infraestructura financiera del futuro: contratos inteligentes, auditoria
+on-chain, acceso a activos tokenizados globales.
+
+  -------------- ------------------------ --------------------------
+   Servicio de      Problema real que       Como funciona on-chain
+      Manada             resuelve         
+
+  Crowdfunding y El prestamo al vecino o    Contrato inteligente +
+   Crowdlending  al emprendedor local sin     Jaguar Score como
+                 banco, sin calificacion    historial. LUKAI como
+                   externa, sin fianza.      arbitro. Liquidacion
+                                                 automatica.
+
+     Fondos y    La 'vaca' de emergencias     Fondo on-chain con
+     Seguros      — cuando alguien tiene     condiciones claras y
+    Colectivos   una cirugia de urgencia   ejecucion automatica por
+                   o pierde el empleo.    oraculos. Sin burocracia.
+
+   Marketplaces  La economia circular del $LUKA como moneda interna.
+     Internos    barrio: el panadero, el   Cada transaccion genera
+                   mecanico, el maestro    fees Motor D Capa 2 para
+                     usando $LUKA con             el Vault.
+                       descuentos.        
+
+   Instrumentos      Acceso grupal a           cNFT compartido.
+       DeFi            instrumentos        Rendimiento distribuido
+    Colectivos         inaccesibles       proporcionalmente. Motor D
+                  individualmente: cNFTs        Capas 1/3A/3B.
+                   de $10,000 divididos   
+                    entre 20 personas.    
+
+   Tokenizacion      Primera hipoteca      Motor C (USDC) + Motor D
+   RWA (Fase 3)         colectiva             Capas 3A/3B. SPVs
+                    descentralizada de      on-chain. Rendimiento
+                    LatAm. 10 familias        distribuido entre
+                  compran una propiedad           miembros.
+                    tokenizada juntas.    
+  -------------- ------------------------ --------------------------
+
+  Las Manadas son la natillera del siglo XXI: la misma logica de
+  confianza comunitaria de siempre, ahora con contratos inteligentes,
+  rendimiento real on-chain, y acceso a la economia financiera global de
+  los activos tokenizados.
+
+1.6 Los Cuatro Motores — La Maquina de Captura de Valor
+
+Cuatro motores se activan secuencialmente y se retroalimentan. Cada uno
+captura valor de un segmento distinto de usuario y lo convierte en
+capital permanente para la Reserva Soberana. La regla 35/35/15/15 es
+universal, automatica e inamovible.
+
+  ------- -------- --------- -----------------------------------------
+   Motor   Divisa     Fee        Identidad — que captura y como lo
+                                    convierte en valor soberano
+
+  Motor A   SOL    4% / 2.5%      EL CAZADOR: Captura el capital
+                               especulativo del mercado cripto. Cada
+                             trade en el DEX convierte SOL en Bitcoin,
+                              SOL/LST y USDC permanentes en el Vault.
+                              El FOMO del mercado financia la Reserva
+                                             Soberana.
+
+  Motor B  $LUKA    2.5% /      EL MOTOR INTERNO: Cada transaccion
+                     1.5%     cotidiana en la App quema $LUKA (B0) o
+                                fortalece la liquidez (B2). Usar el
+                             protocolo lo hace mas fuerte. El usuario
+                                    y el sistema ganan juntos.
+
+  Motor C   USDC     0.5%    EL MOTOR DE ESCALA: Las finanzas del dia
+                             a dia. El cafe, la nomina, la renta. Con
+                                 fee invisible del 0.5%, cada pago
+                                cotidiano genera presion de compra
+                               constante sobre $LUKA. Volumen masivo
+                                    sobre supply fijo = precio
+                                    estructuralmente creciente.
+
+  Motor D $LUKA /   0%→3.5%   EL ALMA DEL PROTOCOLO: Las Manadas, el
+           Multi              gaming, los cNFTs, los eventos, el DeFi
+                                 externo. Donde $LUKA es identidad
+                             cultural, no solo activo financiero. Capa
+                                0: base silenciosa. Capa 2: corazon
+                               cotidiano. Capas 3A/3B: puente con el
+                                      mundo DeFi tokenizado.
+  ------- -------- --------- -----------------------------------------
+
+1.7 Posicionamiento Competitivo — El Error que LUKASH Corrige
+
+  La leccion de OlympusDAO, Axie Infinity y Stepn es identica: los tres
+  proyectos fallaron por el mismo error estructural — emision
+  inflacionaria sin piso de respaldo real. LUKASH es la interseccion
+  corregida de los cuatro modelos mas poderosos del ecosistema cripto y
+  neobancario.
+
+  ------------- ---------------- ---------------- ------------------
+     Modelo     Lo que hace bien      Error         Correccion en
+   Referencia                      estructural          LUKASH
+                                      fatal       
+
+   OlympusDAO    Reserve-backed      Emision       Burn algoritmico
+      (OHM)      token con piso   inflacionaria   desde Motor A. El
+                    de valor      (rebase). Sin   supply solo baja.
+                   matematico    deflacion real.  
+
+  Axie Infinity      Gaming          Emision        Jungle Arena:
+                 financiero con    ilimitada de     economia entre
+                 economia real     recompensas.    participantes +
+                  entre pares        Espiral       quemas Motor B.
+                                  inflacionaria      Sin emision
+                                    terminal.       inflacionaria.
+
+      Stepn     Play-to-Earn con  Emitia tokens   Vault como reserva
+                 activo fisico      para pagar      que impide el
+                    tangible       recompensas.   colapso por diseno
+                                     Colapso         matematico.
+                                   inevitable.    
+
+  Xade / Valora Neofinanzas para    Sin Vault       LUKAI + Jaguar
+                   LatAm con         propio.      Score + Manadas =
+                interfaz simple  Retencion debil.     retencion
+                                 Sin gamificacion    estructural
+                                      real.            medible.
+  ------------- ---------------- ---------------- ------------------
+
+1.8 Filosofia — Las Finanzas del Futuro, Hoy
+
+  LUKASH es una Academia de Soberania Financiera.
+
+  El volumen agresivo del Motor A captura capital especulativo.
+
+  La identidad cultural del Motor D lo convierte en comunidad real.
+
+  La experiencia gamificada de Jungle Arena lo convierte en educacion
+  financiera.
+
+  Las Manadas lo convierten en economia comunitaria on-chain.
+
+  El Estandar KASH lo convierte en reserva soberana permanente.
+
+  El exito se mide en Soberania Financiera Validada: Jaguar Score alto +
+  tenencia de cNFTs activos + participacion en Manadas + Vault
+  creciendo.
+
+  Las finanzas del futuro ya estan siendo construidas por BlackRock,
+  Franklin Templeton y los grandes gestores del mundo. LUKASH construye
+  la misma infraestructura para los 260 millones de latinoamericanos que
+  aun estan fuera.
+
++----------------------------------------------------------------+
+| 02 SEGMENTOS DE CLIENTES                                       |
+|                                                                |
+| Todo LATAM + Brasil + España — 650M de Personas, Una Sola      |
+| Infraestructura                                                |
++----------------------------------------------------------------+
+
+El protocolo opera con dos segmentos psicograficos que convergen en la
+plataforma, desplegados en una geografia de prioridad escalonada que
+cubre todo el continente latinoamericano, Brasil, y la diaspora
+hispanohablante en España.
+
+2.1 Dos Segmentos — Una Plataforma
+
+  ------------- ------------------------- -------------------------
+    Parametro    Segmento A — Nativos de   Segmento B — Buscadores
+                la Atencion (12–25 anos)  de Soberania (25–45 anos)
+
+   Motivacion       Estatus digital,          Proteccion contra
+    Principal    pertenencia a manadas,           inflacion
+                entretenimiento y acceso   latinoamericana, pagos
+                 temprano a creacion de   transfronterizos, acceso
+                         riqueza               a instrumentos
+                                           financieros reales que
+                                             les permitan crecer
+
+   Barrera de   Falta de capital inicial  Desconfianza historica en
+     Entrada    y desconocimiento tecnico cripto y falta de tiempo
+                   de DeFi/blockchain     para navegar complejidad
+                                                   tecnica
+
+    Solucion     Jungle Arena, airdrops        Interfaz LUKAI
+     LUKASH      por hitos, Jaguar Score  conversacional; respaldo
+                     como curriculum       real del Estandar KASH
+                   financiero digital     auditado on-chain; acceso
+                        on-chain            a tokenizacion RWA en
+                                                   Fase 3
+
+   Palanca de    Gamificacion profunda,    Seguridad institucional
+    Retencion    narrativa de manada con     del Jaguar Shield y
+                   lealtad emocional y     transparencia total del
+                 estatus en Jungle Arena   Vault Core verificable
+                                                  on-chain
+
+      Canal     Viralidad en redes, KOLs  LUKAI conversacional, App
+    Primario     con Jaguar Lock, Jungle   con dashboard de Vault,
+                   Arena peer-to-peer         reportes on-chain
+                                                verificables
+
+    Producto     cNFT Nativo $LUKA (Capa   cNFT Estandar SOL/USDC
+     Central    0): staking sin fee. cNFT (Capa 3B) como puerta de
+     (cNFT)      Jaguar Universal cuando  entrada. Upgrade a Jaguar
+                  el Score lo habilite.   Universal con el tiempo.
+  ------------- ------------------------- -------------------------
+
+2.2 Mapa Geografico — Prioridades y CAC por Mercado
+
+  CAC DE REFERENCIA: Nubank reporto $7 CAC en 2023–2024 con 80–90% de
+  clientes llegando por referido organico. Cada Manada tiene un CAC de
+  ~$1 por miembro adicional una vez que el lider esta activo.
+
+  ----------- --------------- --------- --------- -----------------------------------
+   Prioridad   Pais / Region  CAC Et.1  CAC Et.2              Estrategia
+                                          viral   
+
+       1         Colombia       $5–$8     $2–$4      Hub legal y de conocimiento.
+                                                  Sandbox SFC. Nequi y Daviplata como
+                                                    referencia de adopcion digital.
+                                                         Lanzamiento primario.
+
+       1          Mexico        $5–$8     $2–$4   130M personas. Nubank ya valido el
+                                                  mercado. Mayor ecosistema joven de
+                                                   LatAm. Lanzamiento simultaneo con
+                                                               Colombia.
+
+       2       El Salvador +    $1–$3     $1–$2    Hub regulatorio CNAD activo. Baja
+               Centroamerica                           competencia fintech. CAC
+                                                      extremadamente bajo por ser
+                                                    primeros. Centroamerica: Costa
+                                                   Rica, Guatemala, Honduras, Panama
+                                                          desde El Salvador.
+
+       2         Argentina      $3–$5     $2–$4       45M personas. Alta adopcion
+                                                      digital. Proteccion contra
+                                                  inflacion = driver perfecto para el
+                                                       Vault. Expansion Fase 2.
+
+       2      Peru + Chile +    $4–$6     $2–$4       IIF Credicorp 2024 muestra
+                  Ecuador                             crecimiento consistente en
+                                                    inclusion. Peru y Ecuador: alta
+                                                  base de poblacion sub-bancarizada.
+                                                     Chile: mayor sofisticacion =
+                                                          Segmento B fuerte.
+
+       3          Brasil        $5–$8     $3–$5    200M personas. Mercado mas grande
+                                                  de LatAm. Requiere localizacion en
+                                                    portugues. Nubank valido que el
+                                                   modelo funciona. Prioridad 3 por
+                                                    requerimiento de idioma, no por
+                                                          falta de potencial.
+
+       3        Venezuela +     $2–$4     $1–$3     Alta motivacion por inflacion e
+                 Bolivia +                          inestabilidad monetaria. Riesgo
+                 Paraguay                          regulatorio variable. Entrada con
+                                                         cuidado estrategico.
+
+       4          España       $20–$40   $10–$20   4.5M latinoamericanos residentes.
+                (diaspora)                             Motor principal: remesas
+                                                    transfronterizas. Alto LTV por
+                                                       volumen de remesas. Nicho
+                                                          especifico Fase 3.
+  ----------- --------------- --------- --------- -----------------------------------
+
+2.3 Funnel de Soberania — Trayectoria del Usuario
+
+  ------ --------------- --------------- ----------- ----------------------
+   Fase      Nombre      Accion Central     Motor          Resultado
+                                           Activo    
+
+  Fase 1  Entrenamiento    Simulador,      Motor A        Jaguar Score
+                           onboarding       (DEX)     construido. Airdrops
+                          educativo por               por hitos. Identidad
+                          LUKAI, Jungle               financiera digital.
+                         Arena, primeros              Primer cNFT emitido.
+                          cNFTs nativos              
+
+  Fase 2  Transaccional  Pagos en $LUKA,  Motor B +    Ahorro comunitario
+                             Manadas       Motor D     activo. $LUKA como
+                         activas, Bet &                 medio de pago e
+                           Win, cNFTs                      identidad.
+                         DeFi, Duelos de              Instrumentos cNFT de
+                             Manadas                   mayor rendimiento.
+
+  Fase 3    Soberania       Pagos en      Motor C +  Dividendos reales del
+                           stablecoin,   ENZ + Capas   Vault. $LUKA como
+                          DeFi externo      3A/3B      accion preferente.
+                          Capas 3A/3B,                Acceso a la economia
+                         dividendos del               financiera on-chain
+                         Vault, acceso a                    global.
+                         RWA tokenizados             
+  ------ --------------- --------------- ----------- ----------------------
+
+2.4 Costo de Salida Psicologico — El Foso de Retencion
+
+  El Jaguar Score acumulado representa la reputacion financiera digital
+  verificable on-chain del usuario. Abandonar el protocolo implica
+  perder ese historial construido. Los instrumentos cNFT de mayor
+  rendimiento estan gated por el nivel del Score — el aprendizaje es un
+  activo escaso con valor economico real.
+
+  Este mecanismo genera retencion organica sin incentivos artificiales
+  de corto plazo ni dependencia de soporte humano.
+
+  ⚑ PENDIENTE FASE APP — Segmentacion local por pais: Go-to-market
+  especifico: regulacion local, localizacion de App, partnerships con
+  neobancos regionales (Nequi, Daviplata, Yape). Brasil requiere version
+  en portugues.
+
++----------------------------------------------------------------+
+| 03 CANALES DE DISTRIBUCION Y ACCESO                            |
+|                                                                |
+| Ecosistema Solana · Wallet Interactiva · Nodos Sociales ·      |
+| Dashboard Publico                                              |
++----------------------------------------------------------------+
+
+3.1 Infraestructura de Red — Solana como Ferrocarril
+
+La red Solana proporciona liquidacion con finalidad de sub-segundo y
+costos de transaccion de $0.00025–$0.0005 USD. La arquitectura es 100%
+Solana-nativa: cBTC (cbBTC nativo sin Wormhole), JitoSOL, mSOL y pools
+en Meteora — eliminando riesgo de bridge en todos los activos del Vault.
+
+3.2 Canales de Distribucion
+
+  ------------- ---------------- ------------ -------------- ---------------
+      Canal         Funcion        Etapa de    CAC Relativo       Motor
+                                  Activacion                   Alimentado
+
+  Jungle Arena     Onboarding       Fase 1    $5–$9 (campana Motor D Capa 2
+                  gamificado.                    inicial)    
+                  Simulador de                               
+                 Jaguar Score.                               
+                    Misiones                                 
+                  educativas.                                
+                   Puerta de                                 
+                  entrada para                               
+                  Segmento A.                                
+
+  App LUKASH +       Canal          Fase 2     $3–$5 (viral  Motor B + Motor
+   LUKAI v4.1    transaccional                   maduro)            D
+                   principal.                                
+                Manadas, pagos,                              
+                cNFTs, servicios                             
+                    Motor D.                                 
+                  Dashboard La                               
+                   Boveda/El                                 
+                 Fuego/La Cola.                              
+
+    Dashboard     Narrativa de    Desde TGE        $0 —          Motor A
+  Publico — La      progreso                   coordinacion  
+     Boveda     colectivo hacia                   social     
+                K_min $25M. +15%                             
+                volumen organico                             
+                 en meses 3–12.                              
+
+  KOLs — Jaguar Red de creadores   Fase 1–2     $0 directo   Motor A + Motor
+      Lock       con vesting en                (vesting por         D
+                $LUKA por hitos                  volumen)    
+                de volumen. Sin                              
+                    dumping                                  
+                   inmediato.                                
+
+    Manadas —    Cada lider de      Fase 2       ~$1 por     Motor D Capa 2
+   Lideres de   Manada adquiere                  miembro     
+     Manada         miembros                    adicional    
+                adicionales con                              
+                CAC marginal ~$1                             
+                  con flywheel                               
+                    activo.                                  
+
+  DEX (Meteora  Canal de trading  Desde TGE   N/A — captura,     Motor A
+   / Jupiter)   externo. Motor A              no adquisicion 
+                   principal.                                
+
+  CEX (Fase 2+)   Listados en      Fase 2+     Cubierto por      Motor A
+                   exchanges                    asignacion    (amplificado)
+                 centralizados.                   supply     
+                 Financiado por                              
+                     wallet                                  
+                 Marketing/CEX                               
+                 (10% supply).                               
+  ------------- ---------------- ------------ -------------- ---------------
+
+3.3 Proof of Roar — Viralidad Auditable
+
+  PROOF OF ROAR — Mecanismo de Viralidad Auditable
+
+  Todo contenido viral sobre el protocolo puede verificarse on-chain
+  para recibir recompensas.
+
+  Lideres de Manada con incentivos alineados al largo plazo.
+
+  Educacion obligatoria: los cNFTs de mayor rendimiento estan gated por
+  Jaguar Score.
+
+  CAC proyectado: $5–$9 (Et.1) → $3–$5 (Et.2 viral) → $1 o menos
+  (organico objetivo).
+
+  Dashboard La Boveda / El Fuego / La Cola: urgencia de participacion
+  genuina verificable on-chain.
+
++----------------------------------------------------------------+
+| 04 RELACIONES CON CLIENTES                                     |
+|                                                                |
+| Jungle Arena · Gamificacion Financiera · Retencion Organica    |
++----------------------------------------------------------------+
+
+El modelo de relacion opera sin dependencia de soporte humano. LUKAI
+v4.1 actua como el punto de contacto primario — educativo, operativo y
+emocional. Los cNFTs son el vehiculo de la relacion financiera duradera.
+
+4.1 Metricas de Retencion Validadas
+
+  ---------------- ---------------- ------------------ ----------------
+        +23%              5x               3.2x             $3–$5
+
+   Mas ahorro con   Retencion vs.     Engagement en     CAC proyectado
+    Jaguar Score    adquisicion de     ecosistemas         Etapa 2
+      visible       usuario nuevo    descentralizados     (flywheel
+    (referencia                      vs. aplicaciones     activo) vs
+    ecosistemas                       tradicionales    $5–$15 neobanco
+       DeFi)                                           
+  ---------------- ---------------- ------------------ ----------------
+
+4.2 Modelo de Relacion por Etapa del Funnel
+
+  --------------- ----------------- ----------------- -------------- --------------
+       Etapa      Tipo de Relacion    Mecanismo de     cNFT en esta   Indicador de
+                                          LUKAI           Etapa          Exito
+
+   Entrenamiento   Mentor–Aprendiz     Onboarding      cNFT Nativo    Jaguar Score
+                                     conversacional   $LUKA (Capa 0)    inicial.
+                                    guiado. Simulador — staking sin  Primer airdrop
+                                      con feedback     fee, primer     recibido.
+                                    inmediato. Jungle  instrumento.  
+                                    Arena como tutor                 
+                                       gamificado.                   
+
+   Transaccional    Companero de      Orquestacion     cNFT Jaguar     Volumen en
+                       Manada            B0/B2.         Universal.      Motor D
+                                    Notificaciones de  Instrumentos  activo. Manada
+                                    Vault. Alertas de  DeFi premium      con 3+
+                                        Throttle.       gated por       miembros
+                                     Recomendaciones      Score.        activos.
+                                     de instrumentos                 
+                                       por Score.                    
+
+     Soberania        Socio del       Dashboard de    cNFT Estandar   Distribucion
+                      Protocolo        dividendos.     3B para DeFi  de yield desde
+                                       Reporte de        externo.     mes 13. LTV
+                                    P_KASH. Votacion  Upgrade Opcion    maximo.
+                                      de gobernanza   C disponible.  
+                                    (Etapa 4). Acceso                
+                                     a instrumentos                  
+                                          RWA.                       
+  --------------- ----------------- ----------------- -------------- --------------
+
++----------------------------------------------------------------+
+| 05 FUENTES DE INGRESOS                                         |
+|                                                                |
+| Los Cuatro Motores · Su Identidad · Sus Flujos · La Sinergia   |
++----------------------------------------------------------------+
+
+Los cuatro motores economicos son mecanismos de captura de valor con
+identidades distintas que se activan secuencialmente y se
+retroalimentan. La regla 35/35/15/15 los unifica a todos. La R_op no
+interviene en el flujo operativo normal del Motor B0 ni B2 — la
+recuperacion del precio en B2 ocurre por inercia estructural de los
+mecanismos existentes.
+
+5.1 Jerarquia de Fees por Etapa de Madurez
+
+  ----------- ------ ---------------- ----------- --------------------------------
+     Etapa     Fee        Fee WL         Motor        Descripcion Estrategica
+               Base                    Principal  
+
+   Etapa 1 —   4.0%        2.5%         Motor A   Deflacion agresiva. Acumulacion
+    Genesis                                       maxima del Vault. Bootstrapping
+                                                    desde TGE. Referente: $WIF.
+
+  Etapa 2A —   2.5%        1.5%       A + B0 + D  App en adopcion activa. Vault en
+   App / B0                            (4 capas)   trayectoria hacia K_min $25M.
+                                                      Motor D 4 capas activas.
+
+  Etapa 2B —   2.5%        1.5%       A + B2 + D  K(t) >= $25M on-chain. Motor B2
+   Madurez /                           (4 capas)    activo (tramo LP recircula).
+      B2                                          Referente: $BONK ciclo completo.
+
+   Etapa 3 —   0.5%        0.5%        A + B2 +    Supply fijo 3.3B. ENZ activa.
+   Soberania          (convergencia)     C + D    $LUKA como accion preferente con
+                                                         dividendos reales.
+  ----------- ------ ---------------- ----------- --------------------------------
+
+5.2 Motor A — El Cazador: Capturando el Capital Especulativo
+
+Cada trade en el DEX convierte SOL en activos duros permanentes en el
+Vault. El especulador recibe exposicion al token. El protocolo recibe la
+reserva. El FOMO del mercado financia la Reserva Soberana.
+
+  FLUJO COMPLETO MOTOR A — Ejemplo: 100 SOL compran $LUKA en DEX (fee 4%
+  = 4 SOL)
+
+  BUFER: SOL acumulados hasta ~$500 equivalente → 3 swaps fraccionados
+  via Jito bundle privado
+
+  DISTRIBUCION ATOMICA:
+
+  1.40 SOL (35%) → Jupiter → activos KASH → VAULT CORE [35%→cBTC ·
+  25%→USDC · 15%→SOL · 20%→LST · 5%→lending]
+
+  1.40 SOL (35%) → Jupiter compra $LUKA → BURN PERMANENTE [presion de
+  compra + supply baja]
+
+  0.60 SOL (15%) → Wallet O&M
+
+  0.60 SOL (15%) → Jupiter compra $LUKA → Contrato de Staking
+
+  EFECTOS NETOS: Supply $LUKA baja | Vault sube | Precio con soporte
+  sube | Stakers recompensados
+
+5.3 Motor B — El Motor Interno: Usar el Protocolo lo Fortalece
+
+Cada transaccion cotidiana en la App genera un fee en $LUKA. En B0 quema
+directamente. En B2 fortalece la liquidez del pool. En ambos estados, el
+Asset Layer compra Hard Assets. El Asset Layer NUNCA quema. La R_op NO
+interviene en el flujo normal del Motor B — ni en B0 ni en B2.
+
+  --------------- -------------------------- --------------------------
+       Tramo        Estado B0 (K < $25M) —    Estado B2 (K >= $25M) —
+   (35/35/15/15)       Deflacion activa          Estabilidad activa
+
+  Liquidity Layer     BURN permanente a       Recirculacion al pool de
+       (35%)      direccion null. Sin USDC.   liquidez (NO quema). Sin
+                    Sin R_op. La quema es        R_op. El precio se
+                  directa y gratuita para el    recupera por inercia
+                           sistema.            estructural: Motor A +
+                                              Exit Fee + Anti-Whale +
+                                                   cola diferida.
+
+    Asset Layer       Compra Hard Assets         Compra Hard Assets
+       (35%)        (cBTC/SOL/LST). NUNCA      (cBTC/SOL/LST). NUNCA
+                       quema. Sin R_op.       quema. Sin R_op. La R_op
+                                             se acumula idle del yield
+                                                 del Vault — no es
+                                                 necesaria para la
+                                                operacion cotidiana.
+
+   Reward Layer    $LUKA directo a stakers    $LUKA directo a stakers
+       (15%)               activos.                   activos.
+
+  O&M Layer (15%) Swap inmediato a SOL/USDC  Swap inmediato a SOL/USDC
+                        → Wallet O&M.              → Wallet O&M.
+  --------------- -------------------------- --------------------------
+
+  MECANISMOS DE INERCIA ESTRUCTURAL EN B2 — Sin tocar el Vault ni la
+  R_op:
+
+  1. Motor A activo todos los dias: mientras haya cualquier volumen de
+  trading, el 35% Asset Layer compra Hard Assets y el 35% LP crea
+  presion compradora sobre $LUKA. No para.
+
+  2. Jaguar Exit Fee (5%/3%/1%): las ventas en panico generan un fee que
+  va al 100% al Vault Core. El panico mismo fortalece la reserva.
+
+  3. Anti-Whale: los fees escalonados de transacciones grandes van al
+  Vault Core.
+
+  4. Cola diferida: las quemas acumuladas durante CONSERVADOR y
+  DEFENSIVO en B0 se ejecutan al 10%/semana al normalizar el precio —
+  deflacion adicional en el momento de recuperacion.
+
+  5. Arbitraje natural: cuando el precio de mercado cae muy por debajo
+  del Precio KASH, cualquier inversor racional compra $LUKA barato. El
+  mercado lo ejecuta solo.
+
+5.4 Motor C — El Motor de Escala: Las Finanzas del Dia a Dia
+
+En Fase 3 (Supply fijo 3.3B, ENZ activa), cada pago cotidiano en USDC
+genera presion de compra constante sobre $LUKA con fee de 0.5%. Volumen
+masivo sobre supply fijo = precio estructuralmente creciente.
+
+  FLUJO COMPLETO MOTOR C — Usuario paga 200 USDC (fee 0.5% = 1 USDC)
+
+  0.35 USDC (35%) → directo al Vault KASH (refuerza buffer USDC Capa 1)
+
+  0.35 USDC (35%) → Jupiter compra $LUKA → inyeccion al LP [presion de
+  compra real]
+
+  0.15 USDC (15%) → Wallet O&M
+
+  0.15 USDC (15%) → Jupiter compra $LUKA → distribuye a stakers
+
+  En Fase 3, cada transaccion cotidiana genera presion de compra neta
+  positiva sobre $LUKA con supply fijo.
+
+5.5 Motor D — El Alma: $LUKA como Identidad Cultural (4 Capas)
+
+  ACTUALIZACION CRITICA v4.2 vs v3.0: En v3.0 el Motor D tenia un fee
+  unico del 1.5%. En v4.2 opera con 4 capas diferenciadas. El
+  diferencial de 0.5% entre pagar en $LUKA vs SOL/USDC es constante — no
+  es penalizacion, es premio.
+
+  ------ -------------- ------- ---------- ------------------------------------
+   Capa     Servicio      Fee      Fee       Identidad y funcion estrategica
+                         $LUKA   SOL/USDC  
+
+  Capa 0 Staking $LUKA    0%       N/A         La base silenciosa. Exencion
+            · Pools                             absoluta y permanente. El
+            internos                         rendimiento proviene del 15% de
+                                            staking de los otros motores — sin
+                                                       doble cobro.
+
+  Capa 1  DeFi interno   1.5%   Solo $LUKA  El club privado. Acceso gated por
+           premium —                         cNFT Jaguar Universal (gated por
+          instrumentos                       Jaguar Score). APY variable. Sin
+             $LUKA                                 garantia de capital.
+
+  Capa 2   Servicios      3%       3.5%     El corazon de la comunidad. Donde
+          cotidianos:                          $LUKA es identidad cultural.
+         Crowdfunding ·                    Diferencial 0.5% premia usar $LUKA.
+         Crowdlending ·                    Principal motor de adopcion masiva.
+            Fondos ·                       
+           Eventos ·                       
+         Marketplaces ·                    
+         Jungle Arena ·                    
+           Bet & Win                       
+
+   Capa   DeFi externo   1.5%      Swap     El puente soberano hacia el mundo
+    3A     en $LUKA —           previo sin   DeFi tokenizado. El rendimiento
+            Kamino,              cargo +       externo va 100% al usuario.
+         Marginfi, RWA             1.5%    
+          tokenizados                      
+
+   Capa   DeFi externo    N/A       2%      La puerta de entrada para usuarios
+    3B     SOL/USDC —                      sin $LUKA. Opera como Motor C. Menor
+         cNFT Estandar                         friccion para el Segmento B.
+  ------ -------------- ------- ---------- ------------------------------------
+
+5.6 La Sinergia entre Motores — El Ciclo Virtuoso
+
+- Motor A captura capital externo → Vault crece → P_KASH sube → atrae
+  mas compradores → mas volumen Motor A.
+
+- Motor D genera actividad cotidiana → alimenta Motor B → $LUKA se quema
+  o recircula → precio mejora → mas incentivo para participar en Motor
+  D.
+
+- Motor C en Fase 3 (supply fijo 3.3B) → compra $LUKA constantemente →
+  presion de compra neta positiva → P_KASH sube → dividendos del Vault
+  crecen.
+
+- Jaguar Score gatea acceso a instrumentos premium Motor D Capa 1 →
+  participar mas da acceso a mas beneficios → mas fees → Vault mas
+  fuerte.
+
+  RESULTADO: Cada interaccion humana con el protocolo — desde el trade
+  mas especulativo hasta el pago del cafe mas mundano — termina en el
+  mismo lugar: la Reserva Soberana crece, $LUKA es mas escaso, y el
+  usuario que participo tiene mas que cuando empezo.
+
+5.7 Distribucion Universal — Regla 35/35/15/15
+
+  ------------ ---------- ------------------------------------------- --------------- -------------------
+     Motor       Divisa             35% Vault / Asset Layer           35% LP / Quema     15% O&M + 15%
+                                                                                            Staking
+
+    Motor A       SOL             → activos KASH → Vault Core         → compra $LUKA   → Wallet O&M / →
+     (SOL)                 [35%cBTC·25%USDC·15%SOL·20%LST·5%lending]     → BURN +       $LUKA → Staking
+                                                                          presion     
+
+  Motor B — B0   $LUKA    → Asset Layer: Hard Assets. Sin R_op. NUNCA → BURN directo  → Swap SOL/USDC O&M
+    ($LUKA)                                 quema.                      a null. Sin    / → $LUKA stakers
+                                                                           R_op.      
+
+  Motor B — B2   $LUKA     → Asset Layer: Hard Assets. Sin R_op. La   → Recirculacion → Swap SOL/USDC O&M
+    ($LUKA)                     R_op se acumula idle del yield.       LP (NO quema).   / → $LUKA stakers
+                                                                        Precio por    
+                                                                          inercia     
+                                                                       estructural.   
+
+    Motor C       USDC      → directo al Vault (buffer USDC Capa 1)   → compra $LUKA   → Wallet O&M / →
+     (USDC)                                                                → LP          $LUKA stakers
+
+  Motor D Capa    N/A                    EXENTO TOTAL                  EXENTO TOTAL      EXENTO TOTAL
+       0                                                                              
+
+    Motor D      $LUKA            → Asset Layer: Hard Assets          B0: BURN / B2:    → Swap O&M / →
+  Capas 1/2/3A                                                         Recirculacion     $LUKA stakers
+    ($LUKA)                                                                 LP        
+
+  Motor D Capa  SOL/USDC  → Vault directo (buffer USDC o Hard Assets)     → $LUKA       → O&M / → $LUKA
+       3B                                                                LP/quema           stakers
+   (SOL/USDC)                                                                         
+  ------------ ---------- ------------------------------------------- --------------- -------------------
+
+5.8 Proyecciones de Ingresos por Etapa
+
+  ------------------ ---------------- -------------- ----------------
+       Metrica         Rango Minimo       Rango      Rango Optimista
+                                        Sostenible   
+
+  ETAPA 1 — Motor A                                  
+    principal (30                                    
+        dias)                                        
+
+    Volumen Diario         $5M             $35M           $120M
+
+      Fees (30d)           $6M             $42M           $144M
+
+     Aporte Vault         $1.47M         $10.29M         $35.28M
+      (35%x70%)                                      
+
+   Tokens Quemados      480M $LUKA      1.8B $LUKA      3.2B $LUKA
+        (30d)                                        
+
+   ETAPA 2 — Motor                                   
+      A + B + D                                      
+      (mensual)                                      
+
+    Volumen (DEX +        $250M          $1,200M         $3,500M
+         App)                                        
+
+    Fees Motor A+B        $6.25M           $30M           $87.5M
+
+  Motor D adicional       $625K            $3M            $8.75M
+       al Vault                                      
+
+   ETAPA 3 — Motor                                   
+   C + D (mensual)                                   
+
+    Transacciones          100M            300M            550M
+      Mensuales                                      
+
+   Volumen Mensual        $300M           $900M          $1,650M
+        (USD)                                        
+
+     Fees Motor C         $1.5M           $4.5M           $8.25M
+
+  Motor D adicional       $750K           $2.25M          $4.12M
+  ------------------ ---------------- -------------- ----------------
+
+5.9 Rendimientos del Vault — Regla 70/30
+
+  ---------- ------------- ------------- ---------------- -------------
+   Capital   Yield LST 20%  Yield USDC     Yield Total     Aporte R_op
+  del Vault     (6–8%)      Lending 5%        Anual           (30%)
+                              (4–8%)                      
+
+     $10M     $120K–$160K    $20K–$40K     $140K–$200K      $42K–$60K
+
+     $25M     $300K–$400K   $50K–$100K     $350K–$500K     $105K–$150K
+   (K_min)                                                
+
+     $50M     $600K–$800K   $100K–$200K     $700K–$1M      $210K–$300K
+  ---------- ------------- ------------- ---------------- -------------
+
+El 70% del yield del Vault se reinvierte automaticamente para
+crecimiento compuesto. El 30% alimenta la Reserva Operativa en USDC
+(R_op), que se acumula como reserva de estabilizacion pero no interviene
+en el flujo operativo normal del Motor B0 ni B2. En B0 el tramo LP quema
+directamente sin necesitar USDC. En B2 el precio se recupera por inercia
+estructural. La redencion soberana queda reservada como opcion del DAO
+en Etapa 3.
+
+5.10 Distribucion Perpetua — Mes 13+
+
+A partir del hito de activacion del Jaguar Lock (KASH Core alcanza $30M
+o 12 meses, lo que ocurra primero), el 30% de los fees destinados al
+componente KASH Sociedad se vuelven liquidos y directos a perpetuidad —
+flujo de caja constante respaldado por utilidad real, sin dilucion de
+los socios fundadores.
+
++----------------------------------------------------------------+
+| 06 ACTIVIDADES CLAVE                                           |
+|                                                                |
+| Orquestacion de Estados · Gestion del Vault · Jaguar Shield ·  |
+| Throttle Dual                                                  |
++----------------------------------------------------------------+
+
+6.1 Orquestacion de Estados por LUKAI v4.1
+
+  ---------------- ------------------------------------------------
+     Actividad                       Descripcion
+
+  Conmutacion B0 ↔    Monitoreo de K(t) en tiempo real via Pyth.
+         B2         Conmutacion automatica al cruzar K_min = $25M.
+                     El tramo LP pasa de quemar a recircular. Sin
+                                 intervencion humana.
+
+  Routing cNFT por Identifica tipo de cNFT y activo para aplicar la
+    Capa Motor D       capa correcta (0/1/2/3A/3B) con su fee y
+                      distribucion especificos. Un solo cobro al
+                                       usuario.
+
+   Rebalanceo del    Compra gradual de Hard Assets con el 35% del
+       Vault         Asset Layer. El Vault existente no se toca —
+                                solo nuevas entradas.
+
+    Curaduria de   Evalua riesgo, liquidez y rendimiento historico.
+    instrumentos   Solo habilita instrumentos que superan el filtro
+        cNFT           LUKAI. Actualiza APY variable on-chain.
+
+  Calibracion del  Actualizacion en tiempo real segun participacion
+    Jaguar Score          activa en Motor D. Capa 0 exenta.
+  ---------------- ------------------------------------------------
+
+6.2 Throttle Dinamico — Dos Algoritmos Independientes
+
+  DISTINCION CRITICA: Son dos algoritmos con logicas inversas.
+
+  Etapas 1–2 (pre-ENZ): Controla la VELOCIDAD DE QUEMA del tramo LP
+  segun precio vs EMA30. Protege la R_op en bear markets.
+
+  Etapa 3 (post-ENZ): Controla la ESTRATEGIA DE COMPRA DE HARD ASSETS
+  con el yield. BULL acumula USDC. BEAR compra Hard Assets agresivamente
+  con el USDC acumulado.
+
+  IMPORTANTE: En B2 el Vault NO se toca para defender el precio de
+  $LUKA. La defensa opera a traves de los flujos de fees (Motor A + Exit
+  Fee + Anti-Whale + cola diferida) — no del Vault existente ni de la
+  R_op.
+
+6.3 Gestion Contra-Ciclica del Vault — Etapas 1 y 2
+
+  --------------- ------------- --------------- --------------------
+      Regimen        Activos     USDC (nuevas    Logica Estrategica
+                    Volatiles      entradas)    
+                     (nuevas                    
+                    entradas)                   
+
+  BEAR Confirmado      70%            30%           Acumulacion
+  (EMA30 < EMA90                                  contra-ciclica —
+       BTC)                                     compra activos duros
+                                                  baratos para el
+                                                   proximo bull.
+
+      NEUTRAL          75%            25%       Proporcion estandar.
+                                                     Sin sesgo
+                                                    direccional.
+
+  BULL Confirmado      40%            60%       Construye USDC para
+  (EMA30 > EMA90                                  el proximo ciclo
+       BTC)                                       bear. +22–23% en
+                                                  Vault final vs.
+                                                proporciones fijas.
+  --------------- ------------- --------------- --------------------
+
++----------------------------------------------------------------+
+| 07 RECURSOS CLAVE                                              |
+|                                                                |
+| Vault Soberano · LUKAI · Sistema cNFT · Jaguar Score · Smart   |
+| Contracts                                                      |
++----------------------------------------------------------------+
+
+  ------------- ----------------- ----------------- ------------------ -----------------
+     Recurso          Tipo             Funcion         Mecanica de       Diferenciador
+                                     Estrategica        Seguridad            Clave
+
+   Vault KASH     Capital Real       Reserva de     3 capas: Liquidez        100%
+  Core (Reserva                       respaldo        Inmediata (25%   Solana-nativa. 0%
+    Soberana)                        inamovible.      USDC), Trabajo   riesgo bridge. 0%
+                                  Determina P_KASH        Activo        ruina en 5,000
+                                   y activa Motor    (cBTC+SOL+LST),     simulaciones.
+                                   B2. No se toca    Reserva Profunda  
+                                    para defender      (cBTC 35%).     
+                                     precio — la     Multisig 3-de-3.  
+                                       inercia                         
+                                   estructural es                      
+                                     suficiente.                       
+
+  LUKAI v4.1 —    Inteligencia     Orquestador de   Pyth + Switchboard   v1.0 para TGE
+   Orquestador                      estados + IA       (redundancia    (on-chain). v2.0
+       IA                          conversacional.   dual). Throttle          (IA
+                                   Calibra Jaguar    automatico. Sin    conversacional)
+                                    Score. Modulo      intervencion        Etapa 2A.
+                                   contra-ciclico.      humana en      
+                                   Curaduria cNFT.      funciones      
+                                                        criticas.      
+
+  Sistema cNFT  Producto Digital   Instrumento de       Disclaimer         No existe
+  — Instrumento                     inversion del      obligatorio      equivalente en
+   Financiero                       usuario. APY      on-chain. APY         Solana:
+                                    variable, dos    actualizable por     instrumento
+                                      modos de       LUKAI. Curaduria    financiero +
+                                    rendimiento,         previa.        gamificacion +
+                                    transferible.                      Score en un solo
+                                  Gated por Jaguar                          token.
+                                       Score.                          
+
+  Jaguar Score   Capital Social      Curriculum        On-chain, no      El usuario no
+    — Red de                         financiero       transferible.       abandona su
+   Reputacion                     on-chain. Genera     Decaimiento        reputacion.
+                                   Costo de Salida  2%/semana tras 90d     Retencion
+                                    Psicologico.       inactividad.     organica real.
+
+      Smart      Infraestructura  PDA de control de     Auditados        Distribucion
+  Contracts en                         supply.       Halborn/OtterSec   atomica en una
+     Solana                         Distribucion    pre-TGE. Multisig  transaccion — sin
+                                  atomica de fees.  para emergencias.      riesgo de
+                                   ENZ automatica.    Timelock 48h.       extraccion
+                                    Jaguar Lock.                           parcial.
+
+     Pool de       Liquidez de       Soporte de     Circuit Breaker 3   LP Comprometido
+   Liquidez LP       Mercado       trading en DEX.     niveles. LP     30d/90d/365d con
+    (Meteora)                          Motor A         Comprometido         rewards
+                                     principal.     reduce free-float   +5%/+12%/+20%.
+                                                       vulnerable.     
+  ------------- ----------------- ----------------- ------------------ -----------------
+
++----------------------------------------------------------------+
+| 08 ASOCIACIONES CLAVE                                          |
+|                                                                |
+| Market Makers · KOLs Jaguar Lock · Infraestructura Solana ·    |
+| Regulatorio · Auditorias                                       |
++----------------------------------------------------------------+
+
+  ----------------- ------------------- ---------------- ------------------------
+        Tipo          Socios Objetivo         Rol        Estructura de Alineacion
+
+    Market Makers   Firmas de liquidez  Garantizar piso   LP Fundador 365d +20%
+        (MM)              Solana        $2M–$5M diarios     rewards. Registro
+                                        dias 1–90. K_min   Tridente → exencion
+                                         en mes 7–9 con      Anti-Whale. Fee
+                                        MM vs mes 15–18      whitelist 1.5%.
+                                            sin MM.      Inversion bootstrapping
+                                                         $50K–$100K semanas 1–4.
+
+    KOLs — Jaguar        Creadores          Canal de     Jaguar Lock: tokens con
+        Lock            financieros       adquisicion     vesting 6–12 meses por
+                     latinoamericanos.     primario.         hitos de volumen
+                     Comunidades DeFi    Educacion del    generado. Sin dumping
+                          Solana.          Funnel de     inmediato. Minimo 3 KOLs
+                                        Soberania en su       con 100K–500K
+                                           audiencia.          seguidores.
+
+    Auditorias de    Halborn, OtterSec     Auditoria     Requisito no negociable
+      Seguridad                         pre-TGE. Seguro  pre-TGE. Costo absorbido
+                                        Anti-Exploit (5% por Vault Sociedad Fase
+                                        Vault) requiere             1.
+                                           auditoria     
+                                            activa.      
+
+   Protocolos RWA     Maple Finance,        Activos       Integracion Motor C y
+                     Centrifuge, Ondo   tokenizados del  Capas 3A/3B Motor D. Las
+                          Finance       mundo real para     Manadas invierten
+                                        Manadas en Fase      colectivamente.
+                                               3.        
+
+   Infraestructura  Pyth, Switchboard,  Datos de precio    Redundancia dual en
+       Solana          Jupiter SDK,       TWAP, swaps     oraculos (umbral 2%).
+                         Meteora,       atomicos, yield    Sin single point of
+                     Kamino/Marginfi,     USDC ocioso,           failure.
+                     Sanctum, JitoSOL   monitor paridad  
+                                             LSTs.       
+
+   Hub Regulatorio  El Salvador (CNAD),      Marco         Estructura legal por
+     Estrategico        Sandbox SFC       regulatorio     jurisdiccion. Sandbox
+                     Colombia, Fintech     favorable.    como canal de validacion
+                     Mexico 2025–2030    Capital minimo       institucional.
+                                           $2,000. 0%    
+                                        impuestos cripto 
+                                        en El Salvador.  
+                                              Hub        
+                                         Centroamerica.  
+
+   Neobancos LatAm   Nequi, Daviplata,    Rampas fiat      Integracion API para
+      (Fase 3)      Yape, Mercado Pago    on/off para      pagos USDC. Canal de
+                                         Motor C. Canal      distribucion, no
+                                        de distribucion    competencia directa.
+                                         en su base de   
+                                           usuarios.     
+  ----------------- ------------------- ---------------- ------------------------
+
++----------------------------------------------------------------+
+| 09 ESTRUCTURA DE COSTOS                                        |
+|                                                                |
+| Optimizacion Radical · Seguridad Matematica · CAC Viral        |
++----------------------------------------------------------------+
+
+9.1 Comparativa de Eficiencia Operativa
+
+  ----------------- ---------------- ---------------- ------------------
+      Indicador          Banca       Neobanco Digital       LUKASH
+                      Tradicional         Lider          (Proyectado)
+
+    CAC — Etapa 1    $150–$350 USD      $5–$15 USD      $5–$9 USD con
+  (campana activa)                    (Nubank: $7 en    KOLs + Market
+                                          2024)             Makers
+
+    CAC — Etapa 2         N/A         $7 USD (Nubank    $3–$5 USD con
+   (flywheel viral                     CAC estable)    Manadas activas
+       activo)                                        
+
+   CAC — marginal         N/A        <$1 USD (Nubank: $1 o menos — cada
+      organico                            80–90%      Manada reduce CAC
+     (objetivo)                         referidos)        marginal a
+                                                         ~$1/miembro
+
+      Costo por       $20–$65 USD    $0.01–$0.05 USD   $0.00025–$0.0005
+     Transaccion         (SWIFT                          USD (Solana)
+                     internacional)                   
+
+     Soporte al      Call center +    Equipo humano     LUKAI v4.1 IA
+       Cliente          oficinas         digital        conversacional
+                                                       24/7. Costo = $0
+                                                         por usuario.
+
+   Infraestructura      Fisica +         Digital.     Smart contracts en
+       de Red        Digital. Alto      Servidores      Solana. Costo
+                         CAPEX.           cloud.      marginal → $0 por
+                                                           escala.
+  ----------------- ---------------- ---------------- ------------------
+
+9.2 Presupuesto de Inversion — Tres Fases Optimizadas
+
+  ------ ------------ ----------- -------------------------------------
+   Fase   Inversion      Foco               Componentes Clave
+
+  Fase 1 $500,000 USD   Core &     LUKAI v1.0 (orquestador on-chain).
+                       Awareness   Jaguar Shield completo (Anti-Whale,
+                                     Exit Fee, Timelock 48h, Circuit
+                                  Breakers). Smart contracts Motor D 4
+                                      capas. Sistema cNFT v1.0 con
+                                     disclaimers on-chain. Prototipo
+                                     LUKASH App. Marketing guerrilla
+                                      (KOLs + MM con Jaguar Lock).
+                                  Constitucion legal El Salvador (CNAD
+                                                ~$7,500).
+
+  Fase 2  $2,000,000   Product &     LUKAI v2.0 (IA conversacional,
+             USD         Scale    $900K). Adquisicion de usuarios mixta
+                       (400–500K   pagada/viral ($700K — CAC efectivo
+                       usuarios     $3–$5 con flywheel). Jungle Arena
+                       activos)       completa ($200K). Manadas con
+                                  productos especificos. Integraciones
+                                     Kamino / Tensor / Phantom. OpEx
+                                         Jaguar Shield ($200K).
+
+  Fase 3  $5,000,000  Utilidad en    Expansion red Jaguar Pay (100K+
+             USD       Economia    comercios, NFC/QR). Licencias IFPE
+                         Real           Mexico + SEDPE Colombia.
+                                   Infraestructura RWA (SPVs, T-bills
+                                    tokenizados). Localizacion Brasil
+                                  (portugues). Nicho Espana (remesas).
+                                   LUKAI Institutional Bridge. Etapa 4
+                                                  DAO.
+  ------ ------------ ----------- -------------------------------------
+
+  SOSTENIBILIDAD: La Fase 1 es la unica que requiere capital externo.
+  Fases 2 y 3 se co-financian con el Vault Sociedad acumulado durante
+  Etapa 1. Sin dependencia de VCs. Los socios fundadores no se diluyen.
+
+  CONDICION PARA $500K: El diseno tecnico completo se realiza antes del
+  primer dia de desarrollo. Smart contracts disenados en pseudocodigo y
+  simulados previo a implementacion. Equipo minimo 2–3 devs con
+  arquitectura prevalidada.
+
++----------------------------------------------------------------+
+| 10 VALIDACION MATEMATICA                                       |
+|                                                                |
+| Simulacion Monte Carlo · 5,000 Iteraciones · 1,825 Dias        |
++----------------------------------------------------------------+
+
+  ---------------- ---------------- ---------------- ----------------
+       $37.2M            0.0%            86.1%            ~1.4%*
+
+  Vault Mediana 5  Riesgo de Ruina  P(Motor B2 antes Espiral Muerte —
+        anos            Total          del Ano 2)       riesgo de
+                                                     transicion B0→B2
+                                                        (*ver nota
+                                                         tecnica)
+  ---------------- ---------------- ---------------- ----------------
+
+10.1 Resultados de Simulacion
+
+  ---------------------- ------------------------------------------
+      Metrica Clave                      Resultado
+
+  Vault Mediana (5 anos)                   $37.2M
+
+  Rango P25–P75 (5 anos)              $18.9M – $67.1M
+
+    P(Motor B2 activo                      86.1%
+     antes del Ano 2)    
+
+  Riesgo de Ruina Total  0.0% — en las 5,000 trayectorias simuladas
+   (Vault < 10% capital  
+         inicial)        
+
+     Probabilidad de           ~1.4% (ver nota tecnica abajo)
+   Espiral de Muerte —   
+   riesgo de transicion  
+          B0→B2          
+
+     Probabilidad de      <0.5% por inercia estructural del Motor
+  Espiral de Muerte — en         A + Jaguar Shield activos
+   B2 consolidado (12+   
+          meses)         
+
+   Precio KASH a 5 anos       $0.0113 = 113x vs TGE ($0.0001)
+        (mediana)        
+
+      Ventaja Modulo      +22–23% en Vault final vs. proporciones
+   Contra-Ciclico LUKAI        fijas (ciclo BEAR→BULL 4 anos)
+
+  P(Motor B2 Ano 1) con      82.3% (vs 53.6% en escenario base)
+    4 Frentes Activos    
+
+   Vault Mediana Ano 5        $63.8M (+71% vs escenario base)
+  con 4 Frentes Activos  
+  ---------------------- ------------------------------------------
+
+10.2 Nota Tecnica — Probabilidad de Espiral de Muerte: Precision del
+1.4%
+
+  QUE MIDE EL 1.4%: El ~1.4% es el riesgo de espiral de muerte durante
+  la TRANSICION B0→B2 — el periodo mas vulnerable del protocolo, cuando
+  el sistema acaba de cruzar K_min ($25M), la R_op esta recien formada,
+  y un bear market inmediatamente posterior podria presionar el sistema
+  antes de que tenga suficiente madurez.
+
+  POR QUE ES UN RIESGO DE TRANSICION, NO PERMANENTE:
+
+  En B0 la espiral es posible si: precio cae sostenidamente + R_op se
+  agota + volumen colapsa simultaneamente. El Throttle DEFENSIVO
+  extiende 4x la vida de R_op reduciendo el consumo al 25% del rate
+  base.
+
+  En B2 consolidado la espiral es estructuralmente muy dificil porque:
+
+  1. El Vault no necesita R_op para su operacion — en B2 el tramo LP
+  recircula, no quema. La R_op se acumula idle del yield y no es parte
+  del flujo operativo normal.
+
+  2. Motor A sigue activo: mientras haya trading, el 35% Asset Layer
+  compra Hard Assets y el 35% LP crea presion compradora sobre $LUKA
+  todos los dias.
+
+  3. Jaguar Exit Fee (5%/3%/1%) envia el 100% de las ventas en panico
+  directamente al Vault Core — el panico mismo fortalece la reserva.
+
+  4. Anti-Whale envia sus fees al Vault Core.
+
+  5. Cola diferida ejecuta deflacion adicional en la recuperacion al
+  10%/semana.
+
+  6. Arbitraje natural: cuando precio de mercado cae muy por debajo del
+  Precio KASH, inversores racionales compran $LUKA. El mercado lo
+  ejecuta solo.
+
+  EN RESUMEN: En B2 la recuperacion del precio ocurre por inercia
+  estructural sin usar la R_op ni tocar el Vault existente.
+
+  OPCION DE ULTIMO RECURSO EN ETAPA 3 (decision del DAO, no automatica):
+
+  Si en Etapa 3 el precio de mercado cayera sistematicamente por debajo
+  del Precio KASH, el DAO tiene la opcion de activar redencion directa
+  al Precio KASH: los holders entregan $LUKA al protocolo y reciben USDC
+  del Vault a valor justo. Los $LUKA entregados se bloquean
+  permanentemente, reduciendo el supply efectivo y subiendo el Precio
+  KASH restante. Esta decision requiere aprobacion de gobernanza — el
+  Vault no se toca de forma automatica bajo ninguna circunstancia.
+
+10.3 Hitos de Inversion
+
+  --------------- ---------------- ---------------- ----------------
+       Hito           Metrica           Plazo        Plazo (Con MM
+                                     (Simulacion        activos)
+                                        Base)       
+
+  Hito 1 — K_min   $25M en Vault     <= 24 meses      <= 12 meses
+                   Core. Motor B2                   
+                     activado.                      
+
+     Hito 2 —     $30M O 12 meses.    Mes 12–18         Mes 6–12
+   K_activacion     Jaguar Lock                     
+                      activo.                       
+
+     Hito 3 —       Distribucion       Mes 13+          Mes 13+
+   Distribucion   liquida perpetua                  
+                    desde mes 13                    
+                   (30% fees KASH                   
+                     Sociedad)                      
+
+  Hito 4 — Escala $100M en Vault.    <= 36 meses      <= 24 meses
+       Total        ENZ activa.                     
+                  Motor C activo.                   
+  --------------- ---------------- ---------------- ----------------
+
++----------------------------------------------------------------+
+| 11 ELEVATOR SPEECHES                                           |
+|                                                                |
+| Mom Speech · Elevator Pitch — Para Todos los Publicos          |
++----------------------------------------------------------------+
+
+Los siguientes discursos explican LUKASH de forma simple, directa y
+persuasiva. Incorporan datos reales verificados de 2025.
+
+Mom Speech — Maximo 4 minutos
+
+  Para inversores y no inversores sin conocimiento tecnico. Memorizable,
+  emocional y anclada en datos reales.
+
+Permitame hacerle una pregunta. Sabia usted que 7 de cada 10 adultos en
+America Latina ya tienen una cuenta digital? El Banco Mundial lo
+confirmo en 2025. Pero aqui esta el problema: solo 3 de cada 10 accede a
+instrumentos financieros reales que les permiten crecer. Los otros 4
+tienen la cuenta — pero la puerta esta cerrada por dentro.
+
+Mientras tanto, el sistema financiero global esta migrando a blockchain.
+BlackRock ya tiene $2,900 millones en activos tokenizados on-chain.
+Franklin Templeton. Siemens. Apollo. Las instituciones mas grandes del
+planeta estan construyendo las finanzas del futuro sobre esta tecnologia
+ahora mismo. Y el mercado de activos tokenizados crecio de $5,000
+millones a $24,000 millones en solo tres anos. Boston Consulting Group
+proyecta $16 billones para 2030.
+
+Nosotros creamos LUKASH. La pregunta que nos hicimos fue simple: y si
+los 260 millones de latinoamericanos excluidos pudieran tener acceso a
+esa misma infraestructura financiera del futuro, hoy, desde su telefono?
+
+LUKASH es eso. Cada transaccion construye automaticamente una reserva de
+activos reales. Bitcoin nativo. Dolares digitales. Activos solidos.
+Guardados en una boveda digital que cualquier persona en el mundo puede
+verificar en tiempo real. No promesas. No papelitos. Activos reales.
+
+Como funciona en la practica?
+
+- Cada transaccion genera un fee pequeno. Ese fee no se lo queda un
+  banco. Se divide automaticamente: una parte construye la reserva, otra
+  reduce la cantidad de tokens en circulacion — lo que hace que el token
+  valga mas con el tiempo — y el resto premia a quienes participan
+  activamente.
+
+- Tienes un Jaguar Score: tu historial financiero digital. On-chain,
+  transparente, tuyo. Nadie te lo puede quitar. Mientras mas participas
+  y aprendes, mas puertas se abren — incluyendo acceso a instrumentos de
+  inversion que antes solo tenian los grandes capitales.
+
+- No necesitas saber nada de blockchain. LUKAI — nuestra inteligencia
+  artificial — habla contigo en lenguaje normal y gestiona todo por ti.
+
+- Puedes participar solo o en grupo con tu comunidad — las Manadas. Es
+  la natillera o la tanda del siglo XXI: la misma logica de confianza de
+  siempre, ahora con contratos inteligentes y acceso a la economia
+  global.
+
+Para quien es LUKASH?
+
+- Para el joven de 18 anos que quiere construir patrimonio desde cero,
+  sin capital inicial grande.
+
+- Para el profesional de 35 que quiere proteger sus ahorros de la
+  inflacion y acceder a instrumentos reales.
+
+- Para quien envia dinero a su familia en otro pais y paga comisiones
+  abusivas.
+
+- Para el emprendedor que quiere acceso a credito colectivo sin depender
+  de un banco tradicional.
+
+Y los numeros? Las simulaciones matematicas con 5,000 escenarios
+distintos muestran que la reserva del protocolo crece a $37 millones en
+5 anos en el escenario conservador. El riesgo de colapso total es del
+0.0%. No lo decimos nosotros — lo dice el modelo matematico.
+
+LUKASH no es una apuesta especulativa. Es la infraestructura de las
+finanzas del futuro, construida para Latinoamerica, disponible hoy desde
+tu telefono.
+
+Las finanzas del futuro, disponibles hoy. Quieres ser parte de los
+primeros en construirlas?
+
+Elevator Mom Speech — Maximo 1 minuto 10 segundos
+
+  Version de ascensor — Simple, directa, memorable. Para cualquier
+  publico en cualquier momento.
+
+El sistema financiero global esta migrando a blockchain. BlackRock ya
+tiene $2,900 millones de dolares tokenizados on-chain. Franklin
+Templeton. Siemens. Las instituciones mas grandes del planeta lo estan
+haciendo ahora.
+
+El problema: 7 de cada 10 latinoamericanos tiene una cuenta digital,
+pero solo 3 de cada 10 accede a instrumentos financieros reales que les
+permiten crecer. Los otros 4 tienen la puerta — pero no pueden entrar.
+
+LUKASH es la llave para esos 260 millones de personas.
+
+Es una plataforma digital donde cada transaccion construye
+automaticamente una reserva real de activos — Bitcoin, dolares digitales
+— que respalda el valor de tu dinero y crece con el tiempo. Tiene una
+inteligencia artificial que habla contigo en lenguaje normal. No
+necesitas saber nada tecnico.
+
+Puedes participar solo o en grupo — las Manadas: la natillera o la tanda
+del siglo XXI con contratos inteligentes. Las matematicas dicen que el
+riesgo de colapso total es cero. En 5,000 escenarios simulados.
+
+No estamos creando otro token especulativo. Estamos construyendo las
+finanzas del futuro, disponibles hoy para toda Latinoamerica.
+
++----------------------------------------------------------------+
+| 12 JAGUAR SCORE                                                |
+|                                                                |
+| Sistema Formal de Reputacion Financiera On-Chain               |
++----------------------------------------------------------------+
+
+El Jaguar Score es el curriculum financiero digital del usuario. Es el
+mecanismo de retencion mas poderoso del protocolo: el usuario no
+abandona una reputacion construida durante anos. LUKAI v4.1 lo calibra
+en tiempo real segun la participacion activa en el ecosistema.
+
+  DEFINICION: Numero acumulativo on-chain. Refleja la participacion
+  financiera del usuario en LUKASH. No reversible excepto por
+  inactividad prolongada. No transferible. Vinculado a wallet. Decae
+  2%/semana adicional despues de 90 dias de inactividad.
+
+12.1 Parametros de Calibracion
+
+  ------------------- ------------ -------------------------------------
+  Accion del Usuario     Puntos                    Notas
+
+   Holding activo de       10         Maximo incentivo de holdeo del
+      cNFT Jaguar      pts/semana          instrumento premium.
+       Universal                   
+
+   Holding activo de  5 pts/semana   Reconoce holding comprometido en
+   cNFT Nativo (Capa               cualquier instrumento del protocolo.
+  0) o Estandar (Capa              
+          3B)                      
+
+   Participacion en        15       Por cada transaccion completada en
+  Manada activa (Capa  pts/evento                 Manada.
+          2)                       
+
+   Apuesta Bet & Win  8 pts/evento      Por cada apuesta liquidada,
+  completada (Capa 2)                independientemente del resultado.
+
+   Acceso a evento o  5 pts/evento Por cada uso de servicios sociales en
+   marketplace (Capa                              la App.
+          2)                       
+
+   Completar mision        20          Maxima ponderacion. Premia el
+  educativa en Jungle  pts/mision      aprendizaje financiero real.
+         Arena                     
+
+   Duelo de Manadas   12 pts/duelo Por cada duelo completado. Incentiva
+    (participacion)                          cohesion grupal.
+
+    Staking activo     3 pts/dia     Requiere staking activo — no solo
+    $LUKA (periodo                          holding en wallet.
+      minimo 7d)                   
+
+    LP Comprometido   5 / 10 / 20   Escalonado por nivel de lock. Mayor
+  activo (30d / 90d /  pts/semana    compromiso = mayor Score semanal.
+         365d)                     
+  ------------------- ------------ -------------------------------------
+
+12.2 Niveles y Beneficios
+
+  --------- ------------- ----------- -----------------------------------
+    Nivel      Puntos        Badge         Beneficios desbloqueados
+                           on-chain   
+
+     Cub        0–499     Jaguar Cub  Acceso basico a todos los servicios
+                                       Motor D Capa 2. Participacion en
+                                               Manadas estandar.
+
+   Jaguar     500–1,999     Jaguar    Acceso a instrumentos DeFi Capa 1.
+                                        Voto en parametros Motor D (DAO
+                                         activo). Acceso prioritario a
+                                           nuevos instrumentos cNFT.
+
+    Alpha    2,000–4,999    Jaguar      LP Jaguar 90d con +12% rewards.
+                             Alpha    Visibilidad en ranking de Manadas.
+                                        Acceso anticipado Capas 3A/3B.
+
+   Emperor     5,000+       Emperor     Gobernanza premium. LP Fundador
+                                          365d +20% rewards. Override
+                                        Anti-Whale automatico. Acceso a
+                                          instrumentos RWA y T-bills
+                                            tokenizados en Fase 3.
+  --------- ------------- ----------- -----------------------------------
+
+  DECAIMIENTO: 2%/semana adicional tras 90 dias de inactividad. Se
+  detiene al retomar actividad. Los niveles alcanzados no bajan por
+  decaimiento — el umbral de nivel usa el Score maximo historico, no el
+  Score actual.
+
+  ⚑ PENDIENTE FASE APP — Jaguar Score — ajuste post-datos reales: Los
+  valores actuales son los de lanzamiento. Ajustables por gobernanza con
+  Timelock 48h en Etapa 2A basado en datos reales de uso y retencion.
+
+CUADRO RESUMEN — BUSINESS MODEL CANVAS LUKASH v4.2
+
+Vista consolidada. Cada celda referencia el bloque detallado
+correspondiente.
+
++:---------------:+:---------------:+:------------------:+:---------------:+:----------------------:+
+| 08 ASOCIACIONES | 06 ACTIVIDADES  | 01 PROPUESTA DE    | 04 RELACIONES   | 02 SEGMENTOS           |
+| CLAVE           | CLAVE           | VALOR              | CLIENTES        |                        |
++-----------------+-----------------+--------------------+-----------------+------------------------+
+| Market Makers   | Orquestacion    | Estandar KASH:     | Etapa 1:        | Segmento A (12–25      |
+| D1              | B0/B2           | piso de valor en   | Mentor–Aprendiz | anos): Jungle Arena,   |
+|                 |                 | Hard Assets        |                 | Manadas, Bet & Win.    |
+| KOLs Jaguar     | Throttle Dual   | auditado on-chain. | LUKAI como      |                        |
+| Lock            | (logica         | P_KASH año 5:      | tutor           | Segmento B (25–45      |
+|                 | invertida Etapa | $0.0113 = 113x.    | gamificado.     | anos): LUKAI, cNFTs,   |
+| Halborn /       | 3)              | Vault mediana:     |                 | Vault, acceso RWA.     |
+| OtterSec        |                 | $37.2M.            | Etapa 2:        |                        |
+|                 | Routing cNFT    |                    | Companero de    | Geografía:             |
+| Pyth +          | Motor D 4 capas | Las finanzas del   | Manada.         | Colombia+Mexico (P1) · |
+| Switchboard +   |                 | futuro: RWA de     |                 | El                     |
+| Jupiter         | Gestion Vault   | $5B→$24B en 2025   | Etapa 3: Socio  | Salvador+Centroamerica |
+|                 | contra-ciclica  | (+380%). BCG: $16  | del Protocolo.  | (P2) ·                 |
+| Kamino /        |                 | billones para      |                 | Argentina+Peru+Chile   |
+| Marginfi /      | Curaduria       | 2030. LUKASH es la | Costo de Salida | (P2) · Brasil PT (P3)  |
+| Sanctum         | instrumentos    | puerta de entrada  | Psicologico.    | · Espana remesas (P4). |
+|                 | cNFT            | de 260M            |                 |                        |
+| Hub: El         |                 | latinoamericanos   |                 |                        |
+| Salvador CNAD   | Calibracion     | excluidos.         |                 |                        |
+|                 | Jaguar Score    |                    |                 |                        |
+| Protocolos RWA  |                 | Experiencia        |                 |                        |
+| (Fase 3)        |                 | gamificada: Jaguar |                 |                        |
+|                 |                 | Score como RPG     |                 |                        |
+| Neobancos LatAm |                 | financiero. cNFTs  |                 |                        |
+| (Fase 3)        |                 | con identidad.     |                 |                        |
+|                 |                 | Manadas =          |                 |                        |
+|                 |                 | natilleras del     |                 |                        |
+|                 |                 | siglo XXI.         |                 |                        |
+|                 |                 |                    |                 |                        |
+|                 |                 | $LUKA como         |                 |                        |
+|                 |                 | identidad          |                 |                        |
+|                 |                 | cultural: pagar es |                 |                        |
+|                 |                 | un acto de         |                 |                        |
+|                 |                 | pertenencia.       |                 |                        |
+|                 |                 |                    |                 |                        |
+|                 |                 | 4 Motores: El      |                 |                        |
+|                 |                 | Cazador (A) + El   |                 |                        |
+|                 |                 | Motor Interno      |                 |                        |
+|                 |                 | (B) + El de Escala |                 |                        |
+|                 |                 | (C) + El Alma (D). |                 |                        |
+|                 +-----------------+                    +-----------------+                        |
+|                 | 07 RECURSOS     |                    | 03 CANALES      |                        |
+|                 | CLAVE           |                    |                 |                        |
+|                 |                 |                    | Jungle Arena    |                        |
+|                 | Vault KASH Core |                    |                 |                        |
+|                 | (Hard Assets)   |                    | App LUKASH +    |                        |
+|                 |                 |                    | LUKAI v4.1      |                        |
+|                 | LUKAI v4.1      |                    |                 |                        |
+|                 | (orquestador +  |                    | Dashboard (La   |                        |
+|                 | IA)             |                    | Boveda / El     |                        |
+|                 |                 |                    | Fuego / La      |                        |
+|                 | Sistema cNFT    |                    | Cola)           |                        |
+|                 | (instrumento    |                    |                 |                        |
+|                 | financiero)     |                    | KOLs Jaguar     |                        |
+|                 |                 |                    | Lock            |                        |
+|                 | Jaguar Score    |                    |                 |                        |
+|                 | (capital        |                    | Manadas (CAC    |                        |
+|                 | social)         |                    | ~$1/miembro     |                        |
+|                 |                 |                    | adicional)      |                        |
+|                 | Smart Contracts |                    |                 |                        |
+|                 | (Solana nativo) |                    | DEX Meteora /   |                        |
+|                 |                 |                    | Jupiter + CEX   |                        |
+|                 | Pool de         |                    | (Fase 2+)       |                        |
+|                 | Liquidez LP     |                    |                 |                        |
+|                 | (Meteora)       |                    |                 |                        |
++-----------------+-----------------+--------------------+-----------------+------------------------+
+| 09 ESTRUCTURA DE COSTOS           | 05 FUENTES DE INGRESOS                                        |
+|                                   |                                                               |
+| Fase 1: $500K                     | Motor A: 4%/2.5%WL (Et.1) → 2.5%/1.5%WL (Et.2) | SOL | EL     |
+| (Dev+Auditoria+LP+KOLs+Legal).    | CAZADOR                                                       |
+| Fase 2: $2M (400–500K usuarios).  |                                                               |
+| Fase 3: $5M (RWA+Licencias+Jaguar | Motor B: 2.5%/1.5%WL | $LUKA | Deflacion B0 → Recirculacion   |
+| Pay+Brasil)                       | B2 | EL MOTOR INTERNO. R_op no interviene en el flujo normal. |
+|                                   |                                                               |
+| CAC: $5–$9 (Et.1) → $3–$5 (Et.2   | Motor C: 0.5% | USDC | Pagos masivos Fase 3 | EL MOTOR DE     |
+| viral) → $1 (organico objetivo,   | ESCALA                                                        |
+| referencia Nubank)                |                                                               |
+|                                   | Motor D: Capa 0 (0%) · Capa 1 (1.5%) · Capa 2 (3%/3.5%) ·     |
+| Costo/tx: $0.0003 vs $20–$65      | Capa 3A (1.5%) · Capa 3B (2%) | EL ALMA                       |
+| SWIFT. Soporte: $0 (LUKAI 24/7).  |                                                               |
+| Escala sin VCs.                   | Yield Vault: LST 6–8% + USDC lending 4–8% → regla 70/30.      |
+|                                   | Distribucion perpetua a socios desde mes 13.                  |
++-----------------------------------+---------------------------------------------------------------+
+
+ESTADO DEL MODELO — VALIDACION Y PENDIENTES
+
+Completamente Definidos en v4.2
+
+Propuesta de valor con 8 secciones: contexto RWA/blockchain 2025,
+Estandar KASH, experiencia gamificada, identidad cultural $LUKA, Manadas
+como economia comunitaria, 4 motores con identidad, posicionamiento
+competitivo, filosofia.
+
+Fuentes de ingreso: Motor D en 4 capas, flujos completos por motor,
+sinergia entre motores, proyecciones por etapa. Correccion: R_op no
+interviene en el flujo normal del Motor B0 ni B2.
+
+CAC corregido con tres niveles diferenciados basados en datos reales de
+Nubank 2024.
+
+Inversion por fases optimizada: $500K / $2M / $5M.
+
+Geografia: todo LATAM + Brasil + España con mapa de prioridades y CAC
+estimado por mercado.
+
+Probabilidad de Espiral de Muerte: ~1.4% es riesgo de transicion B0→B2.
+En B2 consolidado <0.5% por inercia estructural. Sin usar R_op ni Vault
+existente.
+
+Elevator Speeches con datos reales verificados: Global Findex 2025,
+Credicorp IIF 2024, RWA tokenizacion 2025.
+
+Jaguar Score con parametros formales de calibracion y niveles.
+
+Pendientes de Definicion — Fase App
+
+  ⚑ PENDIENTE FASE APP — Mercado secundario cNFTs: Fee de venta,
+  herencia de modo de rendimiento, actualizacion del Jaguar Score al
+  transferir. BLOQUEANTE para contrato cNFT.
+
+  ⚑ PENDIENTE FASE APP — Frecuencia de distribucion Modo B: Semanal o
+  mensual? Fijo por instrumento? BLOQUEANTE para contrato cNFT.
+
+  ⚑ PENDIENTE FASE APP — Jungle Arena — mecanicas de juego detalladas:
+  Niveles completos, misiones concretas, Bet & Win, economia de
+  recompensas sostenible.
+
+  ⚑ PENDIENTE FASE APP — Manadas — parametros de producto: Tipos,
+  limites de capital, gobernanza interna, arbitro LUKAI para disputas.
+
+  ⚑ PENDIENTE FASE APP — Go-to-market local por pais: Colombia, Mexico,
+  El Salvador, Argentina, Brasil (portugues). Regulacion especifica y
+  partnerships locales.
+
+  ⚑ PENDIENTE FASE APP — Yield sharing DeFi externo Capa 3: Modelo de
+  gestora patrimonial descentralizada para Etapa 3.
+
+  LUKASH no es simplemente una alternativa a la banca tradicional. Es la
+  puerta de entrada de 260 millones de latinoamericanos a la
+  infraestructura financiera del futuro — la misma infraestructura que
+  BlackRock, Franklin Templeton y los grandes gestores del mundo ya
+  estan construyendo sobre blockchain.
+
+  Las finanzas del futuro, disponibles hoy para toda Latinoamerica.
+
+LUKASH PROTOCOL BMC v4.2 — CONFIDENCIAL · USO EXCLUSIVO PARA INVERSORES
+
+Monte Carlo: 5,000 iteraciones · 1,825 dias · Riesgo de Ruina: 0.0% ·
+Espiral Muerte transicion B0→B2: ~1.4% · Marzo 2026
+
+Ing. Sebastian Botero Pabon — Arquitecto del Protocolo

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH Protocol — Token Flow Visualizer v4.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0A0F1E;
+    --bg2:       #16213E;
+    --bg3:       #1A2744;
+    --green:     #1D9E75;
+    --green2:    #25C992;
+    --blue:      #185FA5;
+    --blue2:     #1E7ED4;
+    --gold:      #BA7517;
+    --gold2:     #E8941A;
+    --red:       #C0392B;
+    --red2:      #E74C3C;
+    --text:      #C8D8F0;
+    --muted:     #4A6080;
+    --border:    rgba(29,158,117,0.25);
+    --glow-g:    rgba(29,158,117,0.4);
+    --glow-b:    rgba(24,95,165,0.4);
+    --glow-gold: rgba(186,117,23,0.4);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── SCANLINE OVERLAY ─── */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:999; pointer-events:none;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+    );
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 32px;
+    background: linear-gradient(90deg, rgba(24,95,165,0.15), rgba(29,158,117,0.08));
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  header::after {
+    content:'';
+    position:absolute; bottom:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--green2), transparent);
+  }
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px; font-weight:900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--green2), var(--blue2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: none;
+  }
+  .logo span { color: var(--gold2); -webkit-text-fill-color: var(--gold2); }
+  .header-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    text-align:right; line-height:1.6;
+  }
+  .header-meta em { color: var(--green); font-style:normal; }
+
+  /* ─── MAIN LAYOUT ─── */
+  .app {
+    display: grid;
+    grid-template-columns: 260px 1fr 240px;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+    height: calc(100vh - 61px);
+  }
+
+  /* ─── PANELS ─── */
+  .panel {
+    border: 1px solid var(--border);
+    background: rgba(22,33,62,0.6);
+    backdrop-filter: blur(8px);
+  }
+  .panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px; font-weight:700;
+    letter-spacing: 3px; color: var(--muted);
+    padding: 10px 16px 8px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  /* ─── LEFT PANEL: CONTROLES ─── */
+  .left-panel {
+    grid-column:1; grid-row:1/4;
+    overflow-y: auto;
+    display:flex; flex-direction:column; gap:0;
+  }
+  .left-panel::-webkit-scrollbar { width:4px; }
+  .left-panel::-webkit-scrollbar-track { background: var(--bg2); }
+  .left-panel::-webkit-scrollbar-thumb { background: var(--green); border-radius:2px; }
+
+  .ctrl-section { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .ctrl-label {
+    font-size:11px; font-weight:600; letter-spacing:2px;
+    color: var(--muted); text-transform:uppercase; margin-bottom:10px;
+  }
+
+  /* Button groups */
+  .btn-group { display:flex; gap:4px; flex-wrap:wrap; }
+  .btn {
+    flex:1; min-width:60px;
+    padding: 7px 6px;
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight:700; letter-spacing:1px;
+    border: 1px solid var(--muted);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform:uppercase;
+    border-radius:2px;
+  }
+  .btn:hover { border-color: var(--text); color: var(--text); }
+  .btn.active-bull { border-color:var(--green2); color:var(--green2); background:rgba(29,158,117,0.15); box-shadow:0 0 12px var(--glow-g); }
+  .btn.active-neutral { border-color:var(--blue2); color:var(--blue2); background:rgba(24,95,165,0.15); box-shadow:0 0 12px var(--glow-b); }
+  .btn.active-bear { border-color:var(--red2); color:var(--red2); background:rgba(192,57,43,0.15); box-shadow:0 0 12px rgba(192,57,43,0.4); }
+  .btn.active-conserv { border-color:var(--gold2); color:var(--gold2); background:rgba(186,117,23,0.15); }
+  .btn.active-base { border-color:var(--blue2); color:var(--blue2); background:rgba(24,95,165,0.15); }
+  .btn.active-agresivo { border-color:var(--green2); color:var(--green2); background:rgba(29,158,117,0.15); }
+  .btn.active-b0 { border-color:var(--blue2); color:var(--blue2); background:rgba(24,95,165,0.15); }
+  .btn.active-b2 { border-color:var(--green2); color:var(--green2); background:rgba(29,158,117,0.15); }
+
+  /* Sliders */
+  .slider-wrap { margin-bottom:14px; }
+  .slider-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .slider-name { font-size:11px; color:var(--text); font-weight:500; }
+  .slider-val { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--green2); }
+  input[type=range] {
+    width:100%; height:3px;
+    -webkit-appearance:none; appearance:none;
+    background: linear-gradient(90deg, var(--green) var(--pct,50%), var(--bg3) var(--pct,50%));
+    border-radius:2px; outline:none; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; appearance:none;
+    width:14px; height:14px; border-radius:50%;
+    background: var(--green2);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 8px var(--glow-g);
+    cursor: pointer;
+  }
+
+  /* ─── CENTER: CANVAS ─── */
+  .center-panel {
+    grid-column:2; grid-row:1/4;
+    position:relative; overflow:hidden;
+    background: radial-gradient(ellipse at 50% 50%, rgba(24,95,165,0.08), transparent 70%),
+                var(--bg);
+  }
+  #flowCanvas {
+    width:100%; height:100%;
+    display:block;
+  }
+
+  /* Overlay info sobre canvas */
+  .mode-badge {
+    position:absolute; top:16px; left:50%; transform:translateX(-50%);
+    font-family:'Orbitron',monospace; font-size:11px; font-weight:700;
+    letter-spacing:3px; padding:6px 20px;
+    border: 1px solid currentColor;
+    border-radius:1px;
+    backdrop-filter:blur(4px);
+    transition: all 0.3s;
+  }
+  .mode-badge.b0 { color:var(--blue2); background:rgba(24,95,165,0.2); border-color:var(--blue2); }
+  .mode-badge.b2 { color:var(--green2); background:rgba(29,158,117,0.2); border-color:var(--green2); }
+
+  /* ─── RIGHT PANEL: MÉTRICAS ─── */
+  .right-panel {
+    grid-column:3; grid-row:1/4;
+    overflow-y:auto;
+    display:flex; flex-direction:column;
+  }
+  .right-panel::-webkit-scrollbar { width:4px; }
+  .right-panel::-webkit-scrollbar-thumb { background:var(--blue); border-radius:2px; }
+
+  .metric-card {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    position:relative;
+  }
+  .metric-card::before {
+    content:'';
+    position:absolute; left:0; top:0; bottom:0; width:2px;
+  }
+  .metric-card.green::before { background:var(--green); }
+  .metric-card.blue::before { background:var(--blue2); }
+  .metric-card.gold::before { background:var(--gold2); }
+  .metric-card.red::before { background:var(--red2); }
+
+  .metric-name {
+    font-size:10px; font-weight:600; letter-spacing:2px;
+    color:var(--muted); text-transform:uppercase; margin-bottom:4px;
+  }
+  .metric-value {
+    font-family:'Share Tech Mono',monospace;
+    font-size:18px; font-weight:400;
+    line-height:1.2;
+  }
+  .metric-value.green { color:var(--green2); }
+  .metric-value.blue { color:var(--blue2); }
+  .metric-value.gold { color:var(--gold2); }
+  .metric-value.red { color:var(--red2); }
+  .metric-sub {
+    font-size:11px; color:var(--muted); margin-top:2px;
+  }
+
+  .fee-breakdown {
+    padding:14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .fee-row {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:8px;
+  }
+  .fee-label { font-size:12px; color:var(--text); font-weight:500; }
+  .fee-bar-wrap { flex:1; margin:0 8px; height:3px; background:var(--bg3); border-radius:2px; overflow:hidden; }
+  .fee-bar { height:100%; border-radius:2px; transition: width 0.5s; }
+  .fee-bar.A { background:var(--green2); }
+  .fee-bar.B { background:var(--blue2); }
+  .fee-bar.C { background:var(--gold2); }
+  .fee-bar.D { background:var(--red2); }
+  .fee-amt { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); width:52px; text-align:right; }
+
+  .vault-compose {
+    padding:14px 16px;
+  }
+  .vault-donut-label { font-size:10px; letter-spacing:1px; color:var(--muted); margin-bottom:10px; text-transform:uppercase; font-weight:600; }
+  .vault-item {
+    display:flex; align-items:center; gap:8px; margin-bottom:6px;
+  }
+  .vault-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .vault-item-name { font-size:11px; color:var(--text); flex:1; }
+  .vault-item-pct { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); }
+
+  /* ─── BOTTOM STATUS BAR ─── */
+  .status-bar {
+    grid-column:1/4; grid-row:4;
+    display:flex; gap:24px; align-items:center;
+    padding: 8px 24px;
+    background: rgba(10,15,30,0.9);
+    border-top: 1px solid var(--border);
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px; color:var(--muted);
+  }
+  .status-item { display:flex; gap:6px; align-items:center; }
+  .status-dot { width:6px; height:6px; border-radius:50%; animation: pulse 2s infinite; }
+  .status-dot.green { background:var(--green2); box-shadow:0 0 6px var(--green2); }
+  .status-dot.blue { background:var(--blue2); box-shadow:0 0 6px var(--blue2); }
+  .status-dot.gold { background:var(--gold2); }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; }
+    50% { opacity:0.3; }
+  }
+
+  /* ─── CANVAS NODE LABELS (posicionados sobre canvas) ─── */
+  .node-labels {
+    position:absolute; inset:0; pointer-events:none;
+  }
+
+  /* ─── JAGUAR SHIELD indicator ─── */
+  .shield-indicator {
+    position:absolute; bottom:20px; right:16px;
+    font-family:'Orbitron',monospace; font-size:9px;
+    color:var(--gold2); letter-spacing:2px;
+    border:1px solid var(--gold);
+    padding:4px 10px; background:rgba(186,117,23,0.1);
+    opacity: 0.7;
+  }
+
+  .ticker {
+    font-family:'Share Tech Mono',monospace; font-size:10px;
+    color:var(--green);
+    animation: ticker 0.5s ease;
+  }
+  @keyframes ticker {
+    from { opacity:0; transform:translateY(-4px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">LUKA<span>SH</span> PROTOCOL</div>
+  <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;">
+    TOKEN FLOW VISUALIZER <span style="color:var(--green)">v4.2</span>
+  </div>
+  <div class="header-meta">
+    SOLANA BLOCKCHAIN &nbsp;|&nbsp; <em>$LUKA</em> TOKEN<br>
+    SUPPLY: <em id="hdr-supply">10.00B</em> &nbsp;|&nbsp; DAY: <em id="hdr-day">0</em>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <aside class="left-panel panel">
+    <div class="panel-title">⬡ Configuración</div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Régimen de mercado</div>
+      <div class="btn-group">
+        <button class="btn" id="btn-bull" onclick="setMarket('BULL')">▲ BULL</button>
+        <button class="btn active-neutral" id="btn-neutral" onclick="setMarket('NEUTRAL')">◼ NEUTRAL</button>
+        <button class="btn" id="btn-bear" onclick="setMarket('BEAR')">▼ BEAR</button>
+      </div>
+    </div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Escenario</div>
+      <div class="btn-group">
+        <button class="btn" id="btn-conserv" onclick="setScenario('CONSERV')">CONSERV</button>
+        <button class="btn active-base" id="btn-base" onclick="setScenario('BASE')">BASE</button>
+        <button class="btn" id="btn-agres" onclick="setScenario('AGRESIVO')">AGRESIVO</button>
+      </div>
+    </div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Modo Operacional</div>
+      <div class="btn-group">
+        <button class="btn active-b0" id="btn-b0" onclick="setMode('B0')">B0 ACUM</button>
+        <button class="btn" id="btn-b2" onclick="setMode('B2')">B2 CONSOL</button>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted);line-height:1.5;" id="mode-desc">
+        B0: Fees fluyen al Vault. Crecimiento acelerado. Sin distribución universal activa.
+      </div>
+    </div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Parámetros</div>
+
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span class="slider-name">Vol. Diario Motor A</span>
+          <span class="slider-val" id="val-volA">$2.5M</span>
+        </div>
+        <input type="range" id="sl-volA" min="100" max="10000" value="2500"
+          oninput="updateSlider(this,'val-volA',v=>fmtUSD(v*1000))">
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span class="slider-name">Usuarios Activos</span>
+          <span class="slider-val" id="val-users">50K</span>
+        </div>
+        <input type="range" id="sl-users" min="1" max="500" value="50"
+          oninput="updateSlider(this,'val-users',v=>fmtK(v*1000))">
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span class="slider-name">Precio $LUKA / TGE</span>
+          <span class="slider-val" id="val-price">1.00x</span>
+        </div>
+        <input type="range" id="sl-price" min="10" max="1000" value="100"
+          oninput="updateSlider(this,'val-price',v=>(v/100).toFixed(2)+'x')">
+      </div>
+    </div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Distribución Universal</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+        <div style="padding:8px;background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.2);border-radius:2px;">
+          <div style="font-size:10px;color:var(--muted)">Vault Core</div>
+          <div style="font-family:'Share Tech Mono';font-size:16px;color:var(--green2)">35%</div>
+        </div>
+        <div style="padding:8px;background:rgba(24,95,165,0.1);border:1px solid rgba(24,95,165,0.2);border-radius:2px;">
+          <div style="font-size:10px;color:var(--muted)">Stakers</div>
+          <div style="font-family:'Share Tech Mono';font-size:16px;color:var(--blue2)">35%</div>
+        </div>
+        <div style="padding:8px;background:rgba(186,117,23,0.1);border:1px solid rgba(186,117,23,0.2);border-radius:2px;">
+          <div style="font-size:10px;color:var(--muted)">LP</div>
+          <div style="font-family:'Share Tech Mono';font-size:16px;color:var(--gold2)">15%</div>
+        </div>
+        <div style="padding:8px;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.2);border-radius:2px;">
+          <div style="font-size:10px;color:var(--muted)">Burn</div>
+          <div style="font-family:'Share Tech Mono';font-size:16px;color:var(--red2)">15%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl-section" style="flex:1;">
+      <div class="ctrl-label">Día de simulación</div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <input type="range" id="sl-day" min="0" max="1825" value="0"
+          style="flex:1;"
+          oninput="setDay(parseInt(this.value))">
+        <span id="day-disp" style="font-family:'Share Tech Mono';font-size:11px;color:var(--gold2);min-width:36px;">D:0</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <button class="btn" onclick="togglePlay()" id="btn-play" style="flex:2;">▶ PLAY</button>
+        <button class="btn" onclick="resetSim()" style="flex:1;">↺ RST</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ CENTER: CANVAS ══ -->
+  <main class="center-panel">
+    <canvas id="flowCanvas"></canvas>
+    <div class="mode-badge b0" id="mode-badge">B0 — ACUMULACIÓN</div>
+    <div class="shield-indicator">⬡ JAGUAR SHIELD v4.2</div>
+  </main>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <aside class="right-panel panel">
+    <div class="panel-title">⬡ Métricas en Vivo</div>
+
+    <div class="metric-card green">
+      <div class="metric-name">Vault Total</div>
+      <div class="metric-value green" id="m-vault">$2.41M</div>
+      <div class="metric-sub" id="m-vault-sub">Día 0 · B0</div>
+    </div>
+
+    <div class="metric-card blue">
+      <div class="metric-name">Supply Circulante</div>
+      <div class="metric-value blue" id="m-supply">9.98B $LUKA</div>
+      <div class="metric-sub" id="m-supply-sub">Quemado: 0.00B</div>
+    </div>
+
+    <div class="metric-card gold">
+      <div class="metric-name">Precio $LUKA</div>
+      <div class="metric-value gold" id="m-price">$0.0001000</div>
+      <div class="metric-sub" id="m-price-sub">TGE = $0.0001 · 1.00x</div>
+    </div>
+
+    <div class="metric-card green">
+      <div class="metric-name">Fees Día</div>
+      <div class="metric-value green" id="m-fees">$18,750</div>
+      <div class="metric-sub">Acumulados hoy</div>
+    </div>
+
+    <div class="fee-breakdown panel-title" style="border:none;padding-bottom:4px;">⬡ Fees por Motor</div>
+    <div class="fee-breakdown" style="padding-top:8px;">
+      <div class="fee-row">
+        <span class="fee-label" style="color:var(--green2)">A · SOL</span>
+        <div class="fee-bar-wrap"><div class="fee-bar A" id="bar-A" style="width:60%"></div></div>
+        <span class="fee-amt" id="fa-A">$11,250</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label" style="color:var(--blue2)">B · $LUKA</span>
+        <div class="fee-bar-wrap"><div class="fee-bar B" id="bar-B" style="width:30%"></div></div>
+        <span class="fee-amt" id="fa-B">$5,625</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label" style="color:var(--gold2)">C · USDC</span>
+        <div class="fee-bar-wrap"><div class="fee-bar C" id="bar-C" style="width:8%"></div></div>
+        <span class="fee-amt" id="fa-C">$1,500</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label" style="color:var(--red2)">D · Manadas</span>
+        <div class="fee-bar-wrap"><div class="fee-bar D" id="bar-D" style="width:2%"></div></div>
+        <span class="fee-amt" id="fa-D">$375</span>
+      </div>
+    </div>
+
+    <div class="vault-compose">
+      <div class="vault-donut-label">Composición Vault</div>
+      <div class="vault-item">
+        <div class="vault-dot" style="background:#F7931A;"></div>
+        <span class="vault-item-name">cBTC</span>
+        <span class="vault-item-pct">35%</span>
+      </div>
+      <div class="vault-item">
+        <div class="vault-dot" style="background:var(--blue2);"></div>
+        <span class="vault-item-name">SOL</span>
+        <span class="vault-item-pct">15%</span>
+      </div>
+      <div class="vault-item">
+        <div class="vault-dot" style="background:var(--green2);"></div>
+        <span class="vault-item-name">LST (mSOL/JitoSOL)</span>
+        <span class="vault-item-pct">20%</span>
+      </div>
+      <div class="vault-item">
+        <div class="vault-dot" style="background:#2ECC71;"></div>
+        <span class="vault-item-name">USDC Reserva</span>
+        <span class="vault-item-pct">25%</span>
+      </div>
+      <div class="vault-item">
+        <div class="vault-dot" style="background:var(--gold2);"></div>
+        <span class="vault-item-name">USDC Lending</span>
+        <span class="vault-item-pct">5%</span>
+      </div>
+      <div class="vault-item">
+        <div class="vault-dot" style="background:var(--muted);"></div>
+        <span class="vault-item-name">PYTH+JTO+JUP</span>
+        <span class="vault-item-pct">5%</span>
+      </div>
+    </div>
+
+    <div class="metric-card red" style="margin-top:auto;">
+      <div class="metric-name">R_op Acumulado</div>
+      <div class="metric-value red" id="m-rop">$0</div>
+      <div class="metric-sub">Idle yield (30%)</div>
+    </div>
+
+    <div style="padding:14px 16px;border-top:1px solid var(--border);">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;">JAGUAR EXIT FEE</div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+        <span style="color:var(--text)">P&lt;0.7xEMA30</span>
+        <span style="color:var(--gold2);font-family:'Share Tech Mono'" id="jef-status">INACTIVO</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;">
+        <span style="color:var(--text)">Anti-Whale</span>
+        <span style="color:var(--green2);font-family:'Share Tech Mono'">ACTIVO</span>
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  LUKASH PROTOCOL — TOKEN FLOW ENGINE
+// ══════════════════════════════════════════════════════
+
+const canvas = document.getElementById('flowCanvas');
+const ctx = canvas.getContext('2d');
+
+// ─── STATE ───
+let state = {
+  market: 'NEUTRAL',
+  scenario: 'BASE',
+  mode: 'B0',
+  day: 0,
+  playing: false,
+  playInterval: null,
+  volA: 2500,   // k USD
+  users: 50,    // k
+  priceMult: 1.0,
+  vault: 2410000,
+  supply: 9980000000,
+  burned: 0,
+  rop: 0,
+  feesDay: 18750,
+  particles: [],
+  nodes: {},
+  time: 0,
+  jefActive: false,
+};
+
+// ─── SCENARIO PARAMS ───
+const SCENARIOS = {
+  CONSERV:  { vaultBase:2.4e6,  userMult:0.4, feesMult:0.3, vaultGrow:64000  },
+  BASE:     { vaultBase:2.41e6, userMult:1.0, feesMult:1.0, vaultGrow:264000 },
+  AGRESIVO: { vaultBase:2.5e6,  userMult:3.5, feesMult:3.5, vaultGrow:1326000},
+};
+const MARKET_SPEED = { BULL:2.2, NEUTRAL:1.0, BEAR:0.45 };
+const MARKET_ALPHA = { BULL:0.95, NEUTRAL:0.75, BEAR:0.45 };
+
+// ─── NODE POSITIONS (relative 0-1) ───
+function buildNodes(W, H) {
+  const cx = W/2, cy = H/2;
+  state.nodes = {
+    A: { x: W*0.18, y: H*0.25, label:'MOTOR A', sub:'SOL Trading', color:'#1D9E75', glow:'rgba(29,158,117,0.5)' },
+    B: { x: W*0.18, y: H*0.55, label:'MOTOR B', sub:'$LUKA App',   color:'#1E7ED4', glow:'rgba(30,126,212,0.5)' },
+    C: { x: W*0.18, y: H*0.75, label:'MOTOR C', sub:'USDC Estable',color:'#BA7517', glow:'rgba(186,117,23,0.5)' },
+    D: { x: W*0.18, y: H*0.88, label:'MOTOR D', sub:'Manadas',     color:'#E74C3C', glow:'rgba(231,76,60,0.5)'  },
+    VAULT:  { x: cx, y: cy,       label:'VAULT CORE', sub:'Multi-asset',color:'#25C992', glow:'rgba(37,201,146,0.6)', r:42 },
+    STAKERS:{ x: W*0.78, y: H*0.22, label:'STAKERS',   sub:'35%', color:'#1E7ED4', glow:'rgba(30,126,212,0.4)' },
+    LP:     { x: W*0.85, y: H*0.50, label:'LIQ. POOL', sub:'15%', color:'#BA7517', glow:'rgba(186,117,23,0.4)'  },
+    BURN:   { x: W*0.78, y: H*0.78, label:'BURN',       sub:'15%', color:'#E74C3C', glow:'rgba(231,76,60,0.4)'  },
+    RECIRC: { x: W*0.50, y: H*0.10, label:'R_op',       sub:'Idle yield',color:'#BA7517', glow:'rgba(186,117,23,0.3)'},
+  };
+}
+
+// ─── PARTICLE CLASS ───
+class Particle {
+  constructor(from, to, color, size, speed, label) {
+    this.from = from;
+    this.to = to;
+    this.color = color;
+    this.size = size || 3;
+    this.speed = speed || 1;
+    this.label = label || '';
+    this.t = 0;
+    this.trail = [];
+    this.glow = color;
+    this.done = false;
+  }
+  update() {
+    this.t = Math.min(1, this.t + 0.008 * this.speed);
+    // Bezier curve
+    const n1 = state.nodes[this.from];
+    const n2 = state.nodes[this.to];
+    if (!n1 || !n2) { this.done=true; return; }
+    const cx = (n1.x + n2.x)/2 + (n2.y - n1.y)*0.2;
+    const cy = (n1.y + n2.y)/2 - (n2.x - n1.x)*0.2;
+    const u = 1-this.t;
+    this.x = u*u*n1.x + 2*u*this.t*cx + this.t*this.t*n2.x;
+    this.y = u*u*n1.y + 2*u*this.t*cy + this.t*this.t*n2.y;
+    this.trail.push({x:this.x, y:this.y});
+    if (this.trail.length > 12) this.trail.shift();
+    if (this.t >= 1) this.done = true;
+  }
+  draw() {
+    if (!this.x) return;
+    // Trail
+    for (let i=0; i<this.trail.length-1; i++) {
+      const a = (i/this.trail.length)*0.4;
+      ctx.beginPath();
+      ctx.strokeStyle = this.color.replace(')',`,${a})`).replace('rgb','rgba');
+      ctx.lineWidth = this.size*0.6;
+      ctx.moveTo(this.trail[i].x, this.trail[i].y);
+      ctx.lineTo(this.trail[i+1].x, this.trail[i+1].y);
+      ctx.stroke();
+    }
+    // Glow
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = this.glow;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+// ─── SPAWN PARTICLES ───
+function spawnFlows() {
+  const spd = MARKET_SPEED[state.market];
+  const sc  = SCENARIOS[state.scenario];
+  const volK = state.volA * state.users/50;
+  const fMult = sc.feesMult * state.users/50;
+
+  // Motor A → Vault (SOL fees)
+  if (Math.random() < 0.35 * spd * fMult) {
+    state.particles.push(new Particle('A','VAULT','#1D9E75', 3.5, spd*0.9, '$'));
+  }
+  // Motor B → Vault
+  if (Math.random() < 0.22 * spd * fMult) {
+    state.particles.push(new Particle('B','VAULT','#1E7ED4', 3, spd*0.8, 'L'));
+  }
+  // Motor C → Vault
+  if (Math.random() < 0.10 * spd * fMult) {
+    state.particles.push(new Particle('C','VAULT','#BA7517', 2.5, spd*0.7, 'U'));
+  }
+  // Motor D → Vault
+  if (Math.random() < 0.06 * spd * fMult) {
+    state.particles.push(new Particle('D','VAULT','#E74C3C', 2, spd*0.6, 'M'));
+  }
+
+  // B2 mode: Vault → Distribución
+  if (state.mode === 'B2') {
+    if (Math.random() < 0.18 * spd) {
+      state.particles.push(new Particle('VAULT','STAKERS','#1E7ED4', 2.5, spd*1.1));
+    }
+    if (Math.random() < 0.08 * spd) {
+      state.particles.push(new Particle('VAULT','LP','#BA7517', 2, spd*1.0));
+    }
+    if (Math.random() < 0.08 * spd) {
+      state.particles.push(new Particle('VAULT','BURN','#E74C3C', 2, spd*0.9));
+    }
+    if (Math.random() < 0.06 * spd) {
+      state.particles.push(new Particle('VAULT','RECIRC','#BA7517', 1.5, spd*1.2));
+    }
+  }
+  // B0: R_op trickle
+  if (state.mode === 'B0' && Math.random() < 0.04 * spd) {
+    state.particles.push(new Particle('VAULT','RECIRC','#BA7517', 1.5, spd*0.5));
+  }
+
+  // Burn particles from B always (token burn)
+  if (Math.random() < 0.12 * spd * fMult) {
+    state.particles.push(new Particle('B','BURN','#E74C3C', 2, spd*1.1));
+  }
+
+  // Limit
+  if (state.particles.length > 200) {
+    state.particles = state.particles.slice(-150);
+  }
+}
+
+// ─── DRAW CONNECTION LINES ───
+function drawConnections() {
+  const ns = state.nodes;
+  const alpha = MARKET_ALPHA[state.market];
+
+  const connections = [
+    ['A','VAULT','#1D9E75'],
+    ['B','VAULT','#1E7ED4'],
+    ['C','VAULT','#BA7517'],
+    ['D','VAULT','#E74C3C'],
+  ];
+  if (state.mode === 'B2') {
+    connections.push(
+      ['VAULT','STAKERS','#1E7ED4'],
+      ['VAULT','LP','#BA7517'],
+      ['VAULT','BURN','#E74C3C'],
+      ['VAULT','RECIRC','#BA7517'],
+    );
+  } else {
+    connections.push(['VAULT','RECIRC','#BA7517']);
+  }
+  connections.push(['B','BURN','#E74C3C']);
+
+  for (const [f, t, c] of connections) {
+    const n1 = ns[f], n2 = ns[t];
+    if (!n1 || !n2) continue;
+    const cxb = (n1.x + n2.x)/2 + (n2.y - n1.y)*0.2;
+    const cyb = (n1.y + n2.y)/2 - (n2.x - n1.x)*0.2;
+    ctx.beginPath();
+    ctx.moveTo(n1.x, n1.y);
+    ctx.quadraticCurveTo(cxb, cyb, n2.x, n2.y);
+    ctx.strokeStyle = c.replace('#','rgba(') + ',0)'; // fallback
+    // parse hex to rgba
+    const r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+    ctx.strokeStyle = `rgba(${r},${g},${b},${alpha*0.18})`;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// ─── DRAW NODE ───
+function drawNode(n, key) {
+  const W = canvas.width, H = canvas.height;
+  const r = n.r || (key === 'VAULT' ? 42 : 22);
+  const isMotor = ['A','B','C','D'].includes(key);
+
+  // Outer glow ring
+  const grad = ctx.createRadialGradient(n.x, n.y, r*0.5, n.x, n.y, r*2.2);
+  grad.addColorStop(0, n.glow.replace('0.','0.2'));
+  grad.addColorStop(1, 'transparent');
+  ctx.beginPath();
+  ctx.arc(n.x, n.y, r*2, 0, Math.PI*2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Pulsing ring
+  const pulse = 1 + 0.06*Math.sin(state.time*0.04 + (key.charCodeAt(0)||0)*0.7);
+  ctx.beginPath();
+  ctx.arc(n.x, n.y, r*pulse, 0, Math.PI*2);
+  const r2 = parseInt(n.color.slice(1,3),16);
+  const g2 = parseInt(n.color.slice(3,5),16);
+  const b2 = parseInt(n.color.slice(5,7),16);
+  ctx.strokeStyle = `rgba(${r2},${g2},${b2},0.5)`;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Fill
+  ctx.beginPath();
+  ctx.arc(n.x, n.y, r*0.9, 0, Math.PI*2);
+  const fill = ctx.createRadialGradient(n.x-r*0.3, n.y-r*0.3, 0, n.x, n.y, r*0.9);
+  fill.addColorStop(0, `rgba(${r2},${g2},${b2},0.35)`);
+  fill.addColorStop(1, `rgba(${r2},${g2},${b2},0.10)`);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.strokeStyle = `rgba(${r2},${g2},${b2},0.8)`;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Label
+  ctx.shadowBlur = 0;
+  if (key === 'VAULT') {
+    ctx.font = `bold 11px 'Orbitron', monospace`;
+    ctx.fillStyle = n.color;
+    ctx.textAlign = 'center';
+    ctx.fillText('VAULT', n.x, n.y-4);
+    ctx.font = `9px 'Share Tech Mono', monospace`;
+    ctx.fillStyle = 'rgba(200,216,240,0.6)';
+    ctx.fillText('CORE', n.x, n.y+10);
+    // vault value
+    ctx.font = `bold 10px 'Share Tech Mono', monospace`;
+    ctx.fillStyle = '#25C992';
+    ctx.fillText(fmtUSD(state.vault), n.x, n.y+24);
+  } else if (isMotor) {
+    ctx.font = `bold 9px 'Orbitron', monospace`;
+    ctx.fillStyle = n.color;
+    ctx.textAlign = 'center';
+    ctx.fillText(n.label, n.x, n.y-4);
+    ctx.font = `9px 'Rajdhani', sans-serif`;
+    ctx.fillStyle = 'rgba(200,216,240,0.55)';
+    ctx.fillText(n.sub, n.x, n.y+8);
+  } else {
+    ctx.font = `bold 9px 'Orbitron', monospace`;
+    ctx.fillStyle = n.color;
+    ctx.textAlign = 'center';
+    ctx.fillText(n.label, n.x, n.y-3);
+    ctx.font = `9px 'Share Tech Mono', monospace`;
+    ctx.fillStyle = 'rgba(200,216,240,0.5)';
+    ctx.fillText(n.sub, n.x, n.y+8);
+  }
+  ctx.textAlign = 'left';
+}
+
+// ─── GRID BG ───
+function drawGrid() {
+  const W = canvas.width, H = canvas.height;
+  ctx.strokeStyle = 'rgba(24,95,165,0.07)';
+  ctx.lineWidth = 1;
+  const step = 40;
+  for (let x=0; x<W; x+=step) {
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for (let y=0; y<H; y+=step) {
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+  // Center radial
+  const cg = ctx.createRadialGradient(W/2,H/2,50,W/2,H/2,300);
+  cg.addColorStop(0,'rgba(29,158,117,0.04)');
+  cg.addColorStop(1,'transparent');
+  ctx.fillStyle = cg;
+  ctx.fillRect(0,0,W,H);
+}
+
+// ─── MAIN RENDER LOOP ───
+function render() {
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Background
+  ctx.fillStyle = '#0A0F1E';
+  ctx.fillRect(0,0,W,H);
+  drawGrid();
+
+  drawConnections();
+
+  // Update & draw particles
+  spawnFlows();
+  state.particles = state.particles.filter(p => !p.done);
+  for (const p of state.particles) { p.update(); p.draw(); }
+
+  // Draw nodes
+  for (const [key, node] of Object.entries(state.nodes)) {
+    drawNode(node, key);
+  }
+
+  // Day counter overlay
+  ctx.font = `bold 11px 'Share Tech Mono', monospace`;
+  ctx.fillStyle = 'rgba(200,216,240,0.25)';
+  ctx.textAlign = 'right';
+  ctx.fillText(`T+${state.day}d`, W-14, H-12);
+  ctx.textAlign = 'left';
+
+  state.time++;
+  requestAnimationFrame(render);
+}
+
+// ─── RESIZE ───
+function resize() {
+  const el = canvas.parentElement;
+  canvas.width = el.clientWidth;
+  canvas.height = el.clientHeight;
+  buildNodes(canvas.width, canvas.height);
+}
+
+// ─── SIMULATION ───
+function computeMetrics() {
+  const sc = SCENARIOS[state.scenario];
+  const spd = MARKET_SPEED[state.market];
+  const fMult = sc.feesMult * (state.users/50);
+
+  // Fees
+  const baseFeesDay = 18750 * fMult * spd * (state.volA/2500);
+  state.feesDay = baseFeesDay;
+
+  // Vault growth
+  const dailyVaultGrow = sc.vaultGrow/365 * fMult * spd * (state.volA/2500);
+  if (state.playing) {
+    state.vault += dailyVaultGrow;
+    state.rop += dailyVaultGrow * 0.30;
+    state.burned += state.feesDay * 0.15 / (state.priceMult * 0.0001);
+    state.supply = Math.max(1e9, 10e9 - state.burned);
+  }
+
+  // Price
+  const basePrice = 0.0001 * state.priceMult;
+
+  // Jaguar Exit Fee
+  state.jefActive = state.priceMult < 0.7;
+
+  // Update UI
+  document.getElementById('m-vault').textContent = fmtUSD(state.vault);
+  document.getElementById('m-vault-sub').textContent = `Día ${state.day} · ${state.mode}`;
+  document.getElementById('m-supply').textContent = fmtB(state.supply) + ' $LUKA';
+  document.getElementById('m-supply-sub').textContent = 'Quemado: ' + fmtB(state.burned);
+  document.getElementById('m-price').textContent = '$' + basePrice.toFixed(7);
+  document.getElementById('m-price-sub').textContent = `TGE = $0.0001 · ${state.priceMult.toFixed(2)}x`;
+  document.getElementById('m-fees').textContent = fmtUSD(state.feesDay);
+  document.getElementById('m-rop').textContent = fmtUSD(state.rop);
+  document.getElementById('hdr-supply').textContent = fmtB(state.supply);
+  document.getElementById('hdr-day').textContent = state.day;
+  document.getElementById('jef-status').textContent = state.jefActive ? 'ACTIVO' : 'INACTIVO';
+  document.getElementById('jef-status').style.color = state.jefActive ? 'var(--red2)' : 'var(--gold2)';
+
+  // Fee bars
+  const fA = state.feesDay*0.60, fB=state.feesDay*0.30, fC=state.feesDay*0.08, fD=state.feesDay*0.02;
+  const total = fA+fB+fC+fD;
+  document.getElementById('bar-A').style.width = (fA/total*100)+'%';
+  document.getElementById('bar-B').style.width = (fB/total*100)+'%';
+  document.getElementById('bar-C').style.width = (fC/total*100)+'%';
+  document.getElementById('bar-D').style.width = (fD/total*100)+'%';
+  document.getElementById('fa-A').textContent = fmtUSD(fA);
+  document.getElementById('fa-B').textContent = fmtUSD(fB);
+  document.getElementById('fa-C').textContent = fmtUSD(fC);
+  document.getElementById('fa-D').textContent = fmtUSD(fD);
+}
+
+// ─── CONTROLS ───
+function setMarket(m) {
+  state.market = m;
+  ['bull','neutral','bear'].forEach(x => {
+    const b = document.getElementById('btn-'+x);
+    b.className = 'btn' + (x.toUpperCase()===m ? ` active-${x}` : '');
+  });
+}
+
+function setScenario(s) {
+  state.scenario = s;
+  const map = {CONSERV:'conserv', BASE:'base', AGRESIVO:'agres'};
+  ['conserv','base','agres'].forEach(x => {
+    const key = Object.entries(map).find(([k,v])=>v===x)?.[0];
+    const b = document.getElementById('btn-'+x);
+    b.className = 'btn' + (key===s ? ` active-${x}` : '');
+  });
+  const sc = SCENARIOS[s];
+  state.vault = sc.vaultBase;
+}
+
+function setMode(m) {
+  state.mode = m;
+  document.getElementById('btn-b0').className = 'btn' + (m==='B0'?' active-b0':'');
+  document.getElementById('btn-b2').className = 'btn' + (m==='B2'?' active-b2':'');
+  const badge = document.getElementById('mode-badge');
+  if (m==='B0') {
+    badge.textContent = 'B0 — ACUMULACIÓN';
+    badge.className = 'mode-badge b0';
+    document.getElementById('mode-desc').textContent = 'B0: Fees fluyen al Vault. Crecimiento acelerado. Sin distribución universal activa.';
+  } else {
+    badge.textContent = 'B2 — CONSOLIDADO';
+    badge.className = 'mode-badge b2';
+    document.getElementById('mode-desc').textContent = 'B2: Distribución 35/35/15/15 activa. Vault estabilizado. Inercia estructural.';
+  }
+}
+
+function setDay(d) {
+  state.day = d;
+  document.getElementById('day-disp').textContent = 'D:'+d;
+  computeMetrics();
+}
+
+function updateSlider(el, valId, fmt) {
+  const v = parseInt(el.value);
+  const min = parseInt(el.min), max = parseInt(el.max);
+  const pct = ((v-min)/(max-min)*100)+'%';
+  el.style.setProperty('--pct', pct);
+  document.getElementById(valId).textContent = fmt(v);
+
+  if (el.id==='sl-volA') state.volA = v;
+  if (el.id==='sl-users') state.users = v;
+  if (el.id==='sl-price') state.priceMult = v/100;
+  computeMetrics();
+}
+
+function togglePlay() {
+  state.playing = !state.playing;
+  const btn = document.getElementById('btn-play');
+  if (state.playing) {
+    btn.textContent = '⏸ PAUSE';
+    btn.className = 'btn active-bull';
+    state.playInterval = setInterval(() => {
+      if (state.day < 1825) {
+        state.day++;
+        document.getElementById('sl-day').value = state.day;
+        document.getElementById('day-disp').textContent = 'D:'+state.day;
+        computeMetrics();
+      } else {
+        togglePlay();
+      }
+    }, 80);
+  } else {
+    btn.textContent = '▶ PLAY';
+    btn.className = 'btn';
+    clearInterval(state.playInterval);
+  }
+}
+
+function resetSim() {
+  state.playing = false;
+  clearInterval(state.playInterval);
+  document.getElementById('btn-play').textContent = '▶ PLAY';
+  document.getElementById('btn-play').className = 'btn';
+  state.day = 0;
+  state.vault = SCENARIOS[state.scenario].vaultBase;
+  state.burned = 0;
+  state.rop = 0;
+  state.supply = 9980000000;
+  document.getElementById('sl-day').value = 0;
+  document.getElementById('day-disp').textContent = 'D:0';
+  state.particles = [];
+  computeMetrics();
+}
+
+// ─── FORMAT HELPERS ───
+function fmtUSD(v) {
+  if (v >= 1e9) return '$'+(v/1e9).toFixed(2)+'B';
+  if (v >= 1e6) return '$'+(v/1e6).toFixed(2)+'M';
+  if (v >= 1e3) return '$'+(v/1e3).toFixed(0)+'K';
+  return '$'+v.toFixed(0);
+}
+function fmtK(v) {
+  if (v >= 1e6) return (v/1e6).toFixed(1)+'M';
+  if (v >= 1e3) return (v/1e3).toFixed(0)+'K';
+  return v;
+}
+function fmtB(v) {
+  if (v >= 1e9) return (v/1e9).toFixed(2)+'B';
+  if (v >= 1e6) return (v/1e6).toFixed(0)+'M';
+  return v.toFixed(0);
+}
+
+// ─── INIT ───
+window.addEventListener('resize', () => { resize(); });
+resize();
+setMarket('NEUTRAL');
+setScenario('BASE');
+setMode('B0');
+computeMetrics();
+
+// Init slider CSS vars
+['sl-volA','sl-users','sl-price'].forEach(id => {
+  const el = document.getElementById(id);
+  const v = parseInt(el.value), min = parseInt(el.min), max = parseInt(el.max);
+  el.style.setProperty('--pct', ((v-min)/(max-min)*100)+'%');
+});
+
+render();
+
+// Metrics ticker
+setInterval(computeMetrics, 1000);
+</script>
+</body>
+</html>

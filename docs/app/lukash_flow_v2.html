@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH Protocol — Token Flow Visualizer v4.2</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0A0F1E;
+  --bg2:      #16213E;
+  --bg3:      #1A2744;
+  --green:    #1D9E75;
+  --green2:   #25C992;
+  --blue:     #185FA5;
+  --blue2:    #1E7ED4;
+  --gold:     #BA7517;
+  --gold2:    #E8941A;
+  --red:      #C0392B;
+  --red2:     #E74C3C;
+  --purple:   #8E44AD;
+  --purple2:  #A569BD;
+  --text:     #C8D8F0;
+  --muted:    #4A6080;
+  --border:   rgba(29,158,117,0.22);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  display: flex; flex-direction: column;
+}
+body::before {
+  content:''; position:fixed; inset:0; z-index:999; pointer-events:none;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);
+}
+
+/* ── HEADER ── */
+header {
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 10px 24px;
+  background: linear-gradient(90deg,rgba(24,95,165,0.18),rgba(29,158,117,0.09));
+  border-bottom: 1px solid var(--border);
+  position:relative;
+}
+header::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg,transparent,var(--green2) 40%,var(--blue2) 70%,transparent);
+}
+.logo {
+  font-family:'Orbitron',monospace; font-size:20px; font-weight:900;
+  letter-spacing:4px;
+  background: linear-gradient(135deg,var(--green2),var(--blue2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.logo span { -webkit-text-fill-color:var(--gold2); }
+.hdr-center {
+  display:flex; gap:20px; align-items:center;
+}
+.regime-badge {
+  font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
+  letter-spacing:2px; padding:4px 12px;
+  border:1px solid currentColor; border-radius:2px;
+  transition:all 0.3s;
+}
+.rb-bull   { color:var(--green2); background:rgba(29,158,117,0.15); }
+.rb-neutral{ color:var(--blue2);  background:rgba(30,126,212,0.15); }
+.rb-bear   { color:var(--red2);   background:rgba(231,76,60,0.15);  }
+.mode-badge-hdr {
+  font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
+  letter-spacing:2px; padding:4px 12px;
+  border:1px solid; border-radius:2px; transition:all 0.3s;
+}
+.mb-b0 { color:var(--blue2); border-color:var(--blue2); background:rgba(30,126,212,0.12); }
+.mb-b2 { color:var(--green2); border-color:var(--green2); background:rgba(29,158,117,0.12); }
+.hdr-meta {
+  font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted);
+  text-align:right; line-height:1.7;
+}
+.hdr-meta em { color:var(--green); font-style:normal; }
+
+/* ── MAIN ── */
+.main {
+  flex:1; display:grid;
+  grid-template-columns: 230px 1fr 220px;
+  overflow:hidden;
+}
+
+/* ── PANELS ── */
+.panel { border-right:1px solid var(--border); overflow-y:auto; }
+.panel::-webkit-scrollbar { width:3px; }
+.panel::-webkit-scrollbar-thumb { background:var(--green); border-radius:2px; }
+.ptitle {
+  font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
+  letter-spacing:3px; color:var(--muted); padding:9px 14px 7px;
+  border-bottom:1px solid var(--border); text-transform:uppercase;
+  position:sticky; top:0; background:rgba(10,15,30,0.95); z-index:2;
+}
+
+/* ── LEFT CONTROLS ── */
+.left-panel { border-left:none; }
+.csect { padding:12px 14px; border-bottom:1px solid rgba(255,255,255,0.04); }
+.clabel {
+  font-size:10px; font-weight:600; letter-spacing:2px;
+  color:var(--muted); text-transform:uppercase; margin-bottom:8px;
+}
+.bgrp { display:flex; gap:3px; }
+.btn {
+  flex:1; padding:6px 4px;
+  font-family:'Orbitron',monospace; font-size:8px; font-weight:700;
+  letter-spacing:1px; border:1px solid var(--muted); background:transparent;
+  color:var(--muted); cursor:pointer; transition:all 0.2s; border-radius:2px;
+  text-transform:uppercase;
+}
+.btn:hover { border-color:var(--text); color:var(--text); }
+.ab { border-color:var(--green2)!important; color:var(--green2)!important; background:rgba(29,158,117,0.14)!important; box-shadow:0 0 10px rgba(29,158,117,0.3); }
+.ab-n { border-color:var(--blue2)!important; color:var(--blue2)!important; background:rgba(30,126,212,0.14)!important; }
+.ab-bear { border-color:var(--red2)!important; color:var(--red2)!important; background:rgba(231,76,60,0.14)!important; }
+.ab-gold { border-color:var(--gold2)!important; color:var(--gold2)!important; background:rgba(186,117,23,0.14)!important; }
+
+/* sliders */
+.swrap { margin-bottom:12px; }
+.shdr { display:flex; justify-content:space-between; margin-bottom:5px; }
+.sname { font-size:11px; color:var(--text); font-weight:500; }
+.sval { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--green2); }
+input[type=range] {
+  width:100%; height:3px; -webkit-appearance:none; appearance:none;
+  background: linear-gradient(90deg,var(--green) var(--pct,50%),var(--bg3) var(--pct,50%));
+  border-radius:2px; outline:none; cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:12px; height:12px; border-radius:50%;
+  background:var(--green2); border:2px solid var(--bg); cursor:pointer;
+  box-shadow:0 0 8px rgba(29,158,117,0.6);
+}
+
+/* dist grid */
+.dgrid { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+.dcard {
+  padding:7px 8px; border-radius:2px;
+  border:1px solid; text-align:center;
+}
+.dcard .dn { font-size:9px; letter-spacing:1px; color:var(--muted); }
+.dcard .dv { font-family:'Share Tech Mono'; font-size:17px; }
+.dc-green { border-color:rgba(29,158,117,0.3); background:rgba(29,158,117,0.08); }
+.dc-blue  { border-color:rgba(30,126,212,0.3); background:rgba(30,126,212,0.08); }
+.dc-gold  { border-color:rgba(186,117,23,0.3); background:rgba(186,117,23,0.08); }
+.dc-red   { border-color:rgba(231,76,60,0.3); background:rgba(231,76,60,0.08); }
+
+/* sim controls */
+.sim-day-bar {
+  display:flex; align-items:center; gap:6px; margin-bottom:8px;
+}
+.day-disp {
+  font-family:'Share Tech Mono'; font-size:12px; color:var(--gold2); min-width:45px;
+}
+.timeline {
+  display:flex; justify-content:space-between;
+  font-family:'Share Tech Mono'; font-size:9px; color:var(--muted);
+  margin-bottom:4px;
+}
+.play-row { display:flex; gap:4px; }
+.spd-btn { font-size:8px!important; padding:5px!important; }
+
+/* speed indicator */
+.spd-ind {
+  margin-top:8px; padding:6px 10px;
+  background:rgba(186,117,23,0.08); border:1px solid rgba(186,117,23,0.2);
+  border-radius:2px; font-family:'Share Tech Mono'; font-size:10px; color:var(--gold2);
+  text-align:center;
+}
+
+/* ── CENTER CANVAS ── */
+.center-panel { position:relative; border-left:none; border-right:none; }
+#flowCanvas { width:100%; height:100%; display:block; }
+.year-overlay {
+  position:absolute; top:14px; left:50%; transform:translateX(-50%);
+  font-family:'Orbitron',monospace; font-size:10px; font-weight:700;
+  letter-spacing:3px; padding:5px 18px;
+  border:1px solid var(--gold2); background:rgba(186,117,23,0.12);
+  color:var(--gold2); border-radius:1px;
+}
+.shield-tag {
+  position:absolute; bottom:12px; right:14px;
+  font-family:'Orbitron',monospace; font-size:8px;
+  color:var(--gold); letter-spacing:2px;
+  border:1px solid rgba(186,117,23,0.3); padding:3px 8px;
+  background:rgba(186,117,23,0.07);
+}
+
+/* ── RIGHT METRICS ── */
+.right-panel { border-right:none; }
+.mcard {
+  padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.04);
+  position:relative;
+}
+.mcard::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:2px;
+}
+.mc-g::before { background:var(--green2); }
+.mc-b::before { background:var(--blue2); }
+.mc-gold::before { background:var(--gold2); }
+.mc-r::before { background:var(--red2); }
+.mc-p::before { background:var(--purple2); }
+.mname { font-size:9px; font-weight:600; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
+.mval { font-family:'Share Tech Mono',monospace; font-size:17px; line-height:1.2; }
+.mv-g { color:var(--green2); } .mv-b { color:var(--blue2); }
+.mv-gold { color:var(--gold2); } .mv-r { color:var(--red2); } .mv-p { color:var(--purple2); }
+.msub { font-size:10px; color:var(--muted); margin-top:2px; }
+.mdelta { font-family:'Share Tech Mono'; font-size:10px; }
+
+/* fee rows */
+.frow { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+.flbl { font-size:11px; font-weight:600; width:54px; }
+.fbar-w { flex:1; height:3px; background:var(--bg3); border-radius:2px; overflow:hidden; }
+.fbar { height:100%; border-radius:2px; transition:width 0.5s; }
+.famt { font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); width:52px; text-align:right; }
+
+/* vault composition mini bars */
+.vitem { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+.vdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.vname { font-size:10px; color:var(--text); flex:1; }
+.vpct { font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); }
+
+/* progress bar 5y */
+.prog-wrap { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.04); }
+.prog-label { font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+.prog-track { height:4px; background:var(--bg3); border-radius:2px; overflow:hidden; margin-bottom:4px; }
+.prog-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--blue2),var(--green2)); transition:width 0.5s; }
+.prog-yrs { display:flex; justify-content:space-between; font-family:'Share Tech Mono'; font-size:9px; color:var(--muted); }
+
+/* status bar */
+.statusbar {
+  flex-shrink:0; display:flex; gap:20px; align-items:center;
+  padding:6px 20px; background:rgba(8,12,24,0.95);
+  border-top:1px solid var(--border);
+  font-family:'Share Tech Mono'; font-size:9px; color:var(--muted);
+}
+.sdot { width:5px; height:5px; border-radius:50%; display:inline-block; margin-right:4px; animation:pulse 2s infinite; }
+.sg { background:var(--green2); box-shadow:0 0 5px var(--green2); }
+.sb { background:var(--blue2); }
+.sgold { background:var(--gold2); }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">LUKA<span>SH</span> PROTOCOL</div>
+  <div class="hdr-center">
+    <div class="regime-badge rb-neutral" id="hdr-regime">◼ NEUTRAL</div>
+    <div class="mode-badge-hdr mb-b0" id="hdr-mode">B0 — ACUMULACIÓN</div>
+    <div id="hdr-scenario" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--gold2);letter-spacing:2px;border:1px solid rgba(186,117,23,0.3);padding:4px 10px;border-radius:2px;">ESCENARIO: BASE</div>
+  </div>
+  <div class="hdr-meta">
+    SUPPLY: <em id="hdr-supply">9.98B</em> $LUKA &nbsp;|&nbsp; DÍA: <em id="hdr-day">0</em> &nbsp;|&nbsp; AÑO: <em id="hdr-yr">0.0</em>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ═══ LEFT ═══ -->
+<aside class="panel left-panel">
+  <div class="ptitle">⬡ Configuración</div>
+
+  <div class="csect">
+    <div class="clabel">Régimen de Mercado</div>
+    <div class="bgrp">
+      <button class="btn" id="bb" onclick="setMarket('BULL')">▲ BULL</button>
+      <button class="btn ab-n" id="bn" onclick="setMarket('NEUTRAL')">◼ NEUTRAL</button>
+      <button class="btn" id="bbe" onclick="setMarket('BEAR')">▼ BEAR</button>
+    </div>
+  </div>
+
+  <div class="csect">
+    <div class="clabel">Escenario MC v4</div>
+    <div class="bgrp">
+      <button class="btn" id="bsc" onclick="setScenario('CONSERV')">CONSERV</button>
+      <button class="btn ab-n" id="bsb" onclick="setScenario('BASE')">BASE</button>
+      <button class="btn" id="bsa" onclick="setScenario('AGRESIVO')">AGRESIVO</button>
+    </div>
+    <div id="sc-info" style="margin-top:8px;font-size:10px;color:var(--muted);line-height:1.6;">
+      Vault Y5 mediana: <span style="color:var(--blue2)">$483M</span> · P(B2&lt;Y2): <span style="color:var(--green2)">100%</span>
+    </div>
+  </div>
+
+  <div class="csect">
+    <div class="clabel">Modo Operacional</div>
+    <div class="bgrp">
+      <button class="btn ab-n" id="bm0" onclick="setMode('B0')">B0 ACUM</button>
+      <button class="btn" id="bm2" onclick="setMode('B2')">B2 CONSOL</button>
+    </div>
+    <div id="mode-desc" style="margin-top:7px;font-size:10px;color:var(--muted);line-height:1.5;">
+      B0: 35% Vault crece. Staking/OYM reciben su 35%/15%. Throttle activo.
+    </div>
+  </div>
+
+  <div class="csect">
+    <div class="clabel">Distribución Universal</div>
+    <div class="dgrid">
+      <div class="dcard dc-green"><div class="dn">VAULT CORE</div><div class="dv" style="color:var(--green2)">35%</div></div>
+      <div class="dcard dc-blue"><div class="dn">STAKING</div><div class="dv" style="color:var(--blue2)">35%</div></div>
+      <div class="dcard dc-gold"><div class="dn">OYM / LP</div><div class="dv" style="color:var(--gold2)">15%</div></div>
+      <div class="dcard dc-red"><div class="dn">BURN $LUKA</div><div class="dv" style="color:var(--red2)">15%</div></div>
+    </div>
+  </div>
+
+  <div class="csect">
+    <div class="clabel">Parámetros</div>
+    <div class="swrap">
+      <div class="shdr"><span class="sname">Vol. Diario Motor A</span><span class="sval" id="sv-vola">$2.5M</span></div>
+      <input type="range" id="sl-vola" min="100" max="15000" value="2500" oninput="onSlider(this,'sv-vola',v=>fmtUSD(v*1000))">
+    </div>
+    <div class="swrap">
+      <div class="shdr"><span class="sname">Usuarios Activos</span><span class="sval" id="sv-users">50K</span></div>
+      <input type="range" id="sl-users" min="1" max="1000" value="50" oninput="onSlider(this,'sv-users',v=>fmtK(v*1000))">
+    </div>
+    <div class="swrap">
+      <div class="shdr"><span class="sname">Precio $LUKA × TGE</span><span class="sval" id="sv-price">1.00×</span></div>
+      <input type="range" id="sl-price" min="10" max="2000" value="100" oninput="onSlider(this,'sv-price',v=>(v/100).toFixed(2)+'×')">
+    </div>
+  </div>
+
+  <div class="csect">
+    <div class="clabel">Simulación 5 Años (1825d)</div>
+    <div class="timeline">
+      <span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span>
+    </div>
+    <div class="sim-day-bar">
+      <input type="range" id="sl-day" min="0" max="1825" value="0" style="flex:1;"
+        oninput="scrubDay(parseInt(this.value))">
+      <span class="day-disp" id="day-disp">D:0</span>
+    </div>
+    <div class="play-row">
+      <button class="btn" style="flex:2;" onclick="togglePlay()" id="btn-play">▶ PLAY</button>
+      <button class="btn spd-btn" onclick="setSpeed(1)" id="spd1" title="1×">1×</button>
+      <button class="btn spd-btn ab-gold" onclick="setSpeed(5)" id="spd5" title="5×">5×</button>
+      <button class="btn spd-btn" onclick="setSpeed(20)" id="spd20" title="20×">20×</button>
+      <button class="btn spd-btn" onclick="resetSim()" title="Reset">↺</button>
+    </div>
+    <div class="spd-ind" id="spd-ind">⚡ VELOCIDAD: 5× &nbsp;|&nbsp; 80ms/día</div>
+  </div>
+
+  <div class="csect">
+    <div class="clabel">Jaguar Shield</div>
+    <div style="display:flex;flex-direction:column;gap:5px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;">
+        <span>Exit Fee activo</span>
+        <span id="jef-s" style="font-family:'Share Tech Mono';color:var(--gold2)">INACTIVO</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;">
+        <span>Anti-Whale</span>
+        <span style="font-family:'Share Tech Mono';color:var(--green2)">ACTIVO</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;">
+        <span>Timelock</span>
+        <span style="font-family:'Share Tech Mono';color:var(--blue2)">48h</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ CENTER ═══ -->
+<div class="center-panel">
+  <canvas id="flowCanvas"></canvas>
+  <div class="year-overlay" id="year-overlay">AÑO 0 · DÍA 0</div>
+  <div class="shield-tag">⬡ JAGUAR SHIELD v4.2</div>
+</div>
+
+<!-- ═══ RIGHT ═══ -->
+<aside class="panel right-panel">
+  <div class="ptitle">⬡ Métricas en Vivo</div>
+
+  <!-- 5Y progress -->
+  <div class="prog-wrap">
+    <div class="prog-label">Horizonte 5 Años</div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-yrs"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+  </div>
+
+  <div class="mcard mc-g">
+    <div class="mname">Vault Core</div>
+    <div class="mval mv-g" id="m-vault">$2.41M</div>
+    <div class="msub">+<span id="m-vault-d" class="mdelta" style="color:var(--green2)">$0</span>/día</div>
+  </div>
+
+  <div class="mcard mc-b">
+    <div class="mname">Pool Staking (35%)</div>
+    <div class="mval mv-b" id="m-staking">$0</div>
+    <div class="msub">Acumulado stakers</div>
+  </div>
+
+  <div class="mcard mc-gold">
+    <div class="mname">OYM Pool (15%)</div>
+    <div class="mval mv-gold" id="m-oym">$0</div>
+    <div class="msub">LP + liquidez comprometida</div>
+  </div>
+
+  <div class="mcard mc-r">
+    <div class="mname">$LUKA Quemado (15%)</div>
+    <div class="mval mv-r" id="m-burned">0.00B</div>
+    <div class="msub">Supply circ: <span id="m-supply">9.98B</span></div>
+  </div>
+
+  <div class="mcard mc-gold">
+    <div class="mname">Precio $LUKA</div>
+    <div class="mval mv-gold" id="m-price">$0.0001000</div>
+    <div class="msub" id="m-price-sub">1.00× TGE</div>
+  </div>
+
+  <div class="mcard mc-p">
+    <div class="mname">R_op Idle Yield</div>
+    <div class="mval mv-p" id="m-rop">$0</div>
+    <div class="msub">30% del yield acumulado</div>
+  </div>
+
+  <!-- Fees por motor -->
+  <div class="ptitle" style="position:static;">⬡ Fees Hoy por Motor</div>
+  <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);">
+    <div class="frow">
+      <span class="flbl" style="color:var(--green2)">A · SOL</span>
+      <div class="fbar-w"><div class="fbar" id="fbar-A" style="width:60%;background:var(--green2)"></div></div>
+      <span class="famt" id="fa-A">$11.2K</span>
+    </div>
+    <div class="frow">
+      <span class="flbl" style="color:var(--blue2)">B · $LUKA</span>
+      <div class="fbar-w"><div class="fbar" id="fbar-B" style="width:30%;background:var(--blue2)"></div></div>
+      <span class="famt" id="fa-B">$5.6K</span>
+    </div>
+    <div class="frow">
+      <span class="flbl" style="color:var(--gold2)">C · USDC</span>
+      <div class="fbar-w"><div class="fbar" id="fbar-C" style="width:7%;background:var(--gold2)"></div></div>
+      <span class="famt" id="fa-C">$1.3K</span>
+    </div>
+    <div class="frow">
+      <span class="flbl" style="color:var(--red2)">D · Manadas</span>
+      <div class="fbar-w"><div class="fbar" id="fbar-D" style="width:3%;background:var(--red2)"></div></div>
+      <span class="famt" id="fa-D">$600</span>
+    </div>
+    <div style="padding-top:6px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:11px;">
+      <span style="color:var(--muted)">TOTAL FEES DÍA</span>
+      <span id="m-fees" style="font-family:'Share Tech Mono';color:var(--green2)">$18.7K</span>
+    </div>
+  </div>
+
+  <!-- Composición Vault -->
+  <div class="ptitle" style="position:static;">⬡ Vault — Composición</div>
+  <div style="padding:10px 14px;">
+    <div class="vitem"><div class="vdot" style="background:#F7931A"></div><span class="vname">cBTC</span><span class="vpct">35%</span></div>
+    <div class="vitem"><div class="vdot" style="background:var(--blue2)"></div><span class="vname">SOL</span><span class="vpct">15%</span></div>
+    <div class="vitem"><div class="vdot" style="background:var(--green2)"></div><span class="vname">LST (mSOL/JitoSOL)</span><span class="vpct">20%</span></div>
+    <div class="vitem"><div class="vdot" style="background:#2ECC71"></div><span class="vname">USDC Reserva</span><span class="vpct">25%</span></div>
+    <div class="vitem"><div class="vdot" style="background:var(--gold2)"></div><span class="vname">USDC Lending</span><span class="vpct">5%</span></div>
+    <div class="vitem"><div class="vdot" style="background:var(--muted)"></div><span class="vname">PYTH+JTO+JUP</span><span class="vpct">5%</span></div>
+  </div>
+</aside>
+
+</div><!-- /main -->
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span><span class="sdot sg"></span>SOLANA MAINNET</span>
+  <span><span class="sdot sb"></span>ORACLE: PYTH</span>
+  <span><span class="sdot sgold"></span>K_MIN B2: $25M · VAULT MEDIANA Y5 (BASE): $483M</span>
+  <span style="margin-left:auto;" id="sb-day">T+0d &nbsp;|&nbsp; Y0.00</span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  LUKASH TOKEN FLOW ENGINE v2
+//  Distribución correcta 35/35/15/15 siempre activa
+//  Nodos intermedios SWAP incluidos
+// ═══════════════════════════════════════════════════════
+
+const canvas = document.getElementById('flowCanvas');
+const ctx    = canvas.getContext('2d');
+
+// ── STATE ──
+const S = {
+  market:'NEUTRAL', scenario:'BASE', mode:'B0',
+  day:0, playing:false, speed:5, simInterval:null,
+  volA:2500, users:50, priceMult:1.0,
+  vault:2410000, staking:0, oym:0, burned:0, rop:0,
+  supply:9980000000,
+  feesDay:0, fA:0, fB:0, fC:0, fD:0,
+  dailyVaultD:0,
+  time:0, particles:[],
+  nodes:{},
+  jefActive:false,
+};
+
+// ── SCENARIO PARAMS ──
+// Based on Monte Carlo results: CONSERV Y5=$117M, BASE=$483M, AGRESIVO=$2423M
+const SCEN = {
+  CONSERV:  { label:'CONSERV',  vaultY5:117e6,  userGrowth:0.001, fMult:0.4,  info:'Y5: $117M · Espiral: 13.7% · P(B2<Y2): 15.4%' },
+  BASE:     { label:'BASE',     vaultY5:483e6,  userGrowth:0.003, fMult:1.0,  info:'Y5: $483M · Espiral: 0% · P(B2<Y2): 100%'   },
+  AGRESIVO: { label:'AGRESIVO', vaultY5:2423e6, userGrowth:0.009, fMult:3.5,  info:'Y5: $2,423M · Espiral: 0% · P(B2<Y2): 100%' },
+};
+const MKT = {
+  BULL:    { spd:2.2, fMult:1.6, label:'▲ BULL',    cls:'rb-bull'    },
+  NEUTRAL: { spd:1.0, fMult:1.0, label:'◼ NEUTRAL', cls:'rb-neutral' },
+  BEAR:    { spd:0.5, fMult:0.5, label:'▼ BEAR',    cls:'rb-bear'    },
+};
+
+// ── SPEED CONFIG ──
+const SPEEDS = {
+  1:  { ms:80,  label:'⚡ VELOCIDAD: 1×  |  80ms/día' },
+  5:  { ms:80,  label:'⚡ VELOCIDAD: 5×  |  5días/tick' },
+  20: { ms:80,  label:'🚀 VELOCIDAD: 20× |  20días/tick' },
+};
+
+// ── NODE LAYOUT ──
+// Columna 1: 4 Motores
+// Columna 2: 4 Swap/Exchange intermedios (uno por motor)
+// Columna 3: Distribuidor central (splits los fees 35/35/15/15)
+// Columna 4: 4 destinos (Vault, Staking, OYM/LP, Burn)
+// Extra: R_op arriba, B2-recirc abajo
+function buildNodes(W, H) {
+  const c1=W*0.10, c2=W*0.30, c3=W*0.52, c4=W*0.75;
+  const y1=H*0.18, y2=H*0.36, y3=H*0.54, y4=H*0.72;
+  const yd=H*0.50; // distribuidor
+
+  S.nodes = {
+    // Motores
+    MA: { x:c1, y:y1, label:'MOTOR A', sub:'SOL 4%/2.5%', color:'#1D9E75', r:20 },
+    MB: { x:c1, y:y2, label:'MOTOR B', sub:'$LUKA 2.5%/1.5%', color:'#1E7ED4', r:20 },
+    MC: { x:c1, y:y3, label:'MOTOR C', sub:'USDC 0.5%', color:'#BA7517', r:20 },
+    MD: { x:c1, y:y4, label:'MOTOR D', sub:'Manadas 0-3.5%', color:'#E74C3C', r:20 },
+    // Swap intermedios
+    SWA: { x:c2, y:y1, label:'SWAP A', sub:'SOL→Fees', color:'#1D9E75', r:14 },
+    SWB: { x:c2, y:y2, label:'SWAP B', sub:'$LUKA→Fees', color:'#1E7ED4', r:14 },
+    SWC: { x:c2, y:y3, label:'SWAP C', sub:'USDC→Fees', color:'#BA7517', r:14 },
+    SWD: { x:c2, y:y4, label:'SWAP D', sub:'NFT→Fees', color:'#E74C3C', r:14 },
+    // Distribuidor central
+    DIST: { x:c3, y:yd, label:'DISTRIBUIDOR', sub:'35/35/15/15', color:'#A569BD', r:28 },
+    // Destinos finales
+    VAULT:   { x:c4, y:H*0.22, label:'VAULT CORE', sub:'35%', color:'#25C992', r:26 },
+    STAKING: { x:c4, y:H*0.42, label:'STAKING',    sub:'35%', color:'#1E7ED4', r:22 },
+    OYM:     { x:c4, y:H*0.62, label:'OYM / LP',   sub:'15%', color:'#E8941A', r:22 },
+    BURN:    { x:c4, y:H*0.82, label:'BURN',        sub:'15%', color:'#E74C3C', r:22 },
+    // R_op
+    ROP:  { x:W*0.75, y:H*0.07, label:'R_op',     sub:'Idle 30%', color:'#8E44AD', r:14 },
+    // B2: recirculación desde Vault
+    RECIRC: { x:W*0.52, y:H*0.08, label:'RECIRC B2', sub:'→Stakers', color:'#25C992', r:12 },
+  };
+}
+
+// ── PARTICLE ──
+class Particle {
+  constructor(from, to, color, size=3, speedFactor=1) {
+    this.from=from; this.to=to; this.color=color;
+    this.size=size; this.spd=speedFactor;
+    this.t=0; this.trail=[]; this.done=false;
+    this.x=0; this.y=0;
+    const hex = color.replace('#','');
+    this.r=parseInt(hex.slice(0,2),16);
+    this.g=parseInt(hex.slice(2,4),16);
+    this.b=parseInt(hex.slice(4,6),16);
+  }
+  getBezier() {
+    const n1=S.nodes[this.from], n2=S.nodes[this.to];
+    if(!n1||!n2) return null;
+    const cx=(n1.x+n2.x)/2+(n2.y-n1.y)*0.15;
+    const cy=(n1.y+n2.y)/2-(n2.x-n1.x)*0.15;
+    return {n1,n2,cx,cy};
+  }
+  update() {
+    const b=this.getBezier();
+    if(!b){this.done=true;return;}
+    this.t=Math.min(1,this.t+0.012*this.spd);
+    const u=1-this.t;
+    this.x=u*u*b.n1.x+2*u*this.t*b.cx+this.t*this.t*b.n2.x;
+    this.y=u*u*b.n1.y+2*u*this.t*b.cy+this.t*this.t*b.n2.y;
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>14) this.trail.shift();
+    if(this.t>=1) this.done=true;
+  }
+  draw() {
+    if(!this.x) return;
+    for(let i=1;i<this.trail.length;i++){
+      const a=(i/this.trail.length)*0.45;
+      ctx.beginPath();
+      ctx.strokeStyle=`rgba(${this.r},${this.g},${this.b},${a})`;
+      ctx.lineWidth=this.size*0.55;
+      ctx.moveTo(this.trail[i-1].x,this.trail[i-1].y);
+      ctx.lineTo(this.trail[i].x,this.trail[i].y);
+      ctx.stroke();
+    }
+    ctx.shadowBlur=10; ctx.shadowColor=this.color;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fillStyle=this.color; ctx.fill();
+    ctx.shadowBlur=0;
+  }
+}
+
+function mkP(from,to,color,sz,spd) { return new Particle(from,to,color,sz,spd); }
+
+// ── SPAWN LOGIC ──
+// REGLA CORRECTA: Todo fee pasa por Motor→Swap→Distribuidor→{Vault35,Staking35,OYM15,Burn15}
+// En B2 además Vault→Recirc→Staking/OYM (recirculación del yield propio)
+function spawnParticles() {
+  const mSpd = MKT[S.market].spd;
+  const mFee = MKT[S.market].fMult;
+  const sc   = SCEN[S.scenario];
+  const uFact= S.users/50;
+  const vFact= S.volA/2500;
+  const base = mSpd * mFee * sc.fMult * uFact * vFact;
+
+  // Motor → Swap (proporcional a fees reales del protocolo)
+  // Motor A: 4%/2.5% sobre volumen SOL → mayor flujo
+  if(Math.random()<0.40*base) S.particles.push(mkP('MA','SWA','#1D9E75',3.5,mSpd*0.9));
+  // Motor B: 2.5%/1.5%
+  if(Math.random()<0.25*base) S.particles.push(mkP('MB','SWB','#1E7ED4',3.0,mSpd*0.85));
+  // Motor C: 0.5% flat — menor
+  if(Math.random()<0.10*base) S.particles.push(mkP('MC','SWC','#BA7517',2.5,mSpd*0.75));
+  // Motor D: capas variables
+  if(Math.random()<0.06*base) S.particles.push(mkP('MD','SWD','#E74C3C',2.0,mSpd*0.70));
+
+  // Swap → Distribuidor (siempre, 35/35/15/15 aplica aquí)
+  if(Math.random()<0.35*base) S.particles.push(mkP('SWA','DIST','#25C992',2.5,mSpd*1.0));
+  if(Math.random()<0.22*base) S.particles.push(mkP('SWB','DIST','#5DADE2',2.5,mSpd*1.0));
+  if(Math.random()<0.08*base) S.particles.push(mkP('SWC','DIST','#F0A500',2.0,mSpd*1.0));
+  if(Math.random()<0.05*base) S.particles.push(mkP('SWD','DIST','#E74C3C',2.0,mSpd*1.0));
+
+  // DISTRIBUIDOR → Destinos (SIEMPRE, B0 y B2)
+  // 35% → Vault
+  if(Math.random()<0.30*base) S.particles.push(mkP('DIST','VAULT','#25C992',3.0,mSpd*1.1));
+  // 35% → Staking
+  if(Math.random()<0.30*base) S.particles.push(mkP('DIST','STAKING','#1E7ED4',2.5,mSpd*1.0));
+  // 15% → OYM
+  if(Math.random()<0.13*base) S.particles.push(mkP('DIST','OYM','#E8941A',2.0,mSpd*0.95));
+  // 15% → Burn
+  if(Math.random()<0.13*base) S.particles.push(mkP('DIST','BURN','#E74C3C',2.0,mSpd*0.95));
+
+  // R_op: idle yield 30% del Vault yield
+  if(Math.random()<0.06*mSpd) S.particles.push(mkP('VAULT','ROP','#8E44AD',1.8,0.6));
+
+  // B2 exclusivo: recirculación del Vault hacia Staking/OYM
+  if(S.mode==='B2') {
+    if(Math.random()<0.12*mSpd) S.particles.push(mkP('VAULT','RECIRC','#25C992',2.0,mSpd*1.2));
+    if(Math.random()<0.10*mSpd) S.particles.push(mkP('RECIRC','STAKING','#1E7ED4',2.0,mSpd*1.1));
+    if(Math.random()<0.06*mSpd) S.particles.push(mkP('RECIRC','OYM','#E8941A',1.8,mSpd*1.0));
+  }
+
+  if(S.particles.length>220) S.particles=S.particles.slice(-180);
+}
+
+// ── DRAW CONNECTIONS ──
+function drawConnections() {
+  const pairs = [
+    ['MA','SWA','#1D9E75'], ['MB','SWB','#1E7ED4'],
+    ['MC','SWC','#BA7517'], ['MD','SWD','#E74C3C'],
+    ['SWA','DIST','#25C992'],['SWB','DIST','#5DADE2'],
+    ['SWC','DIST','#F0A500'],['SWD','DIST','#E74C3C'],
+    ['DIST','VAULT','#25C992'], ['DIST','STAKING','#1E7ED4'],
+    ['DIST','OYM','#E8941A'],   ['DIST','BURN','#E74C3C'],
+    ['VAULT','ROP','#8E44AD'],
+  ];
+  if(S.mode==='B2') {
+    pairs.push(['VAULT','RECIRC','#25C992']);
+    pairs.push(['RECIRC','STAKING','#1E7ED4']);
+    pairs.push(['RECIRC','OYM','#E8941A']);
+  }
+  ctx.setLineDash([3,7]);
+  for(const [f,t,c] of pairs) {
+    const n1=S.nodes[f], n2=S.nodes[t];
+    if(!n1||!n2) continue;
+    const cx=(n1.x+n2.x)/2+(n2.y-n1.y)*0.15;
+    const cy=(n1.y+n2.y)/2-(n2.x-n1.x)*0.15;
+    const hx=parseInt(c.slice(1,3),16), hy=parseInt(c.slice(3,5),16), hz=parseInt(c.slice(5,7),16);
+    ctx.beginPath();
+    ctx.moveTo(n1.x,n1.y);
+    ctx.quadraticCurveTo(cx,cy,n2.x,n2.y);
+    ctx.strokeStyle=`rgba(${hx},${hy},${hz},0.14)`;
+    ctx.lineWidth=1; ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+// ── DRAW NODE ──
+function drawNode(n, key) {
+  const r=n.r||20;
+  const hx=parseInt(n.color.slice(1,3),16);
+  const hy=parseInt(n.color.slice(3,5),16);
+  const hz=parseInt(n.color.slice(5,7),16);
+
+  // Glow halo
+  const g=ctx.createRadialGradient(n.x,n.y,r*0.6,n.x,n.y,r*2.8);
+  g.addColorStop(0,`rgba(${hx},${hy},${hz},0.18)`);
+  g.addColorStop(1,'transparent');
+  ctx.beginPath(); ctx.arc(n.x,n.y,r*2.5,0,Math.PI*2);
+  ctx.fillStyle=g; ctx.fill();
+
+  // Pulse ring
+  const p=1+0.05*Math.sin(S.time*0.045+(key.charCodeAt(0)||0)*0.8);
+  ctx.beginPath(); ctx.arc(n.x,n.y,r*p,0,Math.PI*2);
+  ctx.strokeStyle=`rgba(${hx},${hy},${hz},0.55)`;
+  ctx.lineWidth=1.5; ctx.stroke();
+
+  // Fill
+  const f=ctx.createRadialGradient(n.x-r*0.3,n.y-r*0.3,0,n.x,n.y,r*0.95);
+  f.addColorStop(0,`rgba(${hx},${hy},${hz},0.38)`);
+  f.addColorStop(1,`rgba(${hx},${hy},${hz},0.10)`);
+  ctx.beginPath(); ctx.arc(n.x,n.y,r*0.92,0,Math.PI*2);
+  ctx.fillStyle=f; ctx.fill();
+  ctx.strokeStyle=`rgba(${hx},${hy},${hz},0.85)`;
+  ctx.lineWidth=1.5; ctx.stroke();
+
+  // Texto
+  ctx.textAlign='center'; ctx.shadowBlur=0;
+  const isMotor=['MA','MB','MC','MD'].includes(key);
+  const isSwap=['SWA','SWB','SWC','SWD'].includes(key);
+  const isDest=['VAULT','STAKING','OYM','BURN'].includes(key);
+
+  if(key==='DIST') {
+    ctx.font=`bold 8px 'Orbitron',monospace`;
+    ctx.fillStyle=n.color; ctx.fillText('DIST',n.x,n.y-5);
+    ctx.font=`8px 'Share Tech Mono',monospace`;
+    ctx.fillStyle='rgba(200,216,240,0.6)'; ctx.fillText('35/35/15/15',n.x,n.y+6);
+  } else if(key==='VAULT') {
+    ctx.font=`bold 9px 'Orbitron',monospace`;
+    ctx.fillStyle=n.color; ctx.fillText('VAULT',n.x,n.y-8);
+    ctx.font=`8px 'Share Tech Mono',monospace`;
+    ctx.fillStyle='rgba(200,216,240,0.6)'; ctx.fillText('CORE 35%',n.x,n.y+2);
+    ctx.font=`bold 8px 'Share Tech Mono',monospace`;
+    ctx.fillStyle='#25C992'; ctx.fillText(fmtUSD(S.vault),n.x,n.y+13);
+  } else if(isDest) {
+    ctx.font=`bold 9px 'Orbitron',monospace`;
+    ctx.fillStyle=n.color; ctx.fillText(n.label,n.x,n.y-4);
+    ctx.font=`8px 'Share Tech Mono',monospace`;
+    ctx.fillStyle='rgba(200,216,240,0.55)'; ctx.fillText(n.sub,n.x,n.y+7);
+  } else if(isMotor) {
+    ctx.font=`bold 8px 'Orbitron',monospace`;
+    ctx.fillStyle=n.color; ctx.fillText(n.label,n.x,n.y-4);
+    ctx.font=`7px 'Rajdhani',sans-serif`;
+    ctx.fillStyle='rgba(200,216,240,0.5)'; ctx.fillText(n.sub,n.x,n.y+6);
+  } else if(isSwap) {
+    ctx.font=`bold 7px 'Orbitron',monospace`;
+    ctx.fillStyle=n.color; ctx.fillText(n.label,n.x,n.y-3);
+    ctx.font=`7px 'Share Tech Mono',monospace`;
+    ctx.fillStyle='rgba(200,216,240,0.45)'; ctx.fillText(n.sub,n.x,n.y+6);
+  } else {
+    ctx.font=`bold 7px 'Orbitron',monospace`;
+    ctx.fillStyle=n.color; ctx.fillText(n.label,n.x,n.y-3);
+    ctx.font=`7px 'Share Tech Mono',monospace`;
+    ctx.fillStyle='rgba(200,216,240,0.45)'; ctx.fillText(n.sub,n.x,n.y+6);
+  }
+  ctx.textAlign='left';
+}
+
+// ── GRID ──
+function drawGrid() {
+  const W=canvas.width, H=canvas.height;
+  ctx.strokeStyle='rgba(24,95,165,0.06)';
+  ctx.lineWidth=1;
+  for(let x=0;x<W;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  const cg=ctx.createRadialGradient(W*0.52,H*0.5,60,W*0.52,H*0.5,260);
+  cg.addColorStop(0,'rgba(138,68,173,0.06)');
+  cg.addColorStop(1,'transparent');
+  ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
+}
+
+// ── RENDER ──
+function render() {
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0A0F1E'; ctx.fillRect(0,0,W,H);
+  drawGrid();
+  drawConnections();
+  spawnParticles();
+  S.particles=S.particles.filter(p=>!p.done);
+  for(const p of S.particles){p.update();p.draw();}
+  for(const [k,n] of Object.entries(S.nodes)) drawNode(n,k);
+  // day stamp
+  ctx.font=`10px 'Share Tech Mono',monospace`;
+  ctx.fillStyle='rgba(200,216,240,0.18)';
+  ctx.textAlign='right';
+  ctx.fillText(`T+${S.day}d`,W-12,H-10);
+  ctx.textAlign='left';
+  S.time++;
+  requestAnimationFrame(render);
+}
+
+// ── COMPUTE METRICS ──
+function computeMetrics(stepDays=1) {
+  const sc  = SCEN[S.scenario];
+  const mkt = MKT[S.market];
+  const uFact = S.users/50;
+  const vFact = S.volA/2500;
+  const fMult = sc.fMult * mkt.fMult * uFact * vFact;
+
+  // Fees reales según tasas del protocolo:
+  // Motor A: ~4% sobre vol SOL
+  // Motor B: ~2.5% sobre vol $LUKA (≈ 0.6× Motor A vol)
+  // Motor C: 0.5% sobre vol USDC estable
+  // Motor D: promedio ~1.5% sobre fees Manadas
+  const feeA = S.volA * 1000 * 0.04 * mkt.fMult * uFact;   // 4% sobre volumen SOL diario
+  const feeB = S.volA * 1000 * 0.60 * 0.025 * mkt.fMult * uFact; // B vol ≈60% de A
+  const feeC = S.volA * 1000 * 0.20 * 0.005 * mkt.fMult * uFact; // C vol ≈20% de A
+  const feeD = S.volA * 1000 * 0.05 * 0.015 * mkt.fMult * uFact; // D vol ≈5% de A
+  const totalFees = (feeA+feeB+feeC+feeD) * sc.fMult;
+
+  S.fA=feeA*sc.fMult; S.fB=feeB*sc.fMult; S.fC=feeC*sc.fMult; S.fD=feeD*sc.fMult;
+  S.feesDay=totalFees;
+
+  // 35/35/15/15 sobre totalFees (SIEMPRE, B0 y B2)
+  const vaultFee   = totalFees * 0.35;
+  const stakingFee = totalFees * 0.35;
+  const oymFee     = totalFees * 0.15;
+  const burnFeeUSD = totalFees * 0.15;
+
+  // Growth per step
+  const vaultGrowDay = vaultFee * stepDays;
+  S.vault   += vaultGrowDay;
+  S.staking += stakingFee * stepDays;
+  S.oym     += oymFee * stepDays;
+
+  // Burn: convertir USD → tokens quemados al precio actual
+  const priceNow = 0.0001 * S.priceMult;
+  const tokensPerBurn = burnFeeUSD * stepDays / priceNow;
+  S.burned  += tokensPerBurn;
+  S.supply   = Math.max(1e9, 10e9 - S.burned);
+
+  // R_op: 30% del yield del vault (yield ≈ Vault × tasas ponderadas / 365)
+  const vaultYieldDay = S.vault * 0.10 / 365; // ~10% APY ponderado
+  S.rop += vaultYieldDay * 0.30 * stepDays;
+
+  // Jaguar Exit Fee
+  S.jefActive = S.priceMult < 0.7;
+  S.dailyVaultD = vaultFee;
+
+  // Update UI
+  document.getElementById('m-vault').textContent   = fmtUSD(S.vault);
+  document.getElementById('m-vault-d').textContent = fmtUSD(S.dailyVaultD)+'/d';
+  document.getElementById('m-staking').textContent = fmtUSD(S.staking);
+  document.getElementById('m-oym').textContent     = fmtUSD(S.oym);
+  document.getElementById('m-burned').textContent  = fmtB(S.burned);
+  document.getElementById('m-supply').textContent  = fmtB(S.supply);
+  document.getElementById('m-price').textContent   = '$'+(0.0001*S.priceMult).toFixed(7);
+  document.getElementById('m-price-sub').textContent = S.priceMult.toFixed(2)+'× TGE';
+  document.getElementById('m-rop').textContent     = fmtUSD(S.rop);
+  document.getElementById('m-fees').textContent    = fmtUSD(S.feesDay);
+
+  const tot=S.fA+S.fB+S.fC+S.fD||1;
+  document.getElementById('fbar-A').style.width=(S.fA/tot*100)+'%';
+  document.getElementById('fbar-B').style.width=(S.fB/tot*100)+'%';
+  document.getElementById('fbar-C').style.width=(S.fC/tot*100)+'%';
+  document.getElementById('fbar-D').style.width=(S.fD/tot*100)+'%';
+  document.getElementById('fa-A').textContent=fmtUSD(S.fA);
+  document.getElementById('fa-B').textContent=fmtUSD(S.fB);
+  document.getElementById('fa-C').textContent=fmtUSD(S.fC);
+  document.getElementById('fa-D').textContent=fmtUSD(S.fD);
+
+  document.getElementById('hdr-supply').textContent=fmtB(S.supply);
+  document.getElementById('hdr-day').textContent=S.day;
+  document.getElementById('hdr-yr').textContent=(S.day/365).toFixed(1);
+  document.getElementById('day-disp').textContent='D:'+S.day;
+  document.getElementById('year-overlay').textContent=
+    `AÑO ${(S.day/365).toFixed(1)} · DÍA ${S.day}`;
+  document.getElementById('sb-day').textContent=`T+${S.day}d  |  Y${(S.day/365).toFixed(2)}`;
+  document.getElementById('prog-fill').style.width=(S.day/1825*100)+'%';
+  document.getElementById('sl-day').value=S.day;
+  document.getElementById('jef-s').textContent  = S.jefActive?'ACTIVO':'INACTIVO';
+  document.getElementById('jef-s').style.color = S.jefActive?'var(--red2)':'var(--gold2)';
+}
+
+// ── CONTROLS ──
+function setMarket(m) {
+  S.market=m;
+  const map={BULL:'bb',NEUTRAL:'bn',BEAR:'bbe'};
+  const cls={BULL:'ab',NEUTRAL:'ab-n',BEAR:'ab-bear'};
+  Object.entries(map).forEach(([k,id])=>{
+    document.getElementById(id).className='btn'+(k===m?' '+cls[k]:'');
+  });
+  const mb=MKT[m];
+  const hdr=document.getElementById('hdr-regime');
+  hdr.textContent=mb.label;
+  hdr.className='regime-badge '+mb.cls;
+}
+
+function setScenario(s) {
+  S.scenario=s;
+  const map={CONSERV:'bsc',BASE:'bsb',AGRESIVO:'bsa'};
+  const cls={CONSERV:'ab-gold',BASE:'ab-n',AGRESIVO:'ab'};
+  Object.entries(map).forEach(([k,id])=>{
+    document.getElementById(id).className='btn'+(k===s?' '+cls[k]:'');
+  });
+  document.getElementById('hdr-scenario').textContent='ESCENARIO: '+s;
+  document.getElementById('sc-info').innerHTML=SCEN[s].info.replace('Y5:','<span style="color:var(--green2)">Y5:</span>');
+  resetSim();
+}
+
+function setMode(m) {
+  S.mode=m;
+  document.getElementById('bm0').className='btn'+(m==='B0'?' ab-n':'');
+  document.getElementById('bm2').className='btn'+(m==='B2'?' ab':'');
+  const hdr=document.getElementById('hdr-mode');
+  hdr.textContent=m==='B0'?'B0 — ACUMULACIÓN':'B2 — CONSOLIDADO';
+  hdr.className='mode-badge-hdr '+(m==='B0'?'mb-b0':'mb-b2');
+  document.getElementById('mode-desc').textContent=
+    m==='B0'
+    ? 'B0: 35% Vault crece. Staking/OYM reciben su 35%/15%. Throttle activo.'
+    : 'B2: K_min=$25M. Recirc activa. Vault yield redistribuye. Inercia estructural.';
+}
+
+function setSpeed(sp) {
+  S.speed=sp;
+  document.getElementById('spd1').className='btn spd-btn'+(sp===1?' ab-gold':'');
+  document.getElementById('spd5').className='btn spd-btn'+(sp===5?' ab-gold':'');
+  document.getElementById('spd20').className='btn spd-btn'+(sp===20?' ab-gold':'');
+  document.getElementById('spd-ind').textContent=SPEEDS[sp].label;
+  if(S.playing){ clearInterval(S.simInterval); startInterval(); }
+}
+
+function startInterval() {
+  S.simInterval=setInterval(()=>{
+    const step=S.speed;
+    S.day=Math.min(1825,S.day+step);
+    computeMetrics(step);
+    if(S.day>=1825) togglePlay();
+  }, 80);
+}
+
+function togglePlay() {
+  S.playing=!S.playing;
+  const btn=document.getElementById('btn-play');
+  if(S.playing){
+    btn.textContent='⏸ PAUSE'; btn.classList.add('ab-n');
+    startInterval();
+  } else {
+    btn.textContent='▶ PLAY'; btn.classList.remove('ab-n');
+    clearInterval(S.simInterval);
+  }
+}
+
+function scrubDay(d) {
+  S.day=d;
+  document.getElementById('day-disp').textContent='D:'+d;
+  // Recalculate cumulative from scratch for scrubbing
+  const sc=SCEN[S.scenario];
+  const mkt=MKT[S.market];
+  const uFact=S.users/50, vFact=S.volA/2500;
+  const fMult=sc.fMult*mkt.fMult*uFact*vFact;
+  const feeA=S.volA*1000*0.04*mkt.fMult*uFact;
+  const feeB=S.volA*1000*0.60*0.025*mkt.fMult*uFact;
+  const feeC=S.volA*1000*0.20*0.005*mkt.fMult*uFact;
+  const feeD=S.volA*1000*0.05*0.015*mkt.fMult*uFact;
+  const totalFees=(feeA+feeB+feeC+feeD)*sc.fMult;
+  S.vault  = 2410000 + totalFees*0.35*d;
+  S.staking=         totalFees*0.35*d;
+  S.oym   =         totalFees*0.15*d;
+  const p  = 0.0001*S.priceMult;
+  S.burned = totalFees*0.15*d/p;
+  S.supply = Math.max(1e9,10e9-S.burned);
+  S.rop    = S.vault*0.10/365*0.30*d;
+  S.feesDay=totalFees;
+  S.fA=feeA*sc.fMult; S.fB=feeB*sc.fMult; S.fC=feeC*sc.fMult; S.fD=feeD*sc.fMult;
+  S.dailyVaultD=totalFees*0.35;
+  computeMetrics(0);
+  // Redraw display without adding more
+  document.getElementById('m-vault').textContent=fmtUSD(S.vault);
+  document.getElementById('m-staking').textContent=fmtUSD(S.staking);
+  document.getElementById('m-oym').textContent=fmtUSD(S.oym);
+  document.getElementById('m-burned').textContent=fmtB(S.burned);
+  document.getElementById('m-supply').textContent=fmtB(S.supply);
+  document.getElementById('m-rop').textContent=fmtUSD(S.rop);
+  document.getElementById('m-fees').textContent=fmtUSD(S.feesDay);
+  document.getElementById('year-overlay').textContent=`AÑO ${(d/365).toFixed(1)} · DÍA ${d}`;
+  document.getElementById('hdr-day').textContent=d;
+  document.getElementById('hdr-yr').textContent=(d/365).toFixed(1);
+  document.getElementById('sb-day').textContent=`T+${d}d  |  Y${(d/365).toFixed(2)}`;
+  document.getElementById('prog-fill').style.width=(d/1825*100)+'%';
+}
+
+function resetSim() {
+  S.playing=false; clearInterval(S.simInterval);
+  document.getElementById('btn-play').textContent='▶ PLAY';
+  document.getElementById('btn-play').classList.remove('ab-n');
+  S.day=0; S.vault=2410000; S.staking=0; S.oym=0;
+  S.burned=0; S.supply=9980000000; S.rop=0;
+  S.particles=[]; S.time=0;
+  document.getElementById('sl-day').value=0;
+  scrubDay(0);
+}
+
+function onSlider(el,valId,fmt) {
+  const v=parseInt(el.value);
+  const pct=((v-parseInt(el.min))/(parseInt(el.max)-parseInt(el.min))*100)+'%';
+  el.style.setProperty('--pct',pct);
+  document.getElementById(valId).textContent=fmt(v);
+  if(el.id==='sl-vola') S.volA=v;
+  if(el.id==='sl-users') S.users=v;
+  if(el.id==='sl-price') S.priceMult=v/100;
+  scrubDay(S.day);
+}
+
+// ── FORMAT ──
+function fmtUSD(v) {
+  if(v>=1e9) return '$'+(v/1e9).toFixed(2)+'B';
+  if(v>=1e6) return '$'+(v/1e6).toFixed(2)+'M';
+  if(v>=1e3) return '$'+(v/1e3).toFixed(0)+'K';
+  return '$'+Math.round(v);
+}
+function fmtK(v) {
+  if(v>=1e6) return (v/1e6).toFixed(1)+'M';
+  if(v>=1e3) return (v/1e3).toFixed(0)+'K';
+  return v;
+}
+function fmtB(v) {
+  if(v>=1e9) return (v/1e9).toFixed(2)+'B';
+  if(v>=1e6) return (v/1e6).toFixed(1)+'M';
+  return Math.round(v).toLocaleString();
+}
+
+// ── INIT ──
+function resize() {
+  const el=canvas.parentElement;
+  canvas.width=el.clientWidth;
+  canvas.height=el.clientHeight;
+  buildNodes(canvas.width,canvas.height);
+}
+window.addEventListener('resize',resize);
+resize();
+setMarket('NEUTRAL');
+setScenario('BASE');
+setMode('B0');
+setSpeed(5);
+['sl-vola','sl-users','sl-price'].forEach(id=>{
+  const el=document.getElementById(id);
+  const v=parseInt(el.value),mn=parseInt(el.min),mx=parseInt(el.max);
+  el.style.setProperty('--pct',((v-mn)/(mx-mn)*100)+'%');
+});
+computeMetrics(0);
+render();
+</script>
+</body>
+</html>

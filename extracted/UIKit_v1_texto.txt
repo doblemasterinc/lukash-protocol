@@ -1,0 +1,259 @@
+                                  COMPONENT SYSTEM
+
+UI Kit & Design Language -- LUKASH PROTOCOL v3.1 --
+
+           Dark Jungle Aesthetic · Soberania Financiera LATAM
+
+                      Ing. Sebastian Botero Pabon · Marzo 2026
+                Monte Carlo Validated · 0.0% Risk · Auditoria v3.1
+
+CONTENIDO                                                           p.38
+01 FAB Chat Button -- LUKAI                                         p.46
+02 Chat Dialog Window                                               p.54
+03 Button System                                                    p.60
+04 Badges & Status Levels                                           p.66
+05 Jaguar Score & Progress                                          p.72
+06 Data Cards                                                       p.78
+07 Toast Notifications
+
+                             MONTE CARLO VALIDATED · 0.0% RISK
+                                                                                            LUKASH PROTOCOL · UI KIT
+
+ 01 FAB Chat Button -- LUKAI
+
+El boton flotante que reemplaza la pestana LUKAI. Al presionarlo abre el chat con el Shaman.
+
+                                                      3
+
+  VARIANTE A -- ISOTIPO LUKASH  VARIANTE B -- CARA DE LUKAI                                                               VARIANTE C -- MODO RESERVA
+            RECOMENDADA
+
+LUKAI esta activo
+
+IMPLEMENTATION NOTE
+Posicion: fixed bottom: 90px right: 24px z-index: 100
+Tamanio default: 80x80px | Animacion: pulse infinita | Badge desaparece al abrir chat
+Tap abre overlay semitransparente + ChatWindow slideUp desde el FAB
+
+                                                           LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+                                                                                            LUKASH PROTOCOL · UI KIT
+
+ 02 Chat Dialog Window -- LUKAI
+
+Overlay flotante. Aparece con animacion slideUp desde el FAB. Toque fuera o X para cerrar.
+
+  LUKAI v3.1                                                                                         ESPECIFICACIONES
+
+                                                                       x                             Ancho            min(380px, 100vw-48px)
+
+       Orquestador Activo · Pyth Network                                                             Alto             auto · max 80vh
+
+   ¿Estas listo para dejar de ser el que                                                             Posicion         fixed bottom: 180px right: 24px
+   gasta y ser el dueno de tu banco?
+                                                                                                     Border           1px solid rgba(ORO, 0.22)
+LUKAI · ahora
+                                                                                                     Backdrop         blur(20px)
+                         ¿Como funciona la Reserva Sagrada?
+                                                                                                     Z-index          100 (sobre el FAB)
+                                                                                       Tu · hace 1m
+                                                                                                     Animacion entrada slideUp + scale(0.951)
+   La Reserva Sagrada es la boveda
+   colectiva de toda la manada. Cada                                                                 Animacion salida fadeOut + scale(10.95)
+   transaccion alimenta activos reales
+   -- Bitcoin y dolares digitales.                                                                   HEADER           44x44px · border AMBAR
+                                                                                                     Avatar           SerifB 13.5px · color ORO
+LUKAI · ahora                                                                                        Nombre           MonoB 9px · color VERDE
+                                                                                                     Status
+
+                                                                                                     MENSAJES
+
+                                                                                                     LUKAI bubbles    bg CARB_L · border ORO 14%
+
+                                                                                                     User bubbles     bg verde-dark · border VERDE 25%
+
+                                                                                                     Typing indicator 3 dots · bounce animation
+
+¿Jaguar Score?         Ver Reserva  Subir nivel                                                      CHIPS            Scroll horizontal · border ORO
+                                                                                                     Quick replies
+
+Pregunta al Shaman...                            >
+
+ESTADO: ESCRIBIENDO
+
+                       LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+                                         LUKASH PROTOCOL · UI KIT
+
+03 Button System
+
+Biblioteca completa de botones. Cada variante tiene proposito semantico especifico.
+
+PRIMARIOS -- CTA
+
+  Iniciar Rugido              Enviar $Lukas                Activar Reserva
+
+SECUNDARIOS
+
+  Ver Detalles                Cambiar Modo                 Confirmar                         Cancelar
+                                                                                                   Reportar
+PILLS Y ACCIONES
+
+          Unirse a Manada        Proof of Roar             Reto Activo
+ICON BUTTONS
+
+             *             +  -                 x
+
+ESTADOS DEL BOTON             Hover             Pressed               Disabled               Loading
+
+          Normal                Hover             Pressed               Disabled               Loading
+
+                 Normal
+
+                              LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+                                                                                       LUKASH PROTOCOL · UI KIT
+
+04 Badges & Status Levels
+
+Sistema de insignias de estado, niveles de jaguar y sellos de validacion del protocolo.
+BADGES DE ESTADO
+
+Motor B2 Activo    Motor B0 Pre-hito       Proof of Roar             Bloqueado
+
+NIVELES DE JAGUAR  RASTREADOR              GUERRERO  LIDER                                                       JAGUAR
+   CACHORRO
+
+TARJETAS DE NIVEL
+
+Cachorro           Rastreador                                                                                         Lider         Jaguar
+
+ 0 ­ 199 JS         200 ­ 499 JS                     Guerrero                                                    1000 ­ 1999 JS      2000+ JS
+Acceso basico           Acceso a                                                                                     Control de    Acceso total
+                                                     500 ­ 999 JS                                                      Manada
+   a la selva        Jungle Arena                        Motor D                                                                     + Totems
+
+                                                     exento parcial                                                              K_min $25M TARGET · 71%
+
+SELLOS DE VALIDACION                                 AUDITORIA v3.1 · ON-CHAIN
+        MONTE CARLO VALIDATED · 0.0% RISK
+
+                   LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+                                                                                            LUKASH PROTOCOL · UI KIT
+
+ 05 Jaguar Score & Progress Bars
+
+Widget de puntaje y barras de progreso del ecosistema -- datos en tiempo real via Pyth Network.
+JAGUAR SCORE WIDGET
+
+                                PROGRESO ACTUAL
+
+847                       GuerrNeivreol actual   72%
+
+   JS               153 JS para Lider
+
+                    +20 JS disMpaonnaidbalaecstiva
+                                                                                  55%
+
+                                Retos completados
+                                                                            83%
+
+BARRAS DE PROGRESO
+
+Reserva Sagrada K_min                                                                                                         71%
+
+$17.75M de $25M objetivo                                                                       Motor B2 se activa al 100%
+
+Reto activo -- La Reserva                                                                                                     66%
+
+2 de 3 pasos completados                                                                                   +20 JS al completar
+
+Distribucion mensual                                                                                                          30%
+
+30% fees KASH Sociedad                                                                                              Mes 13+ activo
+
+Adopcion LATAM                                                                                                                45%
+
+450K usuarios / 1M meta Fase 2                                                                                        CAC $7-10 USD
+
+                                LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+                                  LUKASH PROTOCOL · UI KIT
+
+06 Data Cards
+
+Tarjetas de informacion financiera y de ecosistema. Tres variantes por tipo de dato.
+
+RESERVA SAGRADA                   MI BALANCE                                          RENDIMIENTO 30D
+
+$17.75M                           12,450 LKS                                          +18.4%
+
+Ecosistema · auditado on-chain    ~ $248.90 USD · Motor A activo                      Etapa 1 · Monte Carlo validado
+
+PRECIO $LUKA                      USUARIOS ACTIVOS                                    K_min STATUS
+
+$0.0001                           450K                                                71%
+
+TGE · Meta Ano 5: $0.0113 (113x)  Meta B1: 800K · LATAM foco                          $17.75M / $25M · B2 pendiente
+
+ 07 Toast Notifications
+
+Notificaciones emergentes del sistema. Aparecen desde abajo con animacion slide-up.
+               Rugido confirmado!
+
+       +20 JS anadidos a tu score. Nivel en progreso.
+
+        Reto disponible:
+
+ Aprende sobre la Reserva Sagrada. +20 JS al completar.
+
+        Motor B2 activado.
+
+ Distribucion perpetua iniciada desde Mes 13.
+
+!  La selva esta ocupada.
+
+   Intenta de nuevo en un momento, jaguar.
+
+                                  LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+                                                                                            LUKASH PROTOCOL · UI KIT
+
+ 08 Design Tokens -- Paleta & Tipografia
+
+Colores, fuentes y espaciados del sistema de diseno LUKASH. Referencia para el agente de desarrollo.
+PALETA DE COLORES
+
+ORO                           ORO Light                          ORO Dark                         AMBAR
+#C9A84C                       #E8C96A                            #9A7030                          #E8940A
+
+AMBAR Light                   VERDE                              VERDE Light                      VERDE Dark
+#F4B340                       #3DAA6B                            #5FCA8E                          #1E6640
+
+Obsidiana                     Carbon                             Carbon Light                     Gris
+#0A0A0C                       #0F0F12                            #1A1A1E                          #2C2C30
+
+Gris Light                    Gris LL                            Blanco                           Blanco Dark
+#555560                       #888898                            #F0EAD6                          #C8C0A8
+
+SerifB TIPOGRAFIA        Titulos principales -- Cinzel Bold (PDF: DejaVu Serif Bold)
+
+Mono  Datos y codigos -- Space Mono (PDF: DejaVu Sans Mono)
+
+Sans  Cuerpo de texto -- IBM Plex Sans (PDF: DejaVu Sans)
+
+MonoB  ETIQUETAS Y LABELS -- 7-9PX · UPPERCASE · TRACKING .15EM
+
+ESCALA DE ESPACIADO
+
+4px
+             8px
+
+                  12px
+
+                        16px
+
+BORDER RADIUS                      24px
+
+r4                 r8         r12        r16  32px               pill
+                                                  r24
+
+                                                                                      48px
+
+                                   LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
+

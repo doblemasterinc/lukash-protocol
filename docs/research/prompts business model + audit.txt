@@ -1,0 +1,381 @@
+Perfecto. Aquí tienes **los dos prompts completamente reescritos desde cero**, independientes entre sí, ya integrando:
+
+✔ estructura de pitch de 6 minutos
+✔ marco Market–Product–Model–Channel
+✔ buyer persona
+✔ manadas
+✔ gaming
+✔ DeFi + multimoneda
+✔ RWA
+✔ benchmarking
+✔ proyecciones
+✔ regulación
+✔ modelo financiero
+✔ auditoría tipo VC
+
+Están listos para copiar directamente en Gemini.
+
+---
+
+# 🧠 PROMPT PRINCIPAL
+
+## INVESTIGACIÓN ESTRATÉGICA Y BUSINESS PLAN — PROTOCOLO LUKASH
+
+### 🔷 ROL
+
+Actúa como arquitecto senior en economía digital, blockchain, fintech y diseño de economías de plataformas con más de 10 años de experiencia en:
+
+* tokenomics en Solana
+* economías respaldadas por reservas
+* memecoins de adopción masiva
+* neobancos digitales
+* gaming financiero
+* modelos DeFi sostenibles
+
+Tu enfoque integra economía real, comportamiento humano, diseño de producto y viabilidad regulatoria.
+
+---
+
+## 🎯 OBJETIVO
+
+Desarrollar una investigación estratégica integral y un business plan completo para el Protocolo LUKASH y el token $LUKA que permita:
+
+1. identificar el problema estructural del sistema financiero y cripto
+2. identificar el problema humano del usuario no resuelto
+3. diseñar una solución con adopción masiva
+4. construir el modelo económico sostenible
+5. establecer proyecciones operativas y financieras
+6. preparar el proyecto para inversión institucional
+
+El resultado debe poder presentarse como pitch de inversión de 6 minutos.
+
+---
+
+## ⚙️ BASE ECONÓMICA DEL ANÁLISIS
+
+El análisis debe partir de:
+
+* estándar KASH de Reserva Fraccionaria Inversa
+* token deflacionario respaldado por reserva creciente
+* Vault multiactivo
+* motores económicos externos e internos
+* sistema de confianza verificable
+* IA LUKAI como interfaz de usuario
+
+---
+
+## 🌎 ARQUITECTURA DEL ECOSISTEMA
+
+### Fase 1 — Viralidad memética
+
+Adopción masiva mediante narrativa, comunidad y cultura digital.
+
+### Fase 2 — LUKASH APP
+
+Economía interactiva basada en manadas y servicios financieros.
+
+### Fase 3 — Banca digital descentralizada
+
+Multimoneda, stablecoins, DeFi accesible y tokenización de activos reales.
+
+---
+
+## 🐺 MANADAS — UNIDAD ECONÓMICA CENTRAL
+
+Las manadas son comunidades financieras organizadas mediante cNFT que pueden ofrecer:
+
+crowdfunding
+crowdlending
+fondos comunitarios
+seguros colectivos
+economías locales
+membresías privadas
+marketplaces internos
+pagos compartidos
+acceso a estrategias DeFi
+tokenización de activos reales (RWA) mediante oráculos
+
+---
+
+## 🎮 DISEÑO DE EXPERIENCIA Y GAMING
+
+1. Investiga juegos que integren economía real, comunidad, recompensas y misiones.
+2. Diseña un juego financiero propio para LUKASH APP que:
+
+genere volumen transaccional
+eduque financieramente
+active comunidades
+funcione como transición hacia banca digital
+
+---
+
+## 👤 BUYER PERSONA
+
+Segmenta:
+
+### 12–25 años
+
+adopción mediante gaming y cultura digital
+
+### 25–45 años
+
+uso financiero real y cotidiano
+
+Define motivaciones, barreras, journey de adopción y retención.
+
+---
+
+## 📈 ADOPCIÓN Y CRECIMIENTO
+
+Investiga casos de memecoins de alto crecimiento y construye proyecciones para:
+
+precio del token
+capitalización
+usuarios
+volumen
+transacciones
+valor del Vault
+
+Define inversión necesaria por fase y uso del capital.
+
+---
+
+## 🧩 MARCO ESTRATÉGICO OBLIGATORIO
+
+Evalúa coherencia entre:
+
+MARKET
+PRODUCT
+MODEL
+CHANNEL
+
+Analiza explícitamente:
+
+Market–Product fit
+Model–Market fit
+Product–Channel fit
+Channel–Model fit
+
+---
+
+## 🏦 BENCHMARK
+
+Analiza:
+
+memecoins líderes
+wallets y neobancos digitales
+protocolos DeFi
+fintech latinoamericana y global
+
+Extrae patrones de éxito y fracaso.
+
+---
+
+## 📊 MODELO FINANCIERO
+
+Desarrolla:
+
+economía del token
+crecimiento de reserva
+flujo de valor
+proyección de usuarios
+unit economics
+sostenibilidad del sistema
+
+Incluye ciclos de mercado.
+
+---
+
+## 📢 ESTRATEGIA DE MARKETING FASE 1
+
+Incluye:
+
+viralidad memética
+marketing de guerrilla
+alianzas estratégicas
+narrativa de comunidad
+
+---
+
+## ⚖️ ANÁLISIS REGULATORIO
+
+Evalúa impacto de marcos regulatorios globales y define jurisdicción óptima para fundación del protocolo.
+
+---
+
+## 🎤 FORMATO OBLIGATORIO DE SALIDA
+
+El informe debe permitir un pitch de 6 minutos estructurado en:
+
+Problema
+Solución
+Modelo de negocio
+Tracción esperada
+Unit economics
+Go-to-market
+Equipo necesario
+Solicitud a inversionistas
+
+Además, el informe completo debe contener:
+
+Resumen ejecutivo
+Problema del sistema
+Problema del usuario
+Buyer persona
+Adopción masiva
+Análisis de mercado
+Arquitectura del ecosistema
+Diseño de la App
+Modelo financiero
+Business plan
+Proyecciones por fase
+Riesgos
+Business Model Canvas
+Conclusión estratégica
+
+---
+
+## 🛡️ CONTROL DE CALIDAD
+
+No inventar datos específicos
+Separar hechos de inferencias
+Declarar supuestos
+Evaluar viabilidad económica
+Indicar nivel de confianza
+
+---
+
+## 🔚 INSTRUCCIÓN FINAL
+
+Desarrolla el análisis con máxima rigurosidad estratégica y evalúa el proyecto como si fueras su arquitecto principal responsable de su éxito económico y social.
+
+---
+
+# 🧠 PROMPT AUDITOR
+
+## EVALUACIÓN INSTITUCIONAL TIPO FONDO DE INVERSIÓN — LUKASH
+
+### 🔷 ROL
+
+Actúa como comité de inversión institucional especializado en fintech, blockchain, neobancos y economías de plataformas.
+
+Evalúas proyectos con criterios de inversión profesional.
+
+Tu objetivo es determinar si el proyecto es:
+
+APTO
+APTO CON CONDICIONES
+NO APTO
+
+---
+
+## 🎯 OBJETIVO
+
+Auditar críticamente el análisis estratégico del Protocolo LUKASH para evaluar:
+
+coherencia económica
+viabilidad del modelo
+potencial de adopción
+sostenibilidad financiera
+preparación para inversión institucional
+
+No resumes el proyecto. Lo evalúas.
+
+---
+
+## 🎤 EVALUACIÓN DE DEFENSA EN DEMO DAY
+
+Determina si el proyecto puede defenderse en un pitch de 6 minutos evaluando:
+
+claridad del problema
+claridad de la solución
+solidez del modelo de negocio
+credibilidad de tracción proyectada
+realismo del go-to-market
+coherencia narrativa
+
+---
+
+## 🧩 AUDITORÍA DE COHERENCIA ESTRUCTURAL
+
+Evalúa rigurosamente la alineación entre:
+
+MARKET
+PRODUCT
+MODEL
+CHANNEL
+
+Califica:
+
+Market–Product fit
+Model–Market fit
+Product–Channel fit
+Channel–Model fit
+
+Identifica desalineaciones críticas.
+
+---
+
+## 📊 DIMENSIONES DE AUDITORÍA
+
+Evalúa de 1 a 10:
+
+problema
+solución
+modelo económico
+modelo de negocio
+producto
+adopción
+finanzas
+riesgos
+ventaja competitiva
+potencial de mercado
+
+Calcula puntuación global.
+
+---
+
+## ⚠️ ANÁLISIS CRÍTICO OBLIGATORIO
+
+Identifica:
+
+supuestos no validados
+riesgos subestimados
+debilidades estructurales
+dependencias críticas
+condiciones necesarias para éxito
+
+---
+
+## 📉 ESCENARIOS
+
+Desarrolla:
+
+escenario optimista
+escenario realista
+escenario adverso
+
+Incluye probabilidad e impacto.
+
+---
+
+## 🧾 VEREDICTO FINAL
+
+Clasifica el proyecto y justifica la decisión como comité institucional.
+
+---
+
+## 📑 FORMATO DE SALIDA
+
+Resumen de evaluación
+Análisis por dimensiones
+Riesgos críticos
+Supuestos no validados
+Escenarios
+Puntuación global
+Veredicto de inversión
+Recomendaciones estratégicas
+
+---
+
+Si quieres, el siguiente paso ideal es crear el **guion exacto del pitch de 6 minutos para LUKASH basado en estos prompts** para que tu narrativa quede perfectamente alineada con lo que evaluará el auditor.

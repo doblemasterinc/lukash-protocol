@@ -1,0 +1,411 @@
+<title>LUKASH · Prototipo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+
+<style>
+  :root{
+    --obsidiana:#0A0A0C; --carbon:#131310; --carbon-2:#1B1B14;
+    --linea:rgba(201,168,76,.16);
+    --oro:#C9A84C; --oro-claro:#E8C96A; --ambar:#E8940A;
+    --verde:#3DAA6B; --verde-claro:#5FCA8E; --marfil:#F0EAD6; --marfil-tenue:#9d977f;
+    --display:'Cinzel',Georgia,serif; --mono:'Space Mono',ui-monospace,monospace; --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--sans);color:var(--marfil);background:var(--obsidiana);min-height:100%;
+    display:flex;flex-direction:column;align-items:center;padding:26px 16px 60px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #embers{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .bgwash{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(201,168,76,.12), transparent 60%),
+      radial-gradient(820px 560px at 88% 112%, rgba(61,170,107,.09), transparent 55%),
+      radial-gradient(680px 480px at 8% 88%, rgba(232,148,10,.07), transparent 55%);
+    animation:washpan 14s ease-in-out infinite alternate}
+  @keyframes washpan{from{transform:translate3d(-1.5%,0,0) scale(1.02)}to{transform:translate3d(1.5%,1%,0) scale(1.05)}}
+  .bgwash::after{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
+
+  /* splash */
+  #splash{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 45%,#161309,#050504 70%);display:grid;place-items:center;transition:opacity .8s ease, visibility .8s}
+  #splash.gone{opacity:0;visibility:hidden}
+  .sp-wrap{text-align:center;animation:spin-up 1.1s cubic-bezier(.2,.8,.2,1)}
+  @keyframes spin-up{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+  .sp-eye{font-size:64px;filter:drop-shadow(0 0 26px rgba(201,168,76,.6));animation:blink 3.4s ease-in-out infinite}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+  .sp-word{font-family:var(--display);font-weight:800;letter-spacing:.3em;font-size:30px;margin:18px 0 6px;margin-left:.3em}
+  .sp-word b{color:var(--oro)}
+  .sp-tag{font-family:var(--display);letter-spacing:.16em;font-size:12px;color:var(--oro-claro);text-transform:uppercase}
+  .sp-bar{width:150px;height:3px;margin:22px auto 0;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+  .sp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ambar),var(--oro));animation:load 1.7s ease forwards .2s}
+  @keyframes load{to{width:100%}}
+
+  /* pitch header */
+  .pitch{position:relative;z-index:1;text-align:center;max-width:440px;margin-bottom:20px}
+  .langs{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+  .langs button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:6px 12px;border-radius:999px;border:1px solid var(--linea);background:transparent;color:var(--marfil-tenue);cursor:pointer;transition:.2s}
+  .langs button.on{color:var(--obsidiana);background:linear-gradient(135deg,var(--oro-claro),var(--oro));border-color:transparent;font-weight:700}
+  .wordmark{font-family:var(--display);font-weight:800;letter-spacing:.28em;font-size:25px;margin-left:.28em}
+  .wordmark b{color:var(--oro)}
+  .tag{font-family:var(--display);font-weight:500;letter-spacing:.14em;font-size:12px;color:var(--oro-claro);margin-top:8px;text-transform:uppercase}
+  .sub{font-size:12.5px;color:var(--marfil-tenue);margin-top:9px;line-height:1.5}
+  .badge{display:inline-flex;align-items:center;gap:7px;margin-top:13px;padding:6px 13px;border:1px solid var(--linea);border-radius:999px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--oro);background:rgba(201,168,76,.06)}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--verde);box-shadow:0 0 8px var(--verde);animation:p 2s infinite}
+
+  /* phone */
+  .phone{position:relative;z-index:1;width:min(392px,96vw);height:812px;max-height:calc(100vh - 30px);border-radius:44px;
+    background:linear-gradient(180deg,#101009,#0a0a08);border:1px solid rgba(201,168,76,.22);
+    box-shadow:0 0 0 8px #060605,0 30px 80px rgba(0,0,0,.7),0 0 60px rgba(201,168,76,.07);overflow:hidden;display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:26px;background:#060605;border-radius:0 0 16px 16px;z-index:40}
+  .status{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-family:var(--mono);font-size:11px;color:var(--marfil-tenue);flex-shrink:0}
+  .viewport{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+  .viewport::-webkit-scrollbar{display:none}
+  .screen{display:none;padding:6px 18px 26px}
+  .screen.on{display:block}
+  .screen.on .card,.screen.on .mission,.screen.on .metric,.screen.on .qa,.screen.on .path,.screen.on .contacts,.screen.on .amount-box,.screen.on .keys,.screen.on .split,.screen.on .cta,.screen.on .seal,.screen.on .section-h,.screen.on .eyebrow{animation:rise .5s both cubic-bezier(.2,.7,.3,1)}
+  .screen.on>*:nth-child(2){animation-delay:.03s}.screen.on>*:nth-child(3){animation-delay:.08s}.screen.on>*:nth-child(4){animation-delay:.13s}.screen.on>*:nth-child(5){animation-delay:.18s}.screen.on>*:nth-child(6){animation-delay:.23s}.screen.on>*:nth-child(7){animation-delay:.28s}.screen.on>*:nth-child(8){animation-delay:.33s}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(61,170,107,.5)}70%{box-shadow:0 0 0 8px rgba(61,170,107,0)}100%{box-shadow:0 0 0 0 rgba(61,170,107,0)}}
+
+  .top{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 16px}
+  .hi{font-size:13px;color:var(--marfil-tenue)}
+  .hi b{display:block;font-family:var(--display);font-weight:600;font-size:19px;color:var(--marfil)}
+  .lvl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--obsidiana);background:linear-gradient(135deg,var(--oro-claro),var(--oro));padding:6px 11px;border-radius:999px;font-weight:700;box-shadow:0 0 18px rgba(201,168,76,.35)}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin-bottom:9px}
+
+  .card{background:linear-gradient(160deg,rgba(27,27,20,.9),rgba(19,19,16,.72));border:1px solid var(--linea);border-radius:22px;padding:18px;margin-bottom:14px;backdrop-filter:blur(6px)}
+  .glow{position:relative;overflow:hidden}
+  .glow::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 22% 0%,rgba(201,168,76,.24),transparent 55%);pointer-events:none;animation:sheen 6s ease-in-out infinite}
+  @keyframes sheen{0%,100%{opacity:.6}50%{opacity:1}}
+  .balance-label{font-size:12px;color:var(--marfil-tenue)}
+  .balance{font-family:var(--mono);font-weight:700;font-size:37px;margin:6px 0 2px;position:relative;z-index:1}
+  .balance small{font-family:var(--display);font-size:15px;color:var(--oro);margin-left:6px}
+  .usd{font-family:var(--mono);font-size:13px;color:var(--marfil-tenue);position:relative;z-index:1}
+  .motorline{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;color:var(--verde-claro);position:relative;z-index:1}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--verde);animation:p 2s infinite}
+
+  .reserva .rtop{display:flex;justify-content:space-between;align-items:baseline}
+  .reserva .rname{font-family:var(--display);font-size:14px;letter-spacing:.05em}
+  .reserva .rval{font-family:var(--mono);font-weight:700;font-size:22px;color:var(--verde-claro)}
+  .bar{height:9px;border-radius:999px;background:rgba(255,255,255,.06);margin:14px 0 8px;overflow:hidden}
+  .bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--verde),var(--oro));box-shadow:0 0 14px rgba(201,168,76,.4);width:0;transition:width 1.3s cubic-bezier(.2,.7,.3,1)}
+  .bar-meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--marfil-tenue)}
+  .verify{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:11px;color:var(--oro)}
+
+  .aura{display:flex;align-items:center;gap:16px}
+  .ring{--pct:0;width:76px;height:76px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:conic-gradient(var(--oro) calc(var(--pct)*1%),rgba(255,255,255,.07) 0);position:relative;box-shadow:0 0 22px rgba(201,168,76,.25)}
+  .ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#14140f}
+  .ring b{position:relative;font-family:var(--mono);font-weight:700;font-size:17px;color:var(--oro-claro)}
+  .aura-info .a-l{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--marfil-tenue)}
+  .aura-info .a-n{font-family:var(--display);font-size:18px;margin:2px 0}
+  .aura-info .a-s{font-size:12px;color:var(--oro)}
+
+  .qa{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 18px}
+  .qa button{font-family:var(--sans);cursor:pointer;border:1px solid var(--linea);background:rgba(255,255,255,.02);color:var(--marfil);border-radius:16px;padding:13px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:12px;transition:.2s;position:relative;overflow:hidden}
+  .qa button:hover{border-color:var(--oro);background:rgba(201,168,76,.09);transform:translateY(-3px)}
+  .qa .ico{font-size:17px}
+
+  .row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .row:last-child{border-bottom:0}
+  .av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:16px;flex-shrink:0;background:rgba(201,168,76,.1);border:1px solid var(--linea)}
+  .row .txt{flex:1;min-width:0}
+  .row .txt b{font-size:13.5px;font-weight:500;display:block}
+  .row .txt span{font-size:11px;color:var(--marfil-tenue)}
+  .amt{font-family:var(--mono);font-size:13px;font-weight:700;text-align:right}
+  .amt.pos{color:var(--verde-claro)} .amt.neg{color:var(--marfil)}
+  .amt small{display:block;font-weight:400;font-size:9.5px;color:var(--marfil-tenue)}
+  .section-h{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--marfil-tenue);margin:20px 2px 8px}
+
+  .contacts{display:flex;gap:12px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+  .contacts::-webkit-scrollbar{display:none}
+  .contact{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer}
+  .contact .av{width:52px;height:52px;border-radius:50%;font-size:20px;transition:.2s}
+  .contact.sel .av{border-color:var(--oro);box-shadow:0 0 16px rgba(201,168,76,.45);transform:scale(1.05)}
+  .contact span{font-size:11px;color:var(--marfil-tenue)}
+  .amount-box{text-align:center;padding:24px 0 16px}
+  .amount-box .big{font-family:var(--mono);font-weight:700;font-size:44px}
+  .amount-box .big span{color:var(--oro);font-family:var(--display);font-size:19px}
+  .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 16px}
+  .keys button{font-family:var(--mono);font-size:20px;background:rgba(255,255,255,.03);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;transition:.12s}
+  .keys button:active{background:rgba(201,168,76,.18);transform:scale(.95)}
+  .keys button:hover{background:rgba(201,168,76,.1)}
+  .split{background:rgba(232,148,10,.06);border:1px solid rgba(232,148,10,.2);border-radius:14px;padding:12px 14px;font-size:11.5px;color:var(--marfil-tenue);line-height:1.55;margin-bottom:14px}
+  .split b{color:var(--ambar)} .split .v{color:var(--verde-claro)}
+  .cta{width:100%;font-family:var(--display);font-weight:600;letter-spacing:.06em;font-size:15px;cursor:pointer;border:none;border-radius:16px;padding:15px;color:var(--obsidiana);background:linear-gradient(135deg,var(--oro-claro),var(--oro));box-shadow:0 8px 24px rgba(201,168,76,.25);transition:.2s;position:relative;overflow:hidden}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(201,168,76,.42)}
+  .cta:active{transform:translateY(0) scale(.99)}
+  .cta.ghost{background:transparent;border:1px solid var(--oro);color:var(--oro);box-shadow:none}
+
+  .manada .mtop{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .stack{display:flex}
+  .stack .av{width:34px;height:34px;border-radius:50%;margin-left:-10px;font-size:15px}
+  .stack .av:first-child{margin-left:0}
+  .manada .mname{font-family:var(--display);font-size:15px}
+  .manada .mtype{font-size:11px;color:var(--marfil-tenue)}
+  .mgoal{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-bottom:4px}
+  .mgoal .g{color:var(--verde-claro)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{font-family:var(--mono);font-size:10px;padding:5px 9px;border-radius:999px;border:1px solid var(--linea);color:var(--marfil-tenue)}
+  .chip.on{color:var(--verde-claro);border-color:rgba(61,170,107,.35)}
+
+  .path{display:flex;justify-content:space-between;align-items:flex-start;margin:2px 0 18px;position:relative}
+  .path::before{content:"";position:absolute;left:9%;right:9%;top:15px;height:2px;background:linear-gradient(90deg,var(--oro) 45%,rgba(255,255,255,.08) 55%)}
+  .step{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;width:19%}
+  .step .d{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:#14140f;border:2px solid rgba(255,255,255,.12)}
+  .step.done .d{border-color:var(--oro);background:rgba(201,168,76,.15);box-shadow:0 0 14px rgba(201,168,76,.35)}
+  .step.now .d{border-color:var(--oro-claro);background:linear-gradient(135deg,var(--oro-claro),var(--oro));color:var(--obsidiana);animation:pop 2.4s ease-in-out infinite}
+  @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .step span{font-size:9px;color:var(--marfil-tenue);text-align:center}
+  .step.now span{color:var(--oro-claro)}
+  .mission{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--linea);border-radius:16px;margin-bottom:11px;background:rgba(255,255,255,.02);transition:.2s;cursor:pointer}
+  .mission:not(.locked):hover{border-color:var(--oro);transform:translateX(3px)}
+  .mission .mi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex-shrink:0;background:rgba(201,168,76,.1)}
+  .mission .md{flex:1}
+  .mission .md b{font-size:13.5px;font-weight:600;display:block}
+  .mission .md span{font-size:11px;color:var(--marfil-tenue)}
+  .aura-pts{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--oro-claro);white-space:nowrap}
+  .mission.locked{opacity:.5;cursor:default}
+  .mission.done{border-color:rgba(61,170,107,.3)}
+  .mission.done .aura-pts{color:var(--verde-claro)}
+
+  .seal{text-align:center;border:1px solid rgba(61,170,107,.3);border-radius:18px;padding:16px;background:radial-gradient(circle at 50% 0%,rgba(61,170,107,.09),transparent);margin-bottom:14px}
+  .seal .s1{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--verde-claro)}
+  .seal .s2{font-family:var(--display);font-weight:700;font-size:25px;margin:4px 0;letter-spacing:.04em}
+  .seal .s3{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--marfil-tenue)}
+  .metric3{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+  .metric{border:1px solid var(--linea);border-radius:16px;padding:14px;background:rgba(255,255,255,.02)}
+  .metric .m-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--marfil-tenue)}
+  .metric .m-v{font-family:var(--mono);font-weight:700;font-size:20px;margin-top:5px}
+  .fire .m-v{color:var(--ambar)} .vault .m-v{color:var(--oro-claro)} .cola .m-v{color:var(--verde-claro)} .cal .m-v{color:var(--marfil)}
+  .flame{display:inline-block;animation:flick 1.5s ease-in-out infinite}
+  @keyframes flick{0%,100%{opacity:1;transform:scale(1) rotate(-2deg)}50%{opacity:.72;transform:scale(1.15) rotate(3deg)}}
+  .compo{margin-top:6px}
+  .compo .crow{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12px}
+  .compo .cbar{flex:1;height:7px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+  .compo .cbar i{display:block;height:100%;border-radius:999px;width:0;transition:width 1.1s cubic-bezier(.2,.7,.3,1)}
+  .compo .cp{font-family:var(--mono);font-size:11px;color:var(--marfil-tenue);width:34px;text-align:right}
+  .compo .cn{width:96px}
+
+  .tabbar{flex-shrink:0;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--linea);background:rgba(10,10,8,.92);backdrop-filter:blur(12px);padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+  .tab{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--marfil-tenue);font-family:var(--sans);font-size:9.5px;padding:4px 0;transition:.2s}
+  .tab .ti{font-size:19px;filter:grayscale(.5);opacity:.7;transition:.2s}
+  .tab.on{color:var(--oro)}
+  .tab.on .ti{filter:none;opacity:1;transform:translateY(-2px) scale(1.08)}
+
+  .fab{position:absolute;right:16px;bottom:90px;width:54px;height:54px;border-radius:50%;z-index:30;cursor:pointer;border:1px solid rgba(201,168,76,.4);background:radial-gradient(circle at 35% 30%,#2a2418,#100f0a);display:grid;place-items:center;font-size:24px;box-shadow:0 0 24px rgba(201,168,76,.3);animation:breathe 3.5s ease-in-out infinite}
+  @keyframes breathe{0%,100%{box-shadow:0 0 20px rgba(201,168,76,.25)}50%{box-shadow:0 0 36px rgba(201,168,76,.5)}}
+
+  .foot{position:relative;z-index:1;margin-top:20px;font-family:var(--mono);font-size:10.5px;color:var(--marfil-tenue);letter-spacing:.08em;text-align:center;max-width:420px;line-height:1.7}
+  .foot b{color:var(--oro)}
+  .ripple{position:absolute;border-radius:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.35);pointer-events:none;animation:rip .6s ease-out forwards}
+  @keyframes rip{from{width:0;height:0;opacity:.5}to{width:220px;height:220px;opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (max-width:440px){.phone{border-radius:0;border:none;box-shadow:none;height:auto;max-height:none;min-height:86vh}.notch{display:none}body{padding-top:14px}}
+</style>
+
+<div class="bgwash"></div>
+<canvas id="embers"></canvas>
+
+<div id="splash">
+  <div class="sp-wrap">
+    <div class="sp-eye">🐆</div>
+    <div class="sp-word">LU<b>K</b>ASH</div>
+    <div class="sp-tag" data-i18n="tag">Dueño de tu ascenso</div>
+    <div class="sp-bar"><i></i></div>
+  </div>
+</div>
+
+<div class="pitch">
+  <div class="langs">
+    <button class="on" onclick="setLang('es',this)">ES</button>
+    <button onclick="setLang('en',this)">EN</button>
+    <button onclick="setLang('pt',this)">PT</button>
+  </div>
+  <div class="wordmark">LU<b>K</b>ASH</div>
+  <div class="tag" data-i18n="tag">Dueño de tu ascenso</div>
+  <div class="sub" data-i18n="sub">La reserva viva que respalda tu dinero — y crece con cada movimiento de la manada.</div>
+  <div class="badge"><span class="dot"></span><span data-i18n="badge">Prototipo interactivo · concepto</span></div>
+</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="status"><span>9:41</span><span>🐆 &nbsp; 5G &nbsp; 100%</span></div>
+  <div class="viewport">
+
+    <section class="screen on" id="s-inicio">
+      <div class="top"><div class="hi"><span data-i18n="hi">Hola,</span><b>Sebastián 🐆</b></div><div class="lvl">Cazador</div></div>
+      <div class="card glow">
+        <div class="balance-label" data-i18n="bal">Tu balance</div>
+        <div class="balance"><span class="cd" data-to="12450" data-dec="2">0,00</span><small>$LUKA</small></div>
+        <div class="usd">≈ $248,90 USD</div>
+        <div class="motorline"><span class="pulse"></span> <span data-i18n="motor">Motor A activo · cada movimiento alimenta la Reserva</span></div>
+      </div>
+      <div class="card reserva">
+        <div class="rtop"><span class="rname" data-i18n="reserva">La Reserva Sagrada</span><span class="rval" id="vaultTop">$18,75M</span></div>
+        <div class="bar"><i data-w="75"></i></div>
+        <div class="bar-meta"><span data-i18n="ecosys">Reserva del ecosistema</span><span data-i18n="hito75">75% del hito · $25M</span></div>
+        <div class="verify" data-i18n="audit">◈ Auditada on-chain en tiempo real</div>
+      </div>
+      <div class="card aura">
+        <div class="ring"><b>Aura</b></div>
+        <div class="aura-info"><div class="a-l" data-i18n="youraura">Tu Aura</div><div class="a-n">2.847 · Cazador</div><div class="a-s" data-i18n="toalfa">153 para llegar a Alfa →</div></div>
+      </div>
+      <div class="qa">
+        <button onclick="go('enviar')"><span class="ico">↑</span><span data-i18n="send">Enviar</span></button>
+        <button onclick="toast('rcv')"><span class="ico">↓</span><span data-i18n="receive">Recibir</span></button>
+        <button onclick="go('manadas')"><span class="ico">🐾</span><span data-i18n="vaquita">Vaquita</span></button>
+      </div>
+      <div class="section-h" data-i18n="recent">Movimientos recientes</div>
+      <div class="card" style="padding:6px 16px">
+        <div class="row"><div class="av">🐆</div><div class="txt"><b data-i18n="tx1">Vaquita Familia González</b><span data-i18n="tx1s">Aporte mensual · hoy</span></div><div class="amt neg">−200,00<small data-i18n="luka">$LUKA</small></div></div>
+        <div class="row"><div class="av">🔥</div><div class="txt"><b data-i18n="tx2">Quema del protocolo</b><span data-i18n="tx2s">Parte de tu fee · hoy</span></div><div class="amt neg">−1,20<small data-i18n="toboveda">a La Bóveda</small></div></div>
+        <div class="row"><div class="av">⚡</div><div class="txt"><b data-i18n="tx3">Recompensa de staking</b><span data-i18n="yest">Ayer</span></div><div class="amt pos">+34,50<small data-i18n="luka">$LUKA</small></div></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s-enviar">
+      <div class="top"><div class="hi"><b data-i18n="sendluka">Enviar $LUKA</b></div><div class="lvl" data-i18n="instant">Instantáneo</div></div>
+      <div class="eyebrow" data-i18n="pickjaguar">Elige a un jaguar de tu manada</div>
+      <div class="contacts">
+        <div class="contact sel"><div class="av">🦊</div><span>Ana</span></div>
+        <div class="contact"><div class="av">🐯</div><span>Camilo</span></div>
+        <div class="contact"><div class="av">🐆</div><span>Lucía</span></div>
+        <div class="contact"><div class="av">🦁</div><span>Diego</span></div>
+        <div class="contact"><div class="av">＋</div><span data-i18n="new">Nuevo</span></div>
+      </div>
+      <div class="amount-box"><div class="big" id="amt">150<span>$LUKA</span></div></div>
+      <div class="keys">
+        <button onclick="key('1')">1</button><button onclick="key('2')">2</button><button onclick="key('3')">3</button>
+        <button onclick="key('4')">4</button><button onclick="key('5')">5</button><button onclick="key('6')">6</button>
+        <button onclick="key('7')">7</button><button onclick="key('8')">8</button><button onclick="key('9')">9</button>
+        <button onclick="key('.')">.</button><button onclick="key('0')">0</button><button onclick="key('<')">⌫</button>
+      </div>
+      <div class="split" data-i18n="splittext">De cada pago, el protocolo reparte automáticamente: una parte <b>quema $LUKA</b> (más escaso), otra <span class="v">alimenta La Reserva</span>, y otra premia a la manada. <b>Usar LUKASH lo hace más fuerte.</b></div>
+      <button class="cta" onclick="toast('sent')" data-i18n="sendto">Enviar a Ana 🐆</button>
+    </section>
+
+    <section class="screen" id="s-manadas">
+      <div class="top"><div class="hi"><b data-i18n="yourpacks">Tus Manadas</b></div><div class="lvl" data-i18n="active3">3 activas</div></div>
+      <div class="eyebrow" data-i18n="vaqxxi">La vaquita del siglo XXI · ahorro en manada</div>
+      <div class="card manada">
+        <div class="mtop"><div class="stack"><div class="av">🐆</div><div class="av">🦊</div><div class="av">🐯</div><div class="av">🦁</div></div>
+          <div><div class="mname">Familia González</div><div class="mtype" data-i18n="savingpack">Vaquita de ahorro · 5 miembros</div></div></div>
+        <div class="mgoal"><span>$2.340 / $5.000</span><span class="g" data-i18n="thismonth">+$340 este mes</span></div>
+        <div class="bar"><i data-w="47"></i></div>
+        <div class="chips"><span class="chip on" data-i18n="uptodate">✓ Al día</span><span class="chip" data-i18n="closes3">Cierra en 3 meses</span><span class="chip on" data-i18n="perdep">+15 Aura / aporte</span></div>
+      </div>
+      <div class="card manada">
+        <div class="mtop"><div class="stack"><div class="av">🐺</div><div class="av">🦝</div><div class="av">🐆</div></div>
+          <div><div class="mname">Amigos del Barrio</div><div class="mtype" data-i18n="invpack">Inversión colectiva · 12 miembros</div></div></div>
+        <div class="mgoal"><span data-i18n="monthret">Rendimiento del mes</span><span class="g">+8,4%</span></div>
+        <div class="bar"><i data-w="70"></i></div>
+        <div class="chips"><span class="chip" data-i18n="sharedcnft">cNFT compartido</span><span class="chip on">Jaguar Elite</span></div>
+      </div>
+      <button class="cta ghost" onclick="toast('create')" data-i18n="createpack">＋ Crear Manada</button>
+    </section>
+
+    <section class="screen" id="s-arena">
+      <div class="top"><div class="hi"><b>Jungle Arena</b></div><div class="lvl">Aura 2.847</div></div>
+      <div class="eyebrow" data-i18n="jaguarpath">El camino del jaguar</div>
+      <div class="path">
+        <div class="step done"><div class="d">🐾</div><span>Cachorro</span></div>
+        <div class="step done"><div class="d">👣</div><span>Rastreador</span></div>
+        <div class="step now"><div class="d">🏹</div><span>Cazador</span></div>
+        <div class="step"><div class="d">🌙</div><span>Alfa</span></div>
+        <div class="step"><div class="d">🐆</div><span>Jaguar</span></div>
+      </div>
+      <div class="eyebrow" data-i18n="huntmissions">Misiones de Caza</div>
+      <div class="mission done" onclick="toast('done')"><div class="mi">🔥</div><div class="md"><b data-i18n="m1">Primeras Huellas</b><span data-i18n="m1s">Conociste la Reserva Sagrada</span></div><div class="aura-pts">+20 ✓</div></div>
+      <div class="mission" onclick="toast('claim')"><div class="mi">🌙</div><div class="md"><b data-i18n="m2">Vigilia del Santuario</b><span data-i18n="m2s">Racha de 30 días holdeando</span></div><div class="aura-pts">+50</div></div>
+      <div class="mission" onclick="toast('claim')"><div class="mi">🐾</div><div class="md"><b data-i18n="m3">Trae a la Manada</b><span data-i18n="m3s">Invita un jaguar que llegue a Rastreador</span></div><div class="aura-pts">+40</div></div>
+      <div class="mission" onclick="toast('claim')"><div class="mi">⚔️</div><div class="md"><b data-i18n="m4">Duelo de Manadas</b><span data-i18n="m4s">Compite esta semana</span></div><div class="aura-pts">+12</div></div>
+      <div class="mission locked"><div class="mi">🔒</div><div class="md"><b data-i18n="m5">El Puente DeFi</b><span data-i18n="m5s">Requiere nivel Rastreador</span></div><div class="aura-pts">+50</div></div>
+    </section>
+
+    <section class="screen" id="s-reserva">
+      <div class="top"><div class="hi"><b data-i18n="thereserve">La Reserva</b></div><div class="lvl">On-chain</div></div>
+      <div class="seal"><div class="s1" data-i18n="sealval">◈ VALIDADO POR SIMULACIÓN</div><div class="s2" data-i18n="livereserve">RESERVA VIVA</div><div class="s3" data-i18n="sealsub">5.000 escenarios · 1.825 días · auditable</div></div>
+      <div class="metric3">
+        <div class="metric vault"><div class="m-l" data-i18n="theboveda">La Bóveda · K(t)</div><div class="m-v" id="kval">$18,75M</div></div>
+        <div class="metric fire"><div class="m-l" data-i18n="thefire">El Fuego · quemado</div><div class="m-v"><span class="flame">🔥</span> <span class="cd" data-to="6.70" data-dec="2">0</span>B</div></div>
+        <div class="metric cola"><div class="m-l" data-i18n="thetail">La Cola · diferido</div><div class="m-v">42,1M</div></div>
+        <div class="metric cal"><div class="m-l" data-i18n="kashfloor">Precio KASH · piso</div><div class="m-v">$0,0057</div></div>
+      </div>
+      <div class="card compo" style="margin-top:14px">
+        <div class="eyebrow" data-i18n="compo">Composición de la Reserva · 100% Solana</div>
+        <div class="crow"><span class="cn">cBTC</span><span class="cbar"><i data-w="35" style="background:linear-gradient(90deg,#E8940A,#C9A84C)"></i></span><span class="cp">35%</span></div>
+        <div class="crow"><span class="cn">SOL / LST</span><span class="cbar"><i data-w="35" style="background:linear-gradient(90deg,#3DAA6B,#5FCA8E)"></i></span><span class="cp">35%</span></div>
+        <div class="crow"><span class="cn" data-i18n="usdcres">USDC reserva</span><span class="cbar"><i data-w="25" style="background:linear-gradient(90deg,#5FCA8E,#3DAA6B)"></i></span><span class="cp">25%</span></div>
+        <div class="crow"><span class="cn">USDC lending</span><span class="cbar"><i data-w="5" style="background:#3DAA6B"></i></span><span class="cp">5%</span></div>
+      </div>
+      <button class="cta ghost" onclick="toast('verify')" data-i18n="verifybtn">◈ Verificar on-chain</button>
+    </section>
+
+  </div>
+
+  <button class="fab" onclick="toast('lukai')" title="LUKAI">🐆</button>
+
+  <nav class="tabbar">
+    <button class="tab on" data-t="inicio" onclick="go('inicio')"><span class="ti">🏠</span><span data-i18n="nhome">Inicio</span></button>
+    <button class="tab" data-t="manadas" onclick="go('manadas')"><span class="ti">🐾</span><span data-i18n="npacks">Manadas</span></button>
+    <button class="tab" data-t="arena" onclick="go('arena')"><span class="ti">⚔️</span><span>Arena</span></button>
+    <button class="tab" data-t="enviar" onclick="go('enviar')"><span class="ti">↑</span><span data-i18n="nsend">Enviar</span></button>
+    <button class="tab" data-t="reserva" onclick="go('reserva')"><span class="ti">◈</span><span data-i18n="nreserve">Reserva</span></button>
+  </nav>
+</div>
+
+<div class="foot"><span data-i18n="footnote">PROTOTIPO DE CONCEPTO · no procesa fondos reales</span><br><b>LUKASH</b> — <span data-i18n="footline">la banca del futuro, disponible hoy</span></div>
+
+<div id="toast" style="position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(140px);z-index:99;background:linear-gradient(135deg,#1b1b14,#111);border:1px solid var(--linea);color:var(--marfil);padding:13px 18px;border-radius:14px;font-size:13px;max-width:340px;box-shadow:0 12px 30px rgba(0,0,0,.5);transition:transform .38s cubic-bezier(.2,.8,.3,1);text-align:center"></div>
+
+<script>
+  const I18N={
+    es:{tag:"Dueño de tu ascenso",sub:"La reserva viva que respalda tu dinero — y crece con cada movimiento de la manada.",badge:"Prototipo interactivo · concepto",hi:"Hola,",bal:"Tu balance",motor:"Motor A activo · cada movimiento alimenta la Reserva",reserva:"La Reserva Sagrada",ecosys:"Reserva del ecosistema",hito75:"75% del hito · $25M",audit:"◈ Auditada on-chain en tiempo real",youraura:"Tu Aura",toalfa:"153 para llegar a Alfa →",send:"Enviar",receive:"Recibir",vaquita:"Vaquita",recent:"Movimientos recientes",tx1:"Vaquita Familia González",tx1s:"Aporte mensual · hoy",luka:"$LUKA",tx2:"Quema del protocolo",tx2s:"Parte de tu fee · hoy",toboveda:"a La Bóveda",tx3:"Recompensa de staking",yest:"Ayer",sendluka:"Enviar $LUKA",instant:"Instantáneo",pickjaguar:"Elige a un jaguar de tu manada",new:"Nuevo",splittext:"De cada pago, el protocolo reparte automáticamente: una parte <b>quema $LUKA</b> (más escaso), otra <span class='v'>alimenta La Reserva</span>, y otra premia a la manada. <b>Usar LUKASH lo hace más fuerte.</b>",sendto:"Enviar a Ana 🐆",yourpacks:"Tus Manadas",active3:"3 activas",vaqxxi:"La vaquita del siglo XXI · ahorro en manada",savingpack:"Vaquita de ahorro · 5 miembros",thismonth:"+$340 este mes",uptodate:"✓ Al día",closes3:"Cierra en 3 meses",perdep:"+15 Aura / aporte",invpack:"Inversión colectiva · 12 miembros",monthret:"Rendimiento del mes",sharedcnft:"cNFT compartido",createpack:"＋ Crear Manada",jaguarpath:"El camino del jaguar",huntmissions:"Misiones de Caza",m1:"Primeras Huellas",m1s:"Conociste la Reserva Sagrada",m2:"Vigilia del Santuario",m2s:"Racha de 30 días holdeando",m3:"Trae a la Manada",m3s:"Invita un jaguar que llegue a Rastreador",m4:"Duelo de Manadas",m4s:"Compite esta semana",m5:"El Puente DeFi",m5s:"Requiere nivel Rastreador",thereserve:"La Reserva",sealval:"◈ VALIDADO POR SIMULACIÓN",livereserve:"RESERVA VIVA",sealsub:"5.000 escenarios · 1.825 días · auditable",theboveda:"La Bóveda · K(t)",thefire:"El Fuego · quemado",thetail:"La Cola · diferido",kashfloor:"Precio KASH · piso",compo:"Composición de la Reserva · 100% Solana",usdcres:"USDC reserva",verifybtn:"◈ Verificar on-chain",nhome:"Inicio",npacks:"Manadas",nsend:"Enviar",nreserve:"Reserva",footnote:"PROTOTIPO DE CONCEPTO · no procesa fondos reales",footline:"la banca del futuro, disponible hoy"},
+    en:{tag:"Own your rise",sub:"The living reserve that backs your money — growing with every move the pack makes.",badge:"Interactive prototype · concept",hi:"Hey,",bal:"Your balance",motor:"Engine A live · every move feeds the Reserve",reserva:"The Sacred Reserve",ecosys:"Ecosystem reserve",hito75:"75% to the milestone · $25M",audit:"◈ Audited on-chain, in real time",youraura:"Your Aura",toalfa:"153 to reach Alpha →",send:"Send",receive:"Receive",vaquita:"Pool",recent:"Recent activity",tx1:"González Family Pool",tx1s:"Monthly deposit · today",luka:"$LUKA",tx2:"Protocol burn",tx2s:"Part of your fee · today",toboveda:"to The Vault",tx3:"Staking reward",yest:"Yesterday",sendluka:"Send $LUKA",instant:"Instant",pickjaguar:"Pick a jaguar from your pack",new:"New",splittext:"From every payment, the protocol splits automatically: part <b>burns $LUKA</b> (scarcer), part <span class='v'>feeds the Reserve</span>, and part rewards the pack. <b>Using LUKASH makes it stronger.</b>",sendto:"Send to Ana 🐆",yourpacks:"Your Packs",active3:"3 active",vaqxxi:"The savings circle, reinvented · pack saving",savingpack:"Savings pool · 5 members",thismonth:"+$340 this month",uptodate:"✓ On track",closes3:"Closes in 3 months",perdep:"+15 Aura / deposit",invpack:"Collective investment · 12 members",monthret:"Monthly return",sharedcnft:"Shared cNFT",createpack:"＋ Create Pack",jaguarpath:"The jaguar's path",huntmissions:"Hunt Missions",m1:"First Tracks",m1s:"You met the Sacred Reserve",m2:"Sanctuary Vigil",m2s:"30-day holding streak",m3:"Bring the Pack",m3s:"Invite a jaguar who reaches Tracker",m4:"Pack Duel",m4s:"Compete this week",m5:"The DeFi Bridge",m5s:"Requires Tracker level",thereserve:"The Reserve",sealval:"◈ SIMULATION-VALIDATED",livereserve:"LIVING RESERVE",sealsub:"5,000 scenarios · 1,825 days · auditable",theboveda:"The Vault · K(t)",thefire:"The Fire · burned",thetail:"The Tail · deferred",kashfloor:"KASH Price · floor",compo:"Reserve composition · 100% Solana",usdcres:"USDC reserve",verifybtn:"◈ Verify on-chain",nhome:"Home",npacks:"Packs",nsend:"Send",nreserve:"Reserve",footnote:"CONCEPT PROTOTYPE · handles no real funds",footline:"the bank of the future, available today"},
+    pt:{tag:"Dono da sua ascensão",sub:"A reserva viva que respalda o seu dinheiro — e cresce a cada movimento da manada.",badge:"Protótipo interativo · conceito",hi:"Olá,",bal:"Seu saldo",motor:"Motor A ativo · cada movimento alimenta a Reserva",reserva:"A Reserva Sagrada",ecosys:"Reserva do ecossistema",hito75:"75% da meta · $25M",audit:"◈ Auditada on-chain em tempo real",youraura:"Sua Aura",toalfa:"153 para chegar a Alfa →",send:"Enviar",receive:"Receber",vaquita:"Vaquinha",recent:"Movimentos recentes",tx1:"Vaquinha Família González",tx1s:"Aporte mensal · hoje",luka:"$LUKA",tx2:"Queima do protocolo",tx2s:"Parte da sua taxa · hoje",toboveda:"para o Cofre",tx3:"Recompensa de staking",yest:"Ontem",sendluka:"Enviar $LUKA",instant:"Instantâneo",pickjaguar:"Escolha uma onça da sua manada",new:"Novo",splittext:"De cada pagamento, o protocolo divide automaticamente: uma parte <b>queima $LUKA</b> (mais escasso), outra <span class='v'>alimenta a Reserva</span>, e outra premia a manada. <b>Usar LUKASH o torna mais forte.</b>",sendto:"Enviar para Ana 🐆",yourpacks:"Suas Manadas",active3:"3 ativas",vaqxxi:"A vaquinha do século XXI · poupança em manada",savingpack:"Vaquinha de poupança · 5 membros",thismonth:"+$340 este mês",uptodate:"✓ Em dia",closes3:"Fecha em 3 meses",perdep:"+15 Aura / aporte",invpack:"Investimento coletivo · 12 membros",monthret:"Rendimento do mês",sharedcnft:"cNFT compartilhado",createpack:"＋ Criar Manada",jaguarpath:"O caminho da onça",huntmissions:"Missões de Caça",m1:"Primeiras Pegadas",m1s:"Você conheceu a Reserva Sagrada",m2:"Vigília do Santuário",m2s:"Sequência de 30 dias segurando",m3:"Traga a Manada",m3s:"Convide uma onça que chegue a Rastreador",m4:"Duelo de Manadas",m4s:"Compita esta semana",m5:"A Ponte DeFi",m5s:"Requer nível Rastreador",thereserve:"A Reserva",sealval:"◈ VALIDADO POR SIMULAÇÃO",livereserve:"RESERVA VIVA",sealsub:"5.000 cenários · 1.825 dias · auditável",theboveda:"O Cofre · K(t)",thefire:"O Fogo · queimado",thetail:"A Cauda · diferido",kashfloor:"Preço KASH · piso",compo:"Composição da Reserva · 100% Solana",usdcres:"USDC reserva",verifybtn:"◈ Verificar on-chain",nhome:"Início",npacks:"Manadas",nsend:"Enviar",nreserve:"Reserva",footnote:"PROTÓTIPO DE CONCEITO · não processa fundos reais",footline:"o banco do futuro, disponível hoje"}
+  };
+  const TOAST={es:{rcv:"Comparte tu código de jaguar",sent:"¡Enviado a Ana! 🐆 +15 Aura",create:"Crea tu manada e invita jaguares",done:"Misión completada · +20 Aura",claim:"¡Misión aceptada, cazador!",verify:"Abriendo el explorador de Solana…",lukai:"LUKAI: ¿Listo para dejar de ser el que gasta y ser el dueño de tu banco?"},en:{rcv:"Share your jaguar code",sent:"Sent to Ana! 🐆 +15 Aura",create:"Create your pack and invite jaguars",done:"Mission complete · +20 Aura",claim:"Mission accepted, hunter!",verify:"Opening the Solana explorer…",lukai:"LUKAI: Ready to stop being the spender and own your bank?"},pt:{rcv:"Compartilhe seu código de onça",sent:"Enviado para Ana! 🐆 +15 Aura",create:"Crie sua manada e convide onças",done:"Missão concluída · +20 Aura",claim:"Missão aceita, caçador!",verify:"Abrindo o explorador da Solana…",lukai:"LUKAI: Pronto para deixar de gastar e ser dono do seu banco?"}};
+  let LANG='es';
+  function setLang(l,btn){LANG=l;document.querySelectorAll('.langs button').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');
+    document.querySelectorAll('[data-i18n]').forEach(el=>{const v=I18N[l][el.dataset.i18n];if(v!=null)el.innerHTML=v;});document.documentElement.lang=l;}
+
+  function go(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+    document.getElementById('s-'+id).classList.add('on');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===id));
+    document.querySelector('.viewport').scrollTop=0;
+    activate(document.getElementById('s-'+id));
+  }
+  let amt='150';
+  function key(k){if(k==='<')amt=amt.length>1?amt.slice(0,-1):'0';else if(k==='.'){if(!amt.includes('.'))amt+='.';}else amt=(amt==='0'?'':amt)+k;document.getElementById('amt').innerHTML=amt+'<span>$LUKA</span>';}
+  let tt;function toast(key){const t=document.getElementById('toast');t.textContent=TOAST[LANG][key]||key;t.style.transform='translateX(-50%) translateY(0)';clearTimeout(tt);tt=setTimeout(()=>t.style.transform='translateX(-50%) translateY(140px)',2800);}
+
+  // count-up + bars on screen activate
+  function activate(scr){
+    scr.querySelectorAll('.cd').forEach(el=>{
+      const to=parseFloat(el.dataset.to),dec=+el.dataset.dec||0;let s=null;
+      requestAnimationFrame(function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/900,1);const e=1-Math.pow(1-p,3);
+        let val=(to*e).toLocaleString(LANG==='en'?'en-US':LANG==='pt'?'pt-BR':'es-ES',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+        el.textContent=val;if(p<1)requestAnimationFrame(step);});});
+    scr.querySelectorAll('.bar > i, .cbar > i').forEach(el=>{const w=el.dataset.w;if(w){el.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>el.style.width=w+'%'));}});
+    const ring=scr.querySelector('.ring');if(ring){ring.style.setProperty('--pct','0');let p=0;const iv=setInterval(()=>{p+=3;ring.style.setProperty('--pct',p);if(p>=82)clearInterval(iv);},14);}
+  }
+
+  // ripple
+  document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cta,.qa button,.keys button,.tab');if(!b)return;const r=b.getBoundingClientRect();const rp=document.createElement('span');rp.className='ripple';rp.style.left=(e.clientX-r.left)+'px';rp.style.top=(e.clientY-r.top)+'px';b.appendChild(rp);setTimeout(()=>rp.remove(),600);});
+
+  // Vault live ticker
+  let k=18.75;setInterval(()=>{k+=Math.random()*0.004;const s='$'+k.toFixed(2).replace('.',',')+'M';const a=document.getElementById('vaultTop'),b=document.getElementById('kval');if(a)a.textContent=s;if(b)b.textContent=s;},2200);
+
+  // embers canvas
+  (function(){const c=document.getElementById('embers'),x=c.getContext('2d');let w,h,ps=[];
+    function rs(){w=c.width=innerWidth;h=c.height=innerHeight;}rs();addEventListener('resize',rs);
+    for(let i=0;i<46;i++)ps.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.8+.4,s:Math.random()*.4+.1,o:Math.random()*.5+.15,c:Math.random()>.35?'201,168,76':'232,148,10'});
+    (function loop(){x.clearRect(0,0,w,h);for(const p of ps){p.y-=p.s;p.x+=Math.sin(p.y/40)*.25;if(p.y<-8){p.y=h+8;p.x=Math.random()*w;}x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle='rgba('+p.c+','+p.o+')';x.shadowBlur=8;x.shadowColor='rgba('+p.c+',.6)';x.fill();}requestAnimationFrame(loop);})();})();
+
+  // boot
+  activate(document.getElementById('s-inicio'));
+  setTimeout(()=>document.getElementById('splash').classList.add('gone'),1950);
+</script>

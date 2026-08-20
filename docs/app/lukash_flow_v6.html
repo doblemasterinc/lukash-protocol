@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH Protocol v4.2 — Simulador de Flujos v6</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Chakra+Petch:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050A15; --bg2:#0C1525; --bg3:#101E38;
+  --g:#1C9870;  --g2:#20C486;
+  --b:#1557A0;  --b2:#1E78CC;
+  --gold:#B57215; --gold2:#DA8E1C;
+  --r:#BE3728;  --r2:#E44035;
+  --p:#7226B8;  --p2:#9E48D8;
+  --kash:#1A6AD4; --kash2:#2E8EF8;   /* KASH nodo padre */
+  --vc:#0E50A8;   --vc2:#1470CC;     /* KASH Core - azul oscuro */
+  --vs:#A86010;   --vs2:#CC7818;     /* KASH Sociedad - ámbar */
+  --burn:#A01808; --burn2:#D02818;   /* BURN - rojo oscuro */
+  --lp:#156840;   --lp2:#1E9860;     /* LP Pool - verde oscuro */
+  --text:#B0CCEC; --muted:#364E6E;
+  --brd:rgba(28,152,112,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Chakra Petch',sans-serif;color:var(--text);display:flex;flex-direction:column;}
+body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);}
+
+/* HEADER */
+header{flex-shrink:0;height:46px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  background:linear-gradient(90deg,rgba(21,87,160,.2),rgba(28,152,112,.09),rgba(21,87,160,.04));
+  border-bottom:1px solid var(--brd);position:relative;z-index:10;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--g2) 70%,transparent);}
+.logo{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;letter-spacing:5px;
+  background:linear-gradient(135deg,var(--g2) 30%,var(--b2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-s{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);}
+.hpills{display:flex;gap:5px;align-items:center;}
+.hp{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;
+  padding:3px 8px;border:1px solid currentColor;border-radius:1px;transition:all .3s;}
+.hr{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);text-align:right;line-height:1.9;}
+.hr em{color:var(--g2);font-style:normal;}
+
+/* EVENT BANNER */
+#ev{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:1000;
+  font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;
+  padding:7px 22px;border:1px solid;border-radius:2px;
+  background:rgba(5,10,21,.93);backdrop-filter:blur(8px);
+  pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap;}
+#ev.show{opacity:1;}
+
+/* APP */
+.app{flex:1;display:grid;grid-template-columns:196px 1fr 240px;overflow:hidden;}
+
+/* SIDEBARS */
+.sb{overflow-y:auto;border-right:1px solid var(--brd);background:rgba(12,21,37,.96);}
+.sb.r{border-right:none;border-left:1px solid var(--brd);}
+.sb::-webkit-scrollbar{width:3px;}
+.sb::-webkit-scrollbar-thumb{background:var(--g);border-radius:2px;}
+.sc{padding:10px 11px;border-bottom:1px solid rgba(255,255,255,.04);}
+.st{font-size:8.5px;font-weight:600;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:7px;font-family:'Share Tech Mono',monospace;}
+
+/* BUTTONS */
+.bg{display:flex;gap:3px;}
+.b{flex:1;padding:5px 3px;font-family:'Orbitron',monospace;font-size:7.5px;font-weight:600;
+  letter-spacing:.5px;border:1px solid var(--muted);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;border-radius:1px;text-transform:uppercase;}
+.b:hover{border-color:var(--text);color:var(--text);}
+.og{border-color:var(--g2)!important;color:var(--g2)!important;background:rgba(32,196,134,.11)!important;}
+.ob{border-color:var(--b2)!important;color:var(--b2)!important;background:rgba(30,120,204,.11)!important;}
+.or{border-color:var(--r2)!important;color:var(--r2)!important;background:rgba(228,64,53,.11)!important;}
+.ogold{border-color:var(--gold2)!important;color:var(--gold2)!important;background:rgba(218,142,28,.11)!important;}
+.op{border-color:var(--p2)!important;color:var(--p2)!important;background:rgba(158,72,216,.11)!important;}
+.oamb{border-color:var(--vs2)!important;color:var(--vs2)!important;background:rgba(204,120,24,.11)!important;}
+.okash{border-color:var(--kash2)!important;color:var(--kash2)!important;background:rgba(46,142,248,.11)!important;}
+
+/* SLIDERS */
+input[type=range]{width:100%;height:3px;-webkit-appearance:none;appearance:none;
+  background:linear-gradient(90deg,var(--g) var(--p,0%),var(--bg3) var(--p,0%));
+  border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;
+  border-radius:50%;background:var(--g2);border:2px solid var(--bg);
+  box-shadow:0 0 7px rgba(32,196,134,.5);cursor:pointer;}
+.sw{margin-bottom:9px;}
+.sh{display:flex;justify-content:space-between;margin-bottom:4px;}
+.sn{font-size:10px;color:var(--text);}
+.sv{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--g2);}
+
+/* DIST GRID */
+.dg4{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:5px;}
+.dc{padding:5px 6px;border:1px solid;border-radius:1px;}
+.dn{font-size:7.5px;color:var(--muted);font-family:'Share Tech Mono',monospace;letter-spacing:.5px;}
+.dv{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;margin-top:1px;}
+.ds{font-size:7px;color:var(--muted);margin-top:1px;}
+
+/* STAGE TIMELINE */
+.stl{display:flex;gap:2px;margin-top:5px;}
+.stg{flex:1;padding:4px 2px;text-align:center;font-family:'Orbitron',monospace;
+  font-size:7px;font-weight:700;border:1px solid var(--muted);color:var(--muted);
+  border-radius:1px;transition:all .4s;}
+.stg.active{box-shadow:0 0 8px currentColor;}
+.stg.done{opacity:.4;}
+
+/* INFO BOX */
+.ibox{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);
+  margin-top:5px;padding:4px 7px;line-height:1.5;border-left:2px solid;}
+.snote{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--vs2);
+  margin-top:5px;padding:3px 7px;background:rgba(204,120,24,.06);border-left:2px solid var(--vs2);}
+
+/* PLAY */
+.tl{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;
+  font-size:8px;color:var(--muted);margin-bottom:3px;}
+.pr{display:flex;gap:3px;margin-top:5px;}
+
+/* CANVAS */
+.cw{position:relative;overflow:hidden;}
+#cv{display:block;}
+.ov-st{position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:2px;
+  padding:4px 12px;border:1px solid;border-radius:1px;backdrop-filter:blur(4px);white-space:nowrap;}
+.ov-yr{position:absolute;top:11px;right:11px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold2);
+  background:rgba(181,114,21,.1);border:1px solid rgba(181,114,21,.3);padding:3px 9px;border-radius:1px;}
+.kbar-w{position:absolute;bottom:9px;left:11px;right:11px;}
+.kbar-l{display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:3px;}
+.kbar-t{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+.kbar-f{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--b2),var(--g2));transition:width .6s;}
+.shield-tag{position:absolute;bottom:28px;right:11px;
+  font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;color:var(--gold);
+  border:1px solid rgba(181,114,21,.2);padding:2px 6px;background:rgba(181,114,21,.05);}
+
+/* RIGHT METRICS */
+.mc{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,.04);position:relative;}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;}
+.mc-kash::before{background:var(--kash2);}
+.mc-vc::before{background:var(--vc2);}
+.mc-vs::before{background:var(--vs2);}
+.mc-g::before{background:var(--g2);}
+.mc-r::before{background:var(--r2);}
+.mc-p::before{background:var(--p2);}
+.mc-gold::before{background:var(--gold2);}
+.mc-burn::before{background:var(--burn2);}
+.mc-lp::before{background:var(--lp2);}
+.mn{font-size:7.5px;font-weight:600;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:2px;font-family:'Share Tech Mono',monospace;}
+.mv{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;line-height:1.15;transition:all .3s;}
+.mv-kash{color:var(--kash2);}  .mv-vc{color:var(--vc2);}   .mv-vs{color:var(--vs2);}
+.mv-g{color:var(--g2);}        .mv-r{color:var(--r2);}     .mv-p{color:var(--p2);}
+.mv-gold{color:var(--gold2);}  .mv-burn{color:var(--burn2);} .mv-lp{color:var(--lp2);}
+.ms{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:2px;}
+.ms em{font-style:normal;}
+
+/* FEE ROWS */
+.fr{display:flex;align-items:center;gap:4px;margin-bottom:5px;}
+.fl{font-size:9px;font-weight:600;width:54px;font-family:'Share Tech Mono',monospace;}
+.ft{flex:1;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.fb{height:100%;border-radius:2px;transition:width .5s;}
+.fa{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);width:42px;text-align:right;}
+
+/* VAULT COMP */
+.vi{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.vd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.vn{font-size:8.5px;color:var(--text);flex:1;font-family:'Share Tech Mono',monospace;}
+.vp{font-size:8.5px;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+
+/* 5Y PROGRESS */
+.pw{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,.04);}
+.ptk{display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:4px;}
+.pt{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--b2),var(--g2));transition:width .4s;}
+.rsh{padding:6px 11px 4px;border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);
+  font-family:'Orbitron',monospace;font-size:7.5px;font-weight:700;letter-spacing:2.5px;color:var(--muted);}
+
+/* BLINK */
+@keyframes blink{0%,100%{opacity:1;}40%{opacity:.2;}}
+.blink{animation:blink .5s ease;}
+
+/* STATUSBAR */
+.statusbar{flex-shrink:0;display:flex;gap:14px;align-items:center;
+  padding:5px 14px;background:rgba(3,6,14,.97);
+  border-top:1px solid rgba(28,152,112,.09);
+  font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;margin-right:4px;}
+.dg{background:var(--g2);box-shadow:0 0 4px var(--g2);animation:pulse 2s infinite;}
+.db{background:var(--b2);} .dgold{background:var(--gold2);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+</style>
+</head>
+<body>
+
+<div id="ev">⚡ TRANSICIÓN</div>
+
+<header>
+  <div>
+    <div class="logo">LUKASH</div>
+    <div class="logo-s">PROTOCOL v4.2 · SIMULADOR DE FLUJOS · TRANSICIONES AUTOMÁTICAS</div>
+  </div>
+  <div class="hpills">
+    <div class="hp" id="hp-st"  style="color:var(--b2);border-color:rgba(30,120,204,.4);background:rgba(30,120,204,.08);">ET.1 GÉNESIS</div>
+    <div class="hp" id="hp-mo"  style="color:var(--burn2);border-color:rgba(208,40,24,.4);background:rgba(208,40,24,.08);">B0 BURN</div>
+    <div class="hp" id="hp-thr" style="color:var(--g2);border-color:rgba(32,196,134,.35);background:rgba(32,196,134,.07);">NORMAL 100%</div>
+    <div class="hp" id="hp-mkt" style="color:var(--b2);border-color:rgba(30,120,204,.4);background:rgba(30,120,204,.08);">◼ NEUTRAL</div>
+    <div class="hp" id="hp-mes" style="color:var(--vs2);border-color:rgba(204,120,24,.4);background:rgba(204,120,24,.08);">MES 0</div>
+  </div>
+  <div class="hr">SUPPLY: <em id="h-sup">10.00B</em> · DÍA: <em id="h-d">0</em> · AÑO: <em id="h-yr">0.0</em></div>
+</header>
+
+<div class="app">
+
+<!-- ══ LEFT ══ -->
+<aside class="sb">
+
+<div class="sc">
+  <div class="st">Mercado</div>
+  <div class="bg">
+    <button class="b" id="b-bull" onclick="setMkt('BULL')">▲ BULL</button>
+    <button class="b ob" id="b-neut" onclick="setMkt('NEUTRAL')">◼ NEUTRO</button>
+    <button class="b" id="b-bear" onclick="setMkt('BEAR')">▼ BEAR</button>
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Escenario Monte Carlo</div>
+  <div class="bg">
+    <button class="b" id="b-sc-c" onclick="setSc('CONSERV')">CONSERV</button>
+    <button class="b ob" id="b-sc-b" onclick="setSc('BASE')">BASE</button>
+    <button class="b" id="b-sc-a" onclick="setSc('AGRESIVO')">AGRESIVO</button>
+  </div>
+  <div class="ibox" id="sc-info" style="border-color:rgba(30,120,204,.35);">
+    Y5 mediana: $37.2M · P(B2&lt;Y2): 86.1%
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Etapas — Auto-transición en Play</div>
+  <div class="stl">
+    <div class="stg active" id="stg-1"  style="color:var(--b2);border-color:var(--b2);">ET.1</div>
+    <div class="stg" id="stg-2a">2A</div>
+    <div class="stg" id="stg-2b">2B</div>
+    <div class="stg" id="stg-3">ET.3</div>
+    <div class="stg" id="stg-4">DAO</div>
+  </div>
+  <div class="ibox" id="st-info" style="border-color:rgba(30,120,204,.3);">Motor A · Fee 4%/2.5%WL · B,C,D inactivos</div>
+</div>
+
+<div class="sc">
+  <div class="st">Throttle Dinámico (EMA30)</div>
+  <div class="bg">
+    <button class="b" id="bt-ac" onclick="setThr('ACELERADO')">125%</button>
+    <button class="b ob" id="bt-no" onclick="setThr('NORMAL')">100%</button>
+    <button class="b" id="bt-co" onclick="setThr('CONSERV')">60%</button>
+    <button class="b" id="bt-de" onclick="setThr('DEFENSIVO')">25%</button>
+  </div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:5px;">
+    Cola: <span id="tc" style="color:var(--gold2)">0%</span> · R_op activa: <span id="tr" style="color:var(--g2)">100%</span>
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Distribución 35/35/15/15</div>
+  <div class="dg4">
+    <div class="dc" style="border-color:rgba(46,142,248,.3);background:rgba(46,142,248,.07);grid-column:1/3;">
+      <div class="dn">35% ASSET LAYER → NODO KASH</div>
+      <div style="display:flex;gap:8px;margin-top:3px;">
+        <div><div class="dv" style="color:var(--vc2);font-size:12px;">70%</div><div class="ds">→ Core</div></div>
+        <div style="width:1px;background:rgba(255,255,255,.1);"></div>
+        <div><div class="dv" style="color:var(--vs2);font-size:12px;">30%</div><div class="ds">→ Sociedad</div></div>
+      </div>
+    </div>
+    <div class="dc" id="dc-liq" style="border-color:rgba(208,40,24,.3);background:rgba(208,40,24,.07);">
+      <div class="dn" id="dc-liq-n">35% LIQ. (B0)</div>
+      <div class="dv" style="color:var(--burn2);font-size:12px;">BURN</div>
+      <div class="ds" id="dc-liq-s">→ null</div>
+    </div>
+    <div class="dc" style="border-color:rgba(32,196,134,.25);background:rgba(32,196,134,.05);">
+      <div class="dn">15%+15%</div>
+      <div class="dv" style="color:var(--g2);font-size:12px;">O&M·STK</div>
+      <div class="ds">Simétrico</div>
+    </div>
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Parámetros</div>
+  <div class="sw">
+    <div class="sh"><span class="sn">Vol. Motor A / día</span><span class="sv" id="sv-va">$5M</span></div>
+    <input type="range" id="sl-va" min="500" max="25000" value="5000" oninput="onSl(this,'sv-va',v=>fU(v*1000))">
+  </div>
+  <div class="sw">
+    <div class="sh"><span class="sn">Usuarios App</span><span class="sv" id="sv-us">1K</span></div>
+    <input type="range" id="sl-us" min="0" max="2000" value="1" oninput="onSl(this,'sv-us',v=>fK(v*1000))">
+  </div>
+  <div class="sw">
+    <div class="sh"><span class="sn">Precio × TGE</span><span class="sv" id="sv-px">1.0×</span></div>
+    <input type="range" id="sl-px" min="5" max="3000" value="100" oninput="onSl(this,'sv-px',v=>(v/100).toFixed(1)+'×')">
+  </div>
+</div>
+
+<div class="sc">
+  <div class="st">Simulación 5 Años</div>
+  <div class="tl"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+  <input type="range" id="sl-day" min="0" max="1825" value="0" style="margin-bottom:5px;"
+    oninput="if(!G.playing)scrub(+this.value)">
+  <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--vs2);margin-bottom:4px;">
+    <span>DÍA <span id="d-d">0</span></span>
+    <span>MES <span id="d-m">0</span></span>
+    <span>AÑO <span id="d-y">0.00</span></span>
+  </div>
+  <div class="pr">
+    <button class="b" style="flex:2;" id="b-play" onclick="togglePlay()">▶ PLAY</button>
+    <button class="b" id="b-1x" onclick="setSpd(1)">1×</button>
+    <button class="b oamb" id="b-5x" onclick="setSpd(5)">5×</button>
+    <button class="b" id="b-15x" onclick="setSpd(15)">15×</button>
+    <button class="b" onclick="resetSim()">↺</button>
+  </div>
+  <div class="snote" id="spd-note">⚡ 5× · 1 año ≈ 2 min · métricas/mes</div>
+</div>
+
+</aside>
+
+<!-- ══ CANVAS ══ -->
+<div class="cw">
+  <canvas id="cv"></canvas>
+  <div class="ov-st" id="ov-st" style="color:var(--b2);border-color:rgba(30,120,204,.45);background:rgba(30,120,204,.1);">
+    ETAPA 1 — GÉNESIS · MOTOR A
+  </div>
+  <div class="ov-yr" id="ov-yr">AÑO 0.0</div>
+  <div class="kbar-w">
+    <div class="kbar-l">
+      <span>K(t) → K_min $25M</span>
+      <span id="kpct" style="color:var(--g2)">0.0%</span>
+    </div>
+    <div class="kbar-t"><div class="kbar-f" id="kbar" style="width:0%"></div></div>
+  </div>
+  <div class="shield-tag">⬡ JAGUAR SHIELD v4.2</div>
+</div>
+
+<!-- ══ RIGHT ══ -->
+<aside class="sb r">
+
+<div style="padding:6px 11px 4px;border-bottom:1px solid var(--brd);
+  font-family:'Orbitron',monospace;font-size:7.5px;font-weight:700;letter-spacing:2.5px;color:var(--muted);">
+  ⬡ MÉTRICAS · ACTUALIZ. MENSUAL
+</div>
+
+<div class="pw">
+  <div class="ptk"><span>Y0</span><span>Y1</span><span>Y2</span><span>Y3</span><span>Y4</span><span>Y5</span></div>
+  <div class="pt"><div class="pf" id="pf" style="width:0%"></div></div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px;text-align:right;">
+    <span id="yr-pct">0.0%</span> del horizonte 5 años
+  </div>
+</div>
+
+<!-- KASH (nodo padre) -->
+<div class="mc mc-kash">
+  <div class="mn">⬡ KASH Total (Core + Sociedad)</div>
+  <div class="mv mv-kash" id="m-kash">$0.00</div>
+  <div class="ms">35% Asset Layer de todos los motores</div>
+</div>
+
+<!-- KASH Core -->
+<div class="mc mc-vc" style="padding-left:20px;">
+  <div class="mn">↳ KASH Core — 70% Asset Layer</div>
+  <div class="mv mv-vc" id="m-vc">$0.00</div>
+  <div class="ms">Δ/mes: <em id="m-vc-d" style="color:var(--g2)">$0</em> · <span id="m-vc-st">ET.1 B0</span></div>
+</div>
+
+<!-- KASH Sociedad -->
+<div class="mc mc-vs" style="padding-left:20px;">
+  <div class="mn">↳ KASH Sociedad — 30% Asset Layer</div>
+  <div class="mv mv-vs" id="m-vs">$0.00</div>
+  <div class="ms" id="m-vs-ms">⏳ Bloqueado · Distribución: mes 13 desde TGE (día 390)</div>
+</div>
+
+<!-- Precio KASH -->
+<div class="mc mc-g">
+  <div class="mn">Precio KASH = Core ÷ Supply</div>
+  <div class="mv mv-g" id="m-pk">$0.000000</div>
+  <div class="ms"><em id="m-pkx" style="color:var(--gold2)">0×</em> TGE ($0.0001)</div>
+</div>
+
+<!-- Supply -->
+<div class="mc mc-r">
+  <div class="mn">Supply Circulante $LUKA</div>
+  <div class="mv mv-r" id="m-sup">10.00B</div>
+  <div class="ms">Quemado: <em id="m-brn" style="color:var(--burn2)">0.00B</em> · Meta ENZ: 3.3B</div>
+</div>
+
+<div class="rsh">⬡ LIQ. LAYER 35% — BURN vs LP</div>
+
+<!-- BURN -->
+<div class="mc mc-burn">
+  <div class="mn">🔥 BURN → null (activo en B0)</div>
+  <div class="mv mv-burn" id="m-burnv">$0</div>
+  <div class="ms">Deflación agresiva on-chain. Throttle aplica.</div>
+</div>
+
+<!-- LP -->
+<div class="mc mc-lp">
+  <div class="mn">💧 LP Pool Recirculación (activo en B2)</div>
+  <div class="mv mv-lp" id="m-lpv">$0</div>
+  <div class="ms">Inercia estructural. NO alimenta el Vault.</div>
+</div>
+
+<div class="rsh">⬡ O&M · STAKING (15% + 15%)</div>
+
+<!-- Staking -->
+<div class="mc mc-g">
+  <div class="mn">Reward 15% → Stakers $LUKA</div>
+  <div class="mv mv-g" id="m-stk">$0</div>
+  <div class="ms">Idéntico peso al O&M · Simétrico</div>
+</div>
+
+<!-- O&M -->
+<div class="mc mc-gold">
+  <div class="mn">O&M 15% → Wallet Operativa</div>
+  <div class="mv mv-gold" id="m-om">$0</div>
+  <div class="ms">Swap inmediato SOL/USDC · Infraestructura</div>
+</div>
+
+<!-- R_op -->
+<div class="mc mc-p">
+  <div class="mn">R_op — 30% Yield Core (idle)</div>
+  <div class="mv mv-p" id="m-rop">$0</div>
+  <div class="ms">USDC reserva — NO fluye al sistema</div>
+</div>
+
+<div class="rsh">⬡ FEES / DÍA</div>
+<div style="padding:8px 11px;border-bottom:1px solid rgba(255,255,255,.04);">
+  <div class="fr"><span class="fl" style="color:var(--g2)">A·SOL</span>
+    <div class="ft"><div class="fb" id="fb-A" style="background:var(--g2);width:60%"></div></div>
+    <span class="fa" id="fa-A">$0</span></div>
+  <div class="fr"><span class="fl" style="color:var(--b2)">B·$LUKA</span>
+    <div class="ft"><div class="fb" id="fb-B" style="background:var(--b2);width:0%"></div></div>
+    <span class="fa" id="fa-B">—</span></div>
+  <div class="fr"><span class="fl" style="color:var(--gold2)">C·USDC</span>
+    <div class="ft"><div class="fb" id="fb-C" style="background:var(--gold2);width:0%"></div></div>
+    <span class="fa" id="fa-C">—</span></div>
+  <div class="fr"><span class="fl" style="color:var(--r2)">D·Multi</span>
+    <div class="ft"><div class="fb" id="fb-D" style="background:var(--r2);width:0%"></div></div>
+    <span class="fa" id="fa-D">—</span></div>
+  <div style="display:flex;justify-content:space-between;padding-top:5px;border-top:1px solid rgba(255,255,255,.05);">
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8.5px;color:var(--muted);">TOTAL/DÍA</span>
+    <span id="fa-tot" style="font-family:'Orbitron',monospace;font-size:11px;color:var(--g2);">$0</span>
+  </div>
+</div>
+
+<div class="rsh">⬡ VAULT CORE — COMPOSICIÓN</div>
+<div style="padding:8px 11px;">
+  <div class="vi"><div class="vd" style="background:#F7931A"></div><span class="vn">cBTC Reserva Profunda</span><span class="vp">35%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--b2)"></div><span class="vn">SOL Nativo</span><span class="vp">15%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--g2)"></div><span class="vn">LST JitoSOL+mSOL</span><span class="vp">20%</span></div>
+  <div class="vi"><div class="vd" style="background:#28A864"></div><span class="vn">USDC Reserva Capa 1</span><span class="vp">25%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--gold2)"></div><span class="vn">USDC Lending</span><span class="vp">5%</span></div>
+  <div class="vi"><div class="vd" style="background:var(--muted)"></div><span class="vn">PYTH+JTO+JUP</span><span class="vp">5%</span></div>
+</div>
+
+</aside>
+</div>
+
+<div class="statusbar">
+  <span><span class="dot dg"></span>SOLANA MAINNET</span>
+  <span><span class="dot db"></span>PYTH ORACLE</span>
+  <span><span class="dot dgold"></span>K_MIN $25M · ENZ@3.3B · RUINA 0.0% · ESPIRAL TRANS ~1.4%</span>
+  <span style="margin-left:auto;" id="sb">T+0d · Core $0 · Soc $0 · P_KASH $0.0000</span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  LUKASH Protocol v4.2 — Simulador v6
+//
+//  CORRECCIONES vs v5:
+//  1. Nodo KASH padre: DIST → KASH → {Core 70%, Sociedad 30%}
+//  2. O&M y Staking: MISMO spawn rate, MISMA distancia al DIST
+//     (equidistantes horizontalmente, simétricos arriba/abajo)
+//  3. LP en B2 NO alimenta el Vault. Solo recircula al pool.
+//     Vault crece ÚNICAMENTE por: Asset Layer + yield propio.
+//
+//  FLUJO CORRECTO:
+//  Motor → FEE POOL → DIST →
+//    35% ASSET → KASH → {70% Core, 30% Soc}
+//    35% LIQ   → BURN (B0) | LP Pool (B2) [LP no vuelve al Vault]
+//    15% O&M   → OM  (equidistante a STAK)
+//    15% STAKING→ STAK (equidistante a OM)
+//  Core → R_op (30% yield idle)
+// ═══════════════════════════════════════════════════════════════════
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+const G = {
+  mkt:'NEUTRAL', sc:'BASE', thr:'NORMAL',
+  stage:1, motorB:'B0',
+  day:0, lastMonth:-2,
+  playing:false, spd:5, itvl:null,
+  volA:5000, users:1, pxMult:1.0,
+  // Acumuladores — CORRECCIÓN 3: LP no toca vaultCore
+  vaultCore:0, vaultSoc:0,
+  burnUSD:0, lpPool:0,
+  staking:0, om:0, rop:0, cola:0,
+  burnedTok:0, supply:10e9,
+  fA:0, fB:0, fC:0, fD:0, feesDay:0,
+  vcPrev:0, hitSocDay:-1,
+  particles:[], nodes:{}, time:0,
+};
+
+// ── PROTOCOL PARAMS ──
+const MKT = {
+  BULL:    {spd:2.0, fM:1.5, lbl:'▲ BULL'},
+  NEUTRAL: {spd:1.0, fM:1.0, lbl:'◼ NEUTRAL'},
+  BEAR:    {spd:0.5, fM:0.5, lbl:'▼ BEAR'},
+};
+
+const SC_CFG = {
+  CONSERV:  {fMult:0.38, appDay:180, info:'Y5: $117M · P(B2<Y2): 15.4% · Espiral: 13.7%'},
+  BASE:     {fMult:1.00, appDay:90,  info:'Y5: $37.2M mediana · P(B2<Y2): 86.1% · ~1.4%'},
+  AGRESIVO: {fMult:3.20, appDay:45,  info:'Y5: $156.3M (P95) · P(B2<Y2): 100% · 0%'},
+};
+
+const THR_CFG = {
+  ACELERADO:{burn:1.25,cola:0.00,ropF:1.0, lbl:'ACELERADO 125%'},
+  NORMAL:   {burn:1.00,cola:0.00,ropF:1.0, lbl:'NORMAL 100%'},
+  CONSERV:  {burn:0.60,cola:0.40,ropF:0.6, lbl:'CONSERV 60%'},
+  DEFENSIVO:{burn:0.25,cola:0.75,ropF:0.25,lbl:'DEFENSIVO 25%'},
+};
+
+const STAGE_INFO = {
+  1:   'Motor A · Fee 4%/2.5%WL · B, C, D inactivos · LP Fundador 365d lock',
+  '2A':'Motor A+B0+D · Fee A:4%→2.5% B:2.5% D:3% · App lanzada · K<$25M',
+  '2B':'Motor A+B2+D · K≥$25M · Switch B0→B2 on-chain automático',
+  3:   'Motor A+B2+C+D · K>$50M · Fee C:0.5% · ENZ en curso · Supply→3.3B',
+  4:   'DAO · ENZ activo · Quema suspendida · Recirculación perpetua',
+};
+
+const SPD_CFG = {
+  1:  {ms:640, note:'1× · 1 año ≈ 4 min · métricas/mes'},
+  5:  {ms:320, note:'5× · 1 año ≈ 2 min · métricas/mes'},
+  15: {ms:100, note:'15× · 1 año ≈ 37 seg · métricas/mes'},
+};
+
+// ── FEES DIARIOS ──
+function calcFees() {
+  const m = MKT[G.mkt], sc = SC_CFG[G.sc];
+  const uF = Math.max(0.05, G.users/100);
+  // Motor A: 4% ET.1 / 2.5% ET.2+
+  const rA = G.stage===1 ? 0.040 : 0.025;
+  G.fA = G.volA*1000*rA*m.fM*sc.fMult;
+  // Motor B: ET.2A+. 2.5% ET.2 / 1.5% ET.3+
+  const bOn = ['2A','2B',3,4].includes(G.stage);
+  G.fB = bOn ? G.volA*1000*0.28*((G.stage==='2A'||G.stage==='2B')?0.025:0.015)*m.fM*uF*sc.fMult : 0;
+  // Motor C: ET.3+. 0.5%
+  G.fC = [3,4].includes(G.stage) ? G.volA*1000*0.50*0.005*m.fM*uF*sc.fMult : 0;
+  // Motor D: ET.2A+. promedio ~2%
+  G.fD = ['2A','2B',3,4].includes(G.stage) ? G.volA*1000*0.10*0.020*m.fM*uF*sc.fMult : 0;
+  G.feesDay = G.fA+G.fB+G.fC+G.fD;
+}
+
+// ── SIMULAR UN DÍA — CORRECCIÓN 3: LP no alimenta vaultCore ──
+function simDay() {
+  calcFees();
+  const th = THR_CFG[G.thr];
+  const pr = 0.0001*G.pxMult;
+
+  // 35% Asset Layer → nodo KASH → 70% Core / 30% Soc
+  const asset = G.feesDay*0.35;
+  G.vaultCore += asset*0.70;   // KASH Core
+  G.vaultSoc  += asset*0.30;   // KASH Sociedad
+
+  // 35% Liq. Layer → BURN (B0) o LP (B2)
+  const liq = G.feesDay*0.35;
+  if (G.motorB==='B0') {
+    // BURN con throttle — NUNCA va al Vault
+    const bAmt = liq*th.burn;
+    const dAmt = liq*th.cola;
+    G.burnUSD   += bAmt;
+    G.burnedTok += bAmt/pr;
+    G.cola      += dAmt/pr;
+    if (G.thr==='NORMAL'||G.thr==='ACELERADO') {
+      const ex = G.cola*(0.10/7);
+      G.cola = Math.max(0,G.cola-ex);
+      G.burnedTok += ex;
+      G.burnUSD   += ex*pr;
+    }
+  } else {
+    // B2: LP Pool recirculación — NO toca vaultCore
+    G.lpPool += liq;
+    // vaultCore NO recibe nada de lpPool — corrección crítica
+  }
+
+  // 15% O&M (idéntico al Staking en peso)
+  G.om      += G.feesDay*0.15;
+  // 15% Staking (idéntico al O&M en peso)
+  G.staking += G.feesDay*0.15;
+
+  // Supply
+  G.supply = Math.max(3.3e9, 10e9-G.burnedTok);
+
+  // Yield natural del Vault Core: ~7% APY ponderado (LST 6-8%, USDC lending 5%)
+  // 70% reinversión compuesta → Core crece
+  // 30% → R_op IDLE (NO fluye de vuelta)
+  const cYield = G.vaultCore*0.07/365;
+  G.vaultCore += cYield*0.70;
+  G.rop       += cYield*0.30;
+
+  // Vault Sociedad: 100% capitalizable
+  G.vaultSoc += G.vaultSoc*0.07/365;
+
+  // Hito Sociedad: K_Core ≥ $25M o día 365 (mes 12), lo primero.
+  // Solo registra cuándo ocurrió — la distribución SIEMPRE empieza en día 390 (mes 13).
+  if (G.hitSocDay<0 && (G.vaultCore>=25e6||G.day>=365))
+    G.hitSocDay = G.day;
+
+  // Distribución Sociedad desde mes 13 (día 390) — fijo desde TGE sin excepción.
+  // Vesting 48 meses sobre el capital acumulado al inicio de la distribución.
+  // + ingresos continuos del 30% Asset Layer a perpetuidad desde ese momento.
+  if (G.day >= 390) {
+    // Capital al inicio de distribución (día 390) ya está en vaultSoc acumulado.
+    // Lo que se muestra en vaultSoc ES el total disponible (vested + perpetuos).
+    // No se toca el acumulador — solo es informativo para el usuario.
+  }
+}
+
+// ── TRANSICIONES AUTOMÁTICAS ──
+function checkTrans() {
+  const sc = SC_CFG[G.sc];
+  if (G.stage===1 && G.day>=sc.appDay) {
+    applyStage('2A');
+    fireEv('🚀 ETAPA 2A — APP LANZADA · MOTOR B0 + D ACTIVOS','var(--b2)');
+  }
+  if (G.stage==='2A' && G.vaultCore>=25e6) {
+    applyStage('2B');
+    fireEv('⚡ K(t) ≥ $25M · SWITCH B0→B2 · ETAPA 2B ACTIVADA','var(--g2)');
+  }
+  if (G.stage==='2B' && G.vaultCore>=50e6) {
+    applyStage(3);
+    fireEv('🌐 K > $50M · MOTOR C ACTIVO · ETAPA 3 SOBERANÍA','var(--gold2)');
+  }
+  if (G.stage===3 && (G.supply<=3.3e9||G.day>=1820)) {
+    applyStage(4);
+    fireEv('🏛️ EMISIÓN NETA CERO · DAO ACTIVADO · ETAPA 4','var(--p2)');
+  }
+}
+
+function applyStage(st) {
+  G.stage=st;
+  if (['2B',3,4].includes(st)) { G.motorB='B2'; updModeUI(); }
+  updStageUI(st);
+}
+
+function fireEv(msg, color) {
+  const el = document.getElementById('ev');
+  el.textContent=msg; el.style.color=color; el.style.borderColor=color;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),4500);
+}
+
+// ── STAGE UI ──
+const ST_COLOR = {1:'var(--b2)','2A':'var(--b2)','2B':'var(--g2)',3:'var(--gold2)',4:'var(--p2)'};
+const ST_OV = {
+  1:   'ETAPA 1 — GÉNESIS · MOTOR A',
+  '2A':'ETAPA 2A — APP · B0 + D',
+  '2B':'ETAPA 2B — K≥$25M · B2 SWITCH',
+  3:   'ETAPA 3 — SOBERANÍA · MOTOR C',
+  4:   'ETAPA 4 — DAO · ENZ',
+};
+const ST_LBL = {1:'ET.1 GÉNESIS','2A':'ET.2A APP','2B':'ET.2B MADUREZ',3:'ET.3 SOB..',4:'ET.4 DAO'};
+
+function updStageUI(st) {
+  const c = ST_COLOR[st];
+  const hpSt = document.getElementById('hp-st');
+  hpSt.textContent=ST_LBL[st];
+  hpSt.style.cssText=`color:${c};border-color:${c}44;background:${c}10;`;
+  const ov=document.getElementById('ov-st');
+  ov.textContent=ST_OV[st]; ov.style.color=c; ov.style.borderColor=c+'55'; ov.style.background=c+'12';
+  document.getElementById('st-info').textContent=STAGE_INFO[st];
+  const order=[1,'2A','2B',3,4];
+  const ids=['stg-1','stg-2a','stg-2b','stg-3','stg-4'];
+  const ci=order.indexOf(st);
+  order.forEach((s,i)=>{
+    const el=document.getElementById(ids[i]);
+    if(i<ci){ el.className='stg done'; el.style.cssText='color:var(--muted);border-color:var(--muted);'; }
+    else if(i===ci){ el.className='stg active'; el.style.cssText=`color:${c};border-color:${c};box-shadow:0 0 8px ${c};`; }
+    else { el.className='stg'; el.style.cssText='color:var(--muted);border-color:var(--muted);'; }
+  });
+  updModeUI();
+}
+
+function updModeUI() {
+  const isB2=G.motorB==='B2';
+  document.getElementById('hp-mo').textContent=isB2?'B2 LP RECIRC':'B0 BURN';
+  document.getElementById('dc-liq-n').textContent=isB2?'35% LIQ. (B2)':'35% LIQ. (B0)';
+  document.getElementById('dc-liq-s').textContent=isB2?'→ LP Pool':'→ null';
+  document.getElementById('dc-liq').style.borderColor=isB2?'rgba(30,152,96,.3)':'rgba(208,40,24,.3)';
+  document.getElementById('dc-liq').style.background =isB2?'rgba(30,152,96,.07)':'rgba(208,40,24,.07)';
+  document.getElementById('dc-liq').querySelector('.dv').style.color=isB2?'var(--lp2)':'var(--burn2)';
+  document.getElementById('dc-liq').querySelector('.dv').textContent=isB2?'LP POOL':'BURN';
+}
+
+// ── MÉTRICAS (actualiza solo al cambiar mes) ──
+function updMetrics(force=false) {
+  const mes=Math.floor(G.day/30);
+  if (!force&&mes===G.lastMonth) return;
+  G.lastMonth=mes;
+
+  const pK=G.vaultCore/Math.max(G.supply,1);
+
+  ['m-kash','m-vc','m-vs','m-pk','m-sup','m-stk','m-om','m-rop','m-burnv','m-lpv'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('blink'); void el.offsetWidth; el.classList.add('blink');
+  });
+
+  const vcDelta=G.vaultCore-G.vcPrev; G.vcPrev=G.vaultCore;
+
+  document.getElementById('m-kash').textContent  = fU(G.vaultCore+G.vaultSoc);
+  document.getElementById('m-vc').textContent    = fU(G.vaultCore);
+  document.getElementById('m-vc-d').textContent  = '+'+fU(vcDelta);
+  document.getElementById('m-vc-st').textContent = `ET.${G.stage} ${G.motorB}`;
+  document.getElementById('m-vs').textContent    = fU(G.vaultSoc);
+
+  // ── VAULT SOCIEDAD — lógica de distribución ──
+  // Día 390 = mes 13 desde TGE: distribución SIEMPRE empieza aquí, sin excepción.
+  // Antes del mes 13: capital bloqueado (Jaguar Lock).
+  // Desde mes 13: vesting lineal 48 meses sobre lo acumulado al día 390,
+  //               MÁS ingresos continuos del 30% Asset Layer a perpetuidad.
+  const DIA_DIST = 390; // mes 13 fijo
+  const diasVesting = 48*30; // 1440 días
+  let vsMsg='', vsColor='';
+
+  if (G.day < DIA_DIST) {
+    // Aún en período de bloqueo
+    const diasRest = DIA_DIST - G.day;
+    const mesRest  = Math.ceil(diasRest/30);
+    if (G.hitSocDay<0) {
+      vsMsg = `⏳ Bloqueado · Hito: K_Core $25M o mes 12 · Distribución: mes 13`;
+    } else {
+      const mesHito = Math.floor(G.hitSocDay/30);
+      vsMsg = `✓ Hito mes ${mesHito} (${G.vaultCore>=25e6?'K≥$25M':'día 365'}) · Distribución en ${mesRest} mes${mesRest!==1?'es':''}`;
+    }
+    vsColor = '';
+  } else {
+    // Distribución activa desde mes 13
+    const diasActivo = G.day - DIA_DIST;
+    const vestingPct = Math.min(1, diasActivo/diasVesting)*100;
+    const capInicial = G.vaultSoc; // todo lo acumulado (no separamos internamente para la sim)
+    if (diasActivo < diasVesting) {
+      vsMsg = `⚡ DISTRIBUCIÓN ACTIVA · Vesting ${vestingPct.toFixed(0)}% · +Perpetuos`;
+    } else {
+      vsMsg = `🏆 VESTING COMPLETO · Ingresos perpetuos a socios`;
+    }
+    vsColor = 'var(--g2)';
+  }
+  document.getElementById('m-vs-ms').textContent = vsMsg;
+  document.getElementById('m-vs-ms').style.color  = vsColor;
+
+  document.getElementById('m-pk').textContent    = '$'+pK.toFixed(6);
+  document.getElementById('m-pkx').textContent   = (pK/0.0001).toFixed(1)+'×';
+  document.getElementById('m-sup').textContent   = fB(G.supply);
+  document.getElementById('m-brn').textContent   = fB(G.burnedTok);
+  document.getElementById('m-burnv').textContent = fU(G.burnUSD);
+  document.getElementById('m-lpv').textContent   = fU(G.lpPool);
+  document.getElementById('m-stk').textContent   = fU(G.staking);
+  document.getElementById('m-om').textContent    = fU(G.om);
+  document.getElementById('m-rop').textContent   = fU(G.rop);
+
+  const tot=G.fA+G.fB+G.fC+G.fD||1;
+  document.getElementById('fb-A').style.width=(G.fA/tot*100)+'%';
+  document.getElementById('fb-B').style.width=(G.fB/tot*100)+'%';
+  document.getElementById('fb-C').style.width=(G.fC/tot*100)+'%';
+  document.getElementById('fb-D').style.width=(G.fD/tot*100)+'%';
+  document.getElementById('fa-A').textContent=fU(G.fA);
+  document.getElementById('fa-B').textContent=G.fB>0?fU(G.fB):'—';
+  document.getElementById('fa-C').textContent=G.fC>0?fU(G.fC):'—';
+  document.getElementById('fa-D').textContent=G.fD>0?fU(G.fD):'—';
+  document.getElementById('fa-tot').textContent=fU(G.feesDay);
+}
+
+// ── HEADER (cada tick) ──
+function updHdr() {
+  const d=G.day,mes=Math.floor(d/30),yr=d/365;
+  document.getElementById('h-sup').textContent=fB(G.supply);
+  document.getElementById('h-d').textContent=d;
+  document.getElementById('h-yr').textContent=yr.toFixed(1);
+  document.getElementById('hp-mes').textContent='MES '+mes;
+  document.getElementById('d-d').textContent=d;
+  document.getElementById('d-m').textContent=mes;
+  document.getElementById('d-y').textContent=yr.toFixed(2);
+  document.getElementById('sl-day').value=d;
+  document.getElementById('pf').style.width=(d/1825*100)+'%';
+  document.getElementById('yr-pct').textContent=(d/1825*100).toFixed(1)+'%';
+  document.getElementById('ov-yr').textContent='AÑO '+yr.toFixed(1);
+  const kP=Math.min(100,G.vaultCore/25e6*100);
+  document.getElementById('kbar').style.width=kP+'%';
+  document.getElementById('kpct').textContent=kP.toFixed(1)+'%';
+  document.getElementById('sb').textContent=
+    `T+${d}d · Core ${fU(G.vaultCore)} · Soc ${fU(G.vaultSoc)} · P_KASH $${(G.vaultCore/Math.max(G.supply,1)).toFixed(5)}`;
+}
+
+// ── PLAY ──
+function startItvl() {
+  const cfg=SPD_CFG[G.spd];
+  G.itvl=setInterval(()=>{
+    if(G.day>=1825){togglePlay();return;}
+    G.day=Math.min(1825,G.day+1);
+    simDay(); checkTrans(); updHdr(); updMetrics();
+    if(G.day>=1825) togglePlay();
+  },cfg.ms);
+}
+
+function togglePlay() {
+  G.playing=!G.playing;
+  const btn=document.getElementById('b-play');
+  if(G.playing){btn.textContent='⏸ PAUSE';btn.className='b og';startItvl();}
+  else{btn.textContent='▶ PLAY';btn.className='b';clearInterval(G.itvl);}
+}
+
+// ── SCRUB — reconstruye sin LP→Vault ──
+function scrub(d) {
+  const sc=SC_CFG[G.sc],m=MKT[G.mkt],th=THR_CFG[G.thr];
+  const uF=Math.max(0.05,G.users/100),pr=0.0001*G.pxMult;
+  G.vaultCore=0;G.vaultSoc=0;G.burnUSD=0;G.lpPool=0;
+  G.staking=0;G.om=0;G.rop=0;G.cola=0;G.burnedTok=0;
+  G.supply=10e9;G.hitSocDay=-1;G.vcPrev=0;G.lastMonth=-2;
+  G.stage=1;G.motorB='B0';
+
+  for(let i=1;i<=d;i++){
+    // auto-transitions
+    if(G.stage===1&&i>=sc.appDay){G.stage='2A';}
+    if(G.stage==='2A'&&G.vaultCore>=25e6){G.stage='2B';G.motorB='B2';}
+    if(G.stage==='2B'&&G.vaultCore>=50e6){G.stage=3;}
+    if(G.stage===3&&(G.supply<=3.3e9||i>=1820)){G.stage=4;}
+
+    const rA=G.stage===1?0.040:0.025;
+    const fA=G.volA*1000*rA*m.fM*sc.fMult;
+    const bOn=['2A','2B',3,4].includes(G.stage);
+    const fB=bOn?G.volA*1000*0.28*((G.stage==='2A'||G.stage==='2B')?0.025:0.015)*m.fM*uF*sc.fMult:0;
+    const fC=[3,4].includes(G.stage)?G.volA*1000*0.50*0.005*m.fM*uF*sc.fMult:0;
+    const fD=['2A','2B',3,4].includes(G.stage)?G.volA*1000*0.10*0.020*m.fM*uF*sc.fMult:0;
+    const fees=fA+fB+fC+fD;
+
+    const asset=fees*0.35;
+    G.vaultCore+=asset*0.70; G.vaultSoc+=asset*0.30;
+
+    const liq=fees*0.35;
+    if(G.motorB==='B0'){
+      const ba=liq*th.burn,da=liq*th.cola;
+      G.burnUSD+=ba;G.burnedTok+=ba/pr;G.cola+=da/pr;
+      if(G.thr==='NORMAL'||G.thr==='ACELERADO'){
+        const ex=G.cola*(0.10/7);G.cola=Math.max(0,G.cola-ex);G.burnedTok+=ex;G.burnUSD+=ex*pr;
+      }
+    } else {
+      G.lpPool+=liq; // LP no toca vaultCore
+    }
+
+    G.om+=fees*0.15; G.staking+=fees*0.15;
+    G.supply=Math.max(3.3e9,10e9-G.burnedTok);
+
+    const cy=G.vaultCore*0.07/365;
+    G.vaultCore+=cy*0.70; G.rop+=cy*0.30;
+    G.vaultSoc+=G.vaultSoc*0.07/365;
+
+    if(G.hitSocDay<0&&(G.vaultCore>=25e6||i>=365)) G.hitSocDay=i;
+  }
+  G.day=d; calcFees();
+  updStageUI(G.stage); updModeUI(); updHdr(); updMetrics(true);
+}
+
+// ── SETTERS ──
+function setMkt(m){
+  G.mkt=m;
+  const mp={BULL:'b-bull',NEUTRAL:'b-neut',BEAR:'b-bear'};
+  const cl={BULL:'og',NEUTRAL:'ob',BEAR:'or'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(k===m?' '+cl[k]:'');
+  document.getElementById('hp-mkt').textContent=MKT[m].lbl;
+}
+function setSc(s){
+  G.sc=s;
+  const mp={CONSERV:'b-sc-c',BASE:'b-sc-b',AGRESIVO:'b-sc-a'};
+  const cl={CONSERV:'ogold',BASE:'ob',AGRESIVO:'og'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(k===s?' '+cl[k]:'');
+  document.getElementById('sc-info').textContent=SC_CFG[s].info;
+  resetSim();
+}
+function setThr(t){
+  G.thr=t;
+  const mp={ACELERADO:'bt-ac',NORMAL:'bt-no',CONSERV:'bt-co',DEFENSIVO:'bt-de'};
+  const cl={ACELERADO:'og',NORMAL:'ob',CONSERV:'ogold',DEFENSIVO:'or'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(k===t?' '+cl[k]:'');
+  const th=THR_CFG[t];
+  document.getElementById('tc').textContent=(th.cola*100)+'%';
+  document.getElementById('tr').textContent=(th.ropF*100)+'%';
+  document.getElementById('hp-thr').textContent=th.lbl;
+}
+function setSpd(s){
+  G.spd=s;
+  const mp={1:'b-1x',5:'b-5x',15:'b-15x'};
+  const cl={1:'og',5:'oamb',15:'or'};
+  for(const[k,id] of Object.entries(mp)) document.getElementById(id).className='b'+(+k===s?' '+cl[k]:'');
+  document.getElementById('spd-note').textContent='⚡ '+SPD_CFG[s].note;
+  if(G.playing){clearInterval(G.itvl);startItvl();}
+}
+function onSl(el,vid,fmt){
+  const v=+el.value,mn=+el.min,mx=+el.max;
+  el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%');
+  document.getElementById(vid).textContent=fmt(v);
+  if(el.id==='sl-va') G.volA=v;
+  if(el.id==='sl-us') G.users=v;
+  if(el.id==='sl-px') G.pxMult=v/100;
+}
+function resetSim(){
+  G.playing=false; clearInterval(G.itvl);
+  document.getElementById('b-play').textContent='▶ PLAY';
+  document.getElementById('b-play').className='b';
+  G.day=0;G.stage=1;G.motorB='B0';
+  G.vaultCore=0;G.vaultSoc=0;G.burnUSD=0;G.lpPool=0;
+  G.staking=0;G.om=0;G.rop=0;G.cola=0;G.burnedTok=0;
+  G.supply=10e9;G.hitSocDay=-1;G.vcPrev=0;G.lastMonth=-2;G.particles=[];
+  document.getElementById('sl-day').value=0;
+  updStageUI(1);updModeUI();scrub(0);
+}
+
+// ══════════════════════════════════════════
+//  CANVAS ENGINE
+//  CORRECCIÓN 1: Nodo KASH padre entre DIST y {VCORE, VSOC}
+//  CORRECCIÓN 2: OM y STAK equidistantes del DIST
+//    — mismo eje X, simétricos arriba/abajo respecto al centro
+// ══════════════════════════════════════════
+function buildNodes(W,H){
+  const c1=W*0.09;   // motores
+  const c2=W*0.27;   // fee pool
+  const c3=W*0.46;   // dist
+  const c4=W*0.63;   // KASH padre  ← NUEVO
+  const c5=W*0.79;   // destinos finales
+
+  // Centro vertical
+  const mid=H*0.46;
+
+  G.nodes={
+    // Motores (col1) — apilados
+    MA:{x:c1,y:H*0.18,lbl:'MOTOR A',sub:'SOL 4%→2.5%', c:'#20C486',r:18},
+    MB:{x:c1,y:H*0.36,lbl:'MOTOR B',sub:'$LUKA 2.5%',  c:'#1E78CC',r:18},
+    MC:{x:c1,y:H*0.54,lbl:'MOTOR C',sub:'USDC 0.5%',   c:'#DA8E1C',r:18},
+    MD:{x:c1,y:H*0.72,lbl:'MOTOR D',sub:'Multi 4caps',  c:'#E44035',r:18},
+
+    // Fee Pool (col2)
+    FEE:{x:c2,y:mid,lbl:'FEE POOL',sub:'Colector',c:'#9E48D8',r:24},
+
+    // Distribuidor (col3)
+    DIST:{x:c3,y:mid,lbl:'DIST',sub:'35/35/15/15',c:'#12B4D4',r:22},
+
+    // CORRECCIÓN 1: Nodo KASH padre (col4) — recibe 35% Asset Layer
+    KASH:{x:c4,y:H*0.28,lbl:'KASH',sub:'35% Asset',c:'#2E8EF8',r:20},
+
+    // Sub-nodos KASH (col5 arriba)
+    VCORE:{x:c5,y:H*0.16,lbl:'CORE',    sub:'70% · Soberana',c:'#1470CC',r:19},
+    VSOC: {x:c5,y:H*0.32,lbl:'SOCIEDAD',sub:'30% · Equity',  c:'#CC7818',r:17},
+
+    // Liq. Layer destinos (col4/col5 medio) — SEPARADOS
+    BURN:{x:c4,y:H*0.55,lbl:'BURN',  sub:'35% Liq·B0',c:'#D02818',r:18},
+    LP:  {x:c4,y:H*0.72,lbl:'LP',   sub:'35% Liq·B2',c:'#1E9860',r:18},
+
+    // CORRECCIÓN 2: O&M y STAK EQUIDISTANTES del DIST
+    // Mismo eje X (c5), simétricos respecto al centro vertical
+    OM:  {x:c5,y:H*0.58,lbl:'O&M',  sub:'15% Operativo',c:'#DA8E1C',r:17},
+    STAK:{x:c5,y:H*0.78,lbl:'STAKING',sub:'15% Reward',  c:'#20C486',r:17},
+
+    // R_op
+    ROP:{x:c5,y:H*0.06,lbl:'R_op',sub:'30% yield',c:'#9E48D8',r:12},
+  };
+}
+
+// ── PARTICLE ──
+class Pt {
+  constructor(f,t,c,sz=3,sp=1){
+    this.f=f;this.t=t;this.c=c;this.sz=sz;this.sp=sp;
+    this.tt=0;this.trail=[];this.done=false;this.x=0;this.y=0;
+    const h=c.replace('#','');
+    this.r=parseInt(h.slice(0,2),16);
+    this.g=parseInt(h.slice(2,4),16);
+    this.b=parseInt(h.slice(4,6),16);
+  }
+  upd(){
+    const n1=G.nodes[this.f],n2=G.nodes[this.t];
+    if(!n1||!n2){this.done=true;return;}
+    this.tt=Math.min(1,this.tt+0.013*this.sp);
+    const bx=(n1.x+n2.x)/2+(n2.y-n1.y)*0.15;
+    const by=(n1.y+n2.y)/2-(n2.x-n1.x)*0.15;
+    const u=1-this.tt;
+    this.x=u*u*n1.x+2*u*this.tt*bx+this.tt*this.tt*n2.x;
+    this.y=u*u*n1.y+2*u*this.tt*by+this.tt*this.tt*n2.y;
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>12)this.trail.shift();
+    if(this.tt>=1)this.done=true;
+  }
+  drw(){
+    if(!this.x)return;
+    for(let i=1;i<this.trail.length;i++){
+      const a=(i/this.trail.length)*0.38;
+      ctx.beginPath();
+      ctx.strokeStyle=`rgba(${this.r},${this.g},${this.b},${a})`;
+      ctx.lineWidth=this.sz*0.5;
+      ctx.moveTo(this.trail[i-1].x,this.trail[i-1].y);
+      ctx.lineTo(this.trail[i].x,this.trail[i].y);
+      ctx.stroke();
+    }
+    ctx.shadowBlur=9;ctx.shadowColor=this.c;
+    ctx.beginPath();ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);
+    ctx.fillStyle=this.c;ctx.fill();ctx.shadowBlur=0;
+  }
+}
+
+function mk(f,t,c,sz,sp){G.particles.push(new Pt(f,t,c,sz,sp));}
+
+// ── SPAWN — CORRECCIÓN 2: O&M y STAK mismo rate y speed ──
+function spawn(){
+  const m=MKT[G.mkt],sc=SC_CFG[G.sc];
+  const uF=Math.max(0.05,G.users/100);
+  const base=m.spd*m.fM*sc.fMult*uF*(G.volA/5000);
+  const sp=m.spd;
+
+  // Motores → FEE POOL
+  if(Math.random()<0.36*base) mk('MA','FEE','#20C486',3.5,sp*0.9);
+  if(['2A','2B',3,4].includes(G.stage)&&Math.random()<0.20*base) mk('MB','FEE','#1E78CC',3.0,sp*0.85);
+  if([3,4].includes(G.stage)&&Math.random()<0.13*base) mk('MC','FEE','#DA8E1C',2.5,sp*0.8);
+  if(['2A','2B',3,4].includes(G.stage)&&Math.random()<0.09*base) mk('MD','FEE','#E44035',2.0,sp*0.75);
+
+  // FEE → DIST
+  if(Math.random()<0.48*base) mk('FEE','DIST','#9E48D8',3.0,sp*1.05);
+
+  // CORRECCIÓN 1: DIST → KASH (35% Asset Layer completo)
+  if(Math.random()<0.35*base) mk('DIST','KASH','#2E8EF8',2.8,sp);
+
+  // KASH → VCORE (70%)  y  KASH → VSOC (30%)
+  if(Math.random()<0.24*base) mk('KASH','VCORE','#1470CC',2.8,sp*1.0);
+  if(Math.random()<0.10*base) mk('KASH','VSOC','#CC7818',2.2,sp*1.0);
+
+  // DIST → BURN (B0) XOR LP (B2) — completamente separados, nunca van al Vault
+  if(G.motorB==='B0'){
+    if(Math.random()<0.33*base) mk('DIST','BURN','#D02818',2.8,sp);
+  } else {
+    if(Math.random()<0.33*base) mk('DIST','LP','#1E9860',2.8,sp);
+    // LP NO genera partículas hacia VCORE — corrección crítica
+  }
+
+  // CORRECCIÓN 2: O&M y STAK EXACTAMENTE MISMO rate y speed
+  const omStkRate=0.15*base;
+  const omStkSp=sp*0.95;
+  if(Math.random()<omStkRate) mk('DIST','OM','#DA8E1C',2.0,omStkSp);
+  if(Math.random()<omStkRate) mk('DIST','STAK','#20C486',2.0,omStkSp);
+
+  // VCORE → R_op (30% yield idle)
+  if(Math.random()<0.04*sp) mk('VCORE','ROP','#9E48D8',1.5,0.5);
+
+  if(G.particles.length>250) G.particles=G.particles.slice(-200);
+}
+
+// ── CONNECTIONS ──
+function drawConns(){
+  const links=[
+    ['MA','FEE','#20C486'],['MB','FEE','#1E78CC'],['MC','FEE','#DA8E1C'],['MD','FEE','#E44035'],
+    ['FEE','DIST','#9E48D8'],
+    ['DIST','KASH','#2E8EF8'],   // Asset Layer → KASH padre
+    ['KASH','VCORE','#1470CC'],  // KASH → Core
+    ['KASH','VSOC','#CC7818'],   // KASH → Sociedad
+    ['DIST','BURN','#D02818'],
+    ['DIST','LP','#1E9860'],
+    ['DIST','OM','#DA8E1C'],
+    ['DIST','STAK','#20C486'],
+    ['VCORE','ROP','#9E48D8'],
+    // LP en B2 NO conecta de vuelta al KASH/VCORE
+  ];
+  ctx.setLineDash([3,8]);
+  for(const[f,t,c] of links){
+    const n1=G.nodes[f],n2=G.nodes[t];if(!n1||!n2)continue;
+    const h=c.replace('#','');
+    const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+    let alpha=0.11;
+    // Atenuar inactivos
+    if(f==='MB'&&!['2A','2B',3,4].includes(G.stage)) alpha=0.03;
+    if(f==='MC'&&![3,4].includes(G.stage)) alpha=0.03;
+    if(f==='MD'&&!['2A','2B',3,4].includes(G.stage)) alpha=0.03;
+    if(t==='BURN'&&G.motorB==='B2') alpha=0.03;
+    if(t==='LP'&&G.motorB==='B0') alpha=0.03;
+    const bx=(n1.x+n2.x)/2+(n2.y-n1.y)*0.15;
+    const by=(n1.y+n2.y)/2-(n2.x-n1.x)*0.15;
+    ctx.beginPath();ctx.moveTo(n1.x,n1.y);ctx.quadraticCurveTo(bx,by,n2.x,n2.y);
+    ctx.strokeStyle=`rgba(${r},${g},${b},${alpha})`;ctx.lineWidth=1;ctx.stroke();
+  }
+  ctx.setLineDash([]);
+}
+
+// ── DRAW NODE ──
+function drawNode(n,key){
+  const r=n.r||18;
+  const h=n.c.replace('#','');
+  const nr=parseInt(h.slice(0,2),16),ng=parseInt(h.slice(2,4),16),nb=parseInt(h.slice(4,6),16);
+  const pulse=1+0.05*Math.sin(G.time*0.04+(key.charCodeAt(0)||0)*0.85);
+
+  const inactive={
+    MB:!['2A','2B',3,4].includes(G.stage),
+    MC:![3,4].includes(G.stage),
+    MD:!['2A','2B',3,4].includes(G.stage),
+    BURN:G.motorB==='B2',
+    LP:G.motorB==='B0',
+  };
+  const dim=inactive[key]||false;
+
+  // Halo
+  const halo=ctx.createRadialGradient(n.x,n.y,r*.5,n.x,n.y,r*2.3);
+  halo.addColorStop(0,`rgba(${nr},${ng},${nb},${dim?.04:.14})`);
+  halo.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.arc(n.x,n.y,r*2.1,0,Math.PI*2);ctx.fillStyle=halo;ctx.fill();
+
+  // Ring
+  ctx.beginPath();ctx.arc(n.x,n.y,r*pulse,0,Math.PI*2);
+  ctx.strokeStyle=`rgba(${nr},${ng},${nb},${dim?.2:.5})`;ctx.lineWidth=1.5;ctx.stroke();
+
+  // Fill
+  const fill=ctx.createRadialGradient(n.x-r*.25,n.y-r*.25,0,n.x,n.y,r*.93);
+  fill.addColorStop(0,`rgba(${nr},${ng},${nb},${dim?.10:.33})`);
+  fill.addColorStop(1,`rgba(${nr},${ng},${nb},${dim?.03:.08})`);
+  ctx.beginPath();ctx.arc(n.x,n.y,r*.92,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
+  ctx.strokeStyle=`rgba(${nr},${ng},${nb},${dim?.25:.82})`;ctx.lineWidth=1.4;ctx.stroke();
+
+  if(dim){
+    ctx.beginPath();ctx.arc(n.x,n.y,r*.92,0,Math.PI*2);
+    ctx.fillStyle='rgba(5,10,21,.55)';ctx.fill();
+  }
+
+  // Labels
+  ctx.textAlign='center';ctx.shadowBlur=0;
+  const sm=r<15;const fa=dim?.35:1;
+  ctx.font=`${sm?'6px':'bold 7.5px'} 'Orbitron',monospace`;
+  ctx.fillStyle=`rgba(${nr},${ng},${nb},${fa})`;
+  ctx.fillText(n.lbl,n.x,n.y-(sm?2:4));
+  ctx.font=`${sm?'6px':'7.5px'} 'Share Tech Mono',monospace`;
+  ctx.fillStyle=`rgba(176,204,236,${dim?.25:.52})`;
+  ctx.fillText(n.sub,n.x,n.y+(sm?7:7));
+
+  // Live values on key nodes
+  if(key==='KASH'){
+    ctx.font="bold 7px 'Orbitron',monospace";ctx.fillStyle='#2E8EF8';
+    ctx.fillText(fU(G.vaultCore+G.vaultSoc),n.x,n.y+17);
+  }
+  if(key==='VCORE'){
+    ctx.font="bold 7px 'Orbitron',monospace";ctx.fillStyle='#1E88E8';
+    ctx.fillText(fU(G.vaultCore),n.x,n.y+17);
+  }
+  if(key==='VSOC'){
+    ctx.font="bold 6.5px 'Orbitron',monospace";ctx.fillStyle='#CC7818';
+    ctx.fillText(fU(G.vaultSoc),n.x,n.y+15);
+  }
+  ctx.textAlign='left';
+}
+
+// ── GRID ──
+function drawGrid(){
+  const W=cv.width,H=cv.height;
+  ctx.strokeStyle='rgba(20,90,160,.05)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=46){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=46){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  const cg=ctx.createRadialGradient(W*.5,H*.45,50,W*.5,H*.45,220);
+  cg.addColorStop(0,'rgba(46,142,248,.04)');cg.addColorStop(1,'transparent');
+  ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);
+}
+
+// ── RENDER ──
+function render(){
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#050A15';ctx.fillRect(0,0,W,H);
+  drawGrid();drawConns();spawn();
+  G.particles=G.particles.filter(p=>!p.done);
+  for(const p of G.particles){p.upd();p.drw();}
+  for(const[k,n] of Object.entries(G.nodes)) drawNode(n,k);
+  ctx.textAlign='right';ctx.fillStyle='rgba(176,204,236,.12)';
+  ctx.font="8px 'Share Tech Mono',monospace";
+  ctx.fillText(`T+${G.day}d`,cv.width-9,cv.height-30);
+  ctx.textAlign='left';
+  G.time++;
+  requestAnimationFrame(render);
+}
+
+// ── FORMATTERS ──
+function fU(v){
+  if(!v||isNaN(v))return'$0';
+  if(v>=1e9)return'$'+(v/1e9).toFixed(2)+'B';
+  if(v>=1e6)return'$'+(v/1e6).toFixed(2)+'M';
+  if(v>=1e3)return'$'+(v/1e3).toFixed(0)+'K';
+  return'$'+Math.round(v);
+}
+function fK(v){
+  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
+  if(v>=1e3)return(v/1e3).toFixed(0)+'K';
+  return String(v||0);
+}
+function fB(v){
+  if(v>=1e9)return(v/1e9).toFixed(2)+'B';
+  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
+  return Math.round(v||0).toLocaleString();
+}
+
+// ── INIT ──
+function resize(){
+  const el=cv.parentElement;
+  cv.width=el.clientWidth;cv.height=el.clientHeight;
+  buildNodes(cv.width,cv.height);
+}
+window.addEventListener('resize',resize);
+resize();
+
+setMkt('NEUTRAL');setSc('BASE');setThr('NORMAL');setSpd(5);
+['sl-va','sl-us','sl-px','sl-day'].forEach(id=>{
+  const el=document.getElementById(id);
+  const v=+el.value,mn=+el.min,mx=+el.max;
+  el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%');
+});
+['b-1x','b-5x','b-15x'].forEach(id=>document.getElementById(id).classList.add('b'));
+updStageUI(1);updModeUI();scrub(0);
+render();
+</script>
+</body>
+</html>

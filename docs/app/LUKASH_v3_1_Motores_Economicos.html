@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH v3.1 — Diagrama de Motores Económicos</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Cinzel:wght@400;600;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-dim: #8B6B2A;
+  --gold-bright: #F5D080;
+  --amber: #E8940A;
+  --black: #0A0A0C;
+  --surface: #111110;
+  --panel: #161614;
+  --card: #1E1C19;
+  --card2: #232018;
+  --border: #2A2720;
+  --border-gold: rgba(201,168,76,0.30);
+  --text: #EAE2CC;
+  --text-dim: #9A9280;
+  --text-faint: #524E44;
+  --green: #3DAA6B;
+  --green-dim: #1D5436;
+  --green-bg: rgba(61,170,107,0.07);
+  --red: #CC4040;
+  --red-dim: #5A1A1A;
+  --red-bg: rgba(204,64,64,0.07);
+  --blue: #4A82CC;
+  --blue-dim: #1A3A60;
+  --blue-bg: rgba(74,130,204,0.07);
+  --amber-bg: rgba(232,148,10,0.07);
+  --purple: #9B6BCC;
+  --purple-bg: rgba(155,107,204,0.07);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-gold);
+  padding: 32px 48px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 32px;
+}
+.ph-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.ph-title {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 3px;
+  line-height: 1;
+}
+.ph-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  max-width: 600px;
+}
+.ph-kpis {
+  display: flex;
+  gap: 2px;
+}
+.ph-kpi {
+  background: var(--card);
+  border: 1px solid var(--border-gold);
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 100px;
+}
+.ph-kpi-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.ph-kpi-lbl {
+  font-size: 9px;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── LAYOUT ── */
+.wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px 60px;
+}
+.section-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  padding: 36px 0 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 36px;
+}
+.section-title:first-of-type { margin-top: 36px; }
+
+/* ── FEE HIERARCHY INTRO ── */
+.fee-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.fee-cell {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  position: relative;
+}
+.fee-cell::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.fee-cell.e1::before { background: var(--gold); }
+.fee-cell.e2::before { background: var(--blue); }
+.fee-cell.e3::before { background: var(--green); }
+.fee-etapa {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.fee-cell.e1 .fee-etapa { color: var(--gold); }
+.fee-cell.e2 .fee-etapa { color: var(--blue); }
+.fee-cell.e3 .fee-etapa { color: var(--green); }
+.fee-name { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.fee-nums {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fee-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 2px;
+}
+.fee-badge.base { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.35); }
+.fee-badge.wl { background: rgba(61,170,107,0.12); color: var(--green); border: 1px solid rgba(61,170,107,0.3); }
+.fee-badge.fixed { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(155,107,204,0.35); }
+.fee-desc { font-size: 11px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
+
+/* ── MOTOR CARDS ── */
+.motors-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.motor-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.motor-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.ma::before { background: linear-gradient(90deg, var(--gold), var(--amber)); }
+.mb::before { background: linear-gradient(90deg, var(--blue), #6AACFF); }
+.mc::before { background: linear-gradient(90deg, var(--green), #7AE0A0); }
+.md::before { background: linear-gradient(90deg, var(--purple), #CC8AFF); }
+
+.motor-head {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.015);
+}
+.motor-id-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.motor-letter {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+.ma .motor-letter { color: var(--gold); }
+.mb .motor-letter { color: var(--blue); }
+.mc .motor-letter { color: var(--green); }
+.md .motor-letter { color: var(--purple); }
+.motor-title-block {}
+.motor-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.motor-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+.motor-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.meta-chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+}
+.chip-gold { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.chip-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(74,130,204,0.3); }
+.chip-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(61,170,107,0.3); }
+.chip-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(204,64,64,0.3); }
+.chip-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(232,148,10,0.3); }
+.chip-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(155,107,204,0.3); }
+
+.motor-body { padding: 18px 20px; flex: 1; }
+
+/* ── FLOW STEPS ── */
+.flow-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.flow-pipeline {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.flow-step {
+  display: flex;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.flow-step:last-child { border-bottom: none; padding-bottom: 0; }
+.fs-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-faint);
+  min-width: 22px;
+  padding-top: 2px;
+}
+.fs-arrow { color: var(--text-faint); margin: 0; padding-top: 2px; font-size: 11px; }
+.fs-text { font-size: 11px; line-height: 1.5; }
+.fs-action { font-weight: 600; color: var(--text); }
+.fs-detail { color: var(--text-dim); }
+
+/* ── DISTRIBUTION TABLE ── */
+.dist-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.dist-table { width: 100%; border-collapse: collapse; }
+.dist-table th {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid var(--border);
+}
+.dist-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  vertical-align: top;
+}
+.dist-table tr:last-child td { border-bottom: none; }
+.dist-pct {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.dist-bar-col { width: 80px; }
+.dist-bar-wrap { height: 5px; background: var(--border); border-radius: 1px; margin-top: 3px; }
+.dist-bar { height: 100%; border-radius: 1px; }
+.dist-tramo { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.dist-dest { color: var(--text-dim); }
+.dist-effect { color: var(--text-faint); font-style: italic; font-size: 10px; margin-top: 2px; }
+
+/* ── STATE COMPARISON ── */
+.state-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.state-box {
+  padding: 12px 14px;
+  border: 1px solid;
+}
+.state-box.b0 { background: var(--blue-bg); border-color: rgba(74,130,204,0.35); }
+.state-box.b2 { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.35); }
+.state-head {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.state-box.b0 .state-head { color: var(--blue); }
+.state-box.b2 .state-head { color: var(--gold); }
+.state-row {
+  font-size: 10px;
+  color: var(--text-dim);
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+}
+.state-row:last-child { border-bottom: none; }
+.sr-k { color: var(--text-faint); min-width: 72px; font-size: 9px; padding-top: 1px; }
+
+/* ── THROTTLE TABLE ── */
+.throttle-wrap {
+  margin-top: 16px;
+}
+.throttle-table { width: 100%; border-collapse: collapse; }
+.throttle-table th {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid var(--border);
+}
+.throttle-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  vertical-align: middle;
+}
+.throttle-table tr:last-child td { border-bottom: none; }
+.th-mode {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  display: inline-block;
+}
+.th-accel { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.35); }
+.th-normal { background: var(--green-bg); color: var(--green); border: 1px solid rgba(61,170,107,0.3); }
+.th-conserv { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(232,148,10,0.3); }
+.th-defens { background: var(--red-bg); color: var(--red); border: 1px solid rgba(204,64,64,0.3); }
+.th-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 17px;
+  font-weight: 700;
+}
+.th-burn { font-size: 11px; }
+.th-queue { font-size: 10px; color: var(--text-dim); }
+
+/* ── INFOBOX ── */
+.info-box {
+  border: 1px solid;
+  padding: 14px 16px;
+  margin-top: 12px;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.info-box.gold { border-color: rgba(201,168,76,0.35); background: rgba(201,168,76,0.05); }
+.info-box.blue { border-color: rgba(74,130,204,0.35); background: var(--blue-bg); }
+.info-box.green { border-color: rgba(61,170,107,0.35); background: var(--green-bg); }
+.info-box.red { border-color: rgba(204,64,64,0.35); background: var(--red-bg); }
+.info-box.amber { border-color: rgba(232,148,10,0.35); background: var(--amber-bg); }
+.info-box.purple { border-color: rgba(155,107,204,0.35); background: var(--purple-bg); }
+.info-hl {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.info-box.gold .info-hl { color: var(--gold); }
+.info-box.blue .info-hl { color: var(--blue); }
+.info-box.green .info-hl { color: var(--green); }
+.info-box.red .info-hl { color: var(--red); }
+.info-box.amber .info-hl { color: var(--amber); }
+.info-box.purple .info-hl { color: var(--purple); }
+.info-box p { color: var(--text-dim); margin-bottom: 4px; }
+.info-box p:last-child { margin-bottom: 0; }
+.hl { color: var(--text); font-weight: 600; }
+
+/* ── UNIFIED DISTRIBUTION TABLE ── */
+.unified-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.unified-table th {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  padding: 10px 14px;
+  text-align: left;
+  background: rgba(201,168,76,0.06);
+  border-bottom: 1px solid var(--border-gold);
+}
+.unified-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  vertical-align: top;
+}
+.unified-table tr:last-child td { border-bottom: none; }
+.ut-motor {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+.ut-a { color: var(--gold); }
+.ut-b { color: var(--blue); }
+.ut-c { color: var(--green); }
+.ut-d { color: var(--purple); }
+.ut-sub { font-size: 10px; color: var(--text-faint); }
+
+/* ── LIFECYCLE STRIP ── */
+.lifecycle {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  margin-top: 16px;
+}
+.lc-cell {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 12px 12px;
+  text-align: center;
+  position: relative;
+}
+.lc-cell::after {
+  content: '▶';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--text-faint);
+  z-index: 1;
+}
+.lc-cell:last-child::after { display: none; }
+.lc-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-faint);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.lc-name {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.lc-motors { font-size: 9px; color: var(--text-faint); line-height: 1.5; }
+
+/* ── MOTOR D DECISION ── */
+.decision-tree {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px;
+  font-size: 11px;
+}
+.dt-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.dt-box {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  background: var(--card);
+  text-align: center;
+}
+.dt-diamond {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid var(--border-gold);
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--gold);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+.dt-arrow {
+  text-align: center;
+  color: var(--gold-dim);
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ── VAULT COMPOSITION ── */
+.vault-comp {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  margin-top: 12px;
+}
+.vc-cell {
+  background: var(--card);
+  border: 1px solid var(--border-gold);
+  padding: 12px 10px;
+  text-align: center;
+}
+.vc-pct {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.vc-name { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; }
+.vc-yield { font-size: 9px; color: var(--green); }
+.vc-risk { font-size: 9px; color: var(--text-faint); margin-top: 2px; }
+
+/* ── FOOTER ── */
+.doc-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 40px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-faint);
+  font-style: italic;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1000px) {
+  .motors-wrap { grid-template-columns: 1fr; }
+  .state-compare { grid-template-columns: 1fr; }
+  .lifecycle { grid-template-columns: repeat(3,1fr); }
+  .vault-comp { grid-template-columns: repeat(3,1fr); }
+  .fee-strip { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <div class="ph-eyebrow">Diagrama 3 / 4 · Protocolo LUKASH v3.1 · Marzo 2026</div>
+    <div class="ph-title">LOS CUATRO MOTORES ECONÓMICOS</div>
+    <div class="ph-sub">Arquitectura completa de captura de valor. Cada motor opera en una divisa distinta, con activación secuencial por etapas y distribución atómica 35/35/15/15 diferenciada por estado LUKAI B0/B2.</div>
+  </div>
+  <div class="ph-kpis">
+    <div class="ph-kpi">
+      <div class="ph-kpi-val">4</div>
+      <div class="ph-kpi-lbl">Motores</div>
+    </div>
+    <div class="ph-kpi">
+      <div class="ph-kpi-val">3</div>
+      <div class="ph-kpi-lbl">Etapas</div>
+    </div>
+    <div class="ph-kpi">
+      <div class="ph-kpi-val">35/35</div>
+      <div class="ph-kpi-lbl">Vault/Quema</div>
+    </div>
+    <div class="ph-kpi">
+      <div class="ph-kpi-val">15/15</div>
+      <div class="ph-kpi-lbl">O&M/Staking</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ══ JERARQUÍA DE FEES ══════════════════════════════════════════ -->
+  <div class="section-title">0 · JERARQUÍA DE FEES POR ETAPA DE MADUREZ — REGLA CRÍTICA v3.1</div>
+
+  <div class="fee-strip">
+    <div class="fee-cell e1">
+      <div class="fee-etapa">Etapa 1 · Crecimiento Acelerado</div>
+      <div class="fee-name">Génesis · Motor A activo</div>
+      <div class="fee-nums">
+        <span class="fee-badge base">Base 4.0%</span>
+        <span class="fee-badge wl">Whitelist 3.0%</span>
+        <span class="fee-badge fixed" style="background:var(--purple-bg);color:var(--purple);border-color:rgba(155,107,204,.35)">Motor D: 1.5% fijo</span>
+      </div>
+      <div class="fee-desc">Motor A activo desde TGE. Deflación agresiva y acumulación de Vault. Bootstrapping del ecosistema. Motor B y D inactivos hasta lanzamiento de la App.</div>
+    </div>
+    <div class="fee-cell e2">
+      <div class="fee-etapa">Etapa 2 · Uso de Aplicación</div>
+      <div class="fee-name">App + Motor B + Motor D</div>
+      <div class="fee-nums">
+        <span class="fee-badge base" style="background:rgba(74,130,204,.12);color:var(--blue);border-color:rgba(74,130,204,.35)">Base 2.5%</span>
+        <span class="fee-badge wl" style="background:rgba(74,130,204,.08);color:#7AB0E8;border-color:rgba(74,130,204,.25)">Whitelist 1.5%</span>
+        <span class="fee-badge fixed" style="background:var(--purple-bg);color:var(--purple);border-color:rgba(155,107,204,.35)">Motor D: 1.5% fijo</span>
+      </div>
+      <div class="fee-desc">Motor A + Motor B activos. Adopción de App en curso. Vault en trayectoria B2. Sub-etapa 2A: estado B0 (quema). Sub-etapa 2B: estado B2 (recirculación) cuando K ≥ $25M.</div>
+    </div>
+    <div class="fee-cell e3">
+      <div class="fee-etapa">Etapa 3 · Soberanía / Estándar KASH</div>
+      <div class="fee-name">Todos los motores activos</div>
+      <div class="fee-nums">
+        <span class="fee-badge base" style="background:rgba(61,170,107,.12);color:var(--green);border-color:rgba(61,170,107,.35)">Motor A/B: 0.5%</span>
+        <span class="fee-badge wl" style="background:rgba(61,170,107,.08);color:#7AE0A0;border-color:rgba(61,170,107,.25)">WL convergencia 0.5%</span>
+        <span class="fee-badge fixed" style="background:var(--purple-bg);color:var(--purple);border-color:rgba(155,107,204,.35)">Motor D: 1.5% fijo</span>
+        <span class="fee-badge" style="background:rgba(61,170,107,.12);color:var(--green);border-color:rgba(61,170,107,.3)">Motor C: 0.5% USDC</span>
+      </div>
+      <div class="fee-desc">Motor C activo (USDC). Supply fijo 3.3B. Emisión Neta Cero. $LUKA funciona como acción preferente con dividendos reales del Vault a perpetuidad.</div>
+    </div>
+  </div>
+
+  <div class="info-box gold" style="margin-top:4px;">
+    <span class="info-hl">Regla crítica de fees v3.1 — No negociable</span>
+    <p>El fee base (4%/2.5%/0.5%) aplica a <span class="hl">Motor A y Motor B</span>. El <span class="hl">Motor D aplica siempre fee fijo de 1.5%</span>, independiente de la etapa. El <span class="hl">Motor C aplica siempre 0.5%</span> desde su activación en Etapa 3. Los <span class="hl">cNFT DeFi (Staking/Pools) están EXENTOS de todos los fees del Motor D</span> — regla absoluta no modificable por gobernanza.</p>
+  </div>
+
+  <!-- ══ MOTOR A ══════════════════════════════════════════════════ -->
+  <div class="section-title">1 · MOTOR A — TRADING EXTERNO EN DEX · DIVISA: SOL</div>
+  <div class="motors-wrap" style="grid-template-columns:1fr;">
+  <div class="motor-card ma">
+    <div class="motor-head">
+      <div class="motor-id-row">
+        <div class="motor-letter">A</div>
+        <div class="motor-title-block">
+          <div class="motor-tag">Motor A · Fuente primaria del Vault · Activo desde TGE</div>
+          <div class="motor-title">Trading Externo en DEX — Meteora / Jupiter</div>
+        </div>
+      </div>
+      <div class="motor-meta">
+        <span class="meta-chip chip-gold">Divisa: SOL</span>
+        <span class="meta-chip chip-gold">Fee Etapa 1: 4.0% / WL 3.0%</span>
+        <span class="meta-chip chip-gold">Fee Etapa 2: 2.5% / WL 1.5%</span>
+        <span class="meta-chip chip-gold">Fee Etapa 3: 0.5%</span>
+        <span class="meta-chip chip-amber">Activación: TGE · Día 1</span>
+      </div>
+    </div>
+    <div class="motor-body">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- FLUJO PASO A PASO -->
+        <div>
+          <div class="flow-label">Flujo completo — Ejemplo: Usuario compra $LUKA con 100 SOL</div>
+          <div class="flow-pipeline">
+            <div class="flow-step">
+              <span class="fs-num">01</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Transacción en DEX</span><br/><span class="fs-detail">Usuario compra/vende $LUKA en Meteora/Jupiter · Solana mainnet · Finalidad sub-segundo</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">02</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Captura del fee</span><br/><span class="fs-detail">Smart contract retiene <strong style="color:var(--gold)">4 SOL</strong> (4% estándar Etapa 1) | <strong style="color:var(--green)">3 SOL</strong> (whitelist). Búfer hasta ~15 SOL para optimizar gas.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">03</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Dispersión atómica 35/35/15/15</span><br/><span class="fs-detail">4 rutas simultáneas en la misma transacción · Un único smart contract · Sin intermediario</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">04a</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--gold)">1.40 SOL (35%) → Vault KASH Core</span><br/><span class="fs-detail">Jupiter SDK → swap a activos KASH v3.1: <strong>35%→cBTC · 25%→USDC · 15%→SOL · 20%→LST · 5%→lending</strong>. 70% queda en Core / 30% va a Sociedad.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">04b</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--red)">1.40 SOL (35%) → Burn permanente</span><br/><span class="fs-detail">Jupiter SDK → compra $LUKA en mercado abierto → dirección null → <strong>BURN IRREVERSIBLE</strong>. Efecto 1: presión compradora sube P_mkt. Efecto 2: ↓ S(t) permanentemente.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">04c</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--blue)">0.60 SOL (15%) → Wallet O&M</span><br/><span class="fs-detail">Gastos operativos · Fees de red · Marketing · Infraestructura. <strong>Sin extracción para fundadores en Etapa 1.</strong></span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">04d</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--green)">0.60 SOL (15%) → Staking Pool</span><br/><span class="fs-detail">Jupiter → compra $LUKA en mercado abierto → Contrato de Staking. Presión compradora adicional + recompensa a stakers. Reduce sell pressure.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DISTRIBUCIÓN VISUAL -->
+        <div>
+          <div class="dist-label">Distribución del fee — 4 SOL de ejemplo (Etapa 1 · 4%)</div>
+          <table class="dist-table">
+            <thead><tr><th>%</th><th style="width:70px;"></th><th>Tramo</th><th>Destino & Efecto</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--gold);">35%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:100%;background:var(--gold);"></div></div></td>
+                <td><div class="dist-tramo">Vault Layer</div><div class="dist-dest">1.40 SOL</div></td>
+                <td><div class="dist-dest">Jupiter SDK → activos KASH (cBTC/SOL/LST/USDC)</div><div class="dist-effect">↑ V_c(t) · ↑ P_kash · Efecto compuesto · 70% Core / 30% Sociedad</div></td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--red);">35%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:100%;background:var(--red);"></div></div></td>
+                <td><div class="dist-tramo">Burn Layer</div><div class="dist-dest">1.40 SOL</div></td>
+                <td><div class="dist-dest">Compra $LUKA → dirección null permanente</div><div class="dist-effect">↓ S(t) irreversible · ↑ P_mkt por presión compradora</div></td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--blue);">15%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:43%;background:var(--blue);"></div></div></td>
+                <td><div class="dist-tramo">O&M Layer</div><div class="dist-dest">0.60 SOL</div></td>
+                <td><div class="dist-dest">Wallet operativa · Gas · Marketing</div><div class="dist-effect">Sostenibilidad operativa · Sin dilución fundadores Etapa 1</div></td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--green);">15%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:43%;background:var(--green);"></div></div></td>
+                <td><div class="dist-tramo">Staking Layer</div><div class="dist-dest">0.60 SOL</div></td>
+                <td><div class="dist-dest">Compra $LUKA → Contrato de Staking</div><div class="dist-effect">↑ P_mkt · Incentivo holding · Reduce sell pressure</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="info-box gold" style="margin-top:12px;">
+            <span class="info-hl">Presión compradora dual en cada transacción</span>
+            <p>El Burn Layer (35%) y el Staking Layer (15%) <span class="hl">ambos compran $LUKA en mercado abierto</span> antes de su destino final. En cada $100 de volumen DEX, <span class="hl">$2.00 genera presión compradora neta directa sobre $LUKA</span>.</p>
+            <p style="margin-top:6px;">A $5M/día de volumen: <span class="hl">$100,000/día en presión compradora neta → $9M acumulados en 90 días.</span></p>
+          </div>
+
+          <div class="info-box amber" style="margin-top:8px;">
+            <span class="info-hl">Curva de contracción del supply</span>
+            <p>Con $5M/día de volumen (escenario conservador): Fee Motor A = $200K/día · 35% al burn = $70K/día → <span class="hl">~700M tokens quemados/día a precio TGE $0.0001</span>.</p>
+            <p style="margin-top:4px;">Meta 6.7B tokens destruidos con cap de seguridad 1%/día: <span class="hl">Supply objetivo 3.3B alcanzable en 50–100 días.</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ══ MOTOR B ══════════════════════════════════════════════════ -->
+  <div class="section-title">2 · MOTOR B — ALGORITMO DE DISPERSIÓN 35/35/15/15 · DIVISA: $LUKA</div>
+  <div class="motors-wrap" style="grid-template-columns:1fr;">
+  <div class="motor-card mb">
+    <div class="motor-head">
+      <div class="motor-id-row">
+        <div class="motor-letter">B</div>
+        <div class="motor-title-block">
+          <div class="motor-tag">Motor B · Transacciones internas App · Activo desde Etapa 2A</div>
+          <div class="motor-title">Algoritmo de Dispersión de Valor — Comportamiento Diferenciado B0 / B2</div>
+        </div>
+      </div>
+      <div class="motor-meta">
+        <span class="meta-chip chip-blue">Divisa: $LUKA</span>
+        <span class="meta-chip chip-blue">Fee Etapa 2: 2.5% / WL 1.5%</span>
+        <span class="meta-chip chip-blue">Fee Etapa 3: 0.5%</span>
+        <span class="meta-chip chip-amber">Activación: App lanzada · K_min $25M para B2</span>
+      </div>
+    </div>
+    <div class="motor-body">
+
+      <!-- STATE COMPARISON -->
+      <div class="dist-label">Comportamiento del tramo LP (35%) según estado LUKAI — El pivote central del Motor B</div>
+      <div class="state-compare">
+        <div class="state-box b0">
+          <div class="state-head">■ ESTADO B0 — PRE-HITO · K(t) &lt; $25M</div>
+          <div class="state-row"><span class="sr-k">Condición</span> V_c(t) &lt; K_min ($25,000,000 USD) · Hardcoded on-chain</div>
+          <div class="state-row"><span class="sr-k">LP Layer 35%</span> <strong style="color:var(--red)">→ BURN DIRECTO a dirección null permanente</strong></div>
+          <div class="state-row"><span class="sr-k">Asset 35%</span> → Compra de Hard Assets (cBTC/SOL) para Vault Core</div>
+          <div class="state-row"><span class="sr-k">Reward 15%</span> → Distribución directa en $LUKA a stakers</div>
+          <div class="state-row"><span class="sr-k">O&M 15%</span> → Swap inmediato a SOL/USDC · Liquidez operativa</div>
+          <div class="state-row"><span class="sr-k">Throttle</span> NO aplica. Dispersión siempre al 100%.</div>
+          <div class="state-row"><span class="sr-k">Narrativa</span> Deflación activa visible on-chain desde el primer día</div>
+        </div>
+        <div class="state-box b2">
+          <div class="state-head">■ ESTADO B2 — POST-HITO · K(t) ≥ $25M</div>
+          <div class="state-row"><span class="sr-k">Condición</span> K(t) ≥ $25M verificado por Pyth Network · Transición automática</div>
+          <div class="state-row"><span class="sr-k">LP Layer 35%</span> <strong style="color:var(--gold)">→ RECIRCULACIÓN e incentivos del pool LP</strong></div>
+          <div class="state-row"><span class="sr-k">Asset 35%</span> → Compra activos duros + compensación Vault vía R_op</div>
+          <div class="state-row"><span class="sr-k">Reward 15%</span> → Distribución directa en $LUKA a stakers</div>
+          <div class="state-row"><span class="sr-k">O&M 15%</span> → Swap inmediato a SOL/USDC · Liquidez operativa</div>
+          <div class="state-row"><span class="sr-k">Throttle</span> SÍ aplica — 4 modos según P_mkt vs EMA30</div>
+          <div class="state-row"><span class="sr-k">Narrativa</span> Hito público: "MOTOR B2 ACTIVADO" · Dividendos mes 13+</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+        <!-- TABLA COMPLETA DISTRIBUCIÓN -->
+        <div>
+          <div class="dist-label">Distribución de salida Motor B — 4 tramos completos</div>
+          <table class="dist-table">
+            <thead><tr><th>%</th><th>Tramo</th><th>Comportamiento B0 / B2</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--red);">35%</span></td>
+                <td>
+                  <div class="dist-tramo">Liquidity Layer (LP)</div>
+                  <div class="dist-dest">Burn o Recirculación</div>
+                </td>
+                <td>
+                  <div style="font-size:10px;"><span style="color:var(--red);">B0:</span> Burn directo a dirección null permanente</div>
+                  <div style="font-size:10px;margin-top:3px;"><span style="color:var(--gold);">B2:</span> Recirculación e incentivos del pool</div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--gold);">35%</span></td>
+                <td>
+                  <div class="dist-tramo">Asset Layer (Vault)</div>
+                  <div class="dist-dest">Compra Hard Assets</div>
+                </td>
+                <td>
+                  <div style="font-size:10px;">LUKAI ejecuta swap → cBTC/SOL via Jupiter. Rebalanceo gradual sin liquidar el Vault existente.</div>
+                  <div style="font-size:10px;margin-top:3px;"><span style="color:var(--gold);">B2:</span> + compensación Vault via R_op</div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--green);">15%</span></td>
+                <td>
+                  <div class="dist-tramo">Reward Layer</div>
+                  <div class="dist-dest">Staking $LUKA</div>
+                </td>
+                <td>
+                  <div style="font-size:10px;">Distribución directa en $LUKA a holders en staking. Constante en ambos estados. Incentivo holding.</div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--blue);">15%</span></td>
+                <td>
+                  <div class="dist-tramo">Operational Layer</div>
+                  <div class="dist-dest">O&M · SOL/USDC</div>
+                </td>
+                <td>
+                  <div style="font-size:10px;">Swap inmediato a SOL o USDC · Liquidez operativa garantizada · Sin delay de conversión.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- THROTTLE DINÁMICO -->
+        <div>
+          <div class="dist-label">Throttle dinámico θ — Activo solo en Estado B2 · Jaguar Shield</div>
+          <table class="throttle-table">
+            <thead><tr><th>Modo</th><th>θ</th><th>Condición P_mkt vs EMA30</th><th>Burn · Cola</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="th-mode th-accel">ACELERADO</span></td>
+                <td><span class="th-val" style="color:var(--gold);">1.25</span></td>
+                <td style="font-size:10px;color:var(--text-dim);">P_mkt &gt; 1.2 × EMA30</td>
+                <td><span class="th-burn" style="color:var(--gold);">125% quema base</span><br/><span class="th-queue">Sin cola diferida</span></td>
+              </tr>
+              <tr>
+                <td><span class="th-mode th-normal">NORMAL</span></td>
+                <td><span class="th-val" style="color:var(--green);">1.00</span></td>
+                <td style="font-size:10px;color:var(--text-dim);">0.8 × EMA30 ≤ P_mkt ≤ 1.2 × EMA30</td>
+                <td><span class="th-burn" style="color:var(--green);">100% quema base</span><br/><span class="th-queue">Sin cola diferida</span></td>
+              </tr>
+              <tr>
+                <td><span class="th-mode th-conserv">CONSERVADOR</span></td>
+                <td><span class="th-val" style="color:var(--amber);">0.60</span></td>
+                <td style="font-size:10px;color:var(--text-dim);">0.5 × EMA30 ≤ P_mkt &lt; 0.8 × EMA30</td>
+                <td><span class="th-burn" style="color:var(--amber);">60% quema inmediata</span><br/><span class="th-queue">40% diferido en cola on-chain pública</span></td>
+              </tr>
+              <tr>
+                <td><span class="th-mode th-defens">DEFENSIVO</span></td>
+                <td><span class="th-val" style="color:var(--red);">0.25</span></td>
+                <td style="font-size:10px;color:var(--text-dim);">P_mkt &lt; 0.5 × EMA30</td>
+                <td><span class="th-burn" style="color:var(--red);">25% quema inmediata</span><br/><span class="th-queue">75% diferido · Cola pública · Máx 10%/semana al ejecutar</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="info-box amber" style="margin-top:8px;">
+            <span class="info-hl">Cola diferida — "Bono de deflación futura"</span>
+            <p>Las quemas diferidas son <span class="hl">públicas on-chain</span>. La comunidad ve cuántas quemas están pendientes. Esto crea un <span class="hl">incentivo de compra en bajistas</span>: el mercado sabe que la deflación acumulada se ejecutará cuando se normalice. Impacto: espiral de muerte de <span class="hl">8% → 1.4%</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ══ MOTOR C ══════════════════════════════════════════════════ -->
+  <div class="section-title">3 · MOTOR C — PAGOS EN STABLECOINS · DIVISA: USDC · ETAPA 3</div>
+  <div class="motors-wrap" style="grid-template-columns:1fr;">
+  <div class="motor-card mc">
+    <div class="motor-head">
+      <div class="motor-id-row">
+        <div class="motor-letter">C</div>
+        <div class="motor-title-block">
+          <div class="motor-tag">Motor C · Pagos masivos en stablecoin · Activo desde Etapa 3 · Supply fijo 3.3B</div>
+          <div class="motor-title">Pagos en Stablecoins — Volumen masivo, fee bajo, presión de compra constante</div>
+        </div>
+      </div>
+      <div class="motor-meta">
+        <span class="meta-chip chip-green">Divisa: USDC</span>
+        <span class="meta-chip chip-green">Fee único: 0.5% (todas las etapas desde Etapa 3)</span>
+        <span class="meta-chip chip-amber">Activación: Etapa 3 · K &gt; $50M · Integración fiat activa</span>
+      </div>
+    </div>
+    <div class="motor-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- FLUJO -->
+        <div>
+          <div class="flow-label">Flujo completo Motor C — Usuario paga X USDC en App o servicio</div>
+          <div class="flow-pipeline">
+            <div class="flow-step">
+              <span class="fs-num">01</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Pago en USDC</span><br/><span class="fs-detail">Usuario realiza pago en stablecoin dentro de la App o servicio integrado. Cero exposición a volatilidad de SOL.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">02</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Captura del fee: 0.5% en USDC</span><br/><span class="fs-detail">Fee bajo diseñado para <strong>volumen masivo</strong>. A 300M transacciones/mes: $900M volumen → $4.5M en fees/mes.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">03a</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--gold);">35% USDC → Vault KASH Core directo</span><br/><span class="fs-detail">Sin conversión. Refuerza directamente el buffer estable de USDC del Vault. ↑ V_c · ↑ P_kash.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">03b</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--red);">35% USDC → Compra $LUKA → LP</span><br/><span class="fs-detail">Jupiter → compra $LUKA en mercado abierto → inyección al LP. Presión compradora real + fortalece liquidez del pool.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">03c</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--blue);">15% USDC → Wallet O&M</span><br/><span class="fs-detail">Costos operativos. En Etapa 3, el volumen de Motor C financia la expansión de infraestructura de Jaguar Pay.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">03d</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action" style="color:var(--green);">15% USDC → Compra $LUKA → Stakers</span><br/><span class="fs-detail">Jupiter → compra $LUKA → distribución a stakers. En Fase 3 con Emisión Neta Cero, esto es el dividendo real perpetuo.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DISTRIBUCIÓN Y CONTEXTO -->
+        <div>
+          <div class="dist-label">Distribución del fee Motor C — En USDC · Etapa 3</div>
+          <table class="dist-table">
+            <thead><tr><th>%</th><th style="width:70px;"></th><th>Destino</th><th>Efecto</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--gold);">35%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:100%;background:var(--gold);"></div></div></td>
+                <td><div class="dist-tramo">Vault Core (USDC)</div></td>
+                <td><div class="dist-dest">Directo · Refuerza buffer estable</div><div class="dist-effect">↑ V_c · ↑ P_kash · Sin conversión</div></td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--red);">35%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:100%;background:var(--red);"></div></div></td>
+                <td><div class="dist-tramo">Compra $LUKA → LP</div></td>
+                <td><div class="dist-dest">Inyección LP + presión compradora</div><div class="dist-effect">↑ P_mkt · Fortalece liquidez DEX</div></td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--blue);">15%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:43%;background:var(--blue);"></div></div></td>
+                <td><div class="dist-tramo">Wallet O&M</div></td>
+                <td><div class="dist-dest">Infraestructura Jaguar Pay</div><div class="dist-effect">100K+ comercios · NFC/QR</div></td>
+              </tr>
+              <tr>
+                <td><span class="dist-pct" style="color:var(--green);">15%</span></td>
+                <td class="dist-bar-col"><div class="dist-bar-wrap"><div class="dist-bar" style="width:43%;background:var(--green);"></div></div></td>
+                <td><div class="dist-tramo">Compra $LUKA → Stakers</div></td>
+                <td><div class="dist-dest">Dividendo real perpetuo</div><div class="dist-effect">Emisión Neta Cero: $LUKA = acción preferente</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="info-box green" style="margin-top:12px;">
+            <span class="info-hl">Ventajas del Motor C vs Motor A</span>
+            <p>Fee <span class="hl">0.5% vs 4%</span>: diseñado para volumen masivo de pagos diarios (referente: NEQUI, Nequi-like). <span class="hl">Cero exposición a volatilidad</span>: opera 100% en USDC. En Fase 3, V_c crece <span class="hl">independientemente del precio especulativo de $LUKA</span>.</p>
+          </div>
+          <div class="info-box amber" style="margin-top:8px;">
+            <span class="info-hl">Proyección Etapa 3 — Escenario sostenible</span>
+            <p>300M transacciones/mes · $900M volumen · $4.5M fees → <span class="hl">$1.1M/mes al Vault Core (35%).</span> Market Cap proyectado: $7.5B. <span class="hl">$LUKA funciona como acción preferente con dividendo real.</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ══ MOTOR D ══════════════════════════════════════════════════ -->
+  <div class="section-title">4 · MOTOR D — SOCIAL UTILITY LAYER · FEE FIJO 1.5% · MULTI-ACTIVO</div>
+  <div class="motors-wrap" style="grid-template-columns:1fr;">
+  <div class="motor-card md">
+    <div class="motor-head">
+      <div class="motor-id-row">
+        <div class="motor-letter">D</div>
+        <div class="motor-title-block">
+          <div class="motor-tag">Motor D · Servicios sociales y gamificación · Activo desde Etapa 2A · Fee fijo independiente de etapa</div>
+          <div class="motor-title">Social Utility Layer — Manadas · Crowdfunding · Crowdlending · Apuestas · Eventos · Jungle Arena</div>
+        </div>
+      </div>
+      <div class="motor-meta">
+        <span class="meta-chip chip-purple">Divisa: $LUKA / Multi-activo</span>
+        <span class="meta-chip chip-purple">Fee fijo: 1.5% (todas las etapas, siempre)</span>
+        <span class="meta-chip chip-green">cNFT DeFi: EXENTOS (absoluto, no modificable)</span>
+        <span class="meta-chip chip-amber">Activación: App lanzada · Etapa 2A</span>
+      </div>
+    </div>
+    <div class="motor-body">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+        <!-- IZQUIERDA: SERVICIOS Y FLUJO DE DECISIÓN -->
+        <div>
+          <div class="flow-label">Árbol de decisión LUKAI — Orquestación del Motor D</div>
+          <div class="flow-pipeline">
+            <div class="flow-step">
+              <span class="fs-num">01</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Transacción entrante en Motor D</span><br/><span class="fs-detail">Servicio social, Manada, Apuesta, Evento, Crowdfunding, Crowdlending</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">02</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">¿Es cNFT DeFi (Staking/Pool)?</span><br/>
+                <span style="color:var(--green);font-weight:600;">SÍ →</span><span class="fs-detail"> <strong style="color:var(--green);">EXENTO — Fee 0%.</strong> Procesa sin Motor D. Genera rendimientos del pool correspondiente.</span><br/>
+                <span style="color:var(--purple);font-weight:600;">NO →</span><span class="fs-detail"> Continúa al paso 03.</span>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">03</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Captura fee fijo 1.5%</span><br/><span class="fs-detail">Independiente de la etapa de madurez. Estabilizador del ingreso base del protocolo.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">04</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">¿Activo recibido es $LUKA o externo?</span><br/>
+                <span style="color:var(--purple);font-weight:600;">$LUKA →</span><span class="fs-detail"> Aplica directamente distribución 35/35/15/15 del Motor D. Estado B0/B2 según K(t).</span><br/>
+                <span style="color:var(--amber);font-weight:600;">Externo (SOL/USDC/otro) →</span><span class="fs-detail"> LUKAI invoca Motor A (si SOL/volátil) o Motor C (si USDC) para swap → $LUKA. <strong>Luego</strong> aplica 35/35/15/15.</span>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">05</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Dispersión 35/35/15/15 (espejo Motor B)</span><br/><span class="fs-detail">LP Layer: B0 → burn directo / B2 → recirculación. Asset Layer: compra Hard Assets. Reward + O&M iguales al Motor B.</span></div>
+            </div>
+            <div class="flow-step">
+              <span class="fs-num">06</span>
+              <span class="fs-arrow">▶</span>
+              <div class="fs-text"><span class="fs-action">Calibración Jaguar Score JS(t)</span><br/><span class="fs-detail">LUKAI actualiza el Jaguar Score del usuario según participación en Manadas, apuestas, eventos. <strong>cNFT DeFi no modifica el score.</strong></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DERECHA: SERVICIOS + DISTRIBUCIÓN + ESTABILIZADOR -->
+        <div>
+          <div class="dist-label">Servicios del Motor D y su motor económico alimentado</div>
+          <table class="dist-table">
+            <thead><tr><th>Servicio</th><th>Motor Activo</th><th>Fee & Impacto</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="dist-tramo">Manadas — Ahorro grupal</div><div class="dist-dest">Crowdfunding & Crowdlending</div></td>
+                <td><span class="meta-chip chip-purple" style="font-size:9px;">Motor D</span></td>
+                <td><div class="dist-dest">1.5% en $LUKA o via swap externo</div><div class="dist-effect">Ingreso base estable · k_viral = 2.3 · CAC $3</div></td>
+              </tr>
+              <tr>
+                <td><div class="dist-tramo">Bet & Win $LUKA</div><div class="dist-dest">Apuestas (Jungle Arena)</div></td>
+                <td><span class="meta-chip chip-purple" style="font-size:9px;">Motor D</span></td>
+                <td><div class="dist-dest">1.5% en cada apuesta</div><div class="dist-effect">Basadas en habilidades · No azar puro</div></td>
+              </tr>
+              <tr>
+                <td><div class="dist-tramo">Acceso a eventos</div><div class="dist-dest">Marketplaces internos · NFT</div></td>
+                <td><span class="meta-chip chip-purple" style="font-size:9px;">Motor D</span><span class="meta-chip chip-blue" style="font-size:9px;margin-left:3px;">Motor B (Tensor/Magic Eden)</span></td>
+                <td><div class="dist-dest">1.5% fijo (Motor D) / 2.5% (Motor B)</div><div class="dist-effect">Activa Segmento A (12–25 años)</div></td>
+              </tr>
+              <tr>
+                <td><div class="dist-tramo">Tokenización RWA</div><div class="dist-dest">Inversión colectiva bienes raíces</div></td>
+                <td><span class="meta-chip chip-green" style="font-size:9px;">Motor C (Etapa 3)</span><span class="meta-chip chip-purple" style="font-size:9px;margin-left:3px;">Motor D</span></td>
+                <td><div class="dist-dest">USDC + $LUKA en Fase 3</div><div class="dist-effect">Mercado RWA $16B · Acceso democratizado</div></td>
+              </tr>
+              <tr>
+                <td><div class="dist-tramo">cNFT DeFi (Staking/Pools)</div><div class="dist-dest">JitoSOL · mSOL · Pools Meteora</div></td>
+                <td><span class="meta-chip chip-green" style="font-size:9px;">EXENTO Motor D</span></td>
+                <td><div class="dist-dest" style="color:var(--green);">Fee 0% — Regla de Oro absoluta</div><div class="dist-effect">Yield del pool correspondiente · No calibra Jaguar Score</div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="info-box purple" style="margin-top:12px;">
+            <span class="info-hl">Motor D como estabilizador sistémico en BEAR</span>
+            <p>El Motor D <span class="hl">opera independiente del precio de $LUKA y del ciclo macro</span>. Con 50,000 usuarios activos: 50K × $15/tx × 1.5% = <span class="hl">$11,250/día = $337,500/mes de ingreso base garantizado en BEAR extremo.</span></p>
+            <p style="margin-top:6px;">El <span class="hl">Jaguar Score genera "Costo de Salida Psicológico"</span>: los usuarios no abandonan su reputación financiera on-chain construida. Churn rate reducido en mercados bajistas. DAU estable → Motor D estable → ingreso base estable.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ══ TABLA UNIFICADA ══════════════════════════════════════════ -->
+  <div class="section-title">5 · DISTRIBUCIÓN UNIFICADA 35/35/15/15 — LOS 4 MOTORES COMPARADOS</div>
+
+  <table class="unified-table">
+    <thead>
+      <tr>
+        <th>Motor</th>
+        <th>Divisa · Fee</th>
+        <th>35% — Vault / Asset Layer</th>
+        <th>35% — LP / Burn / Quema</th>
+        <th>15% — O&M Layer</th>
+        <th>15% — Staking / Reward</th>
+        <th>Estado dependiente</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="ut-motor ut-a">A</div>
+          <div class="ut-sub">DEX · TGE</div>
+        </td>
+        <td><span class="meta-chip chip-gold">SOL</span><br/><span style="font-size:10px;color:var(--text-dim);">4% / 3% WL → 2.5% → 0.5%</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--gold);">→ Jupiter SDK → activos KASH v3.1</strong><br/>cBTC 35% · USDC 25% · SOL 15% · LST 20% · Lending 5%<br/><span style="font-size:10px;color:var(--text-faint);">70% Core / 30% Sociedad</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--red);">→ Compra $LUKA → dirección null</strong><br/>Burn irreversible permanente. Sin excepción de estado.<br/><span style="font-size:10px;color:var(--text-faint);">Quema en ambos estados B0 y B2</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--blue);">→ Wallet O&M</strong><br/>Gas · Marketing · Infraestructura<br/><span style="font-size:10px;color:var(--text-faint);">Sin extracción fundadores E1</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--green);">→ Compra $LUKA → Staking</strong><br/>Presión compradora + recompensa<br/><span style="font-size:10px;color:var(--text-faint);">Reduce sell pressure</span></td>
+        <td style="font-size:11px;color:var(--text-dim);">NO — Opera idéntico en B0 y B2. Throttle NO aplica al Motor A.</td>
+      </tr>
+      <tr style="background:rgba(255,255,255,0.015);">
+        <td>
+          <div class="ut-motor ut-b">B</div>
+          <div class="ut-sub">App · Etapa 2A</div>
+        </td>
+        <td><span class="meta-chip chip-blue">$LUKA</span><br/><span style="font-size:10px;color:var(--text-dim);">2.5% / 1.5% WL → 0.5%</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--gold);">Asset Layer → Compra Hard Assets</strong><br/>cBTC + SOL via Jupiter · Rebalanceo gradual<br/><span style="font-size:10px;color:var(--text-faint);">B2: + compensación Vault via R_op</span></td>
+        <td style="font-size:11px;">
+          <strong style="color:var(--blue);">B0:</strong> <span style="color:var(--red);">Burn directo → null</span><br/>
+          <strong style="color:var(--gold);">B2:</strong> <span style="color:var(--gold);">Recirculación + incentivos LP</span><br/>
+          <span style="font-size:10px;color:var(--text-faint);">Throttle θ modula en B2: 0.25→1.25</span>
+        </td>
+        <td style="font-size:11px;"><strong style="color:var(--blue);">→ Swap a SOL/USDC inmediato</strong><br/>Liquidez operativa garantizada<br/><span style="font-size:10px;color:var(--text-faint);">Sin delay de conversión</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--green);">→ $LUKA directo a stakers</strong><br/>Sin compra previa · Distribución directa<br/><span style="font-size:10px;color:var(--text-faint);">Constante en B0 y B2</span></td>
+        <td style="font-size:11px;"><span style="color:var(--blue);font-weight:600;">SÍ</span> — LP Layer cambia radicalmente. Throttle θ activo en B2. K_min = $25M es el pivote.</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="ut-motor ut-c">C</div>
+          <div class="ut-sub">USDC · Etapa 3</div>
+        </td>
+        <td><span class="meta-chip chip-green">USDC</span><br/><span style="font-size:10px;color:var(--text-dim);">0.5% (fijo · solo Etapa 3)</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--gold);">→ Vault Core directo (USDC)</strong><br/>Sin conversión · Refuerza buffer estable<br/><span style="font-size:10px;color:var(--text-faint);">↑ V_c · ↑ P_kash independiente del mercado</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--red);">→ Compra $LUKA → inyección LP</strong><br/>Presión compradora + fortalece liquidez<br/><span style="font-size:10px;color:var(--text-faint);">Emisión Neta Cero: presión constante sin nueva emisión</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--blue);">→ Wallet O&M</strong><br/>Infraestructura Jaguar Pay · 100K+ comercios<br/><span style="font-size:10px;color:var(--text-faint);">NFC/QR · Licencias IFPE/SEDPE</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--green);">→ Compra $LUKA → Stakers</strong><br/>Dividendo real perpetuo Fase 3<br/><span style="font-size:10px;color:var(--text-faint);">Supply fijo: $LUKA = acción preferente</span></td>
+        <td style="font-size:11px;color:var(--text-dim);">NO — Activo solo en Etapa 3. Supply fijo 3.3B. Recirculación en lugar de quema (Emisión Neta Cero).</td>
+      </tr>
+      <tr style="background:rgba(255,255,255,0.015);">
+        <td>
+          <div class="ut-motor ut-d">D</div>
+          <div class="ut-sub">Multi · Etapa 2A</div>
+        </td>
+        <td><span class="meta-chip chip-purple">Multi</span><br/><span style="font-size:10px;color:var(--text-dim);">1.5% fijo (TODAS las etapas)</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--gold);">Asset Layer → Compra Hard Assets</strong><br/>Espejo del Motor B · LUKAI ejecuta<br/><span style="font-size:10px;color:var(--text-faint);">Si activo externo: swap previo via Motor A o C</span></td>
+        <td style="font-size:11px;">
+          <strong style="color:var(--blue);">B0:</strong> <span style="color:var(--red);">Burn directo → null</span><br/>
+          <strong style="color:var(--gold);">B2:</strong> <span style="color:var(--gold);">Recirculación LP</span><br/>
+          <span style="font-size:10px;color:var(--text-faint);">Espejo del Motor B según estado K(t)</span>
+        </td>
+        <td style="font-size:11px;"><strong style="color:var(--blue);">→ Swap a SOL/USDC</strong><br/>Idéntico al Motor B<br/><span style="font-size:10px;color:var(--text-faint);">Liquidez operativa garantizada</span></td>
+        <td style="font-size:11px;"><strong style="color:var(--green);">→ $LUKA directo a stakers</strong><br/>Idéntico al Motor B<br/><span style="font-size:10px;color:var(--text-faint);">cNFT DeFi EXENTOS de todo fee</span></td>
+        <td style="font-size:11px;"><span style="color:var(--blue);font-weight:600;">SÍ</span> — LP Layer sigue el estado B0/B2 de K(t) como el Motor B. Fee 1.5% fijo no cambia. Estabilizador BEAR independiente del ciclo.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══ VAULT COMPOSICIÓN ══════════════════════════════════════ -->
+  <div class="section-title">6 · VAULT KASH — ARQUITECTURA COMPLETA: CORE (70%) + SOCIEDAD (30%) + JAGUAR LOCK</div>
+
+  <!-- VAULT SPLIT 70/30 -->
+  <div style="display:grid;grid-template-columns:1fr 8px 1fr;gap:0;margin-bottom:16px;align-items:stretch;">
+
+    <!-- VAULT CORE 70% -->
+    <div style="background:rgba(201,168,76,0.05);border:1px solid var(--border-gold);padding:20px 22px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border-gold);">
+        <div style="font-family:'Space Mono',monospace;font-size:36px;font-weight:700;color:var(--gold);line-height:1;">70%</div>
+        <div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold-dim);text-transform:uppercase;">Vault KASH</div>
+          <div style="font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--gold);">Core — Reserva Soberana</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Nunca liquidable · Solo crece · Garantía del Precio KASH</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--gold);font-weight:600;">Función:</span> Respaldo y precio piso de $LUKA. El "muro institucional". P_kash = V_c / S.</div>
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--gold);font-weight:600;">Yield:</span> 70% reinversión compuesta + 30% a Reserva Operativa USDC (R_op) para Motor B2.</div>
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--gold);font-weight:600;">Distribución fees:</span> Recibe el 70% del componente KASH de cada fee de todos los motores.</div>
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--gold);font-weight:600;">Acceso:</span> Capa 1 (USDC, inmediato). Capa 2 (LUKAI). Capa 3 (cBTC Tridente 3/3 firmas).</div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Activación Motor B2 — K_min $25M hardcoded on-chain</div>
+      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);padding:10px 12px;font-size:11px;color:var(--text-dim);">Cuando el KASH Core supera K_min = <span style="color:var(--gold);font-weight:600;">$25,000,000 USD</span>, LUKAI conmuta automáticamente al Estado B2: se desbloquean los dividendos de la Sociedad, el Throttle Dinámico se activa y el LP Layer pasa de burn a recirculación.</div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px;">
+      <div style="width:1px;height:100%;background:repeating-linear-gradient(180deg,var(--border-gold) 0,var(--border-gold) 5px,transparent 5px,transparent 10px);"></div>
+    </div>
+
+    <!-- VAULT SOCIEDAD 30% -->
+    <div style="background:rgba(155,107,204,0.05);border:1px solid rgba(155,107,204,0.30);padding:20px 22px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(155,107,204,0.25);">
+        <div style="font-family:'Space Mono',monospace;font-size:36px;font-weight:700;color:var(--purple);line-height:1;">30%</div>
+        <div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(155,107,204,0.6);text-transform:uppercase;">Vault KASH</div>
+          <div style="font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--purple);">Sociedad — Equity de Socios</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Bajo Jaguar Lock · Liberación lineal · Mes 13+ post-hito</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--purple);font-weight:600;">Función:</span> Renta líquida y crecimiento patrimonial para todos los socios del proyecto.</div>
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--purple);font-weight:600;">Yield:</span> 100% capitalizable para socios e inversionistas desde el hito de activación.</div>
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--purple);font-weight:600;">Distribución fees:</span> Recibe el 30% del componente KASH de cada fee. Flujo perpétuo desde mes 13.</div>
+        <div style="font-size:11px;color:var(--text-dim);"><span style="color:var(--purple);font-weight:600;">Acceso:</span> Jaguar Lock — liberación lineal 48 meses post-hito. Sin acceso antes del hito.</div>
+      </div>
+
+      <!-- SOCIOS TABLE -->
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(155,107,204,0.7);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Titulares del 30% Vault Sociedad — Quiénes son los socios</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px;">
+        <thead>
+          <tr style="background:rgba(155,107,204,0.08);border-bottom:1px solid rgba(155,107,204,0.25);">
+            <th style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(155,107,204,0.7);text-transform:uppercase;padding:6px 8px;text-align:left;">Socio</th>
+            <th style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(155,107,204,0.7);text-transform:uppercase;padding:6px 8px;text-align:left;">Rol en el Protocolo</th>
+            <th style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(155,107,204,0.7);text-transform:uppercase;padding:6px 8px;text-align:left;">Estructura Jaguar Lock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:600;color:var(--gold);">Fundador</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Arquitectura del protocolo, visión estratégica, ejecución Etapa 0–1</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Cliff 18 meses · Liberación lineal 36 meses · &lt;10% supply · Publicado on-chain antes del TGE</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:rgba(255,255,255,0.01);">
+            <td style="padding:7px 8px;font-weight:600;color:var(--blue);">Inversionistas</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Capital semilla K_min ($25M). Aportantes de capital para Fases 1–3</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Hito: K_min $30M o 12 meses (primero que ocurra). Liberación lineal 48 meses. Flujo desde mes 13.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:600;color:var(--green);">Market Makers</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Liquidez pool Meteora. Piso garantizado $2M–$5M diarios volumen Motor A. Spread &lt;0.5%</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">LP Fundador 365d lock · +20% pool rewards · Yield priority. Asignados desde wallet Marketing/CEX.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:rgba(255,255,255,0.01);">
+            <td style="padding:7px 8px;font-weight:600;color:var(--amber);">KOLs</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Adquisición de usuarios. Volumen orgánico Motor A. Educación Funnel de Soberanía. ≥100K seguidores</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Vesting $LUKA 6–12 meses. Asignados desde wallet Marketing/CEX (10% supply). Sin dumping inmediato.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:600;color:var(--red);">Marketers</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Gestión de Frentes 1–4. Campañas virales, Jungle Arena, comunidad, dashboard de Vault como narrativa</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Desembolso por hitos verificables on-chain. Capital de $800K financiado desde Vault Sociedad Etapa 1.</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 8px;font-weight:600;color:var(--text);">Developers</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">Smart contracts 4 Motores. LUKAI v3.1. Jaguar Shield. Auditoría (Ottersec/Halborn). App LUKASH</td>
+            <td style="padding:7px 8px;color:var(--text-dim);">$400K (50% de $800K Fase 1). Desembolso lineal por hitos técnicos. Escalamiento financiado por Vault Sociedad en Fases 2–3.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JAGUAR LOCK MECHANISM -->
+  <div style="background:var(--card);border:1px solid rgba(155,107,204,0.35);margin-bottom:16px;">
+    <div style="background:rgba(155,107,204,0.08);border-bottom:1px solid rgba(155,107,204,0.25);padding:12px 20px;display:flex;align-items:center;gap:10px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);"></div>
+      <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;">Jaguar Lock — Mecanismo de Vesting y Activación del Vault Sociedad</span>
+    </div>
+    <div style="padding:20px 22px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:16px;">
+        <div style="background:var(--surface);border:1px solid var(--border);padding:14px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Hito de Activación</div>
+          <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--purple);margin-bottom:4px;">K ≥ $30M</div>
+          <div style="font-size:10px;color:var(--text-dim);">KASH Core alcanza $30M USD — <strong>o</strong> transcurren 12 meses desde TGE. Lo primero que ocurra.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:14px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Periodo de Liberación</div>
+          <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--amber);margin-bottom:4px;">48 meses</div>
+          <div style="font-size:10px;color:var(--text-dim);">Liberación lineal del capital principal de la Sociedad. Una vez cumplido el hito de activación.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:14px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Flujo de Dividendos</div>
+          <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--green);margin-bottom:4px;">Mes 13+</div>
+          <div style="font-size:10px;color:var(--text-dim);">Todos los fees del componente KASH Sociedad se vuelven líquidos y directos. Flujo constante a perpetuidad.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:14px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Desembolso Capital</div>
+          <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--gold);margin-bottom:4px;">Por Hitos</div>
+          <div style="font-size:10px;color:var(--text-dim);">$800K Fase 1 liberados linealmente por hitos técnicos y de Vault verificables on-chain. Sin uso discrecional.</div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Línea de tiempo Jaguar Lock — Desde TGE hasta distribución perpetua</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);margin-bottom:4px;">DÍA 1</div>
+          <div style="font-size:9px;color:var(--text-dim);">TGE. Motor A activo. Vault empieza a crecer. Jaguar Lock inicia.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--blue);margin-bottom:4px;">DÍA 30–90</div>
+          <div style="font-size:9px;color:var(--text-dim);">Supply cae 10B → 3.3B. KOLs vesting 6–12 meses. LP Fundador lock 365d activo.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--blue);margin-bottom:4px;">MES 3–6</div>
+          <div style="font-size:9px;color:var(--text-dim);">App lanzada. Motor B0 + Motor D activos. K(t) avanza hacia $25M.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);margin-bottom:4px;">MES 6–12</div>
+          <div style="font-size:9px;color:var(--text-dim);">K ≥ $25M → Motor B2 activo (86.1% prob. antes de mes 24). Hito público.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(155,107,204,0.5);border-top:2px solid var(--purple);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--purple);margin-bottom:4px;">MES 12</div>
+          <div style="font-size:9px;color:var(--text-dim);">Jaguar Lock activa si K ≥ $30M o 12 meses. Lo primero que ocurra.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(61,170,107,0.5);border-top:2px solid var(--green);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--green);margin-bottom:4px;">MES 13+</div>
+          <div style="font-size:9px;color:var(--text-dim);">Dividendos Sociedad líquidos y perpetuos. 30% de cada fee KASH distribuido a socios.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(61,170,107,0.5);border-top:2px solid var(--green);padding:10px 8px;text-align:center;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--green);margin-bottom:4px;">MES 13–60</div>
+          <div style="font-size:9px;color:var(--text-dim);">Liberación lineal 48 meses del capital principal. $LUKA = acción preferente en Etapa 3.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="info-box purple" style="margin-top:0;">
+          <span class="info-hl">Desembolso por hitos — Transparencia total</span>
+          <p>El capital de <span class="hl">$800,000 USD de Fase 1</span> no se libera en un solo pago. Se desembolsa linealmente conforme se cumplen hitos de desarrollo técnico y crecimiento del Vault verificables on-chain. <span class="hl">Elimina el riesgo de uso discrecional del capital</span> para todos los socios e inversionistas.</p>
+        </div>
+        <div class="info-box green" style="margin-top:0;">
+          <span class="info-hl">Sostenibilidad sin VCs — Vault Sociedad como fuente</span>
+          <p>El escalamiento de Fase 2 (<span class="hl">$6.5M</span>) y Fase 3 (<span class="hl">$12M</span>) se financia exclusivamente desde el Vault Sociedad acumulado en Etapa 1. <span class="hl">Sin rondas VC externas. Sin dilución de socios fundadores.</span> La infraestructura crece en proporción directa al éxito del protocolo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VAULT CORE COMPOSITION TITLE -->
+  <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:10px;">Composición interna del Vault KASH Core — Destino del 35% Vault Layer de cada motor</div>
+  <div class="vault-comp">
+    <div class="vc-cell">
+      <div class="vc-pct">35%</div>
+      <div class="vc-name">cBTC (Bitcoin nativo)</div>
+      <div style="font-size:9px;color:var(--text-faint);margin-bottom:4px;">cbBTC · Sin Wormhole · Sin bridge</div>
+      <div class="vc-yield" style="color:var(--text-faint);">Yield: 0% + apreciación</div>
+      <div class="vc-risk">Riesgo bridge: NINGUNO</div>
+      <div class="vc-risk">Capa 3: Lock Tridente</div>
+    </div>
+    <div class="vc-cell">
+      <div class="vc-pct">20%</div>
+      <div class="vc-name">SOL/LST (JitoSOL + mSOL)</div>
+      <div style="font-size:9px;color:var(--text-faint);margin-bottom:4px;">Anti-MEV · Yield productivo</div>
+      <div class="vc-yield">Yield: 6–8% APY</div>
+      <div class="vc-risk">JitoSOL: alineado Jaguar Shield</div>
+    </div>
+    <div class="vc-cell">
+      <div class="vc-pct">15%</div>
+      <div class="vc-name">SOL (nativo)</div>
+      <div style="font-size:9px;color:var(--text-faint);margin-bottom:4px;">Liquidez operativa · Gas</div>
+      <div class="vc-yield" style="color:var(--text-faint);">Yield: 0% + apreciación</div>
+      <div class="vc-risk">Correlación BTC: 0.80</div>
+    </div>
+    <div class="vc-cell">
+      <div class="vc-pct">25%</div>
+      <div class="vc-name">USDC Reserva (Capa 1)</div>
+      <div style="font-size:9px;color:var(--text-faint);margin-bottom:4px;">Siempre líquido · Sin conversión</div>
+      <div class="vc-yield" style="color:var(--text-faint);">Yield: 0% (liquidez inmediata)</div>
+      <div class="vc-risk">Primera línea emergencias</div>
+    </div>
+    <div class="vc-cell">
+      <div class="vc-pct">5%</div>
+      <div class="vc-name">USDC Lending</div>
+      <div style="font-size:9px;color:var(--text-faint);margin-bottom:4px;">Kamino / Marginfi · &lt;24h retiro</div>
+      <div class="vc-yield">Yield: 4–8% APY</div>
+      <div class="vc-risk">Capital ocioso productivo</div>
+    </div>
+    <div class="vc-cell">
+      <div class="vc-pct">5%</div>
+      <div class="vc-name">PYTH + JTO + JUP</div>
+      <div style="font-size:9px;color:var(--text-faint);margin-bottom:4px;">~3% PYTH · 1.5% JTO · 0.5% JUP</div>
+      <div class="vc-yield" style="color:var(--text-faint);">Yield: variable</div>
+      <div class="vc-risk">Infraestructura del protocolo</div>
+    </div>
+  </div>
+
+  <div class="info-box gold" style="margin-top:8px;">
+    <span class="info-hl">Regla 70/30 del Vault — Gestión del yield</span>
+    <p>El <span class="hl">70% del yield</span> del Vault se reinvierte automáticamente para crecimiento compuesto. El <span class="hl">30% va a la Reserva Operativa en USDC (R_op)</span>, que financia las compensaciones del Motor B2 y mantiene la solvencia del sistema. Si R_op cae por debajo del 20% de capacidad proyectada (UCR), LUKAI activa <span class="hl">Modo Recarga Forzada: 15% del yield semanal a USDC hasta recuperar el nivel.</span></p>
+  </div>
+
+  <!-- ══ CICLO DE VIDA DE LOS MOTORES ══════════════════════════ -->
+  <div class="section-title">7 · CICLO DE VIDA — ACTIVACIÓN SECUENCIAL POR ETAPA</div>
+  <div class="lifecycle">
+    <div class="lc-cell">
+      <div class="lc-num">ETAPA 0</div>
+      <div class="lc-name" style="color:var(--text-faint);">Pre-lanzamiento</div>
+      <div class="lc-motors">Ningún motor activo<br/>Auditoría · Vesting<br/>KYC · 4 Frentes listos</div>
+    </div>
+    <div class="lc-cell">
+      <div class="lc-num">ETAPA 1</div>
+      <div class="lc-name" style="color:var(--gold);">Génesis · TGE</div>
+      <div class="lc-motors"><strong style="color:var(--gold);">Motor A activo</strong><br/>Fee 4% · Vault crece<br/>LP Fundador 365d lock</div>
+    </div>
+    <div class="lc-cell">
+      <div class="lc-num">ETAPA 2A</div>
+      <div class="lc-name" style="color:var(--blue);">App · Motor B0</div>
+      <div class="lc-motors"><strong style="color:var(--gold);">Motor A</strong> + <strong style="color:var(--blue);">Motor B0</strong><br/>+ <strong style="color:var(--purple);">Motor D</strong><br/>Fee 2.5% · K &lt; $25M</div>
+    </div>
+    <div class="lc-cell">
+      <div class="lc-num">ETAPA 2B</div>
+      <div class="lc-name" style="color:var(--gold);">Madurez · Motor B2</div>
+      <div class="lc-motors"><strong style="color:var(--gold);">A</strong> + <strong style="color:var(--blue);">B2</strong> + <strong style="color:var(--purple);">D</strong><br/>K ≥ $25M · Dividendos<br/>Mes 13+ · Throttle activo</div>
+    </div>
+    <div class="lc-cell">
+      <div class="lc-num">ETAPA 3</div>
+      <div class="lc-name" style="color:var(--green);">Soberanía · USDC</div>
+      <div class="lc-motors"><strong style="color:var(--gold);">A</strong> + <strong style="color:var(--blue);">B2</strong> + <strong style="color:var(--green);">C</strong> + <strong style="color:var(--purple);">D</strong><br/>Supply fijo 3.3B<br/>Emisión Neta Cero</div>
+    </div>
+    <div class="lc-cell">
+      <div class="lc-num">ETAPA 4</div>
+      <div class="lc-name" style="color:var(--purple);">DAO · Gobernanza</div>
+      <div class="lc-motors">Todos activos<br/>Quema suspendida<br/>Recirculación perpetua</div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<div class="doc-footer">
+  LUKASH Protocol v3.1 · Diagrama de Motores Económicos A/B/C/D · Ing. Sebastián Botero Pabón · Marzo 2026<br/>
+  Confidencial — Uso exclusivo para inversores institucionales · 5,000 iteraciones Monte Carlo · 1,825 días simulados
+</div>
+
+</body>
+</html>

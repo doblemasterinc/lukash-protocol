@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+target/            # Rust/Anchor build
+.anchor/
+test-ledger/
+
+# Secrets — NUNCA commitear
+.env
+.env.*
+!.env.example
+*.keypair.json
+**/id.json
+wallet*.json
+
+# Build
+dist/
+build/
+*.so
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Temporales
+extracted/*.tmp
