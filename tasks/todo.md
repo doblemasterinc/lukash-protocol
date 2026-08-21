@@ -1,11 +1,13 @@
 # TODO — LUKASH
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
-0. **DEVNET**: [x] Token $LUKA creado (Mint `2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr`, SPL 6 dec, 10B). [ ] **Metadata nombre/logo** vía Metaplex (hostear `brand/token-metadata/luka.json` + isotipo público → metaboss/TS firmando con wallet Playground). [ ] **Deploy del programa**: requiere **2.12 SOL** (faucet en 429; reintentar Helius RPC / otra IP). Copiar-pegar en `contracts/playground/RUNBOOK_DEVNET.md`.
-1. **Etapa 0 (continuar)**: [x] one-pager ES. [ ] traducir EN/PT, [ ] founding myth (ES/EN/PT), [ ] landing con waitlist, [ ] pitch deck (Colosseum/grants/ángeles), [ ] data room. Arrancar **Superteam Earn + grant Finternet** + preparar **Colosseum**.
-2. **Herramientas gratis de seguridad**: correr Sec3 X-Ray + Trident (fuzzing) + clippy sobre el contrato; arreglar hallazgos.
-3. **Contratos Milestone 2**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
-4. [x] **Sub-estructura del 45% "Venta"** decidida → Seed dinámico→Public (ADR-013) + fila Equipo/Fundador 2% (ADR-014).
+0. **★ AUDITORÍA PROFUNDA DE LOS MOTORES + SEGURIDAD PRE-AUDITORÍA** (prioridad de Sebastián): validar que el protocolo funcione **como se planteó** — flujos de los 4 Motores (A/B/C/D) por etapa, distribución 35/35/15/15, B0↔B2, Throttle, quema/recirculación, Vault Core/Sociedad, Jaguar Shield. Referencia visual: **`C:/Users/sbote/Documents/PROYECTO CRYPTO/lukash_flow_v6.html`** (simulación de flujos de motores por etapa que hizo Sebastián). Volver a correr herramientas gratis (Sec3 X-Ray, Trident fuzzing, clippy) sobre `contracts/playground/lib.rs`.
+1. **Análisis de recursos de LUKAI** (IA a escala): costo por usuario, arquitectura por etapas (v1 orquestador/plantillas → v2 conversacional Etapa 2A), break-even, financiado por O&M. Decidir si/cuándo activarlo (en landing quedó como mención ligera).
+2. **Landing → producción**: desplegar en Vercel + waitlist real capturando correos (Formspree o Supabase). Landing lista en `landing/index.html` (trilingüe, Artifact `6c7985dd`).
+3. **DEVNET pendiente**: [x] Token $LUKA con nombre+logo (Metaplex). [ ] Deploy del programa: requiere **2.12 SOL** (faucet 429; Helius RPC / otra IP). Ver `contracts/playground/RUNBOOK_DEVNET.md`.
+4. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
+5. **Contratos Milestone 2**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
+6. [x] **Sub-estructura del 45% "Venta"** decidida → Seed dinámico→Public (ADR-013) + fila Equipo/Fundador 2% (ADR-014).
 
 
 ## Sesión actual (2026-08-19) — Setup + Auditoría

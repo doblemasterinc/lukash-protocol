@@ -33,3 +33,12 @@ No soporta `--enable-metadata` ni `--program-2022`. Token se crea clásico SPL; 
 
 ## 2026-08-20 (sesión 3) — Economía de fundador en 3 capas (no pedirle a un vehículo lo que no da)
 Cross-proyecto (cripto propia): separar (1) **O&M** = ingreso por trabajar (corto plazo), (2) **tokens de equipo** vesteados = upside del token + gobernanza (largo), (3) **equity/Vault** = patrimonio del negocio (largo). Los tokens de equipo NO son ingreso temprano (van con cliff). Un fundador con 0% de su token levanta alarma en ángeles ("sin piel en el juego"): mejor bolsa pequeña, transparente y muy vesteada. (ADR-014.)
+
+## 2026-08-21 (sesión 4) — Copy de un proyecto cripto no debe atacar "la cripto"
+Decir "la cripto es un casino" siendo nosotros cripto es autogol. El casino son los **memes** y el ruido de miles de proyectos sin valor / difíciles de entender — de ahí nos distinguimos. Regla: criticar el ruido (memes/hype), nunca la categoría a la que pertenecemos.
+
+## 2026-08-21 (sesión 4) — Landing juvenil: nivel de detalle ≠ investor deck
+En una landing de captación (público <45), el tokenomics pesado y la composición exacta del Vault abruman y confunden. Mostrar solo "qué hay dentro" (activos, no %). El detalle (proyecciones, Vault Sociedad, cómo se alinea el equipo) va en litepaper/data room. Cuidado: explicar el 2% del equipo vía "conserva parte del Vault" puede contradecir "la Reserva es común de todos".
+
+## 2026-08-21 (sesión 4) — Costo de IA a escala: planear antes de prometer
+Una IA conversacional (LUKAI) para muchos usuarios cuesta inferencia × escala. Viable si: 80% de consultas por plantilla/reglas (sin LLM), modelos baratos (Gemini Flash/Groq) para lo abierto, caché+rate-limits, y financiado por el bucket O&M (escala con el uso). Escalonar v1 orquestador → v2 conversacional. No sobre-prometer en material público hasta tener el break-even.
