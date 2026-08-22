@@ -22,5 +22,9 @@ build/
 Thumbs.db
 *.log
 
+# Python
+__pycache__/
+*.pyc
+
 # Temporales
 extracted/*.tmp
