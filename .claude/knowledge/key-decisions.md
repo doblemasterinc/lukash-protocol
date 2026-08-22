@@ -108,6 +108,45 @@ por trabajar (corto plazo); (2) **Equipo 2%** = upside del token + voz en DAO (l
 Sociedad ≥10% del 30%** = patrimonio del negocio (largo). Se descartó 0% (pureza fair-launch) por la señal de
 "sin piel en el juego" que incomoda a ángeles/Colosseum. Aplicado en v4.3 (tabla §supply + vesting).
 
+## ADR-015: Jaguar Shield — restauración del Seguro Anti-Exploit + Tridente 3-de-3 + auditor desacoplado (2026-08-21) — Aprobado por Sebastián
+Consolida 4 decisiones tras arqueología del historial v1.0→v4.2 (ver `audits/HISTORIAL_JAGUAR_SHIELD.md`):
+
+**(1) Seguro Anti-Exploit restaurado con condiciones de v1.0/v4.1** (la v4.2 canónica las había perdido y mutado "1×/12 meses" en "renovación anual", que ya no significa lo mismo):
+- Cobertura: **hasta 5% del valor total del Vault**
+- Frecuencia: **máximo 1 evento cada 12 meses**
+- **Activo desde Etapa 2B** (K ≥ K_min $25M, Motor B2 activado on-chain) — condición on-chain, no calendario. Alinea el seguro con el momento en que la cobertura tiene sentido económico (5% de $25M+ = ≥$1.25M) y cubre el tramo estadísticamente más vulnerable de un protocolo DeFi. Descarta "año 1" (ambiguo) y "solo Etapa 3+" (deja sin defensa el tramo vulnerable).
+- **Desde Etapa 4 (DAO):** el control pasa a la comunidad, que redefine estas reglas.
+- **NO hay "5% de retiro por día"** — ese concepto nunca existió en tu documentación, fue un artefacto del informe cuantitativo que el análisis previo arrastró por error.
+
+**(2) Tridente Multisig 3-de-3 ratificado** (introducido en v2.3, se mantiene). Es la firma para: activar Capa 3 (cBTC Reserva Profunda), cancelar Circuit Breaker LP, modificar K_min. Los 3 firmantes concretos = **decisión pendiente**, se define pre-TGE.
+
+**Patrón de implementación aprobado (2026-08-21):** el Tridente se **construye completo pero nace INACTIVO** (`tridente_activated = false`), con toda la lógica del 3-de-3 codificada, testeada y auditable desde el inicio. Mientras esté inactivo, cualquier operación que lo requiera falla con `TridenteNotActivated`. Instrucción one-way `activate_tridente(pk1, pk2, pk3)` que solo la authority actual puede llamar, con validación de pubkeys distintas y no-default. **Candado estructural:** el contrato **rechaza el paso a Etapa 2** si el Tridente no está activado (`require!(tridente_activated, TridenteRequiredForStage2)`) — el propio contrato fuerza la activación pre-TGE, sin depender de memoria humana. En devnet Milestone 1-2 se opera en Etapa 1 (Génesis) con Tridente inactivo — Sebastián como authority única.
+
+**(3) Auditor externo desacoplado.** Las menciones a "Halborn / OtterSec" que arrastraba la documentación desde v2.1 no fueron decisión formal — eran sugerencias en tablas de próximos pasos. Se retiran; queda **"auditor(a) externa a cotizar pre-TGE"** (Halborn, OtterSec, Sec3, Zellic, Neodyme o similar). La cotización real irá en un ADR de contratación cuando se decida.
+
+**(4) Regla de higiene documental:** la v4.2 canónica perdió/mutó decisiones tuyas de v1.0 y v4.1. Cuando algo en v4.2/v4.3 se sienta raro o ambiguo, contrastar con v1.0 y v4.1 antes de dar por buena la canónica. Se anota en `learned-rules.md`.
+
+**(5) Mint del token: Token-2022 con Transfer Hook aprobado (2026-08-21) — Aprobado por Sebastián.** El token de mainnet será **Token-2022** (no SPL clásico) para que el Jaguar Shield (Anti-Whale + Jaguar Exit Fee) se aplique **en cada transferencia on-chain**, imposible de evadir vendiendo en otro DEX. Sin esto, el value prop anti-dump quedaría vacío. **Implicaciones operativas:**
+- El mint devnet actual (`2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr`) es SPL clásico y **se mantiene solo para pruebas Milestone 1**. El mint de mainnet será nuevo (Token-2022).
+- Validar antes del TGE: compatibilidad Meteora (LP), Jupiter (routing), CEXs objetivo. Solana Foundation ha empujado adopción Token-2022 desde 2024 y el soporte hoy es amplio (Jupiter y Meteora sí soportan).
+- El transfer hook implementa: Jaguar Exit Fee dual (precio<0.7×EMA30 AND venta>0.3% supply/hora) + Anti-Whale por % del pool (ADR-012) + verificación de exenciones (ver punto 6).
+
+**(6) Exenciones canónicas del Jaguar Shield (Anti-Whale + Exit Fee) — de v4.1 §9.1-9.2, ratificadas:**
+- **Swaps internos del Motor D** (operaciones dentro del protocolo, no son "ventas de verdad").
+- **Staking activo** (holders comprometidos).
+- **LP Comprometido en lock activo** (proveen liquidez, no la sacan).
+- **LP Fundador 365d** (lock máximo, incentivo estructural).
+- **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado — el MM debe estar aprobado por Tridente 3-de-3 para figurar en la lista de exentos).
+- **Nivel Jaguar de Aura** (Aura ≥10,000, el pináculo — ADR-005 y C10). Antes se llamaba "Emperor"; migrado a "Jaguar" por ADR-002/012.
+- **KOLs no tienen exención Anti-Whale/Exit Fee.** El mecanismo que los alinea es distinto: reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear (aunque el Anti-Whale sí les aplicaría si lograran vender por encima del umbral, lo cual es improbable con vesting escalonado). Esa es la razón por la que en el manual `specs/05` los KOLs se pagan en tokens vesteados, nunca cash — el vesting hace redundante una exención explícita.
+
+**(7) Auditoría externa vía subsidios — ratificado.** No comprometemos gasto directo. La ruta primaria (ya documentada en `contracts/AUDIT_READINESS.md`) es: (a) herramientas gratis pre-cotización (Sec3 X-Ray, Trident fuzzing, clippy); (b) **subsidio Areta $1M** vía Colosseum fast-track; (c) grants Solana Foundation / Superteam Instagrants; (d) recién si nada anterior alcanza, boutique paga $5-20K o Immunefi bug bounty. **Sin ADR de contratación hasta cotización real.**
+
+Aplicado: parche Protocolo v4.3 §9 · corrección `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` (eliminado el "5%/día" inventado) · `tasks/todo.md` actualizado.
+
+## ADR-016: Drenaje de cola en todos los modos + hard-stop ENZ (2026-08-22) — Aprobado por Sebastián
+**Evolución consciente** del diseño original (v2.1→v4.3 decían "al regresar a NORMAL" / "bono de deflación futura"). Razón del cambio: en un bear prolongado (2+ años), la cola se acumula tanto que al normalizar el drenaje de 10%/sem tardaría meses en limpiarla — riesgo de acumulación excesiva. La quema inmediata por tx (25-100% del tramo LP) ya ocurre en todos los modos; lo nuevo es que la cola también drena siempre. Escala geométrica: ACEL 25%/sem · NORMAL 10% · CONS 5% · DEF 2%. El "bono de deflación futura" sigue existiendo (la cola crece en bear porque el inflow supera el drenaje), solo es de menor magnitud. **Hard-stop ENZ:** toda la maquinaria de quema se apaga definitivamente cuando `supply ≤ 3.3B` (alineado con todas las versiones del protocolo). La cola se congela con su saldo residual (destino = DAO Etapa 4). Supply NUNCA baja de 3.3B. Spec `07-d`.
+
 ## ADR-P01: Vault KASH Core 100% Solana-nativo — composición RESUELTA (Protocolo v4.3)
 Composición canónica (suma 100%): cBTC 35% · SOL 15% · SOL/LST 20% · USDC reserva 25% · USDC lending 5%.
 Los oráculos (PYTH/Switchboard/Jupiter) son **infraestructura operativa (O&M), no reserva** (resuelve la

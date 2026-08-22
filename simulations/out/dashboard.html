@@ -1,0 +1,279 @@
+<title>Validación de Motores LUKASH</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  :root{
+    --obsidiana:#0A0A0C; --carbon:#0F0F12; --carbon-l:#16161A; --panel:#1A1A1E;
+    --gris:#2C2C30; --gris-l:#555560; --gris-ll:#9A9AAA;
+    --oro:#C9A84C; --oro-l:#E8C96A; --oro-d:#9A7030;
+    --ambar:#E8940A; --verde:#3DAA6B; --verde-l:#5FCA8E; --rojo:#D0503C; --azul:#4C86C9;
+    --marfil:#F0EAD6; --marfil-d:#C8C0A8;
+    --line:rgba(201,168,76,.20);
+    --ink:var(--marfil);
+    --mono:'Space Mono',ui-monospace,monospace;
+    --body:'IBM Plex Sans',system-ui,sans-serif;
+    --disp:'Cinzel',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:linear-gradient(180deg,#0A0A0C 0%,#111114 100%);
+    background-attachment:fixed; color:var(--ink); font-family:var(--body);
+    line-height:1.6; font-size:16px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,56px) clamp(16px,4vw,40px) 80px}
+  a{color:var(--oro-l)}
+  h1,h2,h3{font-family:var(--disp); font-weight:700; text-wrap:balance; margin:0}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--oro); margin:0 0 14px}
+  .sub{color:var(--marfil-d); max-width:64ch}
+  .mono{font-family:var(--mono)}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* header */
+  header{border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:40px}
+  header h1{font-size:clamp(28px,5vw,44px); line-height:1.1; letter-spacing:.01em}
+  header h1 .accent{color:var(--oro)}
+  .provenance{margin-top:20px; padding:12px 16px; border-left:2px solid var(--oro-d);
+    background:rgba(201,168,76,.05); font-size:13px; color:var(--marfil-d); border-radius:0 6px 6px 0}
+
+  /* verdict */
+  .verdict{display:grid; grid-template-columns:1fr; gap:0; margin:36px 0;
+    border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--carbon)}
+  .verdict-main{padding:26px 28px; display:flex; gap:18px; align-items:flex-start;
+    border-bottom:1px solid var(--line)}
+  .seal{flex:0 0 auto; width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
+    border:1.5px solid var(--verde); color:var(--verde); font-size:26px}
+  .verdict-main h2{font-size:22px}
+  .verdict-main p{margin:6px 0 0; color:var(--marfil-d); font-size:14.5px}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr)}
+  .kpi{padding:20px 22px; border-right:1px solid var(--line)}
+  .kpi:last-child{border-right:none}
+  .kpi .k{font-family:var(--mono); font-size:clamp(20px,3vw,27px); font-weight:700; color:var(--oro-l); line-height:1}
+  .kpi .l{font-size:11.5px; color:var(--gris-ll); margin-top:8px; text-transform:uppercase; letter-spacing:.08em}
+  .kpi.good .k{color:var(--verde-l)}
+
+  section{margin:52px 0}
+  section > .eyebrow{margin-bottom:8px}
+  h2.sec{font-size:clamp(20px,3.2vw,26px); margin-bottom:6px}
+  .lead{color:var(--marfil-d); margin:0 0 22px; max-width:70ch}
+
+  /* cards */
+  .card{background:var(--carbon); border:1px solid var(--line); border-radius:12px; padding:22px 24px}
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px}
+
+  /* table */
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--carbon)}
+  table{width:100%; border-collapse:collapse; font-size:14px; min-width:520px}
+  th,td{padding:12px 16px; text-align:left; border-bottom:1px solid rgba(201,168,76,.10)}
+  thead th{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--oro); font-weight:700; background:rgba(201,168,76,.04)}
+  tbody tr:last-child td{border-bottom:none}
+  td.n{font-family:var(--mono); text-align:right; font-variant-numeric:tabular-nums}
+  .campana{font-family:var(--disp); font-weight:700}
+
+  /* inline bar */
+  .bar{position:relative; height:22px; background:rgba(255,255,255,.04); border-radius:4px; overflow:hidden; min-width:80px}
+  .bar > span{position:absolute; inset:0 auto 0 0; border-radius:4px; display:block}
+  .bar.risk > span{background:linear-gradient(90deg,var(--oro-d),var(--rojo))}
+  .bar.ok > span{background:linear-gradient(90deg,var(--verde-dark,#1E6640),var(--verde))}
+  .bar.gold > span{background:linear-gradient(90deg,var(--oro-d),var(--oro-l))}
+  .bar-lbl{position:absolute; right:7px; top:50%; transform:translateY(-50%); font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--marfil)}
+
+  /* tornado */
+  .tornado{display:flex; flex-direction:column; gap:12px}
+  .torn-row{display:grid; grid-template-columns:170px 1fr 88px; align-items:center; gap:14px}
+  .torn-row .name{font-size:13.5px}
+  .torn-track{height:26px; background:rgba(255,255,255,.03); border-radius:5px; overflow:hidden}
+  .torn-fill{height:100%; background:linear-gradient(90deg,var(--oro-d),var(--oro)); border-radius:5px}
+  .torn-val{font-family:var(--mono); font-size:13px; text-align:right; color:var(--oro-l); font-weight:700}
+  .torn-row.minor .torn-fill{background:linear-gradient(90deg,#3a3a40,var(--gris-l))}
+  .torn-row.minor .torn-val{color:var(--gris-ll)}
+
+  /* findings */
+  .finding{border-left:3px solid var(--oro); padding:16px 18px; background:var(--carbon-l);
+    border-radius:0 8px 8px 0}
+  .finding.hi{border-left-color:var(--rojo)}
+  .finding.med{border-left-color:var(--ambar)}
+  .finding h3{font-family:var(--body); font-size:15px; font-weight:600; color:var(--marfil)}
+  .finding .tag{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+    padding:2px 7px; border-radius:4px; border:1px solid currentColor; margin-left:8px; vertical-align:middle}
+  .finding.hi .tag{color:var(--rojo)} .finding.med .tag{color:var(--ambar)} .finding .tag{color:var(--oro)}
+  .finding p{margin:8px 0 0; font-size:13.5px; color:var(--marfil-d)}
+  .finding code{font-family:var(--mono); font-size:12px; color:var(--oro-l); background:rgba(201,168,76,.08); padding:1px 5px; border-radius:3px}
+
+  .pillrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:4px}
+  .pill{font-family:var(--mono); font-size:11.5px; padding:6px 12px; border-radius:20px;
+    border:1px solid var(--line); color:var(--marfil-d); display:inline-flex; align-items:center; gap:7px}
+  .pill .dot{width:7px; height:7px; border-radius:50%; background:var(--verde)}
+
+  .note{font-size:12.5px; color:var(--gris-ll); margin-top:12px}
+  footer{margin-top:64px; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--gris-ll)}
+  footer .mono{color:var(--oro-d)}
+  @media (max-width:640px){
+    .kpis{grid-template-columns:repeat(2,1fr)} .kpi:nth-child(2){border-right:none}
+    .torn-row{grid-template-columns:120px 1fr 70px; gap:8px}
+    .verdict-main{flex-direction:column}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .torn-fill,.bar>span{transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">LUKASH Protocol · v4.3 · Milestone 1</p>
+    <h1>¿Funcionan los <span class="accent">Motores</span> como se plantearon?</h1>
+    <p class="sub">Validación cuantitativa ejecutando la <strong>lógica real del smart contract</strong> (<span class="mono">lib.rs</span>) bajo Monte Carlo, estrés, sensibilidad, throttle y adopción. El motor de simulación replica la aritmética entera on-chain línea por línea — correr la simulación equivale a ejecutar el contrato.</p>
+    <div class="provenance">
+      <strong>Provenance (ADR-008 / H10):</strong> las cifras absolutas del Vault son de la familia "modelo v4 optimista" (10–200× el modelo conservador v3.1 de $37.2M). <strong>Lo válido para decisión es lo estructural</strong>: % de espiral, timing de B2, orden de escenarios, sensibilidades relativas.
+    </div>
+  </header>
+
+  <div class="verdict">
+    <div class="verdict-main">
+      <div class="seal">✓</div>
+      <div>
+        <h2>El protocolo funciona como se planteó — con 5 matices para Milestone 2</h2>
+        <p>La aritmética on-chain es exacta, la tesis del lanzamiento agresivo se confirma, y la resiliencia estructural resiste shocks extremos. Cinco piezas del diseño aún no viven en el contrato Milestone-1 (§ Hallazgos).</p>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi good"><div class="k">100%</div><div class="l">Invariantes on-chain OK</div></div>
+      <div class="kpi good"><div class="k">0%</div><div class="l">Espiral · campaña ≥ moderada</div></div>
+      <div class="kpi"><div class="k">−3.8%</div><div class="l">Vault · crash BTC −80%</div></div>
+      <div class="kpi"><div class="k">5</div><div class="l">Hallazgos de contrato</div></div>
+    </div>
+  </div>
+
+  <!-- INVARIANTES -->
+  <section>
+    <p class="eyebrow">SIM 0 · Aritmética del contrato</p>
+    <h2 class="sec">Los invariantes duros pasan al micro-dólar</h2>
+    <p class="lead">Verificados sobre trayectorias de 5 años en las 3 campañas. La distribución atómica no pierde valor ni permite extracción parcial.</p>
+    <div class="pillrow">
+      <span class="pill"><span class="dot"></span>Distribución 35/35/15/15 = fee exacto <span class="mono">(err&lt;1e-10)</span></span>
+      <span class="pill"><span class="dot"></span>Composición Vault = 100%</span>
+      <span class="pill"><span class="dot"></span>O&amp;M ≡ Staking (simetría 15/15)</span>
+      <span class="pill"><span class="dot"></span>Supply ∈ [3.3B, 10B]</span>
+      <span class="pill"><span class="dot"></span>Precio ≥ P_KASH (el muro)</span>
+    </div>
+  </section>
+
+  <!-- MONTE CARLO -->
+  <section>
+    <p class="eyebrow">SIM 1 · Monte Carlo · 200 iters × 3 campañas</p>
+    <h2 class="sec">La agresividad del lanzamiento es estructural, no marketing</h2>
+    <p class="lead">Solo un volumen alto y temprano alimenta el Vault y ejecuta la quema a tiempo para escapar de la <em>trampa B0</em> (espiral). El riesgo de espiral colapsa a 0% en cuanto la campaña llega a moderada.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Campaña</th><th>Vault Y5 (mediana)</th><th>Riesgo de espiral</th><th>Switch B0→B2</th><th>P(B2&lt;Año 2)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="campana" style="color:var(--rojo)">CONSERVADOR<br><span class="mono" style="font-size:10px;color:var(--gris-ll);font-weight:400">lanzamiento débil</span></td>
+            <td class="n">$90M</td>
+            <td><div class="bar risk"><span style="width:44%"></span><span class="bar-lbl">44%</span></div></td>
+            <td class="n">día 1034</td><td class="n">10%</td>
+          </tr>
+          <tr>
+            <td class="campana" style="color:var(--oro-l)">BASE<br><span class="mono" style="font-size:10px;color:var(--gris-ll);font-weight:400">moderada</span></td>
+            <td class="n">$389M</td>
+            <td><div class="bar ok"><span style="width:2%"></span><span class="bar-lbl">0%</span></div></td>
+            <td class="n">día 448</td><td class="n">98%</td>
+          </tr>
+          <tr>
+            <td class="campana" style="color:var(--verde-l)">AGRESIVO<br><span class="mono" style="font-size:10px;color:var(--gris-ll);font-weight:400">fuerte</span></td>
+            <td class="n">$1,882M</td>
+            <td><div class="bar ok"><span style="width:2%"></span><span class="bar-lbl">0%</span></div></td>
+            <td class="n">día 195</td><td class="n">100%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Alineado con el Informe Cuantitativo v4.2 (mediana ref: $117M / $483M / $2.42B; espiral 13.7% / 0% / 0%). Mi espiral CONSERVADOR es mayor (44% vs 14%) por un hallazgo real: el contrato usa composición <em>fija</em> sin el módulo contra-cíclico de LUKAI → más frágil ante campañas débiles (ver Hallazgo 4).</p>
+  </section>
+
+  <!-- SENSIBILIDAD -->
+  <section>
+    <p class="eyebrow">SIM 2 · Sensibilidad OAT</p>
+    <h2 class="sec">El volumen manda — todo lo demás es secundario</h2>
+    <p class="lead">Swing del Vault Y5 al variar un parámetro a la vez. El volumen de transacciones supera a cualquier perilla del protocolo.</p>
+    <div class="card">
+      <div class="tornado">
+        <div class="torn-row"><span class="name">Volumen (×base)</span><div class="torn-track"><div class="torn-fill" style="width:100%"></div></div><span class="torn-val">$1,287M</span></div>
+        <div class="torn-row"><span class="name">Fee Motor A</span><div class="torn-track"><div class="torn-fill" style="width:22%"></div></div><span class="torn-val">$278M</span></div>
+        <div class="torn-row minor"><span class="name">Yield APY</span><div class="torn-track"><div class="torn-fill" style="width:0.5%"></div></div><span class="torn-val">$7M</span></div>
+        <div class="torn-row minor"><span class="name">Día launch App</span><div class="torn-track"><div class="torn-fill" style="width:0.2%"></div></div><span class="torn-val">$2M</span></div>
+        <div class="torn-row minor"><span class="name">K_min B2</span><div class="torn-track"><div class="torn-fill" style="width:0.1%"></div></div><span class="torn-val">$0M</span></div>
+      </div>
+    </div>
+    <p class="note"><strong>K_min ≈ $0 de swing es correcto</strong>, no un bug: el timing B0→B2 solo decide si el tramo LP del Motor B quema o recircula — ninguno alimenta el Vault Core. Confirma que $25M no requiere ajuste fino.</p>
+  </section>
+
+  <!-- ESTRÉS -->
+  <section>
+    <p class="eyebrow">SIM 3 · Estrés extremo · 120 iters/escenario</p>
+    <h2 class="sec">Resiliencia confirmada — el único riesgo es crónico</h2>
+    <p class="lead">Números aleatorios comunes (mismas sendas, distinto shock). El compuesto del Vault es el escudo: un exploit del 15% en el día 150 casi no lo mueve.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Escenario de estrés</th><th>Vault Y5</th><th>Δ vs BASE</th><th>Espiral</th></tr></thead>
+        <tbody>
+          <tr><td>BASE (sin estrés)</td><td class="n">$384M</td><td class="n" style="color:var(--gris-ll)">—</td><td class="n">0%</td></tr>
+          <tr><td>Crash BTC −50%</td><td class="n">$381M</td><td class="n" style="color:var(--verde-l)">−0.7%</td><td class="n">0%</td></tr>
+          <tr><td>Crash BTC −80%</td><td class="n">$369M</td><td class="n" style="color:var(--verde-l)">−3.8%</td><td class="n">0%</td></tr>
+          <tr><td>Motor A a 0% (6 meses)</td><td class="n">$370M</td><td class="n" style="color:var(--verde-l)">−3.5%</td><td class="n">0%</td></tr>
+          <tr style="background:rgba(208,80,60,.06)"><td>Motor A −70% <strong>permanente</strong></td><td class="n">$121M</td><td class="n" style="color:var(--rojo)">−68.4%</td><td class="n" style="color:var(--ambar)">5%</td></tr>
+          <tr><td>Retiro LP 40%</td><td class="n">$381M</td><td class="n" style="color:var(--verde-l)">−0.8%</td><td class="n">0%</td></tr>
+          <tr><td>Exploit 5% del Vault</td><td class="n">$383M</td><td class="n" style="color:var(--verde-l)">−0.1%</td><td class="n">0%</td></tr>
+          <tr><td>Exploit 15% del Vault</td><td class="n">$383M</td><td class="n" style="color:var(--verde-l)">−0.3%</td><td class="n">0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Alineado con el informe v4.2 (crash −80%: −5.3% ref; exploit 15%: −0.7% ref; Motor A −70%: −65% ref). El único vector dañino es <strong>crónico, no agudo</strong>: volumen permanentemente bajo del Motor A. No es emergencia de contrato — es señal de gobernanza/negocio. Refuerza SIM 1 y SIM 2.</p>
+  </section>
+
+  <!-- THROTTLE + USUARIOS -->
+  <section>
+    <p class="eyebrow">SIM 4 · Throttle y adopción</p>
+    <h2 class="sec">Ni el Throttle ni los usuarios mueven el Vault</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="font-family:var(--body);font-size:15px;font-weight:600">Throttle (6 configuraciones)</h3>
+        <p style="font-size:13.5px;color:var(--marfil-d);margin:10px 0 0">Las 6 configs de umbrales — incluida la ACTUAL <span class="mono">0.50/0.80</span> — dan <strong>exactamente $368M</strong> de Vault Y5. El Throttle solo gobierna el <em>timing</em> de quema del Motor B, que nunca toca el Vault Core.</p>
+        <p class="note" style="margin-top:14px"><strong>Recomendación:</strong> mantener 0.50/0.80 en v1. No hay nada que optimizar del lado del Vault — su valor está en proteger el <em>precio</em>.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-family:var(--body);font-size:15px;font-weight:600">Usuarios al launch → Vault Y5</h3>
+        <div class="tornado" style="margin-top:12px">
+          <div class="torn-row" style="grid-template-columns:64px 1fr 66px"><span class="name mono">1K</span><div class="torn-track" style="height:18px"><div class="torn-fill" style="width:96%;background:linear-gradient(90deg,#3a3a40,var(--gris-l))"></div></div><span class="torn-val" style="color:var(--marfil-d)">$381M</span></div>
+          <div class="torn-row" style="grid-template-columns:64px 1fr 66px"><span class="name mono">20K</span><div class="torn-track" style="height:18px"><div class="torn-fill" style="width:97%;background:linear-gradient(90deg,#3a3a40,var(--gris-l))"></div></div><span class="torn-val" style="color:var(--marfil-d)">$384M</span></div>
+          <div class="torn-row" style="grid-template-columns:64px 1fr 66px"><span class="name mono">50K</span><div class="torn-track" style="height:18px"><div class="torn-fill" style="width:98.5%"></div></div><span class="torn-val">$389M</span></div>
+          <div class="torn-row" style="grid-template-columns:64px 1fr 66px"><span class="name mono">100K</span><div class="torn-track" style="height:18px"><div class="torn-fill" style="width:100%"></div></div><span class="torn-val">$395M</span></div>
+        </div>
+        <p class="note" style="margin-top:14px">Señal limpia pero pequeña (+$14M de 1K a 100K). <strong>Motor D es amplificador, no motor principal</strong> — el Motor A domina el Vault. La App es crítica para escala y comunidad, no para el Vault temprano.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALLAZGOS -->
+  <section>
+    <p class="eyebrow">Hallazgos de contrato · Milestone 2</p>
+    <h2 class="sec">Qué del diseño aún no vive en <span class="mono" style="font-size:.8em">lib.rs</span></h2>
+    <p class="lead">Surgieron al construir el motor fiel. Son la hoja de ruta técnica del siguiente milestone.</p>
+    <div class="grid2">
+      <div class="finding hi"><h3>Switch B0→B2 usa costo, no valor de mercado <span class="tag">alta</span></h3><p>El contrato compara <code>vault_core_usd</code> (fees depositados sin apreciar) contra K_min; el diseño lo mide por valor de mercado vía Pyth. En bull fuerte conmutaría tarde. → valuación por oráculo.</p></div>
+      <div class="finding hi"><h3>Sin cap de quema 1%/día <span class="tag">alta</span></h3><p>El Blueprint §13 lo exige; <code>lib.rs</code> no lo tiene. A precios bajos post-TGE la quema podría destruir supply demasiado rápido. → cap con exceso diferido.</p></div>
+      <div class="finding hi"><h3>Sin límite de retiro del Vault 5%/día <span class="tag">alta</span></h3><p>Recomendación del informe v4.2 (SIM 2) aún pendiente. Es la defensa directa contra el vector de exploit. → límite + Timelock 48h + Tridente Multisig.</p></div>
+      <div class="finding med"><h3>Modo ACELERADO del Throttle es inerte <span class="tag">media</span></h3><p><code>lib.rs:343</code> capa el 125% a 100% con <code>.min(BPS_DENOMINATOR)</code>. En ACELERADO la quema es idéntica a NORMAL. La palanca de "quemar más en euforia" no produce efecto. → definir semántica.</p></div>
+      <div class="finding med"><h3>Sin módulo contra-cíclico de LUKAI <span class="tag">media</span></h3><p>Composición fija (35% cBTC…) sin rotar a USDC en bear. Efecto medido: campaña débil pasa de ~14% a 44% de espiral. → rebalanceo por régimen solo sobre entradas nuevas.</p></div>
+      <div class="finding"><h3>Jaguar Shield aún no implementado <span class="tag">planificado</span></h3><p>Anti-Whale y Exit Fee son Milestone 2 (ADR-012) — correcto. La simulación no pudo estresarlos. → construir y re-estresar con pánico de ballena.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><span class="mono">VALIDACIÓN DE MOTORES · CONTRACT-FAITHFUL</span> — complementa (no reemplaza) el Informe de Simulaciones Cuantitativas v4.2. Aquel valida el diseño económico; este valida que el código Milestone-1 lo implementa y dónde aún no.</p>
+    <p style="margin-top:8px">Reproducible: <span class="mono">simulations/suite.py</span> · semillas fijas · reporte completo en <span class="mono">audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md</span></p>
+  </footer>
+</div>

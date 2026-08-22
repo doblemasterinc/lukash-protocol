@@ -57,6 +57,43 @@
 - **Próxima sesión (prioridad de Sebastián):** (1) **auditoría profunda de los MOTORES + seguridad pre-auditoría** — validar que el protocolo funcione como se planteó; ref. visual `PROYECTO CRYPTO/lukash_flow_v6.html`. (2) análisis de recursos de LUKAI (IA a escala). (3) desplegar landing en Vercel + waitlist real. (4) deploy del programa (2.12 SOL).
 - **Protocolo v4.3 finalizado** (10 correcciones de auditoría aplicadas C1-C10). Auditoría interna completa; auditoría externa (Halborn/OtterSec) queda como candado pre-mainnet.
 
+## 2026-08-21 (sesión 5) — Validación de motores por simulación FIEL AL CONTRATO
+- **Giro de enfoque (Sebastián):** no contrastar contra `lukash_flow_v6.html` (visualización v4.2 con Vault al 105%), sino **construir simulaciones que respondan si el protocolo funciona motor por motor**. Alinear con las simulaciones previas (no reinventar): `docs/protocolo/lukash_mc_v4.py`, informe `docs/analisis/LUKASH_Informe_simulaciones cuantitativas.pdf` (4 SIMs: sensibilidad/estrés/usuarios/throttle).
+- **Suite nueva `simulations/`** (motor fiel al contrato): `engine.py` = réplica *línea por línea* de la aritmética entera de `contracts/playground/lib.rs`. `economic.py` (precio=P_KASH×prima, Markov+halving, vesting — portado del modelo v4). `trajectory.py` (una trayectoria de 5 años conduciendo el contrato). `suite.py` (4 SIMs + invariantes). `market.py`/`run.py` = primer intento descartado (impacto AMM colapsaba al piso). README completo.
+- **Aporte vs informe previo:** aquel validó el DISEÑO económico (float); esta suite valida (a) que el CÓDIGO implementa el diseño (invariantes on-chain exactos) y (b) que las conclusiones estructurales se sostienen con la lógica on-chain real.
+- **Resultados (25 min, semillas fijas):**
+  - **SIM 0 invariantes:** TODOS OK. Distribución 35/35/15/15 cierra al micro-dólar (err<1e-10), O&M≡Staking, supply∈[3.3B,10B], precio≥P_KASH.
+  - **SIM 1 Monte Carlo (tesis del lanzamiento agresivo CONFIRMADA):** CONSERVADOR espiral 44% / BASE 0% / AGRESIVO 0%. B2 mediana d1034/d448/d195. Vault med $90M/$389M/$1882M (ref informe $117M/$483M/$2.42B — mismo orden).
+  - **SIM 2 sensibilidad:** Volumen $1287M ≫ Fee A $278M > Yield $7M > Launch $2M > K_min $0M (neutro, correcto). Volumen = driver #1.
+  - **SIM 3 estrés:** crash BTC −80% → −3.8%, exploit 15% → −0.3%, retiro LP → −0.8%. Único dañino: Motor A −70% *permanente* → −68%. Alineado con informe.
+  - **SIM 4 throttle/usuarios:** throttle irrelevante para el Vault (6 configs = $368M idéntico; solo afecta timing de quema del Motor B, que no toca el Core). Usuarios +$14M de 1K→100K (Motor D amplificador, no motor).
+- **5 hallazgos de contrato (Milestone 2)** al construir el motor fiel: (1) modo ACELERADO inerte (`lib.rs:343` capa 125%→100%); (2) switch B0→B2 usa costo, no valor de mercado (falta oráculo Pyth); (3) sin cap de quema 1%/día (spec §13); (4) sin módulo contra-cíclico LUKAI (composición fija → campaña débil más frágil, explica espiral 44% vs 14%); (5) Jaguar Shield pendiente (correcto, ADR-012). + confirmado: falta límite retiro 5%/día del Vault.
+- **Entregables:** `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` (reporte) + Artifact dashboard on-brand (`19a8160e`, obsidiana/oro, Cinzel/IBM Plex/Space Mono).
+- **Bloqueado local:** cargo/clippy/Sec3/Trident (requieren toolchain Solana) — el re-run de herramientas estáticas sobre `lib.rs` se hace en Playground/CI, no local.
+- **Próxima sesión:** priorizar hallazgos de contrato en spec de Milestone 2; análisis LUKAI (IA a escala); landing a producción (Vercel+waitlist); deploy del programa (2.12 SOL).
+
+## 2026-08-21 (sesión 5, continuación) — ADR-015 + specs Milestone 2 (07-a a 07-f)
+- **Arqueología documental** (`audits/HISTORIAL_JAGUAR_SHIELD.md`): rastreo v1.0 → v4.2 confirmó que Seguro Anti-Exploit original tenía 4 condiciones (5% + 1×/12m + activo tras año 1 + DAO año 5) que la v4.2 perdió/mutó. "Tridente" es de v1.0, "3-de-3" entra en v2.3. Halborn/OtterSec eran arrastres de v2.1 sin ADR formal. El "5%/día" **no existe en ninguna versión** — fue error mío arrastrado del informe.
+- **ADR-015 aprobado por Sebastián:** (1) restaurar Seguro Anti-Exploit v1.0/v4.1 con activación desde **Etapa 2B** (opción B, condición on-chain no calendario ambiguo); (2) Tridente 3-de-3 ratificado, firmantes pendientes; (3) sacar Halborn/OtterSec, auditor a cotizar vía subsidios (Solana/Colosseum/Areta/Superteam); (4) regla de higiene documental (contrastar v4.2 con v1.0/v4.1); (5) **Token-2022 con Transfer Hook aprobado** para mainnet; (6) exenciones canónicas ratificadas (swaps Motor D, staking, LP lock, LP Fundador 365d, MMs registrados en Multisig, nivel Jaguar Aura — KOLs NO tienen exención, se alinean por vesting); (7) auditor externa vía subsidios.
+- **Tridente inactivo por defecto** (patrón aprobado): el contrato construye toda la lógica 3-de-3 pero nace con `tridente_activated = false`. Instrucción one-way `activate_tridente(pk1, pk2, pk3)`. **Candado estructural**: contrato rechaza paso a Etapa 2 si Tridente no activado — imposible ir a mainnet por olvido.
+- **6 specs Milestone 2 en `specs/07-milestone-2/`** + índice:
+  - `07-b` cap quema 1%/día con exceso a cola (reusa cola existente)
+  - `07-d` ACELERADO redefinido = drenaje 25%/sem vs 10%/sem NORMAL
+  - `07-a` **estructural**: switch B0→B2 por Pyth + token accounting real por bucket + doble candado (frescura + persistencia 7 días para one-way irreversible) + quema real vía CPI
+  - `07-e` módulo contra-cíclico EMA30/EMA90 BTC (aplica solo a nuevas entradas, Vault existente no se toca)
+  - `07-c` Jaguar Shield del Vault: Tridente inactivo + Circuit Breaker 24h + `receive_insurance_recovery` (entrada, nunca salida)
+  - `07-f` Anti-Whale + Exit Fee sobre Token-2022 transfer hook (WhaleDebt PDA modo suave; MMRegistry PDA)
+- **Superficie Milestone 2:** ~17 instrucciones (10 nuevas), ~30 constantes nuevas, 24 errores nuevos, 13 eventos nuevos. Invariantes I7-I22 (16 nuevos) validables en `simulations/suite.py`.
+- Correcciones aplicadas: `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` §6.6 + R3 (eliminado el "5%/día" inventado), `tasks/todo.md`, `learned-rules.md` (2 reglas nuevas).
+- **Próxima sesión:** empezar Sprint 1 (07-b + 07-d) o revisar y ajustar specs con Sebastián antes de código.
+
+## 2026-08-22 (sesión 6) — Revisión de specs Milestone 2 con Sebastián
+- **Spec 07-b (cap quema 1%/día) ratificada ✅** (sesión anterior).
+- **Spec 07-d ratificada ✅** con dos cambios sustanciales respecto al borrador original:
+  - **Drenaje en todos los modos del Throttle (ADR-016):** escala geométrica ACEL 25%/sem · NORMAL 10% · CONS 5% · DEF 2%. Evolución consciente del diseño original v2.1→v4.3 ("bono de deflación futura" / "al regresar a NORMAL"). Razón del cambio: en bear prolongado (2+ años) la cola acumula demasiado, dificultando la recuperación. El "bono" sigue existiendo (inflow > outflow en bear), solo de menor magnitud. Verificado contra TODAS las versiones del protocolo — el cambio se documenta como evolución, no corrección.
+  - **Hard-stop ENZ:** guardia `supply ≤ 3.3B` → toda la maquinaria de quema se apaga definitivamente, cola congelada, supply nunca baja de 3.3B. 100% alineado con todas las versiones (v1.0→v4.3).
+- **Próxima:** revisión spec 07-a (Switch B0→B2 por Pyth + Token Accounting real).
+
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.

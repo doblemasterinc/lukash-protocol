@@ -1,0 +1,840 @@
+LUKASH PROTOCOL
+
+PROTOCOLO REVISADO v2.1
+
+Arquitectura Económica Definitiva — Decisiones de Equipo Incorporadas
+
+Basado en Auditoría v1.0 + Proceso de Rediseño Colaborativo | Marzo 2026
+
++:---------------------:+:---------------------:+:---------------------:+
+| v1.0 ORIGINAL         | v2.0 + P1+P2          | v2.1 COMPLETO         |
+|                       |                       |                       |
+| 35–45%                | 60–65%                | 72–80%                |
+|                       |                       |                       |
+| prob. de éxito        | prob. de éxito        | prob. de éxito        |
+| estructural           | estructural           | estructural           |
++-----------------------+-----------------------+-----------------------+
+
+7 correcciones quirúrgicas. El 80% del diseño original se preserva
+íntegramente.
+
+RESUMEN DE DECISIONES TOMADAS
+
+Este documento refleja el protocolo LUKASH tal como quedó definido tras
+el proceso de auditoría y rediseño colaborativo. Cada propuesta fue
+discutida y aprobada por el equipo fundador. Lo que sigue es la
+arquitectura canónica del protocolo.
+
+  --------------------------------------------------------------------------
+   #   PROPUESTA                       ESTADO    DECISIÓN TOMADA
+  ---- ---------------------------- ------------ ---------------------------
+   P1  Arquitectura del Motor B:      APROBADA   B0 (quema pura) desde
+       umbral K_min + modo B0/B2                 lanzamiento App. B2
+                                                 (compensación plena) cuando
+                                                 K ≥ K_min = $25M. Sin B1.
+
+   P2  Mecánica de absorción Motor    APROBADA   35% LP del fee compra $LUKA
+       A: compra mercado + quema                 en mercado abierto
+       directa                                   (Jupiter) → quema
+                                                 inmediata. Presión de
+                                                 compra + deflación
+                                                 encadenadas.
+
+   P3  Protección LP: Circuit         APROBADA   Circuit breaker con delay
+       Breaker + LP Comprometido                 (no confiscación). LP con 4
+       con incentivos                            niveles de lock
+                                                 voluntario + rewards
+                                                 diferenciados.
+
+   P4  Vault v2.1: rebalanceo         APROBADA   USDC 30%, ETH 10%, cBTC
+       anticíclico de composición                35%, SOL 15%, LST 10%.
+       de activos                                Eliminar LINK. Rebalanceo
+                                                 gradual 90 días.
+
+   P5  Throttle Dinámico de Quema:    APROBADA   Modos: Acelerado (125%) /
+       4 modos según precio vs                   Normal (100%) / Conservador
+       EMA30                                     (60%) / Defensivo (25%).
+                                                 Diferidos en cola, no
+                                                 cancelados.
+
+   P6  Publicar vesting de tokens     APROBADA   Schedule de vesting del
+       del equipo on-chain antes                 equipo publicado on-chain.
+       del lanzamiento                           Recomendado: <10% equipo,
+                                                 cliff 18m + 36m lineal.
+
+   P7  Renombrar 'Reserva             APROBADA   Término técnico: 'Protocolo
+       Fraccionaria Inversa' a                   de Colateralización
+       terminología técnica precisa              Multiactivo (PCM)'. Marca
+                                                 KASH y narrativa de
+                                                 comunidad: sin cambios.
+  --------------------------------------------------------------------------
+
+1. MOTOR B — ARQUITECTURA DEFINITIVA
+
+Esta es la decisión más importante del proceso de rediseño. El Motor B
+opera en dos modos únicos, limpios y sin dependencias de capital
+externo. No existe un Modo B1.
+
++:--------------------------------:+:---------------------------------:+
+| MODO B0                          | MODO B2                           |
+|                                  |                                   |
+| QUEMA PURA                       | QUEMA CON COMPENSACIÓN PLENA      |
+|                                  |                                   |
+| Activo desde el lanzamiento de   | Se activa cuando K ≥ K_min ($25M) |
+| la App                           |                                   |
+|                                  | Condición: K ≥ $25M (on-chain     |
+| Condición: K < K_min ($25M)      | verificable)                      |
+|                                  |                                   |
+| - Fee 2.5% en $LUKA retenido del | - Fee 2.5% en $LUKA retenido del  |
+|   usuario                        |   usuario                         |
+|                                  |                                   |
+| - 100% de los $LUKA del fee →    | - $LUKA del fee → quema directa   |
+|   dirección null                 |   (dirección null)                |
+|                                  |                                   |
+| - Supply baja desde el día 1 de  | - Oráculo Pyth calcula valor USD  |
+|   la App                         |   de los $LUKA quemados           |
+|                                  |                                   |
+| - Vault NO recibe compensación   | - Reserva Operativa USDC cubre    |
+|   (ya crece por Motor A)         |   compensación al Vault           |
+|                                  |                                   |
+| - Costo operativo para el        | - Vault recibe activos KASH en    |
+|   sistema: CERO                  |   proporción v2.1                 |
+|                                  |                                   |
+| - Narrativa: deflación activa    | - Throttle Dinámico modula la     |
+|   desde el primer día            |   tasa según precio/EMA30         |
+|                                  |                                   |
+| Efecto acelerador indirecto:     | Evento de activación público:     |
+|                                  |                                   |
+| La quema B0 reduce supply → si   | El switch de B0 → B2 es un hito   |
+| precio se mantiene,              | on-chain visible. La comunidad lo |
+| capitalización relativa sube →   | anticipa. Es el segundo gran      |
+| más traders en DEX → más fees    | momento de celebración del        |
+| Motor A → Vault llega antes a    | protocolo.                        |
+| K_min                            |                                   |
++----------------------------------+-----------------------------------+
+
++-----------------------------------------------------------------------+
+| ¿POR QUÉ NO EXISTE EL MODO B1?                                        |
+|                                                                       |
+| Se evaluó un Modo B1 donde el capital de los inversionistas           |
+| soportaría el 30% de la compensación al Vault                         |
+|                                                                       |
+| durante la Fase 1. Se descartó por tres razones:                      |
+|                                                                       |
+| 1. El monto de soporte escala con el éxito: cuanto más usuarios tiene |
+| la App, más capital necesitan                                         |
+|                                                                       |
+| los inversionistas comprometido — paradoja de incentivos.             |
+|                                                                       |
+| 2. En Fase 1, el Vault ya crece con el Motor A. La compensación del   |
+| Motor B en esa etapa                                                  |
+|                                                                       |
+| es un beneficio marginal, no estructural.                             |
+|                                                                       |
+| 3. El capital de los inversionistas tiene más impacto como reserva    |
+| del Jaguar Shield y como                                              |
+|                                                                       |
+| LP Comprometido, donde protege la liquidez en la etapa más vulnerable |
+| del protocolo.                                                        |
+|                                                                       |
+| El B0 cumple el objetivo de Fase 1: deflación activa, sin costo, con  |
+| narrativa intacta.                                                    |
++-----------------------------------------------------------------------+
+
+1.1 Flujo Detallado Motor B — Ambos Modos
+
+  ------------------------------------------------------------------------
+      MODO B0 (K < $25M)              MODO B2 (K ≥ $25M)
+  --- ------------------------------- ------------------------------------
+   1  Usuario paga X $LUKA en App     Usuario paga X $LUKA en App (juego,
+      (juego, servicio, tx P2P)       servicio, tx P2P)
+
+   2  Contrato retiene 2.5% de X en   Contrato retiene 2.5% de X en $LUKA
+      $LUKA (fee estándar)            (fee estándar)
+
+   3  100% del fee en $LUKA →         100% del fee en $LUKA → dirección
+      dirección null → BURN           null → BURN permanente
+      permanente                      
+
+   4  FIN. Supply bajó. Vault no      Throttle Check: ¿cuál modo de
+      recibe compensación en este     mercado activo? (ver Sección 3)
+      modo.                           
+
+   5  —                               Pyth Network calcula valor USD de
+                                      los $LUKA quemados
+
+   6  —                               Según throttle: % de compensación
+                                      sale de Reserva Op. USDC
+
+   7  —                               USD extraído → Jupiter → activos
+                                      KASH v2.1 → Vault
+
+   8  —                               Si throttle CONSERVADOR/DEFENSIVO:
+                                      compensación parcial va a cola. Se
+                                      paga cuando mercado regresa a
+                                      NORMAL.
+  ------------------------------------------------------------------------
+
+1.2 Hito de Activación B0 → B2
+
++-----------------------------------------------------------------------+
+| CONDICIÓN TÉCNICA DE ACTIVACIÓN:                                      |
+|                                                                       |
+| El smart contract verifica en cada transacción del Motor B: ¿K(t) ≥   |
+| 25,000,000 USD?                                                       |
+|                                                                       |
+| • K(t) = valor total del Vault KASH Core en USD, calculado via Pyth   |
+| Network en tiempo real                                                |
+|                                                                       |
+| • Si SÍ → modo B2 activo para esa transacción                         |
+|                                                                       |
+| • Si NO → modo B0 activo para esa transacción                         |
+|                                                                       |
+| • La transición es automática, transacción a transacción, sin         |
+| intervención humana                                                   |
+|                                                                       |
+| • El primer día que K ≥ $25M se publica un evento on-chain público:   |
+| 'MOTOR B2 ACTIVADO'                                                   |
+|                                                                       |
+| NARRATIVA ESTRATÉGICA DEL HITO:                                       |
+|                                                                       |
+| El milestone de $25M en el Vault es un evento que la comunidad puede  |
+| seguir en tiempo real.                                                |
+|                                                                       |
+| Crear un dashboard público que muestre K(t) vs. K_min es una          |
+| herramienta de marketing orgánico:                                    |
+|                                                                       |
+| cada trader que compra en el DEX sabe que está contribuyendo a        |
+| acercar el switch del Motor B2.                                       |
++-----------------------------------------------------------------------+
+
+2. MOTOR A — MECÁNICA DEFINITIVA DE ABSORCIÓN
+
+La ambigüedad del diseño original sobre el origen de los $LUKA que se
+'absorbían y quemaban' quedó resuelta con un mecanismo más potente:
+compra en mercado abierto seguida de quema inmediata. Dos impactos
+positivos encadenados por fee.
+
+2.1 El Mecanismo Unificado: Compra + Quema
+
++----------------------------------+-----------------------------------+
+| Diseño v1.0 — Ambiguo            | Diseño v2.1 — Limpio y Superior   |
+|                                  |                                   |
+| El contrato 'absorbe $LUKA del   | El 35% del fee en SOL compra      |
+| protocolo' para quemarlos. No se | $LUKA en mercado abierto vía      |
+| especificaba de dónde venían     | Jupiter SDK. Los $LUKA adquiridos |
+| esos $LUKA. Circularidad         | se envían directamente a          |
+| contable no resuelta.            | dirección null.                   |
+|                                  |                                   |
+| - ¿Del LP inicial? → el mismo LP | - Sin circularidad: los $LUKA     |
+|   que se quería proteger         |   vienen del mercado              |
+|                                  |                                   |
+| - ¿De reservas internas? → no    | - Presión de compra real y        |
+|   estaban contabilizadas         |   visible on-chain                |
+|                                  |                                   |
+| - ¿Del mercado? → no estaba      | - Quema inmediata: deflación      |
+|   especificado                   |   confirmada en la misma tx       |
+|                                  |                                   |
+| Resultado: mecanismo             | - El LP no se toca: crece por     |
+| técnicamente incompleto.         |   separado con el capital inicial |
+|                                  |                                   |
+|                                  | Resultado: dos impactos positivos |
+|                                  | por cada fee de Motor A.          |
++----------------------------------+-----------------------------------+
+
+2.2 Flujo Completo Motor A v2.1
+
++-----------------------------------------------------------------------+
+| EJEMPLO: Usuario compra $LUKA con 100 SOL en DEX                      |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ▼ CAPTURA: Contrato retiene 4 SOL (4% estándar) o 2.5 SOL             |
+| (whitelist). 96 SOL ejecutan el swap.                                 |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ▼ BÚFER: Los SOL de fee se acumulan hasta umbral (~15 SOL) para       |
+| optimizar gas en Solana.                                              |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ▼ DISTRIBUCIÓN ATÓMICA (ejemplo con 4 SOL de fee):                    |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ├─ 1.40 SOL (35%) → Jupiter SDK → activos KASH según proporción v2.1  |
+| → VAULT KASH CORE                                                     |
+|                                                                       |
+| │ [45%→cBTC · 30%→USDC · 15%→SOL · 10%→LST] (proporciones aproximadas |
+| según Vault v2.1)                                                     |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ├─ 1.40 SOL (35%) → Jupiter SDK → compra $LUKA en mercado abierto     |
+|                                                                       |
+| │ → $LUKA adquiridos → dirección null → BURN PERMANENTE               |
+|                                                                       |
+| │ [EFECTO 1: presión de compra sube el precio]                        |
+|                                                                       |
+| │ [EFECTO 2: quema reduce el supply permanentemente]                  |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ├─ 0.60 SOL (15%) → Wallet O&M (gastos operativos, fees de red,       |
+| marketing)                                                            |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| └─ 0.60 SOL (15%) → Jupiter compra $LUKA del mercado → Contrato de    |
+| Staking                                                               |
+|                                                                       |
+| [Presión de compra adicional + recompensa a stakers]                  |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| EFECTOS NETOS: Supply $LUKA↓↓ | Vault↑ | Precio con soporte↑ |        |
+| Stakers recompensados                                                 |
++-----------------------------------------------------------------------+
+
++-----------------------------------------------------------------------+
+| NOTA SOBRE EL LP DEL PROTOCOLO:                                       |
+|                                                                       |
+| El 30% del capital inicial destinado al LP (en Meteora) es            |
+| independiente del Motor A.                                            |
+|                                                                       |
+| No se usa como fuente de $LUKA para quemar. Crece con la apreciación  |
+| de activos y con los fees                                             |
+|                                                                       |
+| que el propio pool genera por volumen de trading. El Motor A alimenta |
+| el LP solo de forma indirecta:                                        |
+|                                                                       |
+| al reducir el supply y generar presión de compra, aumenta el precio,  |
+| lo que mejora el valor del LP.                                        |
+|                                                                       |
+| Esta separación elimina la circularidad del diseño v1.0               |
+| definitivamente.                                                      |
++-----------------------------------------------------------------------+
+
+3. THROTTLE DINÁMICO DE QUEMA (P5)
+
+Mecanismo anti-espiral que protege la Reserva Operativa en mercados
+bajistas modulando la tasa de compensación del Motor B2 según el precio
+relativo de $LUKA. Las quemas diferidas se acumulan en cola on-chain y
+se ejecutan cuando el mercado se normaliza — nunca se cancelan.
+
+  -------------------------------------------------------------------------
+  CONDICIÓN (P_m   MODO          QUEMA MOTOR   COMPENSACIÓN   COLA DIFERIDA
+  vs EMA30)                      B2            VAULT          
+  ---------------- ------------- ------------- -------------- -------------
+  P_m > 1.2 ×      ACELERADO     125% quema    100% desde     No aplica
+  EMA30                          base          R_op           
+
+  0.8 × EMA30 ≤    NORMAL        100% quema    100% desde     No aplica
+  P_m ≤ 1.2 ×                    base          R_op           
+  EMA30                                                       
+
+  0.5 × EMA30 ≤    CONSERVADOR   60% quema     60% desde R_op 40% diferido
+  P_m < 0.8 ×                    base          inmediata      en cola
+  EMA30                                                       
+
+  P_m < 0.5 ×      DEFENSIVO     25% quema     Solo quema     75% diferido
+  EMA30                          base          directa activa en cola
+  -------------------------------------------------------------------------
+
++-----------------------------------------------------------------------+
+| EMA30 = Precio Promedio Móvil Exponencial de 30 días de $LUKA,        |
+| calculado por LUKAI vía Pyth Network.                                 |
+|                                                                       |
+| La cola de diferidos es pública on-chain. Los usuarios pueden ver     |
+| cuántas quemas están pendientes.                                      |
+|                                                                       |
+| Cuando el precio regresa a zona NORMAL, la cola se ejecuta            |
+| progresivamente (max 10% de la cola por semana).                      |
+|                                                                       |
+| Las quemas diferidas crean un 'bono de deflación futuro' que          |
+| incentiva la compra en bajistas.                                      |
+|                                                                       |
+| El Modo DEFENSIVO es el mecanismo de supervivencia del protocolo.     |
+| Preserva R_op para el largo plazo.                                    |
++-----------------------------------------------------------------------+
+
+4. VAULT KASH — COMPOSICIÓN v2.1
+
+Rebalanceo anticíclico que reduce la correlación de activos y fortalece
+el buffer de USDC para sostener el Motor B2 en mercados bajistas. El
+rebalanceo es gradual (90 días) usando el yield generado, sin liquidar
+posiciones existentes.
+
+  --------------------------------------------------------------------------
+  ACTIVO              v1.0         v2.1         CAMBIO    JUSTIFICACIÓN
+  ------------------- ------------ ------------ --------- ------------------
+  Bitcoin Nativo      45%          35%          −10%      Reducir
+  (cBTC)                                                  concentración y
+                                                          correlación
+
+  SOL (Solana)        20%          15%          −5%       Reducir
+                                                          sobreexposición a
+                                                          ecosistema propio
+
+  SOL/LST (Sanctum)   10%          10%          0%        Yield sólido —
+                                                          mantener sin
+                                                          cambios
+
+  USDC (Stablecoin)   20%          30%          +10%      Buffer anticíclico
+                                                          para Motor B2 en
+                                                          bajista
+
+  ETH (Ethereum)      0%           10%          +10%      Diversificación:
+                                                          menor correlación
+                                                          con SOL
+
+  LINK / Otros        5%           0%           −5%       Activo menor, sin
+                                                          diversificación
+                                                          real — eliminar
+  --------------------------------------------------------------------------
+
++----------------------------------+-----------------------------------+
+| Impacto en Crisis Sistémica      | Mecánica de Rebalanceo — 90 Días  |
+| Cripto −70%                      |                                   |
+|                                  | El rebalanceo no liquida          |
+| Vault v1.0:                      | posiciones actuales. Se ejecuta   |
+|                                  | usando los flujos nuevos:         |
+| - Activos correlacionados: ~75%  |                                   |
+|   del Vault                      | - Las nuevas entradas de SOL al   |
+|                                  |   Vault se convierten a ETH y     |
+| - Pérdida estimada en crisis:    |   USDC primero                    |
+|   63–68%                         |                                   |
+|                                  | - El yield semanal en exceso se   |
+| - Buffer estable disponible:     |   usa para aumentar posición USDC |
+|   $20K por cada $100K            |                                   |
+|                                  | - La reducción de cBTC se logra   |
+| Vault v2.1:                      |   no añadiendo más BTC hasta      |
+|                                  |   alcanzar 35%                    |
+| - Activos correlacionados: ~55%  |                                   |
+|   del Vault                      | - LUKAI gestiona el rebalanceo    |
+|                                  |   automáticamente                 |
+| - Pérdida estimada en crisis:    |                                   |
+|   46–52%                         | - Se publica un dashboard de      |
+|                                  |   progreso del rebalanceo         |
+| - Buffer estable disponible:     |   on-chain                        |
+|   $30K por cada $100K            |                                   |
+|                                  | Sin venta forzada. Sin slippage   |
+| Mejora: 15–17 puntos             | innecesario. Sin señales          |
+| porcentuales de resiliencia      | negativas al mercado.             |
+| adicional.                       |                                   |
++----------------------------------+-----------------------------------+
+
+5. PROTECCIÓN DEL POOL DE LIQUIDEZ (P3)
+
+El Jaguar Shield v1.0 protegía el Vault pero no el Pool de Liquidez.
+Esta es la extensión que cierra esa vulnerabilidad crítica. Dos
+mecanismos complementarios: incentivos proactivos y freno reactivo.
+
+5.1 Sistema de LP Comprometido — Incentivos por Lock Voluntario
+
+  ------------------------------------------------------------------------
+  NIVEL            LOCK          REWARD BASE   REWARD        BENEFICIO
+                   VOLUNTARIO                  ADICIONAL     EXTRA
+  ---------------- ------------- ------------- ------------- -------------
+  LP Básico        Sin lock      35% fee       —             Retiro
+                                 estándar                    inmediato
+                                                             siempre
+                                                             disponible
+
+  LP Comprometido  30 días       35% fee       +5% del pool  Badge
+  30d              voluntario                  rewards       on-chain
+                                                             'Jaguar Cub'
+
+  LP Jaguar 90d    90 días       35% fee       +12% del pool NFT Badge
+                   voluntario                  rewards       'Jaguar' +
+                                                             voto en
+                                                             parámetros
+
+  LP Fundador 365d 365 días      35% fee       +20% del pool Gobernanza
+                   voluntario                  rewards       premium +
+                                                             yield
+                                                             priority
+  ------------------------------------------------------------------------
+
++-----------------------------------------------------------------------+
+| FUENTE DE FINANCIAMIENTO DE LOS REWARDS ADICIONALES:                  |
+|                                                                       |
+| El reward adicional para LP Comprometido, Jaguar y Fundador no sale   |
+| del pool existente de fees.                                           |
+|                                                                       |
+| Se financia con una reasignación del 3% del presupuesto de O&M        |
+| mensual hacia el LP Reward Pool.                                      |
+|                                                                       |
+| Esto es sostenible porque un LP estable reduce el slippage del        |
+| protocolo, lo que aumenta el volumen                                  |
+|                                                                       |
+| de trading y por ende los fees totales — el costo del incentivo se    |
+| autofinancia con el tiempo.                                           |
++-----------------------------------------------------------------------+
+
+5.2 Circuit Breaker del Pool — Freno Reactivo
+
+  ------------------------------------------------------------------------
+  NIVEL           CONDICIÓN         ACCIÓN           OVERRIDE
+                  ACTIVADORA                         
+  --------------- ----------------- ---------------- ---------------------
+  Alerta Temprana >10% LP retirado  Notificación     —
+                  en 2 horas        pública          
+                                    on-chain. Sin    
+                                    restricción.     
+
+  Nivel 1 — Delay >15% LP retirado  Delay de 12      Tridente Multisig
+                  en 4 horas        horas en retiros puede cancelar el
+                                    pendientes       delay
+
+  Nivel 2 — Pausa >30% LP retirado  Delay de 48      Tridente + LUKAI
+                  en 24 horas       horas. Alerta    auditan el evento
+                                    pública máxima.  
+  ------------------------------------------------------------------------
+
++-----------------------------------------------------------------------+
+| PRINCIPIO FUNDAMENTAL: El circuit breaker del LP NO confisca fondos.  |
+|                                                                       |
+| Los retiros siempre se procesan — solo se introduce un delay temporal |
+| en crisis.                                                            |
+|                                                                       |
+| El objetivo es dar tiempo al mercado para estabilizarse y al Tridente |
+| para auditar el evento.                                               |
+|                                                                       |
+| Los LP Comprometido, Jaguar y Fundador no pueden retirarse durante su |
+| periodo de lock,                                                      |
+|                                                                       |
+| lo que significa que en una crisis, el free-float de LP vulnerable es |
+| menor — el circuit breaker                                            |
+|                                                                       |
+| necesita activarse con menos frecuencia precisamente porque los       |
+| incentivos de lock ya funcionaron.                                    |
++-----------------------------------------------------------------------+
+
+6. MOTOR C — SIN CAMBIOS (DISEÑO ORIGINAL PRESERVADO)
+
+El Motor C fue identificado en la auditoría como el motor económicamente
+más sólido del protocolo. No requiere modificaciones estructurales. Se
+documenta aquí por completitud.
+
++-----------------------------------------------------------------------+
+| Motor C opera en stablecoins (USDC principalmente). Fee: 0.5%         |
+| estándar y whitelist.                                                 |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ▼ Usuario paga X USDC en App o servicio                               |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ▼ Contrato retiene 0.5% en USDC                                       |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ▼ DISTRIBUCIÓN ATÓMICA:                                               |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ├─ 35% USDC → directo al Vault KASH v2.1 (refuerza el buffer estable  |
+| de USDC)                                                              |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ├─ 35% USDC → Jupiter compra $LUKA en mercado abierto → inyección al  |
+| LP                                                                    |
+|                                                                       |
+| │ [Presión de compra real + fortalece la liquidez del pool]           |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| ├─ 15% USDC → Wallet O&M                                              |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| └─ 15% USDC → Jupiter compra $LUKA → distribuye a stakers             |
+|                                                                       |
+| │                                                                     |
+|                                                                       |
+| VENTAJAS: Fee bajo (0.5%), opera en stablecoins, cero exposición a    |
+| volatilidad de SOL en los fees.                                       |
+|                                                                       |
+| En Fase 3 (Motor C activo), cada transacción en stablecoins genera    |
+| presión de compra neta positiva.                                      |
++-----------------------------------------------------------------------+
+
+7. ROADMAP DE ACTIVACIÓN POR ETAPAS
+
+La arquitectura v2.1 define con precisión qué motor opera en cada etapa,
+eliminando la ambigüedad del diseño original sobre la coordinación entre
+el lanzamiento de la App y la maduración del Vault.
+
+  -------------------------------------------------------------------------------
+  ETAPA      NOMBRE            CONDICIÓN DE     MOTORES ACTIVOS  CAPITAL DE
+                               ACTIVACIÓN                        INVERSIONISTAS
+  ---------- ----------------- ---------------- ---------------- ----------------
+  Etapa 0    Pre-lanzamiento   Auditoría        —                Capital en KASH
+                               completada.                       Sociedad bajo
+                               Vesting                           Jaguar Lock
+                               publicado                         
+                               on-chain.                         
+
+  Etapa 1    Génesis           TGE. Pool LP     Motor A activo.  LP Fundador
+                               activo en        B y C inactivos. (365d lock).
+                               Meteora.                          Jaguar Shield
+                                                                 activo.
+
+  Etapa 2A   App Lanzamiento   App lanzada. K < Motor A + Motor  Reserva Jaguar
+                               $25M.            B0 (quema pura). Shield. LP
+                                                                 Comprometido
+                                                                 disponible.
+
+  Etapa 2B   Madurez Motor B   K alcanza $25M   Motor A + Motor  Hito: inicio
+                               on-chain.        B2 (plena        liberación KASH
+                                                capacidad).      Sociedad (mes 13
+                                                                 post-hito).
+
+  Etapa 3    Soberanía Global  Adopción App     Motor A + Motor  Distribución
+                               consolidada.     B2 + Motor C.    perpetua de fees
+                               Integración                       líquidos a
+                               fiat.                             Sociedad.
+
+  Etapa 4    DAO               Año 5. Supply ≤  Todos activos.   Control de
+                               3,300M. Emisión  Quema            gobernanza pasa
+                               Neta Cero.       suspendida.      al DAO.
+                                                Recirculación.   
+  -------------------------------------------------------------------------------
+
++-----------------------------------------------------------------------+
+| COORDINACIÓN CRÍTICA — ETAPA 2A y 2B:                                 |
+|                                                                       |
+| El lanzamiento de la App (Etapa 2A) NO necesita esperar a que K       |
+| llegue a $25M.                                                        |
+|                                                                       |
+| La App puede lanzar en cualquier momento después del Génesis (Etapa   |
+| 1).                                                                   |
+|                                                                       |
+| El Motor B0 opera desde el día 1 de la App: quema directa sin         |
+| condiciones.                                                          |
+|                                                                       |
+| La transición a Etapa 2B (Motor B2 completo) ocurre automáticamente   |
+| cuando K ≥ $25M.                                                      |
+|                                                                       |
+| Si la App lanza temprano con buen volumen, B0 acelera la llegada a    |
+| ese umbral.                                                           |
+|                                                                       |
+| Si la App lanza tarde, el Motor A ya construyó gran parte del camino  |
+| al umbral solo.                                                       |
+|                                                                       |
+| En ambos casos, el sistema funciona correctamente. No hay dependencia |
+| frágil entre App y Vault.                                             |
++-----------------------------------------------------------------------+
+
+8. PARÁMETROS FORMALES DEL PROTOCOLO v2.1
+
+Blueprint de todos los parámetros que deben codificarse en los smart
+contracts. Esta tabla es el referente técnico para el equipo de
+desarrollo.
+
+  -----------------------------------------------------------------------------
+  PARÁMETRO             v1.0           v2.1               NOTAS DE
+                                                          IMPLEMENTACIÓN
+  --------------------- -------------- ------------------ ---------------------
+  K_min (activación B2) No definido    $25,000,000 USD    Hardcoded. Solo
+                                                          modificable por DAO
+                                                          en Etapa 4.
+
+  Modo Motor B < K_min  Motor B        Motor B0 (quema    Sin compensación al
+                        estándar       directa)           Vault. Sin reserva
+                                                          requerida.
+
+  Modo Motor B ≥ K_min  Motor B        Motor B2           Con Throttle Dinámico
+                        estándar       (compensación      activo.
+                                       plena)             
+
+  Mecánica 35% LP —     Absorción      Compra mercado →   Jupiter SDK.
+  Motor A               ambigua        BURN               Dirección null
+                                                          verificable on-chain.
+
+  Throttle ACELERADO    No existe      Quema 125%         Automático vía
+  (>1.2×EMA30)                                            LUKAI + Pyth Network.
+
+  Throttle NORMAL       100%           Quema 100%         Sin cambio operativo.
+  (0.8–1.2×EMA30)                                         
+
+  Throttle CONSERVADOR  No existe      Quema 60% / Cola   Cola on-chain
+  (0.5–0.8×EMA30)                      40%                pública. Ejecución
+                                                          progresiva al
+                                                          recuperar.
+
+  Throttle DEFENSIVO    No existe      Quema 25% / Cola   Modo supervivencia.
+  (<0.5×EMA30)                         75%                R_op protegida al
+                                                          máximo.
+
+  Liquidación cola      No existe      Máx 10% de         Evita impacto abrupto
+  diferida                             cola/semana al     al mercado al
+                                       volver a NORMAL    ejecutar la cola.
+
+  Vault % cBTC          45%            35%                Rebalanceo gradual 90
+                                                          días con nuevas
+                                                          entradas.
+
+  Vault % SOL           20%            15%                Rebalanceo gradual 90
+                                                          días.
+
+  Vault % SOL/LST       10%            10%                Sin cambio.
+
+  Vault % USDC          20%            30%                Buffer anticíclico
+                                                          para Motor B2.
+                                                          Prioritario.
+
+  Vault % ETH           0%             10%                Nueva posición.
+                                                          Diversificación
+                                                          anticorrelación.
+
+  Vault % LINK          5%             0%                 Eliminar
+                                                          gradualmente.
+                                                          Reasignar a ETH y
+                                                          USDC.
+
+  LP Circuit Breaker    No existe      >15% caída LP en   Override: Tridente
+  Nivel 1                              4h → delay 12h     Multisig.
+
+  LP Circuit Breaker    No existe      >30% caída LP en   Override: Tridente +
+  Nivel 2                              24h → delay 48h    LUKAI. Alerta máxima.
+
+  LP Lock voluntario    No existe      365 días           +20% rewards
+  (máximo)                                                adicionales.
+                                                          Gobernanza premium.
+
+  Fuente rewards LP     No existe      3% del presupuesto Reasignación interna.
+  adicionales                          O&M mensual        No aumenta el fee
+                                                          total.
+
+  Nombre técnico del    'Reserva       'Protocolo de      Solo en documentación
+  estándar              Fraccionaria   Colateralización   técnica y legal.
+                        Inversa'       Multiactivo (PCM)' Marca KASH sin
+                                                          cambios.
+  -----------------------------------------------------------------------------
+
+9. MÉTRICAS DE SALUD DEL PROTOCOLO
+
+Dashboard de métricas on-chain que el equipo debe monitorear en tiempo
+real. Se recomienda publicar la mayoría de estas métricas en un
+dashboard público — la transparencia es el activo más valioso del
+protocolo en etapa temprana.
+
+  --------------------------------------------------------------------------
+  MÉTRICA             FRECUENCIA    UMBRAL DE ALERTA   ACCIÓN SI SE ACTIVA
+  ------------------- ------------- ------------------ ---------------------
+  K(t) — Valor total  Tiempo real   < objetivo de      Dashboard público.
+  del Vault                         etapa actual       Motor B switch
+                                                       automático.
+
+  R_op — Reserva      Diario        < 20% de capacidad Modo Recarga Forzada:
+  Operativa USDC                    proyectada (UCR)   15% de yield semanal
+                                                       → USDC.
+
+  Cola de quemas      Tiempo real   > 30% de quema     Comunicar a
+  diferidas                         mensual promedio   comunidad. Esperar
+                                    en cola            normalización de
+                                                       precio.
+
+  S(t) — Supply       Diario        < 3,300M (meta     Activar Emisión Neta
+  circulante                        final)             Cero. Redirigir al
+                                                       Fondo Recirculación.
+
+  Modo Throttle       Tiempo real   CONSERVADOR o      Publicar en
+  activo                            DEFENSIVO activo   dashboard. Activar
+                                                       protocolo de
+                                                       comunicación.
+
+  LP Total del pool   Cada 4 horas  > 15% caída en 4h  Circuit Breaker Nivel
+                                                       1 automático.
+
+  Ratio cBTC/SOL      Semanal       > 0.70 de          LUKAI ajusta
+  correlación del                   correlación        rebalanceo hacia
+  Vault                             promedio           USDC/ETH.
+
+  Usuarios activos    Mensual       < 1,000 en mes 6   Revisión de
+  mensuales App                     post-lanzamiento   estrategia de
+                                                       adquisición de
+                                                       usuarios.
+
+  Progreso rebalanceo Semanal       < 50% del          LUKAI acelera
+  Vault v2.1                        rebalanceo         asignación de nuevas
+                                    completado en día  entradas a USDC/ETH.
+                                    45                 
+  --------------------------------------------------------------------------
+
+10. CONCLUSIÓN — EL PROTOCOLO QUE SALE DE ESTE PROCESO
+
++-----------------------------------------------------------------------+
+| El protocolo LUKASH v2.1 es económicamente superior al v1.0 en todos  |
+| los vectores de riesgo identificados,                                 |
+|                                                                       |
+| sin sacrificar la visión original, la narrativa del proyecto ni la    |
+| experiencia del usuario.                                              |
+|                                                                       |
+| Lo que se preserva íntegramente:                                      |
+|                                                                       |
+| • La tesis de inversión: de memecoin a banco soberano                 |
+|                                                                       |
+| • El Vault de activos duros como núcleo del valor                     |
+|                                                                       |
+| • La arquitectura de 3 motores económicos                             |
+|                                                                       |
+| • El Jaguar Shield y toda la infraestructura de seguridad             |
+|                                                                       |
+| • LUKAI como gestor algorítmico e interfaz educativa                  |
+|                                                                       |
+| • La marca KASH y la narrativa de soberanía                           |
+|                                                                       |
+| • El Estándar KASH como diferenciador técnico                         |
+|                                                                       |
+| Lo que se corrigió con precisión quirúrgica:                          |
+|                                                                       |
+| • Motor B: dos modos limpios (B0/B2) sin insolvencia estructural      |
+| posible                                                               |
+|                                                                       |
+| • Motor A: mecánica de absorción sin circularidad contable            |
+|                                                                       |
+| • Vault: composición anticíclica con buffer real en USDC              |
+|                                                                       |
+| • LP: protección activa contra corridas de liquidez                   |
+|                                                                       |
+| • Quema: throttle inteligente que protege el sistema en bajistas      |
+|                                                                       |
+| • Transparencia: vesting on-chain y nomenclatura técnica precisa      |
++-----------------------------------------------------------------------+
+
++:---------------------------------:+:---------------------------------:+
+| PRÓXIMOS PASOS INMEDIATOS         | HITOS DE VALIDACIÓN               |
+|                                   |                                   |
+| 1. Equipo define % tokens         | ✓ Motor A activo: Vault crece     |
+| founders + publica vesting        | desde el primer trade             |
+| on-chain                          |                                   |
+|                                   | ✓ App lanza: Motor B0 quema desde |
+| 2. Dev implementa K_min = $25M en | la primera tx interna             |
+| smart contract Motor B            |                                   |
+|                                   | ✓ K = $10M: Milestone público —   |
+| 3. Dev implementa mecánica        | comunidad celebra                 |
+| compra→burn Motor A               |                                   |
+|                                   | ✓ K = $25M: Switch automático B0  |
+| 4. Dev implementa Throttle        | → B2 on-chain                     |
+| Dinámico en Motor B2              |                                   |
+|                                   | ✓ Supply = 6,600M: 33% de         |
+| 5. Auditoría de contratos         | contracción completado            |
+| (Ottersec / Halborn)              |                                   |
+|                                   | ✓ Supply = 3,300M: Emisión Neta   |
+| 6. Dev implementa LP Circuit      | Cero. DAO era.                    |
+| Breaker                           |                                   |
+|                                   |                                   |
+| 7. Lanzamiento con documentación  |                                   |
+| técnica v2.1                      |                                   |
++-----------------------------------+-----------------------------------+
+
+— Documento de Arquitectura Definitivo — LUKASH Protocol v2.1 —
+
+Elaborado mediante proceso de auditoría + rediseño colaborativo | Marzo
+2026

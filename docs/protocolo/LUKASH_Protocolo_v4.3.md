@@ -23,6 +23,7 @@
 | C8 | **Ticker** | "$Lukas"/"$LUKA" mezclados en material viejo | **$LUKA** canónico |
 | C9 | **Cifras Monte Carlo** | Atribuidas al modelo v4.2 | Etiquetadas como **modelo conservador v3.1** — reconciliación pendiente (ver `audits/AUDITORIA_COMPLEMENTARIA.md`) |
 | C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Jaguar). Exit Fee se mantiene en 5% para Génesis. |
+| C11 | **Seguro Anti-Exploit** | v4.2 lo redujo a *"Cobertura hasta 5%. Renovación anual obligatoria"* — perdió las 3 condiciones de v1.0/v4.1 | **Restaurado (ADR-015)**: 5% Vault · **máx 1 evento cada 12 meses** · **activo desde Etapa 2B** (opción B: condición on-chain, no calendario ambiguo "año 1") · DAO redefine en Etapa 4. Auditor(a) externa **desacoplado** — Halborn/OtterSec eran arrastres de v2.1, no decisión formal; a cotizar pre-TGE. Tridente 3-de-3 ratificado; **firmantes concretos pendientes**. |
 
 ---
 
@@ -291,13 +292,21 @@ Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle 
 | Monitor paridad LST | JitoSOL/mSOL vía Sanctum; desviación >3% → bloquea conversiones |
 | Oráculos redundantes | TWAP Pyth + Switchboard, umbral 2% |
 | Anti-MEV | Bundles privados Jito |
-| Seguro Anti-Exploit | Hasta 5% del Vault (Halborn/OtterSec). Activo desde TGE |
-| Tridente Multisig | 3-de-3 para: activar Capa 3, cancelar Circuit Breaker LP, modificar K_min |
+| Seguro Anti-Exploit | **Cobertura hasta 5%** del valor total del Vault ante exploits. **Máximo 1 evento cada 12 meses.** **Activo desde Etapa 2B** (K ≥ K_min $25M, Motor B2 activado on-chain). Financiado por auditor(a) externa (Halborn / OtterSec / Sec3 / Zellic / Neodyme o similar — **a cotizar pre-TGE**, sin decisión formal actual). Desde **Etapa 4 (DAO)** la comunidad redefine estas reglas. **Restaurado ADR-015** (las condiciones estaban en v1.0/v4.1 y se perdieron al pasar a v4.2). |
+| Tridente Multisig | **3-de-3** para: activar Capa 3 (cBTC Reserva Profunda), cancelar Circuit Breaker LP, modificar K_min. **Firmantes concretos pendientes pre-TGE** (ADR-015). **Nace INACTIVO** (lógica construida y auditable pero `tridente_activated = false`); instrucción one-way `activate_tridente(pk1, pk2, pk3)` cuando estén los 3 firmantes. **Candado estructural**: el contrato rechaza el paso a Etapa 2 (App launch) si Tridente no está activo — imposible ir a mainnet sin activarlo. |
 | **Jaguar Exit Fee** | Dual: precio <0.7×EMA30 AND venta >0.3% supply/hora → 5%/3%/1% (Et.1/2/3). 100% al Vault Core |
 | **Anti-Whale** | **Solo VENTAS/transferencias** (no compras). Umbral por **% del pool de liquidez** (no del supply): 1-2% pool → 3% · 2-5% → 6% · >5% → 10%, **sobre el excedente**. 100% al Vault Core |
 | **Timelock 48h** | Obligatorio para cambiar K_min, fees, thresholds del Throttle, composición del Vault |
 
-Exit Fee/Anti-Whale exenciones: swaps internos Motor D, staking activo, LP en lock, MMs registrados, nivel Jaguar (Aura máx).
+**Exenciones canónicas Exit Fee / Anti-Whale (de v4.1 §9.1-9.2, ratificadas por ADR-015):**
+- Swaps internos del Motor D
+- Staking activo
+- LP Comprometido en lock activo · **LP Fundador 365d**
+- **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado)
+- Nivel **Jaguar** de Aura (Aura ≥10,000, el pináculo — antes "Emperor"; ADR-005/012)
+- **KOLs NO tienen exención**: el mecanismo que los alinea es distinto — reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear. El Anti-Whale sí les aplica si intentan vender por encima del umbral.
+
+**Mint del token — Token-2022 con Transfer Hook (ADR-015):** el token de mainnet será Token-2022 (no SPL clásico) para que Anti-Whale y Exit Fee se apliquen **en cada transferencia on-chain**, imposible de evadir. El mint devnet actual (SPL clásico) se mantiene solo para pruebas Milestone 1.
 
 ---
 

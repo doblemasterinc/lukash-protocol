@@ -40,5 +40,8 @@ Decir "la cripto es un casino" siendo nosotros cripto es autogol. El casino son 
 ## 2026-08-21 (sesión 4) — Landing juvenil: nivel de detalle ≠ investor deck
 En una landing de captación (público <45), el tokenomics pesado y la composición exacta del Vault abruman y confunden. Mostrar solo "qué hay dentro" (activos, no %). El detalle (proyecciones, Vault Sociedad, cómo se alinea el equipo) va en litepaper/data room. Cuidado: explicar el 2% del equipo vía "conserva parte del Vault" puede contradecir "la Reserva es común de todos".
 
+## 2026-08-22 (sesión 6) — Verificar contra el diseño original ANTES de proponer cambios
+Propuse drenar la cola en CONS/DEF como mejora obvia. Al verificar contra v2.1→v4.3, descubrí que el diseño original intencionalmente NO drena en esos modos ("bono de deflación futura"). Sebastián igual eligió el cambio (riesgo de acumulación excesiva en bears prolongados), pero la decisión fue informada. Lección: SIEMPRE verificar que un "detalle" que parece mejora no contradiga una decisión de diseño deliberada. Verificar ANTES de presentar como hecho consumado.
+
 ## 2026-08-21 (sesión 4) — Costo de IA a escala: planear antes de prometer
 Una IA conversacional (LUKAI) para muchos usuarios cuesta inferencia × escala. Viable si: 80% de consultas por plantilla/reglas (sin LLM), modelos baratos (Gemini Flash/Groq) para lo abierto, caché+rate-limits, y financiado por el bucket O&M (escala con el uso). Escalonar v1 orquestador → v2 conversacional. No sobre-prometer en material público hasta tener el break-even.

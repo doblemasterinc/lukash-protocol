@@ -1,0 +1,1757 @@
+LUKASH
+
+PROTOCOLO v3.1
+
+  -------------------------------------------
+  ARQUITECTURA CONSOLIDADA DE CAPAS, MOTORES
+                   Y ESTADOS
+
+  -------------------------------------------
+
+Ing. Sebastián Botero Pabón | Marzo 2026
+
+  ----------------- ----------------- ----------------- -----------------
+  Vault Mediana (5     P(Motor B2      Riesgo de Ruina  Espiral de Muerte
+        años)            activo)            Total       
+
+   $37.2M P25–P75:   86.1% antes del   0.0% vault <10%    1.4% prob. de
+    $18.9M–$67.1M         Año 2        capital inicial       colapso
+  ----------------- ----------------- ----------------- -----------------
+
+5,000 iteraciones Monte Carlo | 1,825 días simulados | Cadenas de Markov
+| Supply objetivo: 3.3B | K_min: $25M
+
+SOBRE ESTE DOCUMENTO
+
+El Protocolo LUKASH v3.1 es la versión de arquitectura definitiva
+actualizada. Integra en un único documento la arquitectura consolidada
+v3.0, aplicando tres correcciones estructurales fundamentales: (1)
+reingeniería del Motor B como algoritmo de dispersión de valor
+35/35/15/15 con comportamiento diferenciado por estado, (2)
+configuración completa del Motor D como capa de utilidad social con
+herencia de motores financieros, y (3) definición de la jerarquía de
+fees por etapas de madurez del ecosistema. LUKAI v3.1 asume el rol de
+orquestador de estados con responsabilidades ampliadas. No hay
+referencias evolutivas ni comparativas: este es el protocolo tal como
+debe implementarse.
+
++--------------------------------------------------------------------+
+| CAMBIOS ESTRUCTURALES v3.0 → v3.1                                  |
+|                                                                    |
+| Motor B: reingeniería como dispersión 35/35/15/15 (ya no bloque    |
+| monolítico de quema). Estado B0 = burn en el tramo LP; Estado B2 = |
+| recirculación.                                                     |
+|                                                                    |
+| Motor D: definición completa como Social Utility Layer — fee fijo  |
+| 1.5%, hereda comportamiento de motores financieros, exención de    |
+| cNFT DeFi.                                                         |
+|                                                                    |
+| Jerarquía de Fees por Etapa: fee base 4% → 2.5% → 0.5% según       |
+| adopción del ecosistema.                                           |
+|                                                                    |
+| Sostenibilidad de infraestructura: escalamiento financiado         |
+| exclusivamente por Vault Sociedad Etapa 1, sin dependencia de VCs. |
+|                                                                    |
+| LUKAI v3.1: orquestador de estados con conmutación automática      |
+| B0/B2, gestión de swaps externos, rebalanceo por activos duros y   |
+| calibración Jaguar Score.                                          |
++--------------------------------------------------------------------+
+
+0. TESIS DE INVERSIÓN Y VISIÓN ESTRATÉGICA
+
+LUKASH es un ecosistema financiero descentralizado que transiciona de la
+cultura de las memecoins de alto hype hacia una infraestructura bancaria
+soberana construida sobre Solana. No es un token de utilidad ordinario
+ni una memecoin especulativa: es el diseño de un nuevo estándar de
+valor.
+
+0.1 El Problema Estructural Dual
+
+  -------------------- ------------------------ ------------------------
+       Dimensión         Sistema Tradicional       Ecosistema Cripto
+                               (TradFi)               (Memecoins)
+
+   Modelo de Reserva   Fraccionaria — riesgo de  Nula / Especulativa —
+                        insolvencia sistémica     suma cero, PvP puro
+
+     Soberanía del           Limitada por       Alta en teoría, nula en
+        Usuario            intermediarios y     práctica por volatilidad
+                         regulaciones lentas            extrema
+
+  Educación Financiera  Abrumadora y compleja   Inexistente. Sustituida
+                         para jóvenes y LatAm     por FOMO y narrativa
+                                                         viral
+
+   Costo de Operación   Alto — infraestructura  Bajo, pero fragmentado y
+                             física, CAC         sin retención de valor
+                           $12–$34/usuario      
+  -------------------- ------------------------ ------------------------
+
+0.2 La Respuesta: El Estándar KASH
+
++--------------------------------------------------------------------+
+| PROTOCOLO DE COLATERALIZACIÓN MULTIACTIVO (PCM) — NOMBRE TÉCNICO   |
+| OFICIAL                                                            |
+|                                                                    |
+| Nombre de marca: Estándar KASH. Nombre narrativo: Reserva          |
+| Soberana.                                                          |
+|                                                                    |
+| Cada unidad de $LUKA está respaldada por una reserva creciente de  |
+| activos duros gestionada algorítmicamente y auditada on-chain.     |
+|                                                                    |
+| El Estándar KASH es deflacionario, verificable y de reserva        |
+| creciente — opuesto a la reserva fraccionaria tradicional.         |
+|                                                                    |
+| LUKASH captura capital especulativo en la Fase 1 y lo convierte    |
+| progresivamente en reservas institucionales de largo plazo. El     |
+| hype es el mecanismo de bootstrapping, no el producto final.       |
++--------------------------------------------------------------------+
+
+0.3 Buyer Persona: Dos Segmentos, Un Protocolo
+
+  ------------- --------------------------- ---------------------------
+                Segmento A — 12 a 25 años:  Segmento B — 25 a 45 años:
+                  Nativos de la Atención      Buscadores de Soberanía
+
+   Motivación        Estatus digital,       Protección contra inflación
+                  pertenencia a manadas,          (LatAm), pagos
+                 entretenimiento y acceso        transfronterizos,
+                    temprano a riqueza         diversificación real
+
+     Barrera    Falta de capital inicial y   Desconfianza en cripto y
+                  desconocimiento técnico      falta de tiempo para
+                                                complejidad técnica
+
+    Solución      Jungle Arena, airdrops,   Interfaz LUKAI simplificada
+     LUKASH          Jaguar Score como          y respaldo real del
+                   currículum financiero      Estándar KASH auditado
+                          digital                    on-chain
+
+    Retención     Gamificación profunda y   Seguridad institucional del
+                  narrativa de manada con         Jaguar Shield y
+                     lealtad emocional        transparencia del Vault
+                                                       Core
+  ------------- --------------------------- ---------------------------
+
+1. JERARQUÍA DE FEES Y ETAPAS DE MADUREZ DEL ECOSISTEMA
+
+En v3.1 el fee transaccional base (independiente de servicios
+adicionales) evoluciona en tres fases que reflejan el nivel de adopción
+del ecosistema. El fee base disminuye a medida que el volumen y la base
+de usuarios crecen, convergiendo al estándar KASH de largo plazo.
+
+  ---------------- -------------- --------------- -----------------------
+       Etapa          Fee Base     Fee Whitelist        Descripción
+
+     Etapa 1 —          4.0%           3.0%           Motor A activo.
+    Crecimiento                                    Deflación agresiva y
+     Acelerado                                     acumulación de Vault.
+                                                     Bootstrapping del
+                                                        ecosistema.
+
+  Etapa 2 — Uso de      2.5%           1.5%          Motor A + Motor B
+     Aplicación                                    activos. Adopción de
+                                                  App en curso. Vault en
+                                                      trayectoria B2.
+
+     Etapa 3 —          0.5%           0.5%       Motor C activo. Supply
+    Soberanía /                    (convergencia  fijo 3.3B. Emisión Neta
+   Estándar KASH                     general)     Cero. Evolución a pagos
+                                                         masivos.
+  ---------------- -------------- --------------- -----------------------
+
++--------------------------------------------------------------------+
+| REGLA CRÍTICA DE FEES v3.1                                         |
+|                                                                    |
+| El fee base aplica a transacciones en Motor A y Motor B            |
+| (transacciones de red y app).                                      |
+|                                                                    |
+| El Motor D aplica siempre fee fijo de 1.5%, independiente de la    |
+| etapa de madurez (ver Sección 5.4).                                |
+|                                                                    |
+| El Motor C aplica siempre 0.5% desde su activación en Etapa 3.     |
+|                                                                    |
+| Los cNFT DeFi (Staking/Pools) están EXENTOS de todos los fees de   |
+| servicio del Motor D.                                              |
++--------------------------------------------------------------------+
+
+2. TOKENOMICS Y DISTRIBUCIÓN DE SUPPLY
+
+El diseño de supply de $LUKA está arquitectado para una contracción
+deflacionaria máxima en los primeros 90 días, con un objetivo de supply
+fijo de largo plazo que convierte al token en un activo de dividendos
+reales en la Fase 3.
+
+2.1 Distribución Inicial del Supply Total
+
+  ------------------- ------------ --------------- -----------------------
+       Categoría       Porcentaje     Cantidad      Mecánica de Seguridad
+
+     Venta (Seed +        45%       4,500M $LUKA     Vesting escalonado
+        Public)                                    recomendado para seed.
+                                                    Circulante desde TGE.
+
+   Pool de Liquidez       30%       3,000M $LUKA   Emparejados y quemados
+         (LP)                                      en Meteora. LP Fundador
+                                                   365d lock obligatorio.
+
+    Marketing / CEX       10%       1,000M $LUKA   Custodiado en Multisig.
+                                                     KOLs y MM asignados
+                                                            aquí.
+
+      Airdrops /          10%       1,000M $LUKA   Distribución por hitos
+       Comunidad                                    on-chain públicos. No
+                                                    distribuido antes de
+                                                            TGE.
+
+        Staking            5%        500M $LUKA    Recompensa base. Motor
+                                                    A financia el staking
+                                                     pool perpetuamente.
+  ------------------- ------------ --------------- -----------------------
+
+2.2 Curva de Contracción del Supply
+
++--------------------------------------------------------------------+
+| SUPPLY INICIAL: 10,000,000,000 $LUKA (10B)                         |
+|                                                                    |
+| SUPPLY OBJETIVO: 3,300,000,000 $LUKA (3.3B) — meta de Emisión Neta |
+| Cero                                                               |
+|                                                                    |
+| TOKENS A QUEMAR: 6,700,000,000 $LUKA (6.7B)                        |
+|                                                                    |
+| Con volumen diario de $5M (escenario conservador):                 |
+|                                                                    |
+| → Fee Motor A diario: $5M × 4% = $200,000 | 35% al burn:           |
+| $70,000/día                                                        |
+|                                                                    |
+| → A precio de $0.0001/token: 700,000,000 tokens quemados por día   |
+|                                                                    |
+| → Meta 6.7B tokens con cap de seguridad 1%/día: ~50 a 100 días     |
+|                                                                    |
+| RESULTADO: Supply objetivo (3.3B) alcanzable en Año 1 bajo         |
+| cualquier régimen de mercado activo.                               |
++--------------------------------------------------------------------+
+
+  ----------------- ----------------- ----------------- -----------------
+       Momento         Supply P25        Supply P50       Supply P75 vs
+                                          (Mediana)         Objetivo
+
+     TGE (Día 0)          10.0B             10.0B             303%
+
+     Mes 1 (D30)          ~5.0B             ~4.2B             ~130%
+
+     Mes 3 (D90)          ~3.5B             ~3.3B             ~100%
+
+  Año 1 en adelante       3.3B              3.3B           ✓ OBJETIVO
+                                                            CUMPLIDO
+  ----------------- ----------------- ----------------- -----------------
+
+2.3 Mecánica de Emisión Neta Cero (Fase 3)
+
+Cuando el supply alcanza 3,300M tokens, el protocolo activa
+automáticamente el modo de Emisión Neta Cero mediante PDA de control
+on-chain. La quema se suspende. El valor capturado por los motores se
+redirige íntegramente a recompensas perpetuas de staking y distribución
+a la Comunidad. En este punto $LUKA funciona como una acción preferente
+con dividendos reales respaldados por el Vault.
+
+2.4 Vesting del Equipo Fundador — Publicado On-Chain
+
++--------------------------------------------------------------------+
+| REQUERIMIENTO NO NEGOCIABLE                                        |
+|                                                                    |
+| El schedule de vesting del equipo fundador se publica on-chain     |
+| ANTES del TGE.                                                     |
+|                                                                    |
+| Recomendación: <10% tokens para el equipo, cliff 18 meses,         |
+| liberación lineal 36 meses.                                        |
+|                                                                    |
+| Cualquier wallet de founders sin vesting verificable on-chain      |
+| invalida la auditoría del protocolo.                               |
++--------------------------------------------------------------------+
+
+3. ARQUITECTURA DE CAPITAL: CORE, SOCIEDAD Y LP
+
+El capital inicial del protocolo se divide en tres pilares que cumplen
+funciones distintas y no intercambiables. Esta separación es la garantía
+estructural de que ningún pilar compromete la solvencia del otro.
+
+  -------------------- -------- ---------------- -----------------------
+  Destino del Capital     %         Función       Mecánica de Seguridad
+
+    Pool de Liquidez     30%        Soporte       Tokens emparejados y
+          (LP)                    inmediato de    quemados. LP Fundador
+                                   trading en          365d lock.
+                                    Meteora      
+
+    Vault KASH Core      40%       Reserva de      cBTC 35%, SOL 15%,
+   (Reserva Soberana)               respaldo        SOL/LST 20%, USDC
+                                 inamovible del     reserva 25%, USDC
+                                 valor de $LUKA  lending 5%, PYTH+JTO 5%
+
+  Vault KASH Sociedad    30%       Activos de       Bajo Jaguar Lock.
+        (Equity)                inversionistas y   Vesting por hitos.
+                                equipo. Crece en  Distribución líquida
+                                  paralelo al         desde mes 13.
+                                     Core.       
+  -------------------- -------- ---------------- -----------------------
+
+3.1 KASH Core vs. KASH Sociedad
+
+  -------------- -------------------------- --------------------------
+     Concepto        KASH Core (Reserva       KASH Sociedad (Equity)
+                         Soberana)          
+
+     Función     Respaldo y precio piso del      Renta líquida y
+                      token. El 'muro        crecimiento patrimonial
+                      institucional'.              para socios.
+
+  Yield generado 70% reinversión compuesta   100% capitalizable para
+                 / 30% a Reserva Operativa   socios e inversionistas
+                            USDC            
+
+   Distribución  70% del componente KASH de  30% del componente KASH
+     de fees              cada fee            (líquido desde mes 13)
+
+      Acceso       Nunca liquidable. Solo       Bajo Jaguar Lock.
+                 crece. Garantía del Precio Liberación lineal 48 meses
+                           KASH.                    post-hito.
+  -------------- -------------------------- --------------------------
+
+3.2 Jaguar Lock — Mecánica de Vesting para Inversionistas
+
+  ---------------------- ---------------------- ----------------------
+    Hito de Activación   Periodo de Liberación      Remuneraciones
+                                                       Líquidas
+
+  KASH Core alcanza $30M  Una vez cumplido el    A partir del mes 13,
+       USD (TVL) O          hito: liberación        todos los fees
+  transcurren 12 meses,    lineal de 48 meses      destinados a la
+  lo que ocurra primero.    para el capital      Sociedad se vuelven
+                            principal de la     líquidos y directos a
+                               Sociedad.        perpetuidad — flujo de
+                                                    caja constante
+                                                    respaldado por
+                                                    utilidad real.
+  ---------------------- ---------------------- ----------------------
+
+3.3 Sostenibilidad de Infraestructura — Vault Sociedad
+
+El escalamiento tecnológico y el mantenimiento del protocolo se
+financian exclusivamente mediante una fracción de los activos acumulados
+en el Vault Sociedad durante la Etapa 1. Este mecanismo elimina la
+dependencia de capital externo (VCs) y evita la dilución de los socios
+fundadores. La infraestructura crece en proporción directa al éxito del
+protocolo, sin comprometer la reserva soberana del KASH Core.
+
+4. VAULT KASH CORE — COMPOSICIÓN Y ARQUITECTURA v3.1
+
+El Vault KASH Core es la métrica estructural más importante del
+protocolo. Su valor en USD determina la activación del Motor B2 (K_min =
+$25M), el Precio KASH de respaldo de $LUKA, y la solvencia del sistema a
+largo plazo. La composición v3.1 es 100% Solana-nativa, eliminando
+riesgos de bridge.
+
+4.1 Composición del Vault v3.1
+
+  ------------------- ------------ ------------- ------------------ ------------- ---------
+        Activo         Asignación   Yield Anual    Justificación     Correlación   Riesgo
+                                                    Estratégica          BTC       Bridge
+
+     cBTC (Bitcoin        35%          0% +       Reserva de valor      1.00       NINGUNO
+        Nativo)                     apreciación   primaria. cbBTC                 
+                                                 nativo en Solana,                
+                                                   sin Wormhole.                  
+
+  SOL (Nativo Solana)     15%          0% +      Liquidez operativa     0.80       NINGUNO
+                                    apreciación   del ecosistema.                 
+                                                   Activo de gas.                 
+
+  SOL/LST (JitoSOL +      20%       6–8% anual   Exposición SOL con     0.75       NINGUNO
+         mSOL)                                    yield adicional.                
+                                                  JitoSOL protege                 
+                                                    contra MEV.                   
+
+     USDC Reserva         25%      0% (líquido)  Reserva inmediata      0.00       NINGUNO
+       Inmediata                                   para Motor B2.                 
+                                                    Capa 1. Sin                   
+                                                    conversión.                   
+
+     USDC Lending          5%       4–8% anual     Capital ocioso       0.00       NINGUNO
+   (Kamino/Marginfi)                              generando yield.                
+                                                    Retiro <24h.                  
+
+   PYTH + JTO + JUP        5%        Variable     Infraestructura       0.85       NINGUNO
+                                                   del protocolo:                 
+                                                   PYTH alimenta                  
+                                                  Throttle y Motor                
+                                                        B2.                       
+  ------------------- ------------ ------------- ------------------ ------------- ---------
+
+4.2 Arquitectura de 3 Capas del Vault
+
+  -------------- -------------------- ----------------- ------------------
+       Capa          Composición           Función       Reglas de Acceso
+
+      Capa 1      100% USDC (25% del    Equivale a 6    Primera respuesta
+     Liquidez        Vault total)      meses de gastos   en emergencias.
+    Inmediata                            operativos           Nunca
+                                        proyectados.      inmovilizado.
+                                       Disponible sin   
+                                       conversión para  
+                                          Motor B2.     
+
+  Capa 2 Trabajo  cBTC + SOL + LST +     Rebalanceo       LUKAI gestiona
+      Activo     USDC lending + PYTH   gestionado por    automáticamente.
+                                         LUKAI según    Rebalanceo gradual
+                                         régimen de        sin liquidar
+                                       mercado. Módulo     posiciones.
+                                       contra-cíclico.  
+
+  Capa 3 Reserva cBTC (35% del Vault  Reserva de último  Solo activa por
+     Profunda           total)           recurso. No      aprobación del
+                                        participa en    Tridente Multisig
+                                         operaciones    (3 de 3 firmas) en
+                                          diarias.         emergencias.
+  -------------- -------------------- ----------------- ------------------
+
+4.3 Gestión Dinámica del Yield — Regla 70/30
+
+El 70% del yield del Vault se reinvierte automáticamente para el
+crecimiento compuesto. El 30% se destina a la Reserva Operativa en USDC
+(R_op), que financia las compensaciones del Motor B2 y mantiene la
+solvencia del sistema.
+
+  ------------- ---------------- ---------------- ------------- -------------
+      Vault      Yield LST 20%      Yield USDC     Yield Total   Aporte R_op
+    (Capital)        (6–8%)         Lending 5%        Anual         (30%)
+                                      (4–8%)                    
+
+      $10M        $120K–$160K       $20K–$40K      $140K–$200K    $42K–$60K
+
+  $25M (K_min)    $300K–$400K       $50K–$100K     $350K–$500K   $105K–$150K
+
+      $50M        $600K–$800K      $100K–$200K      $700K–$1M    $210K–$300K
+  ------------- ---------------- ---------------- ------------- -------------
+
+4.4 Umbral Crítico de Reserva (UCR)
+
+Si la liquidez en USDC de la R_op cae por debajo del 20% de su capacidad
+proyectada:
+
+- LUKAI activa Modo Recarga Forzada: 15% del yield semanal se redirige
+  forzosamente a USDC hasta recuperar el nivel.
+
+- El Motor B2 en modo DEFENSIVO reduce su demanda sobre R_op
+  simultáneamente (Throttle 25%).
+
+- La dinámica anticíclica natural impide la insolvencia simultánea entre
+  R_op y demanda de B2.
+
+- Resultado en simulación: 0.0% de escenarios con ruina total del Vault
+  en 5,000 trayectorias.
+
+4.5 Precio KASH — El Piso de Valor Institucional
+
++--------------------------------------------------------------------+
+| Precio KASH (P_th) = Valor del Vault / Supply Circulante           |
+|                                                                    |
+| Este es el precio al que el protocolo puede teóricamente recomprar |
+| todos los tokens.                                                  |
+|                                                                    |
+| Es el único precio que el protocolo puede garantizar — no el       |
+| precio de mercado.                                                 |
++--------------------------------------------------------------------+
+
+  ----------- --------------------- -------------- ----------- ----------
+      Año        Vault (mediana,        Supply     Precio KASH    vs.
+               escenario neutral)     (mediana)      (P_th)     $0.0001
+
+     Año 1           $20.9M           3.3B $LUKA     $0.0063      63x
+
+     Año 2           $29.6M           3.3B $LUKA     $0.0090      90x
+
+     Año 3           $33.7M           3.3B $LUKA     $0.0102      102x
+
+     Año 5           $37.2M           3.3B $LUKA     $0.0113      113x
+  ----------- --------------------- -------------- ----------- ----------
+
+5. LUKAI v3.1 — STATE & ORCHESTRATION MANAGER
+
+LUKAI v3.1 es el orquestador de estados del protocolo. Asume
+responsabilidades ampliadas respecto a v3.0, siendo el componente de
+inteligencia que garantiza la coherencia entre motores, estados del
+Vault y condiciones de mercado en tiempo real.
+
+5.1 Responsabilidades del Orquestador de Estados
+
+  -------------------- -----------------------------------------------
+        Función                      Descripción Técnica
+
+  Conmutación B0 ↔ B2  Monitorea K(t) vía Pyth Network en tiempo real.
+                       Conmuta automáticamente entre lógica B0 (quema
+                          directa) y B2 (dispersión 35/35/15/15 con
+                            compensación) al cruzar K_min = $25M.
+
+    Gestión de Swaps   Cuando el Motor D recibe activos externos (SOL,
+        Externos        USDC, otros tokens), LUKAI invoca previamente
+                       al Motor A o C para ejecutar el swap por $LUKA
+                        antes de aplicar la distribución del Motor D.
+
+  Rebalanceo del Vault     Ejecuta la compra de Hard Assets (cBTC,
+   por Activos Duros    SOL/LST) con el 35% del Asset Layer del Motor
+                         B. El rebalanceo es gradual mediante nuevas
+                          entradas — el Vault existente no se toca.
+
+   Calibración Jaguar  Actualiza el Jaguar Score del usuario según su
+         Score          participación activa en el Motor D (servicios
+                         de manada, apuestas, acceso a eventos). Los
+                        cNFT DeFi están exentos de esta calibración.
+
+   Throttle Dinámico       Gestiona los modos ACELERADO / NORMAL /
+                        CONSERVADOR / DEFENSIVO según precio vs EMA30
+                        vía Pyth Network. Automático sin intervención
+                                           humana.
+
+         Módulo        Detecta régimen de mercado combinando EMA30 vs
+     Contra-Cíclico      EMA90 de BTC, volatilidad realizada 30d, y
+                       volumen del Motor A (últimos 7 días vs promedio
+                         30d). Dirige el flujo de NUEVAS ENTRADAS al
+                                   Vault según el régimen.
+
+   Monitor de Paridad    Vigila el peg de JitoSOL y mSOL a través de
+          LSTs         Sanctum. Si el valor de redención se desvía >3%
+                        respecto al SOL nativo, bloquea conversiones
+                                 para proteger el principal.
+  -------------------- -----------------------------------------------
+
+5.2 Módulo de Gestión Contra-Cíclica — Reglas de Asignación
+
++--------------------------------------------------------------------+
+| PRINCIPIO FUNDAMENTAL                                              |
+|                                                                    |
+| LUKAI no gestiona activamente el Vault existente.                  |
+|                                                                    |
+| LUKAI dirige el flujo de NUEVAS ENTRADAS (fees del Motor A) según  |
+| el régimen de mercado detectado.                                   |
+|                                                                    |
+| El Vault existente solo cambia por rendimiento natural de LST y    |
+| yield de USDC lending.                                             |
+|                                                                    |
+| Esto elimina el riesgo de rebalanceo forzado en momentos de        |
+| crisis.                                                            |
++--------------------------------------------------------------------+
+
+  ----------------- ----------------- ----------------- ---------------
+       Régimen      Activos Volátiles   USDC (nuevas        Lógica
+                    (nuevas entradas)     entradas)       Estratégica
+
+   BEAR Confirmado         70%               30%          Acumulación
+                                                        contracíclica —
+                                                         compra barato
+
+       NEUTRAL             75%               25%          Proporción
+                                                         estándar. Sin
+                                                            sesgo.
+
+   BULL Confirmado         40%               60%           Construye
+                                                         liquidez para
+                                                          el próximo
+                                                          ciclo bear
+  ----------------- ----------------- ----------------- ---------------
+
+Resultado validado en simulación: en un ciclo completo BEAR→BULL de 4
+años, el módulo contra-cíclico genera una ventaja de +22–23% en el Vault
+final vs. proporciones fijas. La ventaja es asimétrica y mayor en ciclos
+con alta amplitud — exactamente el patrón de los ciclos cripto
+históricos.
+
+6. LOS CUATRO MOTORES ECONÓMICOS
+
+La arquitectura de captura de valor del protocolo opera mediante cuatro
+motores que se activan secuencialmente. Cada motor opera en una divisa
+distinta y cumple una función diferente en el ciclo económico. En v3.1
+el Motor D se define formalmente como la capa de utilidad social del
+protocolo.
+
+  ---------- -------- ----------- ------------- ------------------------
+    Motor     Divisa  Fee (Etapa  Activo desde     Función Principal
+                         1/WL)                  
+
+   Motor A     SOL    4% / 3% WL  TGE — Etapa 1 Trading externo en DEX.
+                                                  Fuente principal del
+                                                 Vault. Compra $LUKA +
+                                                quema + alimenta Vault.
+
+   Motor B    $LUKA   2.5% / 1.5%  App — Etapa   Transacciones internas
+                          WL           2A           App. Dispersión
+                                                35/35/15/15 diferenciada
+                                                   por estado B0/B2.
+
+   Motor C     USDC      0.5%        Etapa 3     Pagos en stablecoins.
+                                                  Volumen masivo, fee
+                                                bajo. Presión de compra
+                                                       constante.
+
+   Motor D   $LUKA /   1.5% fijo   App — Etapa   Social Utility Layer —
+              Multi                    2A        Manadas, Crowdfunding,
+                                                Crowdlending, Apuestas,
+                                                   Eventos. Fee fijo
+                                                independiente de etapa.
+  ---------- -------- ----------- ------------- ------------------------
+
+6.1 Motor A — Trading Externo en DEX
+
++--------------------------------------------------------------------+
+| FLUJO COMPLETO MOTOR A — Ejemplo: Usuario compra $LUKA con 100 SOL |
+| en DEX                                                             |
+|                                                                    |
+| ▼ CAPTURA: Contrato retiene 4 SOL (4% estándar, Etapa 1) | 3 SOL   |
+| (whitelist)                                                        |
+|                                                                    |
+| ▼ BÚFER: SOL de fee acumulados hasta umbral (~15 SOL) para         |
+| optimizar gas en Solana                                            |
+|                                                                    |
+| ▼ DISTRIBUCIÓN ATÓMICA (ejemplo con 4 SOL de fee):                 |
+|                                                                    |
+| ├─ 1.40 SOL (35%) → Jupiter SDK → activos KASH v3.1 → VAULT KASH   |
+| CORE                                                               |
+|                                                                    |
+| │ [35%→cBTC · 25%→USDC reserva · 15%→SOL · 20%→LST · 5%→lending]   |
+|                                                                    |
+| │                                                                  |
+|                                                                    |
+| ├─ 1.40 SOL (35%) → Jupiter SDK → compra $LUKA en mercado abierto  |
+|                                                                    |
+| │ → $LUKA adquiridos → dirección null → BURN PERMANENTE            |
+|                                                                    |
+| │ [EFECTO 1: presión de compra sube el precio]                     |
+|                                                                    |
+| │ [EFECTO 2: quema reduce el supply permanentemente]               |
+|                                                                    |
+| │                                                                  |
+|                                                                    |
+| ├─ 0.60 SOL (15%) → Wallet O&M (gastos operativos, fees de red,    |
+| marketing)                                                         |
+|                                                                    |
+| │                                                                  |
+|                                                                    |
+| └─ 0.60 SOL (15%) → Jupiter compra $LUKA del mercado → Contrato de |
+| Staking                                                            |
+|                                                                    |
+| [Presión de compra adicional + recompensa a stakers]               |
+|                                                                    |
+| EFECTOS NETOS: Supply $LUKA↓↓ | Vault↑ | Precio con soporte↑ |     |
+| Stakers recompensados                                              |
++--------------------------------------------------------------------+
+
+6.2 Motor B — Reingeniería como Algoritmo de Dispersión 35/35/15/15
+
+En v3.1 el Motor B ya no es un bloque monolítico de quema. Es un
+algoritmo de dispersión de valor que actúa según el Hito de Supply
+verificado por LUKAI. La distribución 35/35/15/15 se aplica en ambos
+estados, pero el comportamiento del tramo LP difiere radicalmente según
+el estado.
+
+Distribución de Salida del Motor B — v3.1
+
+  ------------- ------------ -------------------- ------------------------
+      Tramo      Porcentaje    Capa de Destino       Comportamiento por
+                                                           Estado
+
+    Liquidity       35%        LP / Burn según    Estado B0 (Pre-Hito K <
+   Layer (LP)                       estado          $25M): este monto se
+                                                     ejecuta como BURN
+                                                     (Quema) directa a
+                                                   dirección null. Estado
+                                                  B2 (Post-Hito K ≥ $25M):
+                                                        se destina a
+                                                      recirculación e
+                                                    incentivos del pool.
+
+   Asset Layer      35%       Compra de Activos   El equivalente generado
+     (Vault)                        Duros         por el yield se utiliza
+                                                     para la Compra de
+                                                    Activos Duros (Hard
+                                                  Assets) para el respaldo
+                                                   físico de la reserva.
+                                                      LUKAI ejecuta el
+                                                      rebalanceo hacia
+                                                         cBTC/SOL.
+
+  Reward Layer      15%      Distribución directa      Se distribuye
+    (Staking)                      en $LUKA        directamente en $LUKA
+                                                     para incentivar el
+                                                     holding. Incentivo
+                                                  constante independiente
+                                                        del estado.
+
+   Operational      15%      Swap inmediato a SOL    Se ejecuta un swap
+   Layer (O&M)                      o USDC         inmediato a SOL o USDC
+                                                  para garantizar liquidez
+                                                      operativa en la
+                                                        billetera de
+                                                  mantenimiento. Sin delay
+                                                       de conversión.
+  ------------- ------------ -------------------- ------------------------
+
+Estado B0 vs. Estado B2 — Comparativa
+
+  ---------------- -------------------------- --------------------------
+     Parámetro        MODO B0 — Quema con     MODO B2 — Dispersión Plena
+                           Dispersión              con Compensación
+
+     Condición       K(t) < $25M (K_min no     K(t) ≥ $25M — verificado
+                           alcanzado)         on-chain por Pyth Network
+
+   Tramo LP (35%)     → BURN permanente a         → Recirculación e
+                         dirección null          incentivos del pool
+
+    Tramo Asset    → Compra de activos duros     → Compra de activos
+       (35%)             (Hard Assets)        duros + compensación Vault
+                                                       vía R_op
+
+    Tramo Reward   → Distribución directa en  → Distribución directa en
+       (15%)                 $LUKA                      $LUKA
+
+  Tramo O&M (15%)      → Swap inmediato a         → Swap inmediato a
+                            SOL/USDC                   SOL/USDC
+
+      Throttle       No aplica. Dispersión    Sí — 4 modos según precio
+                        siempre al 100%.       vs EMA30 (ver Sección 7)
+
+     Narrativa     Deflación activa desde el   Hito público: 'MOTOR B2
+                    primer día. Supply baja      ACTIVADO'. Comunidad
+                       visible on-chain.         anticipa el evento.
+  ---------------- -------------------------- --------------------------
+
+6.3 Motor C — Pagos en Stablecoins (Fase 3)
+
++--------------------------------------------------------------------+
+| FLUJO COMPLETO MOTOR C — Usuario paga X USDC en App o servicio     |
+|                                                                    |
+| ▼ Contrato retiene 0.5% en USDC                                    |
+|                                                                    |
+| ▼ DISTRIBUCIÓN ATÓMICA:                                            |
+|                                                                    |
+| ├─ 35% USDC → directo al Vault KASH v3.1 (refuerza buffer estable  |
+| de USDC)                                                           |
+|                                                                    |
+| ├─ 35% USDC → Jupiter compra $LUKA en mercado abierto → inyección  |
+| al LP                                                              |
+|                                                                    |
+| │ [Presión de compra real + fortalece la liquidez del pool]        |
+|                                                                    |
+| ├─ 15% USDC → Wallet O&M                                           |
+|                                                                    |
+| └─ 15% USDC → Jupiter compra $LUKA → distribuye a stakers          |
+|                                                                    |
+| VENTAJAS: Fee bajo (0.5%), opera en stablecoins, cero exposición a |
+| volatilidad de SOL.                                                |
+|                                                                    |
+| En Fase 3, cada transacción en stablecoins genera presión de       |
+| compra neta positiva.                                              |
++--------------------------------------------------------------------+
+
+6.4 Motor D — Social Utility Layer (Fee Fijo 1.5%)
+
+El Motor D es el motor de servicios sociales del protocolo — Manadas de
+Crowdfunding, Crowdlending, Apuestas, Acceso a Eventos. Opera con fee
+fijo de 1.5% independiente de la etapa de madurez del ecosistema. Hereda
+el comportamiento de los motores financieros según el tipo de activo
+recibido.
+
+Comportamiento del Motor D por Tipo de Activo
+
+  ----------------- --------------------------------------------------
+   Tipo de Activo                 Flujo de Procesamiento
+      Recibido      
+
+    $LUKA (Espejo    Aplica directamente la distribución 35/35/15/15
+      Motor B)      del Motor D. Las políticas de quema/recirculación
+                    del tramo LP siguen la fase vigente: B0 (quema) o
+                       B2 (recirculación), según el estado de K(t)
+                                  gestionado por LUKAI.
+
+  Activos Externos     LUKAI invoca previamente al Motor A (si son
+     (SOL, USDC,         SOL/activos volátiles) o Motor C (si son
+       otros)       USDC/stablecoins) para realizar el swap por $LUKA,
+                      capturando valor externo. Una vez convertido a
+                      $LUKA, aplica la distribución 35/35/15/15 del
+                                   Motor D a cabalidad.
+  ----------------- --------------------------------------------------
+
++--------------------------------------------------------------------+
+| REGLA DE ORO — EXENCIÓN cNFT DeFi                                  |
+|                                                                    |
+| Los servicios de cNFT DeFi (Staking y Pools) están EXENTOS del     |
+| Motor D.                                                           |
+|                                                                    |
+| Esta exención es absoluta e incondicional — no modifiable por      |
+| gobernanza en ninguna etapa.                                       |
+|                                                                    |
+| Los cNFT DeFi no generan fees de servicio del Motor D, pero sí     |
+| generan rendimientos del pool correspondiente.                     |
++--------------------------------------------------------------------+
+
+Diagrama de Decisión Motor D — LUKAI Orchestration
+
++--------------------------------------------------------------------+
+| FLUJO DE DECISIÓN LUKAI PARA MOTOR D                               |
+|                                                                    |
+| ┌─ Transacción entrante en Motor D ─┐                              |
+|                                                                    |
+| │ │                                                                |
+|                                                                    |
+| ▼ ▼                                                                |
+|                                                                    |
+| ¿Es cNFT DeFi (Staking/Pool)? ¿Es servicio social                  |
+| (Manada/Apuesta/Evento)?                                           |
+|                                                                    |
+| │ SÍ │ SÍ                                                          |
+|                                                                    |
+| ▼ ▼                                                                |
+|                                                                    |
+| EXENTO — Fee 0% ¿Activo recibido es $LUKA o externo?               |
+|                                                                    |
+| Procesar sin Motor D │                                             |
+|                                                                    |
+| ┌─────────────┴─────────────┐                                      |
+|                                                                    |
+| ▼ $LUKA ▼ Externo                                                  |
+|                                                                    |
+| Dispersión 35/35/15/15 LUKAI invoca Motor A/C                      |
+|                                                                    |
+| según estado B0/B2 → Swap → $LUKA                                  |
+|                                                                    |
+| (directo) → Dispersión 35/35/15/15                                 |
++--------------------------------------------------------------------+
+
+6.5 Distribución Unificada de Fees — Regla 35/35/15/15
+
+  ---------- ------------------ ------------------ ---------- ----------
+    Motor      35% — Vault /    35% — LP / Quema / 15% — O&M    15% —
+                   Quema             Activos                   Staking
+
+   Motor A     → activos KASH    → compra $LUKA →   → Wallet   → compra
+    (SOL)    v3.1 → Vault Core  BURN + presión de     O&M      $LUKA →
+                                      compra                   Staking
+
+   Motor B     → Asset Layer:    B0: BURN directo   → Swap a   → $LUKA
+   ($LUKA)   Compra Hard Assets        B2:          SOL/USDC  directo a
+                                Recirculación + LP             stakers
+
+   Motor C   → directo al Vault  → compra $LUKA →   → Wallet   → compra
+    (USDC)    (refuerza USDC)      inyección LP       O&M      $LUKA →
+                                                               Stakers
+
+   Motor D     → Asset Layer:    B0: BURN directo   → Swap a   → $LUKA
+   (Multi)   Compra Hard Assets B2: Recirculación   SOL/USDC  directo a
+                                 (espejo Motor B)              stakers
+  ---------- ------------------ ------------------ ---------- ----------
+
+7. THROTTLE DINÁMICO DE QUEMA
+
+Mecanismo anti-espiral que modula la tasa de quema y compensación del
+Motor B2 según el precio de $LUKA relativo a su media móvil exponencial
+de 30 días (EMA30). Las quemas diferidas se acumulan en cola on-chain
+pública y se ejecutan cuando el mercado se normaliza — nunca se
+cancelan.
+
+  ------------------- ------------- ------------ -------------- ----------
+   Condición (P_m vs      Modo      Quema Motor   Compensación     Cola
+        EMA30)                           B2          Vault       Diferida
+
+   P_m > 1.2 × EMA30    ACELERADO    125% quema    100% desde   No aplica
+                                        base          R_op      
+
+  0.8 × EMA30 ≤ P_m ≤    NORMAL      100% quema    100% desde   No aplica
+      1.2 × EMA30                       base          R_op      
+
+  0.5 × EMA30 ≤ P_m <  CONSERVADOR   60% quema   60% desde R_op    40%
+      0.8 × EMA30                       base       inmediata     diferido
+                                                                 en cola
+
+   P_m < 0.5 × EMA30    DEFENSIVO    25% quema     Solo quema      75%
+                                        base     directa activa  diferido
+                                                                 en cola
+  ------------------- ------------- ------------ -------------- ----------
+
+EMA30 = Precio Promedio Móvil Exponencial de 30 días de $LUKA, calculado
+por LUKAI vía Pyth Network.
+
+- La cola de diferidos es pública on-chain. La comunidad puede ver
+  cuántas quemas están pendientes.
+
+- Al regresar a zona NORMAL: la cola se ejecuta progresivamente (máx 10%
+  de la cola por semana).
+
+- Las quemas diferidas crean un 'bono de deflación futura' que incentiva
+  la compra en bajistas.
+
+- El Modo DEFENSIVO es el mecanismo de supervivencia del protocolo.
+  Preserva R_op para el largo plazo.
+
+Impacto en simulación: la probabilidad de espiral de muerte baja de ~8%
+(sin throttle) a 1.4% (con throttle activo).
+
+8. PROTECCIÓN DEL POOL DE LIQUIDEZ — JAGUAR SHIELD LP
+
+El Jaguar Shield LP protege el Pool de Liquidez mediante dos mecanismos
+complementarios: incentivos proactivos para retener liquidez a largo
+plazo (LP Comprometido) y frenos reactivos automáticos ante retiros
+masivos (Circuit Breaker).
+
+8.1 Sistema de LP Comprometido — Incentivos por Lock Voluntario
+
+  ---------------- ------------ ----------- ------------- -----------------
+       Nivel           Lock     Reward Base    Reward      Beneficio Extra
+                    Voluntario                Adicional   
+
+     LP Básico       Sin lock     35% fee         —       Retiro inmediato
+                                 estándar                    disponible
+
+  LP Comprometido    30 días      35% fee   +5% del pool   Badge on-chain
+        30d                                    rewards      'Jaguar Cub'
+
+   LP Jaguar 90d     90 días      35% fee   +12% del pool     NFT Badge
+                                               rewards     'Jaguar' + voto
+                                                            en parámetros
+
+  LP Fundador 365d   365 días     35% fee   +20% del pool    Gobernanza
+                                               rewards     premium + yield
+                                                          priority + Badge
+                                                              'Emperor'
+  ---------------- ------------ ----------- ------------- -----------------
+
+Los rewards adicionales se financian con una reasignación del 3% del
+presupuesto O&M mensual hacia el LP Reward Pool. Un LP estable reduce el
+slippage, lo que aumenta el volumen de trading y por ende los fees
+totales. El costo del incentivo se autofinancia con el tiempo.
+
+8.2 Circuit Breaker del Pool — Freno Reactivo Automático
+
+  ------------- -------------------- -------------------- --------------
+      Nivel     Condición Activadora  Acción Automática      Override
+                                                            Disponible
+
+     Alerta     >10% LP retirado en  Notificación pública       —
+    Temprana          2 horas           on-chain. Sin     
+                                        restricción de    
+                                           retiros.       
+
+    Nivel 1 —   >15% LP retirado en  Delay de 12 horas en    Tridente
+      Delay           4 horas        retiros pendientes.  Multisig puede
+                                                           cancelar el
+                                                              delay
+
+    Nivel 2 —   >30% LP retirado en    Delay 48 horas.      Tridente +
+      Pausa           24 horas          Alerta pública    LUKAI auditan
+                                        máxima. LUKAI        antes de
+                                           audita.           proceder
+  ------------- -------------------- -------------------- --------------
+
++--------------------------------------------------------------------+
+| PRINCIPIO FUNDAMENTAL: El Circuit Breaker NO confisca fondos       |
+|                                                                    |
+| Los retiros siempre se procesan — solo se introduce un delay       |
+| temporal en crisis para dar tiempo al mercado.                     |
+|                                                                    |
+| Los LP Comprometido, Jaguar y Fundador no pueden retirarse durante |
+| su periodo de lock.                                                |
+|                                                                    |
+| En una crisis, el free-float de LP vulnerable es menor gracias a   |
+| los incentivos de lock preventivos.                                |
++--------------------------------------------------------------------+
+
+9. JAGUAR SHIELD — INFRAESTRUCTURA DE SEGURIDAD
+
+El Jaguar Shield es la arquitectura de defensa activa del protocolo.
+Integra mecanismos de última generación optimizados para el ecosistema
+de Solana, Sanctum y Jito.
+
+  -------------------- -----------------------------------------------
+       Mecanismo                         Descripción
+
+    Circuit Breaker      Monitorización en tiempo real del valor del
+  Algorítmico — Vault  Vault. Si se detecta variación negativa >10% en
+                       una hora: sistema entra en Modo de Emergencia —
+                        pausa swaps y salidas de capital por 24h para
+                               auditoría por Multisig y LUKAI.
+
+   Circuit Breaker LP       Tres niveles de delay progresivo. Sin
+                           confiscación. LP Comprometido reduce el
+                         free-float vulnerable preventivamente. Ver
+                                        Sección 8.2.
+
+   Monitor de Paridad    Vigila el peg de JitoSOL y mSOL a través de
+          LSTs         Sanctum. Si el valor de redención se desvía >3%
+                             respecto al SOL nativo, se bloquean
+                          conversiones para proteger el principal.
+
+     Redundancia de     Media ponderada por tiempo (TWAP) combinando
+  Oráculos (Fair-Price  Pyth Network y Switchboard. Elimina riesgo de
+        Verify)         manipulación de precios en un solo pool. Las
+                         señales de LUKAI (Throttle, Contra-cíclico)
+                              dependen de este feed verificado.
+
+       Anti-MEV —       Todas las transacciones críticas se procesan
+  Enrutamiento Privado vía bundles privados con Jito-Solana SDK. Evita
+                         que bots de arbitraje roben el slippage del
+                        protocolo. JitoSOL (20% del Vault) ya alinea
+                               los incentivos con Jito Bundle.
+
+  Seguro Anti-Exploit  Cobertura hasta el 5% del valor total del Vault
+       del Vault           ante exploits. Financiado por Halborn u
+                            OtterSec como requisito de auditoría.
+
+   Tridente Multisig   Firma triple requerida para: (1) activar Capa 3
+                       del Vault (cBTC Reserva Profunda), (2) cancelar
+                        Circuit Breaker LP, (3) modificar K_min. Sin
+                       Tridente no hay acción unilateral sobre activos
+                                       del protocolo.
+  -------------------- -----------------------------------------------
+
+10. ESTRATEGIA DE KOLs Y MARKET MAKERS — OPTIMIZACIÓN P95
+
+El marketing se construye como infraestructura social, no como gasto
+publicitario tradicional. Los KOLs y Market Makers son componentes
+técnicos del protocolo con incentivos alineados con el crecimiento del
+Vault.
+
+10.1 Market Makers — Garantizando el Piso de Volumen del Motor A
+
+  -------------- -------------------------- --------------------------
+     Elemento    Condición del Market Maker    Contraprestación del
+                                                    Protocolo
+
+  Fee de trading Acepta fee reducido: 1.5%   Posición preferencial en
+                  en lugar del 4% estándar   el LP con yield priority
+
+     Liquidez      Provee mínimo $500K de   Acceso a LP Fundador 365d
+      mínima      liquidez durante 90 días       con +20% rewards
+                                                   adicionales
+
+     Spreads      Mantiene spreads bid/ask   Reducción de riesgo MEV
+                     inferiores al 0.5%        por Jaguar Shield +
+                                                     JitoSOL
+
+     Duración    Compromiso mínimo 90 días  Costo bootstrapping único:
+                         desde TGE           $50K–$100K en incentivos
+                                                    semana 1–4
+  -------------- -------------------------- --------------------------
+
++--------------------------------------------------------------------+
+| IMPACTO CUANTIFICADO EN SIMULACIÓN                                 |
+|                                                                    |
+| Con $50K–$100K en incentivos a Market Makers (semanas 1–4):        |
+|                                                                    |
+| → Piso garantizado: $2M–$5M diarios de volumen Motor A desde el    |
+| día 1                                                              |
+|                                                                    |
+| → Resultado: Vault en trayectoria P75 desde el día 1 (sin MM: P50  |
+| en el mejor caso)                                                  |
+|                                                                    |
+| → Probabilidad de activar B2 en Año 1: sube de 53.6% a 68.4%       |
++--------------------------------------------------------------------+
+
+10.2 KOLs — Construcción de Comunidad con Incentivos de Largo Plazo
+
+  ----------------- ------------------------- -------------------------
+        Tipo         Modelo de Compensación    Comportamiento Esperado
+
+   KOL pago (cash)   Pago único en efectivo      Publica 1 vez. Sin
+                         por publicación       seguimiento. Desaparece
+                                                  después del pago.
+
+   KOL con vesting   Asignación de $LUKA con  Publica múltiples veces.
+        $LUKA        vesting 6–12 meses del   Defiende el proyecto ante
+                    presupuesto Marketing/CEX FUD. Su retorno económico
+                        (10% del supply)        depende del éxito del
+                                                     protocolo.
+  ----------------- ------------------------- -------------------------
+
+10.3 Impacto Cuantificado — KOLs + MM en el Vault
+
+  -------------------- ------------- ------------- ----------- ----------
+       Escenario       Vault Mediana Vault Mediana  P95 Año 5   P(B2 Año
+                           Año 1         Año 5                     1)
+
+   Base (sin frentes      $20.9M        $37.2M       $156.3M     53.6%
+        activos)                                               
+
+   Solo Market Makers  $27.4M (+31%) $45.8M (+23%)   $193.1M     68.4%
+       (Frente 1)                                              
+
+   MM + KOLs (Frentes  $32.1M (+54%) $52.4M (+41%)   $219.7M     74.1%
+          1+2)                                                 
+
+   4 Frentes Activos   $38.7M (+85%) $63.8M (+71%)   $267.4M     82.3%
+    Simultáneamente                                            
+  -------------------- ------------- ------------- ----------- ----------
+
+11. LOS 4 FRENTES ESTRATÉGICOS — PLAN DE LANZAMIENTO P95
+
+Los primeros 90 días determinan la trayectoria del Vault a 5 años. Los 4
+Frentes Estratégicos son la operacionalización ejecutable de las 5
+características que separan las trayectorias P50 de las P95 en las 5,000
+simulaciones Monte Carlo.
+
++--------------------------------------------------------------------+
+| LAS 5 CARACTERÍSTICAS DE LAS TRAYECTORIAS P95 (validadas en        |
+| simulación)                                                        |
+|                                                                    |
+| 1. Volumen Motor A > $8M diarios en los primeros 90 días —         |
+| determinante no lineal: doblar el volumen inicial multiplica el    |
+| Vault por 3–4x por compounding.                                    |
+|                                                                    |
+| 2. Régimen de mercado neutral o bull en los primeros 6 meses — no  |
+| lanzar en bear confirmado.                                         |
+|                                                                    |
+| 3. 2,000–5,000 usuarios activos mensuales en la App al cierre del  |
+| Año 1 — efecto de señal social sobre el DEX.                       |
+|                                                                    |
+| 4. Módulo contra-cíclico LUKAI activo — +23% en ciclos completos.  |
+|                                                                    |
+| 5. Staking elevado de $LUKA — reduce presión vendedora, refuerza   |
+| narrativa, atrae volumen al DEX.                                   |
++--------------------------------------------------------------------+
+
+Frente 1 — Market Makers
+
+Meta: Garantizar piso de $2M–$5M diarios en volumen del Motor A durante
+días 1–90. Inversión de bootstrapping: $50K–$100K en incentivos semana
+1–4. Impacto: +31% en Vault mediana Año 1 solo con este frente.
+
+Frente 2 — KOLs con Vesting $LUKA
+
+Meta: Mínimo 3 KOLs con 100K–500K seguidores, vesting 6–12 meses en
+$LUKA del presupuesto Marketing/CEX. Impacto: +83% en tasa de adopción
+diaria de la App vs. línea base sin KOLs.
+
+Frente 3 — Dashboard del Vault como Narrativa de Progreso Colectivo
+
+El dashboard público del Vault no es solo herramienta de transparencia —
+es el mecanismo de coordinación social más poderoso del protocolo.
+Cuando la comunidad ve en tiempo real que el Vault está a $18M de los
+$25M para activar Motor B2, cada trader sabe que al comprar $LUKA, parte
+del fee acerca el hito. Se crea urgencia de participación genuina y
+verificable on-chain.
+
+El dashboard debe mostrar en tiempo real: K(t) vs K_min (barra de
+progreso hacia $25M), supply circulante, cola de quemas diferidas,
+trayectoria del Vault semana a semana, y el modo Throttle activo. Todo
+verificable on-chain sin intermediarios. Impacto en simulación: +15% en
+volumen orgánico del DEX en meses 3–12.
+
+Frente 4 — Integraciones Técnicas con Protocolos Solana
+
+  -------------- ----------------- ------------------ -------------------
+    Categoría       Protocolos      Impacto en Motor      Impacto en
+                     Objetivo                              Narrativa
+
+      Gaming        Star Atlas,     Transacciones en     Usuarios con
+                      Aurory        $LUKA → Motor B   intención de juego,
+                                     (quema + fees)     no especulación
+
+  Lending / DeFi Kamino, Marginfi    USDC del Vault   Valida el protocolo
+                                      genera yield      ante inversores
+                                     adicional 4–8%    DeFi sofisticados
+
+      NFTs /       Tensor, Magic     Fee Motor B en   Activa al segmento
+   Marketplaces        Eden        transacciones NFT    A (12–25 años)
+                                       con $LUKA      
+
+     Wallets     Phantom, Backpack $LUKA como opción  Distribución pasiva
+                                    nativa → volumen     sin costo de
+                                        orgánico      adquisición activo
+  -------------- ----------------- ------------------ -------------------
+
+12. LAS ETAPAS DEL PROTOCOLO
+
+La arquitectura del protocolo se despliega en cinco etapas secuenciales
+que definen qué motores están activos, qué hitos son requeridos, y qué
+capacidades se desbloquean. Cada etapa activa a la siguiente de forma
+automática mediante condiciones on-chain verificables.
+
+  ------- ----------------- ---------------- ---------------- ---------------- ------------
+   Etapa       Nombre         Condición de   Motores Activos      Capital        Hito de
+                               Activación                      Inversionistas   Comunidad
+
+     0     Pre-lanzamiento     Auditoría            —         Capital en KASH    Vesting
+                              completada.                      Sociedad bajo    publicado
+                                Vesting                         Jaguar Lock    
+                               publicado                                       
+                              on-chain. 4                                      
+                                Frentes                                        
+                              preparados.                                      
+
+     1         Génesis        TGE. Pool LP   Motor A activo.    LP Fundador      Motor A
+                               activo en        B y C y D       (365d lock).      activo
+                            Meteora. Market     inactivos.     Jaguar Shield   
+                             Makers activos                       activo.      
+                               desde D1.                                       
+
+    2A     App — Motor B0   App lanzada. K < Motor A + Motor   Reserva Jaguar   Dashboard
+                              $25M. LUKAI     B0 + Motor D.      Shield. LP     K(t) live
+                             contra-cíclico                     Comprometido   
+                                activo.                         disponible.    
+
+    2B     Madurez — Motor   K(t) ≥ $25M —   Motor A + Motor  Liberación KASH    MOTOR B2
+                 B2            verificado     B2 + Motor D.   Sociedad mes 13    ACTIVADO
+                              on-chain por                       post-hito.    
+                            Pyth. Transición                                   
+                              automática.                                      
+
+     3    Soberanía Global      Adopción      Motor A + B2 +    Distribución     Motor C
+                              consolidada.        C + D.      perpetua de fees    activo
+                            Integración fiat                     líquidos a    
+                              activa. K >                        Sociedad.     
+                                 $50M.                                         
+
+     4           DAO        Año 5. Supply ≤   Todos activos.     Control de    Emisión Neta
+                            3,300M. Emisión       Quema       gobernanza pasa      Cero
+                               Neta Cero       suspendida.        al DAO.      
+                               activada.      Recirculación.                   
+  ------- ----------------- ---------------- ---------------- ---------------- ------------
+
+12.1 Coordinación Crítica — Etapas 2A y 2B
+
+- El lanzamiento de la App (Etapa 2A) NO necesita esperar a que K llegue
+  a $25M.
+
+- Motor B0 y Motor D operan desde el día 1 de la App: quema directa y
+  servicios sin condiciones adicionales.
+
+- La transición a Etapa 2B ocurre automáticamente transacción a
+  transacción cuando K ≥ $25M.
+
+- Si la App lanza temprano con buen volumen, B0 + D aceleran la llegada
+  al umbral.
+
+- Si la App lanza tarde, el Motor A ya construyó gran parte del camino
+  al umbral solo.
+
+- En ambos casos el sistema funciona correctamente. No hay dependencia
+  frágil entre App y Vault.
+
+13. LUKASH APP — MANADAS, LUKAI Y JUNGLE ARENA
+
+La App es el centro de interacción del protocolo y el motor de adopción
+masiva. No es solo una interfaz — es la plataforma donde el Protocolo de
+Colateralización Multiactivo (PCM) se convierte en experiencia de
+usuario tangible.
+
+13.1 LUKAI como Interfaz de Usuario
+
+LUKAI no es un simple chatbot. Es una interfaz de ejecución financiera
+que traduce lenguaje humano a transacciones on-chain, con análisis de
+riesgo en tiempo real y asesoramiento personalizado. Su diseño visual
+minimalista oculta un motor de orquestación de estados capaz de
+gestionar la complejidad del protocolo sin intervención humana.
+
+13.2 Manadas — La Unidad Económica Central
+
+Las Manadas son comunidades financieras organizadas que utilizan cNFTs
+(NFTs comprimidos) de Solana. En Solana, gestionar una comunidad de
+10,000 miembros es prácticamente gratuito — lo que permite
+micro-segmentación económica sin precedentes.
+
+  ----------------- ------------------------- -------------------------
+     Servicio de       Función Financiera          Motor Económico
+       Manada                                        Alimentado
+
+   Crowdfunding y     Agrupan capital para      Motor D (fee 1.5% en
+    Crowdlending       financiar proyectos    $LUKA o via swap externo)
+                    locales o préstamos entre 
+                            miembros          
+
+  Fondos y Seguros  Redes de seguridad mutua    Motor D + LUKAI como
+     Colectivos         ante emergencias,        árbitro automático
+                    gestionadas vía oráculos  
+                        y smart contracts     
+
+    Marketplaces      Economías locales con     Motor D (fees de cada
+      Internos          $LUKA como moneda           transacción)
+                     preferente y descuentos  
+                          para miembros       
+
+  Tokenización RWA   Inversión colectiva en   Motor C en Fase 3 (USDC +
+                         bienes raíces o               $LUKA)
+                    commodities tokenizados — 
+                      acceso democratizado    
+  ----------------- ------------------------- -------------------------
+
+13.3 Jungle Arena — Gaming Financiero
+
+Jungle Arena es la rampa de acceso al ecosistema para el Segmento A
+(12–25 años). A diferencia de los modelos Play-to-Earn insostenibles,
+Jungle Arena basa su economía en captura de valor entre participantes y
+en las quemas del Motor B.
+
+  ---------------- ---------------------- -----------------------------
+    Elemento de      Función Financiera       Impacto en el Usuario
+       Juego                              
+
+   Evolución del   Niveles Cub a Emperor. Score alto desbloquea mejores
+       Jaguar        Jaguar Score como     tasas. Score calibrado por
+                   currículum financiero. LUKAI según participación en
+                                                    Motor D.
+
+  Misiones de Caza Tareas educativas y de     Mejora alfabetización
+                     ahorro gamificadas    financiera mientras genera
+                                                fees para Motor D
+
+     Duelos de        Competición por       Fomenta cohesión grupal y
+      Manadas      rendimiento del Vault   trading social — amplifica
+                       entre manadas             volumen Motor A
+
+  Bet & Win $LUKA   Apuestas respaldadas  Genera volumen para Motor D.
+                    por habilidades — no    Fee 1.5% en cada apuesta.
+                         azar puro        
+  ---------------- ---------------------- -----------------------------
+
+14. PROYECCIONES FINANCIERAS POR ETAPA
+
+Las proyecciones siguientes corresponden a los rangos de las tres etapas
+operativas del protocolo, con tres escenarios por etapa. Las
+proyecciones contemplan la composición actualizada del Vault v3.1 y el
+impacto del módulo LUKAI contra-cíclico.
+
+Etapa 1 — Génesis (Referente: $WIF)
+
+Fee 4.0% base / 3.0% whitelist. Foco: Motor A y acumulación de Vault.
+
+  ----------------------- --------------- --------------- ---------------
+    Métrica / Variable     Rango Mínimo        Rango      Rango Optimista
+                                            Sostenible        (Bull)
+
+  Volumen Diario Promedio   $5,000,000      $35,000,000    $120,000,000
+
+    Fees Recaudados (30     $6,000,000      $42,000,000    $144,000,000
+           días)                                          
+
+  Aporte Vault Core (35%    $1,470,000      $10,290,000     $35,280,000
+          × 70%)                                          
+
+      Caja O&M (15%)         $900,000       $6,300,000      $21,600,000
+
+    Tokens Quemados (30     480M $LUKA      1.8B $LUKA      3.2B $LUKA
+        días est.)                                        
+
+   Market Cap Proyectado    $28,000,000    $180,000,000    $950,000,000
+  ----------------------- --------------- --------------- ---------------
+
+Etapa 2 — Expansión (Referente: $BONK)
+
+Fee 2.5% base / 1.5% whitelist. Foco: Motor A + B0 → B2 + Motor D.
+Adopción de App activa.
+
+  ----------------------- --------------- ---------------- ----------------
+    Métrica / Variable     Rango Mínimo   Rango Sostenible Rango Optimista
+                                                                (Bull)
+
+  Volumen Mensual (DEX +   $250,000,000    $1,200,000,000   $3,500,000,000
+           App)                                            
+
+      Fees Recaudados       $6,250,000      $30,000,000      $87,500,000
+         (Mensual)                                         
+
+  Aporte Vault Core (35%    $1,531,250       $7,350,000      $21,437,500
+          × 70%)                                           
+
+  Tokens Quemados Motor B   250M $LUKA       800M $LUKA       1.5B $LUKA
+
+   Market Cap Proyectado   $850,000,000    $2,200,000,000   $5,500,000,000
+  ----------------------- --------------- ---------------- ----------------
+
+Etapa 3 — Soberanía (Referente: NEQUI)
+
+Fee Motor C 0.5%. Supply fijo 3.3B. Motor D activo 1.5%. Foco: pagos
+masivos, Emisión Neta Cero activa.
+
+  ----------------------- ---------------- ---------------- ----------------
+    Métrica / Variable      Rango Mínimo   Rango Sostenible Rango Optimista
+                                                                 (Bull)
+
+  Transacciones Mensuales   100,000,000      300,000,000      550,000,000
+
+   Volumen Mensual (USD)    $300,000,000     $900,000,000    $1,650,000,000
+
+      Fees Recaudados        $1,500,000       $4,500,000       $8,250,000
+         (Mensual)                                          
+
+  Aporte Vault Core (35%)     $367,500        $1,102,500       $2,021,250
+
+   Market Cap Proyectado   $6,000,000,000   $7,500,000,000   $9,000,000,000
+  ----------------------- ---------------- ---------------- ----------------
+
+15. PLAN DE INVERSIÓN Y USO DE CAPITAL
+
+  -------- ----------------- -------------- ---------------------------
+    Fase       Inversión     Foco Principal      Componentes Clave
+               Requerida                    
+
+   Fase 1    $800,000 USD        Core &      Desarrollo LUKAI + módulo
+                               Awareness      contra-cíclico, Jaguar
+                                             Shield, prototipo LUKASH
+                                            App, marketing de guerrilla
+                                             (KOLs + MM), constitución
+                                                legal El Salvador.
+
+   Fase 2   $6,500,000 USD     Product &     Adquisición 1.5M usuarios
+                                 Scale        LatAm ($3.00/usuario),
+                                             desarrollo Jungle Arena,
+                                              OpEx e infraestructura
+                                                  Jaguar Shield,
+                                            integraciones Star Atlas /
+                                                 Kamino / Tensor.
+
+   Fase 3   $12,000,000 USD   Utilidad en    Expansión red Jaguar Pay
+                             Economía Real  (100K+ comercios, NFC/QR),
+                                              licencias IFPE México +
+                                                  SEDPE Colombia,
+                                            infraestructura RWA (SPVs,
+                                            T-bills tokenizados), LUKAI
+                                               Institutional Bridge.
+  -------- ----------------- -------------- ---------------------------
+
++--------------------------------------------------------------------+
+| SOSTENIBILIDAD DE INFRAESTRUCTURA v3.1                             |
+|                                                                    |
+| El escalamiento tecnológico de Fase 2 y Fase 3 se financia         |
+| progresivamente mediante el Vault Sociedad acumulado durante la    |
+| Etapa 1.                                                           |
+|                                                                    |
+| Este modelo elimina la dependencia de rondas de VC externas y      |
+| preserva la estructura de equity de los socios fundadores.         |
+|                                                                    |
+| La Fase 1 es la única que requiere capital externo directo. Las    |
+| fases posteriores son autofinanciadas por el éxito del protocolo.  |
++--------------------------------------------------------------------+
+
+16. ANÁLISIS REGULATORIO Y JURISDICCIÓN
+
+El Salvador es el hub óptimo para la fundación del protocolo en 2026 por
+su legislación pionera en activos digitales, cero impuestos sobre
+ganancias cripto y bancos pro-Bitcoin para rampas on/off.
+
+  ----------------------- ---------------------------------------------
+   Requisito para LUKASH      Especificación CNAD El Salvador 2026
+
+   Capital Social Mínimo                   $2,000 USD
+
+  Estructura Corporativa       Entidad legal local con Oficial de
+                                      Cumplimiento AML/KYC
+
+      Ventaja Fiscal       Exención total de impuestos sobre ganancias
+                           de capital e ingresos de activos digitales
+
+   Integración Bancaria    Bancos pro-Bitcoin facilitan rampas on/off
+                                          para Motor C
+
+    Tarifa de Registro              ~$5,475 USD — pago único
+
+        Supervisión       Reportes periódicos de actividad y auditorías
+                                      técnicas ante la CNAD
+  ----------------------- ---------------------------------------------
+
+Expansión secundaria en Fase 3: Suiza (FINMA) y Emiratos Árabes Unidos
+(VARA) para credibilidad institucional. Alternativas: Bermudas, Islas
+Caimán, Panamá.
+
+17. DETECCIÓN DE RIESGOS Y ESTRATEGIAS DE MITIGACIÓN
+
+  --------------- --------------- ----------- ----------------------------------
+      Riesgo       P(Ocurrencia)   Severidad   Mitigación Implementada en v3.1
+
+    Motor B2 no        0.4%          BAJA     K_min = $25M hardcoded. Solo crash
+    activa en 5                                  total en 5 años lo evita. 4
+       años                                     Frentes elevan P(B2 Año 1) al
+                                                            82.3%.
+
+    Espiral de         1.4%         CRÍTICA   Throttle DEFENSIVO (25%) rompe la
+  muerte (colapso                               espiral. Mayor yield base v3.1
+    en cascada)                               reduce velocidad de agotamiento de
+                                                            R_op.
+
+  Ruina total del      0.0%         CRÍTICA    Yield LST (6–8%) + USDC lending
+    Vault (<10%                                 (4–8%) + USDC reserva + Capa 3
+     capital)                                      cBTC con lock Tridente.
+
+       R_op            ~7%*          ALTA          Throttle reduce demanda
+   insuficiente                               simultáneamente. UCR (20%) activa
+   para Motor B2                                       Recarga Forzada.
+
+    LP Collapse        ~12%*         ALTA     Circuit Breaker LP (3 niveles). LP
+  (retiro masivo)                               Comprometido reduce free-float
+                                                         vulnerable.
+
+       Bear             ~6%          MEDIA      Throttle + Capa 1 USDC (25%).
+   prolongado >3                               Sistema sobrevive aunque lento.
+       años                                   LUKAI acumula activos baratos para
+                                                        recuperación.
+
+  Exploit técnico  No modelable      ALTA     Auditoría Ottersec / Halborn antes
+   de contratos                               del TGE. Seguro Anti-Exploit hasta
+                                               5% del Vault. Tridente Multisig.
+
+      Riesgo       No modelable      MEDIA    Radicación en El Salvador (CNAD).
+    regulatorio                               Cumplimiento FATF y MiCA proactivo
+                                                para interoperabilidad global.
+  --------------- --------------- ----------- ----------------------------------
+
+18. PARÁMETROS FORMALES — BLUEPRINT DE SMART CONTRACTS
+
+Esta tabla es el referente técnico definitivo para el equipo de
+desarrollo. Todos los parámetros deben codificarse exactamente como se
+especifica. Los parámetros marcados 'DAO' solo son modificables mediante
+gobernanza en Etapa 4.
+
+  -------------------------- --------------- --------------------------
+          Parámetro            Valor v3.1     Notas de Implementación
+
+   K_min — Activación Motor  $25,000,000 USD      Hardcoded. Solo
+              B2                               modificable por DAO en
+                                             Etapa 4. Verificación vía
+                                               Pyth Network en tiempo
+                                                       real.
+
+    Fee Motor A — Etapa 1         4.0%         4 SOL de cada 100 SOL
+           estándar                             operados. 3.0% para
+                                                     whitelist.
+
+    Fee Motor A — Etapa 2         2.5%        Reducción automática al
+           estándar                          activar Etapa 2. 1.5% para
+                                                     whitelist.
+
+    Fee Motor B — Etapa 1         2.5%         Del $LUKA del usuario.
+           estándar                             1.5% para whitelist.
+
+    Fee Motor C — estándar        0.5%       Solo en USDC. Activo desde
+                                                      Etapa 3.
+
+      Fee Motor D — fijo          1.5%       Fee fijo independiente de
+                                             etapa. Exención cNFT DeFi.
+
+    Distribución: Vault /          35%        Compra activos KASH v3.1
+         Asset Layer                          vía Jupiter. 70% Core /
+                                                   30% Sociedad.
+
+   Distribución: Liquidity         35%        Motor A: compra $LUKA →
+        Layer / Quema                        burn. Motor B/D Estado B0:
+                                                 burn directo. B2:
+                                                   recirculación.
+
+      Distribución: O&M            15%         Wallet operativa. Swap
+                                               inmediato a SOL/USDC.
+
+   Distribución: Staking /         15%        Distribución directa en
+         Reward Layer                                  $LUKA.
+
+     Vault: cBTC (Reserva          35%        cbBTC nativo Solana. Sin
+          Profunda)                          bridge. Lock Tridente para
+                                                      Capa 3.
+
+      Vault: SOL Nativo            15%          Liquidez operativa.
+                                               Correlación BTC 0.80.
+
+  Vault: SOL/LST (JitoSOL +        20%       Yield 6–8% anual. JitoSOL
+            mSOL)                            integrado en Jaguar Shield
+                                                     Anti-MEV.
+
+     Vault: USDC Reserva           25%           Sin yield. Siempre
+      Inmediata (Capa 1)                     disponible. Primera línea
+                                                    emergencias.
+
+     Vault: USDC Lending           5%         Yield 4–8% anual. Retiro
+      (Kamino/Marginfi)                                <24h.
+
+   Vault: PYTH + JTO + JUP         5%        ~3% PYTH + 1.5% JTO + 0.5%
+                                                JUP. Infraestructura
+                                                      técnica.
+
+   Throttle ACELERADO (P >     Quema 125%      Automático vía LUKAI +
+          1.2×EMA30)                               Pyth Network.
+
+       Throttle NORMAL         Quema 100%      Sin cambio operativo.
+       (0.8–1.2×EMA30)                       
+
+     Throttle CONSERVADOR      Quema 60% /     Cola on-chain pública.
+       (0.5–0.8×EMA30)          Cola 40%     
+
+   Throttle DEFENSIVO (P <     Quema 25% /    Modo supervivencia. R_op
+          0.5×EMA30)            Cola 75%        protegida al máximo.
+
+  Liquidación cola diferida      Máx 10%      Evita impacto abrupto al
+                               cola/semana    ejecutar cola acumulada.
+
+  Circuit Breaker LP Nivel 1  >15% LP en 4h    → Delay 12h. Override:
+                                                 Tridente Multisig.
+
+  Circuit Breaker LP Nivel 2 >30% LP en 24h    → Delay 48h. Override:
+                                                 Tridente + LUKAI.
+
+  Umbral Crítico de Reserva    20% de R_op   Recarga Forzada: 15% yield
+            (UCR)              proyectada         semanal a USDC.
+
+       Cap burn diario           1% del       El exceso se ejecuta el
+         (seguridad)           supply/día          día siguiente.
+
+   Nombre técnico legal del        PCM              Protocolo de
+           estándar                               Colateralización
+                                                    Multiactivo.
+  -------------------------- --------------- --------------------------
+
+19. MÉTRICAS DE SALUD DEL PROTOCOLO — DASHBOARD ON-CHAIN
+
+  ----------------- ------------ ------------------ ----------------------
+       Métrica       Frecuencia   Umbral de Alerta   Acción si se Activa
+
+    K(t) — Valor    Tiempo real    < objetivo de      Dashboard público
+   total del Vault                  etapa actual     actualizado. Motor B
+                                                      switch automático.
+
+   R_op — Reserva      Diario     < 20% capacidad   Modo Recarga Forzada:
+   Operativa USDC                 proyectada (UCR)   15% yield semanal →
+                                                            USDC.
+
+   Cola de quemas   Tiempo real    > 30% de quema   Comunicar a comunidad.
+      diferidas                   mensual promedio  Publicar en dashboard.
+                                      en cola       
+
+    S(t) — Supply      Diario      ≤ 3,300M (meta    Activar Emisión Neta
+     circulante                        final)         Cero. Redirigir al
+                                                     Fondo Recirculación.
+
+    Modo Throttle   Tiempo real    CONSERVADOR o    Publicar en dashboard.
+       activo                     DEFENSIVO activo   Activar protocolo de
+                                                         comunicación
+                                                         comunitaria.
+
+  LP Total del pool Cada 4 horas > 10% caída en 2h     Circuit Breaker
+                                    / >15% en 4h       automático según
+                                                     nivel. Notificación
+                                                          on-chain.
+
+    Jaguar Score       Diario    Variación > 20% en    LUKAI recalibra
+      agregado                          24h           ponderaciones del
+                                                       Motor D y revisa
+                                                       participación en
+                                                          servicios.
+
+  Usuarios activos    Mensual     < 1,000 en mes 6  Revisión de estrategia
+    mensuales App                 post-lanzamiento     de adquisición.
+                                                       Activar Frente 2
+                                                      (KOLs) o Frente 4
+                                                       (integraciones).
+
+     Régimen de     Tiempo real  Cambio de régimen       LUKAI ajusta
+    mercado LUKAI                    detectado       asignación de nuevas
+                                                           entradas
+                                                       automáticamente.
+                                                    Publicar en dashboard.
+  ----------------- ------------ ------------------ ----------------------
+
+20. HITOS DE VALIDACIÓN Y PRÓXIMOS PASOS
+
+  ----------------- --------------------------------------------------
+      Categoría                       Acción / Hito
+
+   Etapa 0 — Antes    (1) Auditoría Ottersec / Halborn de todos los
+       del TGE         contratos. (2) Vesting del equipo publicado
+                     on-chain. (3) K_min = $25M implementado en smart
+                      contract. (4) Throttle Dinámico implementado y
+                      testeado. (5) LUKAI v3.1 módulo orquestador de
+                         estados activo y verificado. (6) Motor D
+                     configurado con exención cNFT DeFi. (7) Circuit
+                    Breaker LP implementado. (8) Dashboard público del
+                    Vault en producción. (9) Market Makers confirmados
+                                         para D1.
+
+  Etapa 1 — Motor A   ✓ Motor A activo: Vault crece desde el primer
+       activo         trade. ✓ LP profundo con spreads <0.5% (market
+                       makers activos). ✓ Dashboard muestra K(t) en
+                    tiempo real. ✓ KOLs publican primera narrativa de
+                                        progreso.
+
+   Etapa 2A — App     ✓ Motor B0 dispersión activa desde la primera
+       lanzada      transacción interna. ✓ Motor D activo con fee 1.5%
+                     para servicios de manada. ✓ K = $10M: Milestone
+                       público — comunidad celebra. ✓ LUKAI módulo
+                    contra-cíclico ajusta asignaciones en tiempo real.
+                    ✓ 1,000+ usuarios activos mensuales al fin del mes
+                                            3.
+
+   Etapa 2B — K ≥    ✓ K = $25M: Switch automático B0 → B2 on-chain.
+        $25M          Evento público: 'MOTOR B2 ACTIVADO'. ✓ Motor D
+                    conmuta a dispersión B2 (recirculación en lugar de
+                       burn). ✓ Supply = 6,600M: 33% de contracción
+                       completado. ✓ R_op acumulada suficiente para
+                                  compensaciones plenas.
+
+     Largo Plazo      ✓ Supply = 3,300M: Emisión Neta Cero activada
+                    automáticamente. Distribución perpetua a Sociedad.
+                    ✓ Año 5: Control de gobernanza pasa al DAO. ✓ K >
+                      $100M: objetivo original cumplido — LUKASH es
+                                     banco soberano.
+  ----------------- --------------------------------------------------
+
+21. CONCLUSIÓN — EL PROTOCOLO QUE SALE DE ESTE DISEÑO
+
++--------------------------------------------------------------------+
+| EL PROTOCOLO LUKASH v3.1 ES ECONÓMICAMENTE SUPERIOR A CUALQUIER    |
+| VERSIÓN ANTERIOR                                                   |
+|                                                                    |
+| con riesgo de colapso 0.0%, riesgo de espiral de muerte 1.4%, y    |
+| Vault mediana a 5 años de $37.2M en escenario base.                |
+|                                                                    |
+| Con los 4 Frentes Estratégicos activos: Vault mediana $63.8M       |
+| (+71%) y P(B2 Año 1) = 82.3%.                                      |
++--------------------------------------------------------------------+
+
++:-------------------------------:+:-------------------------------:+
+| Lo que este protocolo preserva  | Lo que este protocolo corrige y |
+| íntegramente                    | potencia en v3.1                |
++---------------------------------+---------------------------------+
+| • La tesis de inversión: de     | • Motor B: reingeniería como    |
+| memecoin a banco soberano       | dispersión 35/35/15/15          |
+|                                 |                                 |
+| • El Vault de activos duros     | • Motor D: capa de utilidad     |
+| como núcleo del valor           | social completamente definida   |
+|                                 |                                 |
+| • La arquitectura de motores    | • Jerarquía de fees por etapas  |
+| económicos                      | de madurez del ecosistema       |
+|                                 |                                 |
+| • El Jaguar Shield e            | • LUKAI v3.1: orquestador de    |
+| infraestructura de seguridad    | estados con conmutación         |
+|                                 | automática B0/B2                |
+| • LUKAI como gestor algorítmico |                                 |
+| e interfaz educativa            | • Sostenibilidad de             |
+|                                 | infraestructura sin dependencia |
+| • La marca KASH y la narrativa  | de VCs                          |
+| de soberanía                    |                                 |
+|                                 | • Exención cNFT DeFi codificada |
+| • Las Manadas y Jungle Arena    | como regla de oro               |
+| como motor de adopción          |                                 |
+|                                 | • Jaguar Score calibrado por    |
+|                                 | participación en Motor D        |
++---------------------------------+---------------------------------+
+
+LUKASH no es simplemente una respuesta a la ineficiencia de la banca
+tradicional o al caos del mercado cripto. Es el diseño de un nuevo
+ecosistema de confianza.
+
+Al fusionar la viralidad de la cultura digital con el rigor de la
+reserva fraccionaria inversa, el protocolo crea una propuesta de valor
+asimétrica: ofrece el potencial de crecimiento de una memecoin con la
+seguridad de una institución bancaria.
+
+La clave del éxito reside en la orquestación perfecta entre sus cuatro
+motores económicos, la superioridad del orquestador de estados LUKAI
+v3.1, la eficiencia de costos de la red Solana, y la ejecución impecable
+de los 4 Frentes Estratégicos en los primeros 90 días.
+
+— Protocolo LUKASH v3.1 — Arquitectura Definitiva Consolidada —
+
+Ing. Sebastián Botero Pabón — Marzo 2026

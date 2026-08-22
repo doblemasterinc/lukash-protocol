@@ -1,0 +1,372 @@
+PROTOCOLO LUKASH ($LUKA)
+
+" De la Cultura “Meme” a la Soberanía Bancaria "
+
+Red: Solana (SPL/cNFT) | Objetivo Vault: $100M USD | Visión: 10 Años
+(DAO)
+
+1. FILOSOFÍA Y TESIS DE INVERSIÓN
+
+LUKASH es un ecosistema financiero descentralizado que transiciona de la
+cultura de las memecoins de alto hype hacia una infraestructura bancaria
+soberana. Utiliza el Estándar KASH (Reserva Fraccionaria Inversa): cada
+unidad está respaldada por una reserva creciente de activos duros,
+gestionada algorítmicamente y auditada on-chain.
+
+- $LUKA: Activo transaccional deflacionario.
+
+- Vault KASH Core: Reserva de respaldo (45% cBTC, 20% SOL, 10% SOL/LST,
+  20% USDC, 5% LINK).
+
+- LUKAI: El Sabio Mentor (Núcleo De IA). LUKAI es el cerebro del
+  protocolo, diseñado para ser el "Sabio de la Manada".
+
+  - Educación y Onboarding: LUKAI actúa como un guía pedagógico. Enseña
+    a los usuarios (especialmente jóvenes) sobre gestión de riesgo,
+    ahorro y el funcionamiento del estándar KASH.
+
+  - Gestión de Riesgo Proactiva: Monitorea la salud del Vault y ajusta
+    la distribución de BTC, SOL, SOL/LST y USDC dinámicamente según la
+    volatilidad del mercado.
+
+  - Generador de Contratos: Permite que cualquier usuario cree contratos
+    P2P o B2P (préstamos, servicios) simplemente hablando con la IA,
+    eliminando la barrera técnica.
+
+2. ESTRUCTURA DE SUMINISTRO Y CAPITAL INICIAL
+
+A. Distribución del Supply ($LUKA)
+
+- Suministro Total: 10,000,000,000 $LUKA.
+
+- Fase de Contracción: Quema (Burn) activa del suministro hasta alcanzar
+  el 33% (3,300M $LUKA).
+
+  -------------------------------------------------------------------
+  Categoría            Porcentaje   Cantidad   Estado
+  -------------------- ------------ ---------- ----------------------
+  Venta (Seed/Public)  45%          4500M      Circulante.
+
+  Pool de Liquidez     30%          3000M      Emparejados y
+  (LP)                                         quemados.
+
+  Marketing/CEX        10%          1000M      Custodiado (Multisig).
+
+  Airdrops/Comunidad   10%          1000M      Distribución por
+                                               hitos.
+
+  Staking              5%           500M       Recompensa base.
+  -------------------------------------------------------------------
+
+B. El Split de Capital Inicial
+
+1.  30% Inyección LP: Acompaña a los tokens del pool inicial en Meteora.
+
+2.  40% Vault KASH Core: Reserva de respaldo inamovible.
+
+3.  30% Vault KASH Sociedad: Activos bajo Jaguar Lock. Vesting: Hito:
+    KASH Core = $30 M de dólares o 12 meses, lo que suceda primero + 48
+    meses de liberación lineal. Los fees generados después del mes 13
+    son líquidos y directos a perpetuidad. El Vault KASH Sociedad actúa
+    como un espejo del KASH Core, teniendo en cuenta que el yield propio
+    de la sociedad, alimenta su propio KASH.
+
+3. EVOLUCIÓN INCREMENTAL DE LOS MOTORES
+
+El protocolo no lanza todo a la vez; se vuelve más complejo y potente a
+medida que madura.
+
+- Etapa 1 (Génesis): Solo MOTOR A (Trading Externo).
+
+- Etapa 2 (Expansión): MOTOR A + MOTOR B (Ecosistema App).
+
+- Etapa 3 (Soberanía): MOTOR A + MOTOR B + MOTOR C (Multidivisa). La
+  quema de $LUKA se detiene al alcanzar el supply objetivo.
+
+Protocolo de Emisión Neta Cero: Al alcanzar la meta de suministro
+objetivo (3.3B), el mecanismo de quema se suspende automáticamente en
+todos los motores. Los tokens $LUKA que anteriormente eran destruidos
+(35% del fee en Motor A y B) ahora se redirigen al Fondo de
+Re-circulación, destinado exclusivamente a potenciar las recompensas de
+Staking y los incentivos de la App (50%-50%). Esto transforma a LUKASH
+en una economía circular de alta recompensa respaldada por el Vault.
+
+4. DESGLOSE DETALLADO DE LOS MOTORES
+
+En todos los casos, la distribución de fees es 35% Vault / 35% LP / 15%
+O&M / 15% Staking.
+
+MOTOR A: Swaps Externos (La Quema por Absorción)
+
+Caso de Uso: Un usuario compra $LUKA con 100 SOL en un DEX.
+
+1.  Captura (Fee 4% / Whitelist 2.5%): El contrato retiene 4 SOL (o 2.5
+    SOL para socios).
+
+2.  Búfer Temporal: Los 4 SOL se acumulan hasta llegar a un umbral (ej.
+    15 SOL) para optimizar gas.
+
+3.  Distribución Atómica:
+
+    - 1.4 SOL (35% - Vault): Se convierten en activos KASH (BTC, SOL,
+      etc.) vía Jupiter SDK.
+
+    - 1.4 SOL (35% - LP/Muro): Se inyectan como liquidez. Aquí ocurre la
+      quema: El Muro usa estos fondos para absorber los $LUKA que el
+      protocolo "extrae" para sus balances. Esos tokens absorbidos se
+      QUEMAN.
+
+    - 0.6 SOL (15% - O&M): Se envía a la billetera operativa para pagar
+      protocolos, fees en solana, publicidad.
+
+    - 0.6 SOL (15% - Staking): El sistema compra $LUKA del mercado (vía
+      Jupiter) y los deposita en el contrato de Staking.
+
+4.  Oráculo: Pyth Network garantiza que el valor de cambio sea exacto.
+
+MOTOR B: Fees Internos (Quema Directa Respaldada)
+
+Caso de Uso: Un usuario paga 10,000 $LUKA por un juego en la App, o
+realiza una transacción en $LUKA a otro usuario.
+
+1.  Fee (2.5% / Whitelist 1.5%): Se retienen 250 $LUKA.
+
+2.  Paso 1: Quema Directa: Los 250 $LUKA se envían a la dirección
+    0x000...null. Desaparecen del supply.
+
+3.  Paso 2: Compensación de Valor: El sistema calcula el valor en USD de
+    esos 250 $LUKA usando el oráculo de Pyth.
+
+4.  Paso 3: Inyección desde Reserva: Ese valor se toma de la Reserva del
+    30% del Yield (acumulada en la Etapa 1) y se inyecta en el Vault en
+    la proporción KASH (BTC, SOL, etc.).
+
+5.  Resultado: Deflación masiva sin tocar el precio del mercado.
+
+MOTOR C: Multidivisa (Soberanía Global)
+
+Caso de Uso: Pago de una suscripción con 1,000 USDC, o realiza
+operaciones/transacciones directamente en USDC.
+
+1.  Captura (Fee 0.5% / Whitelist 0.5%): Se retienen 5 USDC.
+
+2.  Distribución:
+
+    - 1.75 USDC (35% - Vault): Directo a la reserva KASH.
+
+    - 1.75 USDC (35% - LP): El sistema compra $LUKA en el mercado y lo
+      inyecta al LP. (Presión de compra positiva).
+
+    - 0.75 USDC (15% - O&M): Fondos operativos líquidos.
+
+    - 0.75 USDC (15% - Staking): Compra $LUKA y lo distribuye a los
+      stakers.
+
+5.  TABLA DE FEES Y SEGURIDAD (JAGUAR ARMOR)
+
+  --------------------------------------------------------------------------------------------
+  Etapa       Market    Motores   Fee    Fee         Fee          Anti-Whale   Objetivo
+              Cap       Activos   Base   Whitelist   Antipánico   (15%)        Principal
+  ----------- --------- --------- ------ ----------- ------------ ------------ ---------------
+  1. Génesis  $0 -      Motor A   4.0%   2.5%        10.0%        Activo       Acumulación de
+              $300M                                               (>0.5%       Vault (Estilo
+                                                                  supply)      WIF).
+
+  2.          $300M -   A + B     2.5%   1.5%        6.0%         Activo       Quema masiva y
+  Expansión   $1000M                                                           utilidad
+                                                                               (Estilo BONK).
+
+  3.          $1000M+   A + B + C 0.5%   0.5%        2.5%         Activo       Recirculación y
+  Soberanía                                                                    uso masivo.
+                                                                               Transacciones
+                                                                               en otras
+                                                                               monedas USDC,
+                                                                               SOL, etc.
+  --------------------------------------------------------------------------------------------
+
+Seguro Anti-Exploit (Respaldo de Emergencia)
+
+Si el contrato sufre un ataque técnico, luego de la auditoría técnica se
+puede definir:
+
+- Cobertura: El Vault puede cubrir hasta el 5% de su valor total en
+  pérdidas.
+
+- Frecuencia: Máximo 1 vez cada 12 meses.
+
+- Condición: Solo activo después del año 1. En el año 5, el control pasa
+  al DAO (la comunidad)
+
+Aquí tienes la versión definitiva y blindada del Jaguar Shield. He
+integrado la potencia de Sanctum para que el protocolo no solo reaccione
+a ataques de precio, sino también a fallos sistémicos de liquidez.
+
+Esta sección es el "muro de acero" que le da a LUKASH la credibilidad de
+un banco suizo en la red de Solana.
+
+6.  JAGUAR SHIELD – PROTOCOLO DE DEFENSA ACTIVA
+
+Para blindar el Vault y el Pool contra ataques externos, exploits de
+oráculo y fallos de lógica, el protocolo integra cuatro mecanismos de
+seguridad de última generación optimizados para el ecosistema de Sanctum
+y Jito:
+
+A. Interruptor de Circuito Algorítmico (Circuit Breaker & De-peg
+Monitor)
+
+Inspirado en los mercados bursátiles, el Jaguar Shield monitorea la
+salud del Vault y la paridad de los activos en tiempo real.
+
+- Mecanismo de Salida: Si se detecta un retiro o una variación negativa
+  del valor total del Vault superior al 10% en un periodo de 1 hora, el
+  sistema entra en "Modo de Emergencia".
+
+- Mecanismo de Paridad (Sanctum): El Shield vigila el peg de los LSTs.
+  Si el valor de redención en Sanctum se desvía más de un 3% respecto al
+  SOL nativo, se bloquean automáticamente todas las conversiones de
+  Yield para proteger el principal.
+
+- Acción: Se pausan los swaps del Motor A y las salidas del Vault
+  durante 24 horas, permitiendo que el Tridente (Multisig) y LUKAI
+  auditen el evento.
+
+B. Redundancia de Oráculos y Valor Justo (Fair-Price Verify)
+
+LUKASH elimina el riesgo de que un atacante "infle" el precio en un pool
+de intercambio para vaciar las reservas.
+
+- Mecanismo Multi-Fuente: Utiliza una media ponderada por tiempo (TWAP)
+  combinando datos de Pyth Network y Switchboard.
+
+- Validación Sanctum: Para el 10% del Vault en LSTs, el sistema ignora
+  el precio de los DEX y consulta directamente el "Fair Price" de
+  Sanctum (valor real de redención on-chain), volviéndolo inmune a
+  manipulaciones de mercado.
+
+- Filtro de Desviación: Si hay una diferencia >2% entre oráculos, el
+  sistema congela la transacción y utiliza el último precio seguro
+  conocido.
+
+C. Defensa Anti-MEV y Enrutamiento Privado
+
+Para evitar que los bots de arbitraje roben el slippage de los usuarios
+o del propio protocolo (ataques de sándwich).
+
+- Mecanismo: El protocolo integra el Jito-Solana SDK y el Sanctum Router
+  para procesar todas las transacciones de los Motores A, B y C a través
+  de "bundles" privados.
+
+- Beneficio: Las transacciones no pasan por la mempool pública. Los bots
+  no pueden verlas antes de que se confirmen, garantizando que el 35%
+  destinado al LP y al Vault llegue íntegro, sin "mordidas" de bots
+  externos.
+
+D. Gobernanza con Retraso Temporal (Timelock)
+
+Protección total contra "ataques de gobernanza" o compromisos de llaves
+privadas.
+
+- Mecanismo: Cualquier cambio en parámetros críticos (tasas de fees,
+  porcentajes de distribución, límites de retiro o actualizaciones de
+  Smart Contracts) tiene un Timelock obligatorio de 48 horas.
+
+- Transparencia Activa: Toda propuesta de cambio se publica on-chain
+  instantáneamente. Los usuarios y la comunidad tienen un margen de dos
+  días para auditar la propuesta o retirar sus fondos si no están de
+  acuerdo antes de que el cambio sea irreversible.
+
+7.  ESTRATEGIA DE RENDIMIENTO Y VAULT
+
++---------+-------+-------------+--------------------------------------+
+| Activo  | %     | Función     | Yield Strategy                       |
+|         | Vault |             |                                      |
++:========+:======+:============+:=====================================+
+| cBTC    | 45%   | Respaldo    | N/A (HODL)                           |
+|         |       | duro        |                                      |
++---------+-------+-------------+--------------------------------------+
+| SOL     | 20%   | Liquidez    | N/A (HODL)                           |
+|         |       | nativa      |                                      |
++---------+-------+-------------+--------------------------------------+
+| SOL/LST | 10%   | Generador   | Sanctum LST Pool (70% vía Jupiter,   |
+|         |       | de Yield    | 30% dentro Sanctum)                  |
++---------+-------+-------------+--------------------------------------+
+| USDC    | 20%   | Reserva     | 10% pools USDT/USDC                  |
+|         |       | Muro        |                                      |
+|         |       |             | 90% Reserva líquida para utilizar en |
+|         |       |             | muro y operaciones dinámicas del     |
+|         |       |             | vault.                               |
++---------+-------+-------------+--------------------------------------+
+| LINK    | 5%    | Oráculo     | N/A (Infraestructura)                |
++---------+-------+-------------+--------------------------------------+
+
+Gestión del Yield (Rendimiento):
+
+- 70% Reinversión: Para que el Vault crezca solo.
+
+- 30% Reserva Operativa: Se guarda en USDC durante la Etapa 1 para
+  financiar el MOTOR B en el futuro. Esta reserva se alimenta solo
+  durante mercado alcista (utilizar total MARKET CAP del sector cripto
+  como referencia), ejecutando el cambio de yield por USDC cada semana.
+  En mercado bajista, no se ejecuta cambio de yield por USDC.
+
+El Umbral Crítico de Reserva (UCR)
+
+El objetivo es asegurar que siempre exista liquidez en USDC para
+compensar el valor de los tokens $LUKA quemados en la App.
+
+1.  Definición del Umbral: Se establece un nivel mínimo de 20% de la
+    capacidad proyectada de la Reserva Operativa de USDC.
+
+2.  Activación de Emergencia: Si el saldo de la reserva de USDC cae por
+    debajo de este 20%, el protocolo activa automáticamente el Modo de
+    Recarga Forzada.
+
+3.  Ejecución en Mercado Bajista: Bajo condiciones normales, no se
+    cambia Yield por USDC en mercado bajista. Sin embargo, al tocar el
+    UCR, LUKAI autoriza la conversión del 15% del Yield semanal a USDC,
+    independientemente del estado del mercado (alcista o bajista), hasta
+    que la reserva recupere un nivel seguro (ej. 40%).
+
+4.  Prioridad de Flujo: Durante este periodo, se prioriza la solvencia
+    del Motor B sobre la reinversión en el Vault.
+
+8.  PROYECCIONES DE MERCADO (REFERENCIA BONK/WIF)
+
+- Fase 1 (Referencia WIF - Viralidad):
+
+  - Volumen: $50M - $150M diarios.
+
+  - Impacto: Con un fee del 6%, el Vault recauda ~$3M diarios. La "Quema
+    por Absorción" destruye millones de tokens mientras el pool de
+    liquidez se vuelve masivo.
+
+- Fase 2 (Referencia BONK - Utilidad):
+
+  - Volumen: $20M - $50M en la App.
+
+  - Impacto: El MOTOR B toma el relevo. La quema es constante y directa,
+    financiada por el Yield acumulado. El precio encuentra un "piso"
+    institucional.
+
+9.  INFRAESTRUCTURA TÉCNICA
+
+- Jupiter SDK: Para todos los swaps automáticos, garantizando el menor
+  slippage.
+
+- Pyth Network: Oráculo para verificar el valor de la reserva KASH
+  frente al precio de mercado.
+
+- Sanctum LST POOL: Protocolo donde el 10% LST genera el yield
+  multiplicado.
+
+Resumen del Escenario (100 tokens):
+
+1.  Compra de 100 tokens: El sistema cobra 6 tokens.
+
+2.  Reparto: 2.1 van al Vault (vía swap) y 2.1 van al Muro (LP).
+
+3.  La Quema: El Muro usa su liquidez para absorber los 2.1 tokens que
+    el protocolo extrajo. Esos tokens se queman.
+
+4.  Resultado: El supply bajó un 2.1%, el Vault subió un 2.1% en
+    BTC/SOL, y el precio tiene más soporte.
