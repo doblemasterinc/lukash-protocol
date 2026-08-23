@@ -1,5 +1,6 @@
-// LUKASH Protocol - Milestone 1 (version de un solo archivo para Solana Playground)
+// LUKASH Protocol - Milestone 2 Sprint 1 (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
+// v3: Sprint 1 (07-b cap quema 1%/día + 07-d drenaje siempre activo ADR-016 + hard-stop ENZ).
 // v2: endurecido en seguridad (validaciones, freeze en pausa, protección de autoridad, eventos).
 
 use anchor_lang::prelude::*;
@@ -57,7 +58,20 @@ pub const TIMELOCK_SECONDS: i64 = 48 * 60 * 60; // 48h
 
 // ---- Cola de quema diferida ----
 pub const WEEK_SECONDS: i64 = 7 * 24 * 60 * 60; // 604800
-pub const QUEUE_DRAIN_BPS: u64 = 1_000; // 10% de la cola por semana
+pub const DAY_SECONDS: i64 = 86_400;
+
+// ---- Cap de quema diaria (07-b, Protocolo v4.3 §13) ----
+pub const DAILY_BURN_CAP_BPS: u64 = 100; // 1.00% del supply/día
+
+// ---- Drenaje de cola por modo Throttle (07-d, ADR-016: la quema nunca se detiene hasta ENZ) ----
+pub const QUEUE_DRAIN_ACCEL_BPS: u64 = 2_500;  // 25%/sem — euforia
+pub const QUEUE_DRAIN_NORMAL_BPS: u64 = 1_000;  // 10%/sem — estable
+pub const QUEUE_DRAIN_CONS_BPS: u64 = 500;             //  5%/sem — bajista
+pub const QUEUE_DRAIN_DEF_BPS: u64 = 200;       //  2%/sem — depresión
+
+// ---- Hard-stop ENZ (supply mínimo absoluto, 07-d) ----
+pub const SUPPLY_ENZ: u64 = 3_300_000_000_000_000; // 3.3B × 10^6 decimals
+pub const INITIAL_SUPPLY: u64 = 10_000_000_000_000_000; // 10B × 10^6 decimals
 
 // ---- Modos del Motor B ----
 pub const MOTOR_B_B0: u8 = 0;
@@ -100,8 +114,8 @@ pub enum LukashError {
     VaultCompositionInvalid,
     #[msg("Monto inválido (cero)")]
     ZeroAmount,
-    #[msg("El precio no está normalizado (Throttle no NORMAL/ACELERADO)")]
-    ThrottleNotNormalized,
+    #[msg("Burn complete: supply has reached ENZ minimum (3.3B)")]
+    BurnComplete,
     #[msg("Aún no ha pasado una semana desde la última ejecución de la cola")]
     QueueCooldown,
     #[msg("No hay quemas diferidas en cola")]
@@ -188,6 +202,11 @@ pub struct ProtocolState {
     pub jaguar_lock_hit: bool,
     pub last_queue_exec_ts: i64,
 
+    // Sprint 1 (07-b cap quema + 07-d drenaje/ENZ)
+    pub burned_today_tokens: u64,
+    pub burn_day_start_ts: i64,
+    pub current_supply: u64,
+
     pub bump: u8,
 }
 
@@ -262,6 +281,9 @@ pub mod lukash_protocol {
         state.deferred_burn_queue = 0;
         state.jaguar_lock_hit = false;
         state.last_queue_exec_ts = now;
+        state.burned_today_tokens = 0;
+        state.burn_day_start_ts = now;
+        state.current_supply = INITIAL_SUPPLY;
         state.bump = ctx.bumps.state;
 
         Ok(())
@@ -335,18 +357,51 @@ pub mod lukash_protocol {
         state.usdc_lend_usd = state.usdc_lend_usd.checked_add(a_usdc_lend).ok_or(LukashError::MathOverflow)?;
 
         // --- LP / Quema (35%) ---
-        // Motor A y C: el tramo va a quema/LP completo (sin Throttle).
-        // Motor B y D: en B0 quema modulada por Throttle (resto a cola diferida); en B2 recircula.
-        if motor == 0 || motor == 2 {
-            state.burned_total = state.burned_total.checked_add(to_lp_burn).ok_or(LukashError::MathOverflow)?;
-        } else if state.motor_b_state == MOTOR_B_B0 {
-            let burn_bps = throttle_burn_bps(state.throttle_mode).min(BPS_DENOMINATOR);
-            let burn_now = mul_bps(to_lp_burn, burn_bps)?;
-            let deferred = to_lp_burn.checked_sub(burn_now).ok_or(LukashError::MathOverflow)?;
-            state.burned_total = state.burned_total.checked_add(burn_now).ok_or(LukashError::MathOverflow)?;
-            state.deferred_burn_queue = state.deferred_burn_queue.checked_add(deferred).ok_or(LukashError::MathOverflow)?;
+        let now = Clock::get()?.unix_timestamp;
+
+        // Day rollover (07-b): reset diario al cruzar medianoche UTC
+        let day_now = (now / DAY_SECONDS) * DAY_SECONDS;
+        if state.burn_day_start_ts < day_now {
+            state.burned_today_tokens = 0;
+            state.burn_day_start_ts = day_now;
+        }
+
+        // ENZ hard-stop (07-d): supply ≤ 3.3B → tramo LP va al Vault, no se quema
+        if state.current_supply > 0 && state.current_supply <= SUPPLY_ENZ {
+            state.vault_core_usd = state.vault_core_usd
+                .checked_add(to_lp_burn).ok_or(LukashError::MathOverflow)?;
+        } else if motor == 0 {
+            // Motor A: quema completa (sin Throttle). Motor C (motor=2) no llega aquí:
+            // solo existe en Etapa 3 (post-ENZ), donde el guard anterior lo captura.
+            let burn_base = to_lp_burn;
+            let deferred_by_cap = apply_burn_cap(state, burn_base)?;
+            state.burned_total = state.burned_total
+                .checked_add(burn_base.checked_sub(deferred_by_cap).ok_or(LukashError::MathOverflow)?)
+                .ok_or(LukashError::MathOverflow)?;
+            if deferred_by_cap > 0 {
+                state.deferred_burn_queue = state.deferred_burn_queue
+                    .checked_add(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
+            }
+        } else if state.motor_b_state == MOTOR_B_B2 {
+            // Motor B en B2: recircula (no quema)
+            state.recirculated_total = state.recirculated_total
+                .checked_add(to_lp_burn).ok_or(LukashError::MathOverflow)?;
         } else {
-            state.recirculated_total = state.recirculated_total.checked_add(to_lp_burn).ok_or(LukashError::MathOverflow)?;
+            // Motor B (B0) y D: modulado por Throttle + cap diario
+            let burn_bps = throttle_burn_bps(state.throttle_mode).min(BPS_DENOMINATOR);
+            let burn_base = mul_bps(to_lp_burn, burn_bps)?;
+            let deferred_by_throttle = to_lp_burn
+                .checked_sub(burn_base).ok_or(LukashError::MathOverflow)?;
+            let deferred_by_cap = apply_burn_cap(state, burn_base)?;
+            state.burned_total = state.burned_total
+                .checked_add(burn_base.checked_sub(deferred_by_cap).ok_or(LukashError::MathOverflow)?)
+                .ok_or(LukashError::MathOverflow)?;
+            let total_deferred = deferred_by_throttle
+                .checked_add(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
+            if total_deferred > 0 {
+                state.deferred_burn_queue = state.deferred_burn_queue
+                    .checked_add(total_deferred).ok_or(LukashError::MathOverflow)?;
+            }
         }
 
         // --- O&M (15%) y Staking (15%) ---
@@ -354,7 +409,6 @@ pub mod lukash_protocol {
         state.staking_total = state.staking_total.checked_add(to_staking).ok_or(LukashError::MathOverflow)?;
 
         // --- Hito Jaguar Lock: KASH Core >= $30M O 12 meses ---
-        let now = Clock::get()?.unix_timestamp;
         if !state.jaguar_lock_hit {
             let elapsed = now.checked_sub(state.genesis_ts).unwrap_or(0);
             if state.vault_core_usd >= config.jaguar_lock_usd || elapsed >= JAGUAR_LOCK_SECONDS {
@@ -371,11 +425,14 @@ pub mod lukash_protocol {
 
     /// El orquestador (keeper) actualiza precio y EMA30 desde el oráculo, y recalcula el modo del Throttle.
     /// En producción esto lo firma un rol keeper con validación Pyth+Switchboard; aquí lo firma la autoridad.
-    pub fn update_oracle_state(ctx: Context<UpdateOracle>, luka_price: u64, ema30: u64) -> Result<()> {
+    pub fn update_oracle_state(ctx: Context<UpdateOracle>, luka_price: u64, ema30: u64, current_supply: u64) -> Result<()> {
         require!(luka_price > 0 && ema30 > 0, LukashError::InvalidOracleValue);
         let state = &mut ctx.accounts.state;
         state.luka_price = luka_price;
         state.ema30 = ema30;
+        if current_supply > 0 {
+            state.current_supply = current_supply;
+        }
         state.throttle_mode = throttle_mode_from_price(luka_price, ema30);
         emit!(OracleUpdated { luka_price, ema30, throttle_mode: state.throttle_mode });
         Ok(())
@@ -446,39 +503,89 @@ pub mod lukash_protocol {
         Ok(())
     }
 
-    /// Drena la cola de quema diferida (≤10%/semana) cuando el precio se ha normalizado.
-    /// Permissionless: cualquiera puede gatillarlo si se cumplen las condiciones on-chain (es trustless).
+    /// Drena la cola de quema diferida según el modo Throttle (ADR-016: todos los modos drenan).
+    /// ACEL 25% · NORMAL 10% · CONS 5% · DEF 2% por semana. Hard-stop si supply ≤ ENZ.
+    /// Permissionless: cualquiera puede gatillarlo si se cumplen las condiciones on-chain.
     pub fn execute_deferred_burn(ctx: Context<ExecuteDeferredBurn>) -> Result<()> {
         require!(!ctx.accounts.config.paused, LukashError::ProtocolPaused);
         let state = &mut ctx.accounts.state;
-        // Solo se drena cuando el precio volvió a zona NORMAL o ACELERADO.
-        require!(
-            state.throttle_mode == THROTTLE_NORMAL || state.throttle_mode == THROTTLE_ACCELERATED,
-            LukashError::ThrottleNotNormalized
-        );
+
+        // ENZ hard-stop: si supply ≤ 3.3B, la quema se apaga definitivamente
+        if state.current_supply > 0 {
+            require!(state.current_supply > SUPPLY_ENZ, LukashError::BurnComplete);
+        }
+
         require!(state.deferred_burn_queue > 0, LukashError::EmptyQueue);
         let now = Clock::get()?.unix_timestamp;
         require!(
             now.checked_sub(state.last_queue_exec_ts).unwrap_or(0) >= WEEK_SECONDS,
             LukashError::QueueCooldown
         );
-        // Drena hasta el 10% de la cola actual (mínimo 1 para no quedar atascado con cola pequeña).
-        let drain = mul_bps(state.deferred_burn_queue, QUEUE_DRAIN_BPS)?
+
+        // Day rollover (07-b)
+        let day_now = (now / DAY_SECONDS) * DAY_SECONDS;
+        if state.burn_day_start_ts < day_now {
+            state.burned_today_tokens = 0;
+            state.burn_day_start_ts = day_now;
+        }
+
+        // Drenaje según modo Throttle — TODOS los modos drenan (ADR-016)
+        let drain_bps = match state.throttle_mode {
+            THROTTLE_ACCELERATED  => QUEUE_DRAIN_ACCEL_BPS,
+            THROTTLE_NORMAL       => QUEUE_DRAIN_NORMAL_BPS,
+            THROTTLE_CONSERVATIVE => QUEUE_DRAIN_CONS_BPS,
+            THROTTLE_DEFENSIVE    => QUEUE_DRAIN_DEF_BPS,
+            _                     => QUEUE_DRAIN_DEF_BPS,
+        };
+        let mut drain = mul_bps(state.deferred_burn_queue, drain_bps)?
             .max(1)
             .min(state.deferred_burn_queue);
-        state.deferred_burn_queue = state
-            .deferred_burn_queue
-            .checked_sub(drain)
-            .ok_or(LukashError::MathOverflow)?;
-        state.burned_total = state
-            .burned_total
-            .checked_add(drain)
-            .ok_or(LukashError::MathOverflow)?;
+
+        // ENZ boundary: no bajar supply por debajo de 3.3B
+        if state.current_supply > 0 && state.luka_price > 0 {
+            let drain_tokens = usd_to_tokens(drain, state.luka_price)?;
+            let max_burnable = state.current_supply.saturating_sub(SUPPLY_ENZ);
+            if drain_tokens > max_burnable {
+                drain = tokens_to_usd(max_burnable, state.luka_price)?;
+            }
+            if drain == 0 {
+                return err!(LukashError::BurnComplete);
+            }
+
+            // Cap diario (07-b)
+            let capped_tokens = usd_to_tokens(drain, state.luka_price)?;
+            let cap_today = mul_bps(state.current_supply, DAILY_BURN_CAP_BPS)?;
+            let remaining_cap = cap_today.saturating_sub(state.burned_today_tokens);
+            if capped_tokens > remaining_cap && remaining_cap > 0 {
+                drain = tokens_to_usd(remaining_cap, state.luka_price)?;
+                state.burned_today_tokens = state.burned_today_tokens
+                    .checked_add(remaining_cap).ok_or(LukashError::MathOverflow)?;
+            } else if remaining_cap == 0 {
+                // Cap lleno hoy, no drenar — cooldown para la próxima semana
+                state.last_queue_exec_ts = now;
+                emit!(DailyCapReached {
+                    cap_tokens: cap_today,
+                    burned_today: state.burned_today_tokens,
+                    deferred_tokens: 0,
+                });
+                return Ok(());
+            } else {
+                state.burned_today_tokens = state.burned_today_tokens
+                    .checked_add(capped_tokens).ok_or(LukashError::MathOverflow)?;
+            }
+        }
+
+        state.deferred_burn_queue = state.deferred_burn_queue
+            .checked_sub(drain).ok_or(LukashError::MathOverflow)?;
+        state.burned_total = state.burned_total
+            .checked_add(drain).ok_or(LukashError::MathOverflow)?;
         state.last_queue_exec_ts = now;
+
         emit!(DeferredBurnExecuted {
             drained: drain,
             remaining: state.deferred_burn_queue,
-            ts: now
+            ts: now,
+            mode: state.throttle_mode,
         });
         Ok(())
     }
@@ -491,6 +598,56 @@ fn mul_bps(amount: u64, bps: u64) -> Result<u64> {
     let r = (amount as u128)
         .checked_mul(bps as u128).ok_or(LukashError::MathOverflow)?
         .checked_div(BPS_DENOMINATOR as u128).ok_or(LukashError::MathOverflow)?;
+    u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
+}
+
+/// Aplica el cap diario de quema (07-b). Retorna los USD que exceden el cap (deben ir a cola).
+/// Si el oráculo no está activo (luka_price == 0), retorna 0 (quema todo, backward compat).
+fn apply_burn_cap(state: &mut ProtocolState, burn_usd: u64) -> Result<u64> {
+    if state.luka_price == 0 || state.current_supply == 0 {
+        return Ok(0);
+    }
+    let tokens_to_burn = usd_to_tokens(burn_usd, state.luka_price)?;
+    let cap_today = mul_bps(state.current_supply, DAILY_BURN_CAP_BPS)?;
+    let remaining_cap = cap_today.saturating_sub(state.burned_today_tokens);
+    let burn_ok_tokens = tokens_to_burn.min(remaining_cap);
+
+    state.burned_today_tokens = state.burned_today_tokens
+        .checked_add(burn_ok_tokens).ok_or(LukashError::MathOverflow)?;
+
+    if burn_ok_tokens < tokens_to_burn {
+        let deferred_tokens = tokens_to_burn
+            .checked_sub(burn_ok_tokens).ok_or(LukashError::MathOverflow)?;
+        let burn_ok_usd = tokens_to_usd(burn_ok_tokens, state.luka_price)?;
+        let deferred_usd = burn_usd
+            .checked_sub(burn_ok_usd).ok_or(LukashError::MathOverflow)?;
+        emit!(DailyCapReached {
+            cap_tokens: cap_today,
+            burned_today: state.burned_today_tokens,
+            deferred_tokens,
+        });
+        Ok(deferred_usd)
+    } else {
+        Ok(0)
+    }
+}
+
+/// Convierte USD (6 dec) → tokens (6 dec) dado el precio de LUKA (USD 6-dec por 1 LUKA).
+fn usd_to_tokens(usd_amount: u64, price: u64) -> Result<u64> {
+    if price == 0 {
+        return err!(LukashError::MathOverflow);
+    }
+    let r = (usd_amount as u128)
+        .checked_mul(1_000_000u128).ok_or(LukashError::MathOverflow)?
+        .checked_div(price as u128).ok_or(LukashError::MathOverflow)?;
+    u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
+}
+
+/// Convierte tokens (6 dec) → USD (6 dec) dado el precio de LUKA (USD 6-dec por 1 LUKA).
+fn tokens_to_usd(token_amount: u64, price: u64) -> Result<u64> {
+    let r = (token_amount as u128)
+        .checked_mul(price as u128).ok_or(LukashError::MathOverflow)?
+        .checked_div(1_000_000u128).ok_or(LukashError::MathOverflow)?;
     u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
 }
 
@@ -643,6 +800,14 @@ pub struct DeferredBurnExecuted {
     pub drained: u64,
     pub remaining: u64,
     pub ts: i64,
+    pub mode: u8,
+}
+
+#[event]
+pub struct DailyCapReached {
+    pub cap_tokens: u64,
+    pub burned_today: u64,
+    pub deferred_tokens: u64,
 }
 
 #[event]

@@ -109,6 +109,20 @@
 - **Archivos modificados:** 07-a, 07-f (mayor cambio), 07-e, 07-d, 07-INDICE, 07-CUENTAS-Y-CUSTODIA. La nota "WhaleDebt suave" en BITACORA sesión 5 queda como registro histórico del diseño original antes de la evolución a cobro atómico.
 - **Próxima sesión:** Sprint 1 de implementación (07-b cap quema + 07-d drenaje/ENZ), análisis LUKAI, landing a producción, deploy programa devnet.
 
+## 2026-08-22 (sesión 8) — Sprint 1 implementado (07-b + 07-d) + corrección Motor C
+- **Sprint 1 completo en `contracts/playground/lib.rs`** (828 líneas, v3). Implementados:
+  - **07-b (cap quema diaria 1%):** `apply_burn_cap` helper con conversión USD↔tokens vía `luka_price`. Day rollover por `DAY_SECONDS` (86400s UTC buckets). Exceso a `deferred_burn_queue`. Evento `DailyCapReached`. Backward compat: cuando `luka_price==0` (M1, sin oráculo), cap bypaseado.
+  - **07-d (drenaje siempre activo + ENZ):** 4 constantes `QUEUE_DRAIN_*_BPS` (25/10/5/2 %/sem, escala geométrica). `execute_deferred_burn` reescrito con match por modo Throttle. Guardia ENZ en `process_fee` (LP→Vault si supply≤3.3B) y en `execute_deferred_burn` (BurnComplete + recorte al delta exacto). Evento con campo `mode`.
+  - **8 constantes** nuevas, **3 campos** ProtocolState (`burned_today_tokens`, `burn_day_start_ts`, `current_supply`), **3 helpers** (`apply_burn_cap`, `usd_to_tokens`, `tokens_to_usd`), **1 error** nuevo (`BurnComplete`), **1 removido** (`ThrottleNotNormalized`).
+- **3 bugs cazados y corregidos durante implementación:**
+  - Bug 1 (crítico): B2 check antes de Motor A/C → Motor A recircularía en B2 en vez de quemar. Fix: reordenar a ENZ → Motor A → B2 → B0/D.
+  - Bug 2: `execute_deferred_burn` no actualizaba `last_queue_exec_ts` al salir por cap lleno → llamadas no-op repetidas. Fix: actualizar timestamp antes del early return.
+  - Typo: doble type annotation `u64: u64` en constante.
+- **Corrección Motor C (motor==2) removido del branch de quema:** Motor C solo existe en Etapa 3 (post-ENZ), donde el guard ENZ ya redirige todo al Vault. El branch de quema solo necesita `motor == 0` (Motor A). Insight del protocolo: Motor C hace "inyección LP" (compra $LUKA del mercado), no quema — su tramo LP genera presión de compra sobre supply fijo.
+- **Consulta estratégica (fair launch vs inversores):** confirmado fair launch. La espiral depende de VOLUMEN (SIM 2), no de capital. Los inversores buy-and-hold no generan fees recurrentes. Comunidad = volumen = driver #1.
+- **8.48 SOL disponibles en wallet devnet** (antes bloqueado en 1 SOL, deploy requiere 2.12). Deploy desbloqueado.
+- **Próxima sesión:** compilar en Playground + deploy devnet (8.48 SOL disponibles), Sprint 2 (07-a: Pyth + token accounting + Jupiter CPI), análisis LUKAI, landing a producción.
+
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.

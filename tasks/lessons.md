@@ -51,3 +51,6 @@ El diseño original de WhaleDebt (registrar fee pendiente en PDA, cobrar despué
 
 ## 2026-08-22 (sesión 7) — A veces el mecanismo existente ya es la respuesta
 Al debatir si la exención de staking necesitaba un umbral mínimo anti-ballena, Sebastián señaló que los tiers de fee progresivos (3%/6%/10% sobre el exceso) YA son la protección contra ballenas — añadir otro gate era complejidad sin beneficio. Lección: antes de proponer protecciones adicionales, verificar si el mecanismo que ya existe cumple el mismo propósito.
+
+## 2026-08-22 (sesión 8) — Cada motor tiene una ventana temporal: no codificar branches para etapas imposibles
+Motor C (motor=2) estaba en el branch de quema junto con Motor A. Pero Motor C solo existe en Etapa 3 (post-ENZ, supply fijo 3.3B), donde toda quema ya se detuvo. El guard ENZ siempre lo captura antes. Lección: al implementar lógica condicional por motor, verificar en QUÉ ETAPA opera cada motor — si un motor solo existe cuando una condición ya está activa (ej. ENZ), incluirlo en el branch alternativo es dead code que confunde el modelo mental. Patrón: Motor A (Etapas 1-3, quema hasta ENZ) · Motor B (Etapa 2+, B0 quema/B2 recircula) · Motor C (Etapa 3 only, post-ENZ, inyección LP) · Motor D (gradual, throttle).
