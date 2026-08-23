@@ -1,5 +1,6 @@
-// LUKASH Protocol - Milestone 2 Sprint 1 (version de un solo archivo para Solana Playground)
+// LUKASH Protocol - Milestone 2 Sprint 2 (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
+// v4: Sprint 2 (07-a switch B0→B2 por valoración de mercado + token accounting + doble candado 7d).
 // v3: Sprint 1 (07-b cap quema 1%/día + 07-d drenaje siempre activo ADR-016 + hard-stop ENZ).
 // v2: endurecido en seguridad (validaciones, freeze en pausa, protección de autoridad, eventos).
 
@@ -73,6 +74,18 @@ pub const QUEUE_DRAIN_DEF_BPS: u64 = 200;       //  2%/sem — depresión
 pub const SUPPLY_ENZ: u64 = 3_300_000_000_000_000; // 3.3B × 10^6 decimals
 pub const INITIAL_SUPPLY: u64 = 10_000_000_000_000_000; // 10B × 10^6 decimals
 
+// ---- Oráculo y valoración (07-a) ----
+pub const VALUATION_MAX_STALENESS: i64 = 900;              // 15 min: snapshot debe ser fresco para switch
+pub const K_MIN_PERSISTENCE_SECONDS: i64 = 7 * 24 * 3600;  // 7 días: anti-pump transitorio
+pub const ORACLE_DEVIATION_BPS_MAX: u64 = 200;             // 2% (Capa 2: Pyth vs Switchboard)
+pub const ORACLE_FEED_MAX_STALENESS: i64 = 60;             // 60s (Capa 2: frescura feed Pyth)
+pub const JUPITER_MAX_SLIPPAGE_BPS: u64 = 50;              // 0.5% (Capa 2: CPI Jupiter)
+
+// ---- Escalas de decimales por activo (para valoración) ----
+pub const CBTC_SCALE: u128 = 100_000_000;     // 10^8 (satoshis)
+pub const SOL_SCALE: u128 = 1_000_000_000;    // 10^9 (lamports)
+pub const LST_SCALE: u128 = 1_000_000_000;    // 10^9 (lamports)
+
 // ---- Modos del Motor B ----
 pub const MOTOR_B_B0: u8 = 0;
 pub const MOTOR_B_B2: u8 = 1;
@@ -128,6 +141,16 @@ pub enum LukashError {
     InvalidAuthorityPubkey,
     #[msg("Divisa inválida (debe ser 0=LUKA o 1=SOL/USDC)")]
     InvalidCurrency,
+    #[msg("Valoración del Vault demasiado vieja (>15 min). Llamar refresh_vault_valuation primero")]
+    ValuationStale,
+    #[msg("K_min alcanzado pero no persistente 7 días — protección anti-pump transitorio")]
+    KminNotPersistent,
+    #[msg("Oráculos Pyth y Switchboard divergen >2% (Capa 2)")]
+    OracleDeviationTooHigh,
+    #[msg("Feed del oráculo demasiado viejo >60s (Capa 2)")]
+    OracleFeedStale,
+    #[msg("CPI a Jupiter falló por slippage (Capa 2)")]
+    SwapSlippageExceeded,
 }
 
 // ================= estado (cuentas) =================
@@ -207,6 +230,22 @@ pub struct ProtocolState {
     pub burn_day_start_ts: i64,
     pub current_supply: u64,
 
+    // Balances por bucket en unidades nativas (07-a: token accounting real)
+    // Capa 1: alimentados por authority vía refresh_vault_valuation.
+    // Capa 2: actualizados por CPI a Jupiter en process_fee.
+    pub cbtc_amount: u64,      // satoshis (8 dec) de cBTC
+    pub sol_amount: u64,       // lamports (9 dec) de SOL nativo
+    pub lst_amount: u64,       // lamports de JitoSOL+mSOL agregados
+    pub usdc_res_amount: u64,  // micro-USDC (6 dec) reserva inmediata
+    pub usdc_lend_amount: u64, // micro-USDC depositado en Kamino/Marginfi
+
+    // Snapshot de valoración de mercado del Vault (07-a)
+    pub k_market_usd_snapshot: u64, // USD 6-dec, calculado en refresh_vault_valuation
+    pub k_market_snapshot_ts: i64,  // timestamp del último snapshot
+
+    // Persistencia del umbral K_min para switch B0→B2 (07-a)
+    pub k_min_reached_since_ts: i64, // 0 si K_market < K_min actualmente
+
     pub bump: u8,
 }
 
@@ -221,7 +260,7 @@ pub struct Distribution {
 }
 
 // ================= programa =================
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy");
 
 #[program]
 pub mod lukash_protocol {
@@ -284,6 +323,14 @@ pub mod lukash_protocol {
         state.burned_today_tokens = 0;
         state.burn_day_start_ts = now;
         state.current_supply = INITIAL_SUPPLY;
+        state.cbtc_amount = 0;
+        state.sol_amount = 0;
+        state.lst_amount = 0;
+        state.usdc_res_amount = 0;
+        state.usdc_lend_amount = 0;
+        state.k_market_usd_snapshot = 0;
+        state.k_market_snapshot_ts = 0;
+        state.k_min_reached_since_ts = 0;
         state.bump = ctx.bumps.state;
 
         Ok(())
@@ -438,17 +485,115 @@ pub mod lukash_protocol {
         Ok(())
     }
 
-    /// Conmuta el Motor B de B0 a B2 cuando K(t) >= K_min. Permissionless: cualquiera puede gatillarlo
-    /// una vez cumplida la condición on-chain (es trustless — solo verifica el estado del Vault).
+    /// Actualiza la valoración de mercado del Vault KASH Core (07-a).
+    /// Capa 1 (devnet): authority alimenta precios y balances manualmente.
+    /// Capa 2 (mainnet): se reemplaza por lectura directa de feeds Pyth/Switchboard
+    /// + token account balances → instrucción permissionless.
+    pub fn refresh_vault_valuation(
+        ctx: Context<RefreshVaultValuation>,
+        btc_price_usd: u64,
+        sol_price_usd: u64,
+        lst_price_usd: u64,
+        luka_price_usd: u64,
+        cbtc_amount: u64,
+        sol_amount: u64,
+        lst_amount: u64,
+        usdc_res_amount: u64,
+        usdc_lend_amount: u64,
+    ) -> Result<()> {
+        require!(btc_price_usd > 0 && sol_price_usd > 0, LukashError::InvalidOracleValue);
+        require!(luka_price_usd > 0, LukashError::InvalidOracleValue);
+
+        let config = &ctx.accounts.config;
+        let state = &mut ctx.accounts.state;
+        let now = Clock::get()?.unix_timestamp;
+
+        state.cbtc_amount = cbtc_amount;
+        state.sol_amount = sol_amount;
+        state.lst_amount = lst_amount;
+        state.usdc_res_amount = usdc_res_amount;
+        state.usdc_lend_amount = usdc_lend_amount;
+
+        let cbtc_usd = compute_asset_value(cbtc_amount, btc_price_usd, CBTC_SCALE)?;
+        let sol_usd = compute_asset_value(sol_amount, sol_price_usd, SOL_SCALE)?;
+        let lst_usd = compute_asset_value(lst_amount, lst_price_usd, LST_SCALE)?;
+        let usdc_total = usdc_res_amount
+            .checked_add(usdc_lend_amount).ok_or(LukashError::MathOverflow)?;
+
+        let k_market = cbtc_usd
+            .checked_add(sol_usd).ok_or(LukashError::MathOverflow)?
+            .checked_add(lst_usd).ok_or(LukashError::MathOverflow)?
+            .checked_add(usdc_total).ok_or(LukashError::MathOverflow)?;
+
+        state.k_market_usd_snapshot = k_market;
+        state.k_market_snapshot_ts = now;
+        state.luka_price = luka_price_usd;
+
+        if k_market >= config.k_min_usd {
+            if state.k_min_reached_since_ts == 0 {
+                state.k_min_reached_since_ts = now;
+            }
+        } else {
+            state.k_min_reached_since_ts = 0;
+        }
+
+        emit!(VaultValuationRefreshed {
+            k_market_usd: k_market,
+            cbtc_usd_share: cbtc_usd,
+            sol_usd_share: sol_usd,
+            lst_usd_share: lst_usd,
+            usdc_total,
+            k_min_reached_since_ts: state.k_min_reached_since_ts,
+            ts: now,
+        });
+        Ok(())
+    }
+
+    /// Conmuta el Motor B de B0 a B2 (ONE-WAY, irreversible). Permissionless.
+    /// Doble candado (07-a):
+    ///   A) Valoración fresca (< 15 min desde refresh_vault_valuation).
+    ///   B) Persistencia: K_market >= K_min por 7 días continuos (anti-pump transitorio).
     pub fn switch_motor_b(ctx: Context<SwitchMotorB>) -> Result<()> {
         let config = &ctx.accounts.config;
         require!(!config.paused, LukashError::ProtocolPaused);
+
         let state = &mut ctx.accounts.state;
         require!(state.motor_b_state == MOTOR_B_B0, LukashError::AlreadyB2);
-        require!(state.vault_core_usd >= config.k_min_usd, LukashError::KminNotReached);
-        state.motor_b_state = MOTOR_B_B2;
+
         let now = Clock::get()?.unix_timestamp;
-        emit!(MotorBSwitched { k_usd: state.vault_core_usd, ts: now });
+
+        // Candado A: valoración fresca (< 15 min)
+        require!(
+            now.checked_sub(state.k_market_snapshot_ts).unwrap_or(i64::MAX)
+                <= VALUATION_MAX_STALENESS,
+            LukashError::ValuationStale
+        );
+
+        // K_market >= K_min
+        require!(
+            state.k_market_usd_snapshot >= config.k_min_usd,
+            LukashError::KminNotReached
+        );
+
+        // Candado B: persistencia >= 7 días continuos
+        require!(
+            state.k_min_reached_since_ts > 0,
+            LukashError::KminNotPersistent
+        );
+        require!(
+            now.checked_sub(state.k_min_reached_since_ts).unwrap_or(0)
+                >= K_MIN_PERSISTENCE_SECONDS,
+            LukashError::KminNotPersistent
+        );
+
+        state.motor_b_state = MOTOR_B_B2;
+
+        emit!(MotorBSwitched {
+            k_market_usd: state.k_market_usd_snapshot,
+            k_costo_usd: state.vault_core_usd,
+            ts: now,
+            persistencia_dias: (now - state.k_min_reached_since_ts) / 86_400,
+        });
         Ok(())
     }
 
@@ -651,6 +796,20 @@ fn tokens_to_usd(token_amount: u64, price: u64) -> Result<u64> {
     u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
 }
 
+/// Calcula el valor USD (6-dec) de un activo dado su cantidad en unidades nativas y precio USD/unidad.
+/// amount = unidades nativas (satoshis, lamports, micro-USDC).
+/// price_usd = USD 6-dec por 1 unidad entera del activo.
+/// scale = 10^decimals del activo (CBTC_SCALE, SOL_SCALE, etc.).
+fn compute_asset_value(amount: u64, price_usd: u64, scale: u128) -> Result<u64> {
+    if amount == 0 {
+        return Ok(0);
+    }
+    let r = (amount as u128)
+        .checked_mul(price_usd as u128).ok_or(LukashError::MathOverflow)?
+        .checked_div(scale).ok_or(LukashError::MathOverflow)?;
+    u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
+}
+
 /// Fee en bps según etapa, motor, capa (para D), divisa y whitelist. Valida activación por etapa.
 fn compute_fee_bps(stage: u8, motor: u8, layer: u8, currency: u8, is_wl: bool) -> Result<u64> {
     match motor {
@@ -768,6 +927,17 @@ pub struct ExecuteDeferredBurn<'info> {
     pub caller: Signer<'info>,
 }
 
+/// Capa 1: authority alimenta precios y balances manualmente.
+/// Capa 2: se reemplaza por lectura directa de Pyth/Switchboard + token accounts → permissionless.
+#[derive(Accounts)]
+pub struct RefreshVaultValuation<'info> {
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
+    pub state: Account<'info, ProtocolState>,
+    pub authority: Signer<'info>,
+}
+
 // ------------------------- Eventos -------------------------
 
 #[event]
@@ -784,7 +954,20 @@ pub struct FeeProcessed {
 
 #[event]
 pub struct MotorBSwitched {
-    pub k_usd: u64,
+    pub k_market_usd: u64,
+    pub k_costo_usd: u64,
+    pub ts: i64,
+    pub persistencia_dias: i64,
+}
+
+#[event]
+pub struct VaultValuationRefreshed {
+    pub k_market_usd: u64,
+    pub cbtc_usd_share: u64,
+    pub sol_usd_share: u64,
+    pub lst_usd_share: u64,
+    pub usdc_total: u64,
+    pub k_min_reached_since_ts: i64,
     pub ts: i64,
 }
 

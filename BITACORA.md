@@ -123,6 +123,23 @@
 - **8.48 SOL disponibles en wallet devnet** (antes bloqueado en 1 SOL, deploy requiere 2.12). Deploy desbloqueado.
 - **Próxima sesión:** compilar en Playground + deploy devnet (8.48 SOL disponibles), Sprint 2 (07-a: Pyth + token accounting + Jupiter CPI), análisis LUKAI, landing a producción.
 
+## 2026-08-22 (sesión 9) — Deploy devnet + Sprint 2 Capa 1 (07-a)
+- **Programa deployado en Solana devnet** ✅. Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`. Build + Deploy en Solana Playground.
+- Versión deployada: `lib.rs` v3 (Sprint 1 — 07-b cap quema 1%/día + 07-d drenaje siempre activo + ENZ hard-stop).
+- `declare_id!` actualizado en `lib.rs` con el Program Id real.
+- Token $LUKA (SPL, devnet) ya existía: `2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr`.
+- **Sprint 2 (07-a) Capa 1 implementada** en `lib.rs` v4 (1012 líneas, +183 vs v3). Cambios:
+  - **8 campos nuevos en ProtocolState:** 5 balances por bucket nativos (`cbtc_amount`..`usdc_lend_amount`), `k_market_usd_snapshot`, `k_market_snapshot_ts`, `k_min_reached_since_ts`.
+  - **Nueva instrucción `refresh_vault_valuation`:** recibe precios de activos y balances por bucket (authority en Capa 1, permissionless con Pyth en Capa 2). Calcula K_market = Σ(amount×precio/escala). Arma/rearma timer de persistencia K_min.
+  - **`switch_motor_b` reescrito con doble candado:** (A) valoración fresca < 15 min, (B) persistencia ≥ 7 días continuos sobre K_min. Protección anti-pump transitorio.
+  - **7 constantes nuevas** (staleness, persistencia, desviación oráculo, slippage, escalas de activos).
+  - **5 errores nuevos** (ValuationStale, KminNotPersistent, OracleDeviationTooHigh, OracleFeedStale, SwapSlippageExceeded).
+  - **2 eventos nuevos** (VaultValuationRefreshed + MotorBSwitched actualizado con k_market vs k_costo).
+  - **Helper `compute_asset_value`**: valoración genérica amount×price/scale con u128 intermedio.
+  - **Nota migración:** ProtocolState creció (8 campos u64/i64 = +64 bytes). Al re-deployar v4, las PDAs de v3 serán incompatibles → cerrar y re-inicializar en devnet. Si no se ha inicializado v3, no hay problema.
+- **Capa 2 (pendiente):** CPI real a Jupiter (swaps), lectura directa Pyth/Switchboard, quema CPI al mint.
+- **Pendiente:** compilar v4 en Playground + deploy + análisis LUKAI.
+
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.

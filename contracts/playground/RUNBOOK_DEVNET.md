@@ -89,7 +89,19 @@ spl-token update-metadata <MINT> uri "https://<tu-host>/luka.json"
   - Mint Authority: `5PMsqNBZ5cQWRLLU9XihEe8cp2kxka9xdK9pRNsg9xBf` (wallet Playground)
   - Explorer: https://explorer.solana.com/address/2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr?cluster=devnet
   - Estado: "Unknown Token" — falta metadata (nombre/logo) vía Metaplex (ver §3 + nota abajo).
-- **Programa (deploy): PENDIENTE** — requiere 2.12 SOL, faucet devnet en 429 el 2026-08-20. Reintentar otro día.
+- **Programa deployado en devnet: 2026-08-22** ✅
+  - Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`
+  - Explorer: https://explorer.solana.com/address/AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy?cluster=devnet
+  - Versión: lib.rs v3 (Sprint 1 — 07-b cap quema + 07-d drenaje + ENZ hard-stop)
+
+### Nota migración v3→v4 (Sprint 2)
+`ProtocolState` creció en 64 bytes (8 campos nuevos para token accounting). Si el programa v3
+ya fue inicializado (existen las PDAs `config` y `state`), Anchor no podrá deserializarlas con
+la v4. **Solución devnet:** cerrar las PDAs existentes y re-inicializar. Dos opciones:
+1. **Re-deploy a nueva dirección** (Playground: Create new project, Build, Deploy → nuevas PDAs).
+2. **Mismo programa:** agregar instrucción temporal `close_accounts` que cierra ambas PDAs con
+   `close = authority`, re-deploy v4 sobre el mismo Program Id, y luego `initialize` de nuevo.
+Si **nunca** se llamó `initialize` en v3 (no existen PDAs), simplemente re-deploy y `initialize`.
 
 ### Nota metadata (por qué no se hizo con spl-token)
 La versión de `spl-token` de Playground NO soporta `--enable-metadata` ni `--program-2022` (es vieja). El token

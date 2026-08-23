@@ -25,8 +25,9 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] **07-f ratificada ✅** (Anti-Whale + Exit Fee + Token-2022 Transfer Hook + WhaleDebt suave)
    - Orden de implementación: Sprint 1 (07-b + 07-d) → Sprint 2 (07-a) → Sprint 3 (07-c + 07-e) → Sprint 4 (07-f) → Sprint 5 (endurecimiento + auditoría + mainnet).
    - [x] **Sprint 1 implementado** (sesión 8): 07-b (cap quema 1%/día) + 07-d (drenaje 4 modos + ENZ hard-stop) en `lib.rs` v3 (828 líneas). Pendiente: compilar en Playground.
-1. **Compilar Sprint 1 en Playground + deploy devnet** — copiar `lib.rs` a Playground, Build. Con 8.48 SOL disponibles, deploy inmediato si compila. Ver `contracts/playground/RUNBOOK_DEVNET.md`.
-2. **Sprint 2 (07-a)**: Switch B0→B2 por Pyth + Token Accounting real + Jupiter CPI + quema real.
+1. [x] **Compilar Sprint 1 en Playground + deploy devnet** — Build ✅ + Deploy ✅ (2026-08-22). Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`.
+2. [~] **Sprint 2 (07-a) Capa 1**: Switch B0→B2 por valoración de mercado + token accounting + doble candado 7d. Implementado en `lib.rs` v4 (1012 líneas). Pendiente: compilar en Playground + deploy devnet.
+   - Capa 2 (pendiente): CPI real a Jupiter (swaps) + lectura directa Pyth/Switchboard + quema CPI al mint.
 3. **Análisis de recursos de LUKAI** (IA a escala): costo por usuario, arquitectura por etapas (v1 orquestador/plantillas → v2 conversacional Etapa 2A), break-even, financiado por O&M. Decidir si/cuándo activarlo (en landing quedó como mención ligera).
 4. **Landing → producción**: desplegar en Vercel + waitlist real capturando correos (Formspree o Supabase). Landing lista en `landing/index.html` (trilingüe, Artifact `6c7985dd`).
 5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
