@@ -91,7 +91,7 @@ clave perdida, verificable públicamente leyendo el estado.
 ### 3.1 Creación (pre-TGE / initialize)
 
 En `initialize(ctx)`:
-- Se crean **PDAs 1, 2, 8, 10, 11, 17** (config, state, sociedad, staking, r_op,
+- Se crean **PDAs 1, 2, 8, 10, 11, 14** (config, state, sociedad, staking, r_op,
   mint_authority).
 - **Cuentas Vault Core (#3-#7)** se crean como ATAs del PDA autoridad la primera
   vez que reciben tokens (patrón lazy — reduce cost inicial). Verificado on-chain.

@@ -50,6 +50,7 @@ pub usdc_lend_amount:  u64,  // micro-USDC depositado en Kamino/Marginfi
 // último snapshot valorizado (para lecturas baratas del dashboard)
 pub k_market_usd_snapshot:  u64,  // USD 6-dec
 pub k_market_snapshot_ts:   i64,
+pub luka_price_usd:         u64,  // USD 6-dec, precio spot $LUKA vía Pyth
 ```
 
 Los campos antiguos (`cbtc_usd`, `sol_usd`, etc.) **se mantienen** por compatibilidad
@@ -87,6 +88,7 @@ pub fn refresh_vault_valuation(ctx: Context<RefreshVaultValuation>) -> Result<()
     // Verifica frescura del feed < 60 segundos
     // Calcula K_market = Σ (amount_bucket × precio_bucket_usd)
     // Actualiza k_market_usd_snapshot + k_market_snapshot_ts
+    // Actualiza luka_price_usd desde el feed Pyth LUKA/USD
     // Emite evento VaultValuationRefreshed
 }
 ```
@@ -158,6 +160,7 @@ pub const K_MIN_PERSISTENCE_SECONDS: i64 = 7 * 24 * 3600;  // 7 días
 pub const ORACLE_DEVIATION_BPS_MAX: u64 = 200;             // 2% Pyth vs Switchboard
 pub const ORACLE_FEED_MAX_STALENESS: i64 = 60;             // 60s (frescura Pyth)
 pub const JUPITER_MAX_SLIPPAGE_BPS: u64 = 50;              // 0.5%
+pub const LUKA_ORACLE_FEED_MAX_STALENESS: i64 = 60;  // 60s
 ```
 
 ### 3.2 Nueva instrucción `refresh_vault_valuation`
@@ -265,6 +268,14 @@ pub struct AssetPurchased {
     pub output_amount: u64,  // en unidades nativas del activo
     pub slippage_bps_realized: u16,
 }
+
+#[event]
+pub struct MotorBSwitched {
+    pub k_market_usd: u64,
+    pub k_costo_usd: u64,
+    pub ts: i64,
+    pub persistencia_dias: i64,
+}
 ```
 
 ---
@@ -339,4 +350,5 @@ contrato ya usa la valoración correcta).
 - [ ] Invariantes I10, I11, I12 pasan en `simulations/suite.py inv`.
 - [ ] Simulación actualizada: brecha `dia_b2` vs `dia_b2_contrato` < 5 días en mediana.
 - [ ] Documentación de las cuentas Jupiter requeridas por motor en `contracts/INTEGRATION.md`.
+- [ ] `luka_price_usd` actualizado por `refresh_vault_valuation` desde feed Pyth LUKA/USD.
 - [ ] Compila (`anchor build`) y despliega en devnet.

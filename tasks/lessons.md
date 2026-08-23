@@ -45,3 +45,9 @@ Propuse drenar la cola en CONS/DEF como mejora obvia. Al verificar contra v2.1�
 
 ## 2026-08-21 (sesión 4) — Costo de IA a escala: planear antes de prometer
 Una IA conversacional (LUKAI) para muchos usuarios cuesta inferencia × escala. Viable si: 80% de consultas por plantilla/reglas (sin LLM), modelos baratos (Gemini Flash/Groq) para lo abierto, caché+rate-limits, y financiado por el bucket O&M (escala con el uso). Escalonar v1 orquestador → v2 conversacional. No sobre-prometer en material público hasta tener el break-even.
+
+## 2026-08-22 (sesión 7) — En DeFi, deuda suave = vector de ataque con wallets desechables
+El diseño original de WhaleDebt (registrar fee pendiente en PDA, cobrar después) tenía un vector: crear wallets desechables, acumular deuda incobrable, y evadir el fee. En DeFi, si el cobro no es atómico (en la misma transacción), se puede evadir. Regla: fees/penalizaciones deben retenerse del monto transferido dentro del mismo tx, nunca como deuda pendiente.
+
+## 2026-08-22 (sesión 7) — A veces el mecanismo existente ya es la respuesta
+Al debatir si la exención de staking necesitaba un umbral mínimo anti-ballena, Sebastián señaló que los tiers de fee progresivos (3%/6%/10% sobre el exceso) YA son la protección contra ballenas — añadir otro gate era complejidad sin beneficio. Lección: antes de proponer protecciones adicionales, verificar si el mecanismo que ya existe cumple el mismo propósito.

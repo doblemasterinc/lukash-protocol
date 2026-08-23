@@ -19,10 +19,10 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] **Specs Milestone 2 en `specs/07-milestone-2/`** (2026-08-21, sesión 5): 07-INDICE + 6 specs (07-a a 07-f). Base: ADR-015.
    - [x] **07-b ratificada ✅** (cap quema 1%/día)
    - [x] **07-d ratificada ✅** (drenaje siempre activo 25/10/5/2 + hard-stop ENZ, ADR-016)
-   - [~] **07-a en revisión** (Switch B0→B2 por Pyth + Token Accounting real) — la más estructural
-   - [ ] 07-e (módulo contra-cíclico)
-   - [ ] 07-c (Jaguar Shield + Tridente inactivo)
-   - [ ] 07-f (Anti-Whale + Exit Fee + Token-2022)
+   - [x] **07-a ratificada ✅** (Switch B0→B2 por Pyth + Token Accounting real, persistencia 7d aprobada)
+   - [x] **07-e ratificada ✅** (módulo contra-cíclico LUKAI, mayoría 3 señales + fail-safe NEUTRAL)
+   - [x] **07-c ratificada ✅** (Jaguar Shield + Tridente inactivo + CB + Seguro Anti-Exploit)
+   - [x] **07-f ratificada ✅** (Anti-Whale + Exit Fee + Token-2022 Transfer Hook + WhaleDebt suave)
    - Orden de implementación: Sprint 1 (07-b + 07-d) → Sprint 2 (07-a) → Sprint 3 (07-c + 07-e) → Sprint 4 (07-f) → Sprint 5 (endurecimiento + auditoría + mainnet).
 1. **Análisis de recursos de LUKAI** (IA a escala): costo por usuario, arquitectura por etapas (v1 orquestador/plantillas → v2 conversacional Etapa 2A), break-even, financiado por O&M. Decidir si/cuándo activarlo (en landing quedó como mención ligera).
 2. **Landing → producción**: desplegar en Vercel + waitlist real capturando correos (Formspree o Supabase). Landing lista en `landing/index.html` (trilingüe, Artifact `6c7985dd`).

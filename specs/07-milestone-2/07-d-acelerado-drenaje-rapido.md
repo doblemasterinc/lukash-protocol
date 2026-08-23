@@ -246,4 +246,5 @@ Actualizar §7 tabla del Throttle para reflejar:
 - [ ] Tests: happy path × 4 modos + 6 edge cases (incluyendo ENZ boundary) pasan.
 - [ ] Simulación: todos los modos drenan → cola pico se reduce vs baseline;
       supply NUNCA cae por debajo de 3.3B en ningún escenario.
+- [ ] Guardia ENZ en `process_fee` (tramo LP): si `current_supply <= SUPPLY_ENZ`, redirigir tramo LP al Vault en vez de quemar. Snippet explícito en el código.
 - [ ] BITÁCORA actualizada.

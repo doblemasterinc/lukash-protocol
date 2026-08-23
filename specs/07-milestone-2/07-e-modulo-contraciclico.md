@@ -133,6 +133,14 @@ Core recibe X USD:
 
 Los CPIs a Jupiter (07-a) usan estos nuevos porcentajes por tx.
 
+**Nota sobre ADR-P01:** la composición canónica del Vault (ADR-P01) es 70% volátil / 30%
+USDC (cBTC 35 + SOL 15 + LST 20 / USDC-res 25 + lending 5). El régimen NEUTRAL (75/25)
+difiere intencionalmente: v4.3 §5.2 optimiza el flujo de nuevas entradas con un sesgo
+ligeramente pro-volátil en ausencia de señal direccional, porque históricamente la
+acumulación de hard assets baratos genera más valor a largo plazo que USDC idle. El régimen
+BEAR (70/30) coincide con ADR-P01; el BULL (40/60) invierte hacia USDC para construir
+colchón. La composición del Vault *existente* NO se toca (invariante I14).
+
 ### 2.5 Regla del Vault existente — protección
 
 **Invariante añadido a SIM 0:** los balances `cbtc_amount`, `sol_amount`, `lst_amount`

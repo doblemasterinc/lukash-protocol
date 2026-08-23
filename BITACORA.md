@@ -87,12 +87,27 @@
 - Correcciones aplicadas: `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` §6.6 + R3 (eliminado el "5%/día" inventado), `tasks/todo.md`, `learned-rules.md` (2 reglas nuevas).
 - **Próxima sesión:** empezar Sprint 1 (07-b + 07-d) o revisar y ajustar specs con Sebastián antes de código.
 
-## 2026-08-22 (sesión 6) — Revisión de specs Milestone 2 con Sebastián
+## 2026-08-22 (sesión 6) — Ratificación specs 07-b/07-d + ADR-016
 - **Spec 07-b (cap quema 1%/día) ratificada ✅** (sesión anterior).
 - **Spec 07-d ratificada ✅** con dos cambios sustanciales respecto al borrador original:
   - **Drenaje en todos los modos del Throttle (ADR-016):** escala geométrica ACEL 25%/sem · NORMAL 10% · CONS 5% · DEF 2%. Evolución consciente del diseño original v2.1→v4.3 ("bono de deflación futura" / "al regresar a NORMAL"). Razón del cambio: en bear prolongado (2+ años) la cola acumula demasiado, dificultando la recuperación. El "bono" sigue existiendo (inflow > outflow en bear), solo de menor magnitud. Verificado contra TODAS las versiones del protocolo — el cambio se documenta como evolución, no corrección.
   - **Hard-stop ENZ:** guardia `supply ≤ 3.3B` → toda la maquinaria de quema se apaga definitivamente, cola congelada, supply nunca baja de 3.3B. 100% alineado con todas las versiones (v1.0→v4.3).
 - **Próxima:** revisión spec 07-a (Switch B0→B2 por Pyth + Token Accounting real).
+
+## 2026-08-22 (sesión 7) — Ratificación de 4 specs restantes + auditoría integral + fixes
+- **4 specs ratificadas por Sebastián:**
+  - **07-a ✅** (Switch B0→B2 por Pyth + Token Accounting real, persistencia 7d aprobada)
+  - **07-e ✅** (módulo contra-cíclico LUKAI, mayoría 3 señales + fail-safe NEUTRAL)
+  - **07-c ✅** (Jaguar Shield + Tridente inactivo + CB + Seguro Anti-Exploit)
+  - **07-f ✅** (Anti-Whale + Exit Fee + Token-2022 Transfer Hook)
+- **Milestone 2 completo: las 6 specs ratificadas.** Orden de implementación confirmado: Sprint 1 (07-b+07-d) → Sprint 2 (07-a) → Sprint 3 (07-c+07-e) → Sprint 4 (07-f) → Sprint 5 (hardening+audit+mainnet).
+- **Auditoría integral post-ratificación** (3 agentes: filosofía, consistencia inter-spec, ADRs). 13 hallazgos: 1 BLOCKER + 6 diseño + 6 menores. **Todos resueltos:**
+  - **BLOCKER B1:** `state.luka_price` referenciado en 07-f (Exit Fee) pero nunca definido. Fix: `luka_price_usd: u64` añadido a ProtocolState en 07-a, actualizado por `refresh_vault_valuation`.
+  - **C2 (diseño clave):** WhaleDebt modo suave vulnerable a wallets desechables (deuda incobrable). **Decisión de Sebastián: cobro atómico directo en el transfer hook.** Eliminados: WhaleDebt PDA, `collect_whale_debt` instrucción, `WhaleDebtExceedsBalance` error. Nuevo evento `ShieldFeeCollected`. Fee se retiene del monto transferido y se swapea a USDC vía Jupiter CPI → Vault Core.
+  - **C1:** Exención staking sin umbral mínimo — dejado como decisión consciente con trade-off documentado (los tiers de fee SON la protección, no el gate de exención). Insight de Sebastián: "las ballenas van a querer salir en algún momento... ¿y en eso no consistía el aumento del fee?"
+  - **C3-C6, M1-M6:** clarificaciones de destino de fees ($LUKA→USDC vía Jupiter), scope Anti-Whale (solo ventas en pool, no P2P), firmante register_market_maker (authority + Tridente 3-de-3), desviación ADR-P01 en NEUTRAL documentada, conteos corregidos en índice, PDA numbering, ENZ guard en process_fee.
+- **Archivos modificados:** 07-a, 07-f (mayor cambio), 07-e, 07-d, 07-INDICE, 07-CUENTAS-Y-CUSTODIA. La nota "WhaleDebt suave" en BITACORA sesión 5 queda como registro histórico del diseño original antes de la evolución a cobro atómico.
+- **Próxima sesión:** Sprint 1 de implementación (07-b cap quema + 07-d drenaje/ENZ), análisis LUKAI, landing a producción, deploy programa devnet.
 
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.

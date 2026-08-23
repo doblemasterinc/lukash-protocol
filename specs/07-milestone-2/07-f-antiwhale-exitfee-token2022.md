@@ -69,20 +69,23 @@ pub fn transfer_hook(
 }
 ```
 
-**Cómo se aplica el fee "sobre el excedente/monto":** el hook NO puede rechazar la
-transferencia de Token-2022 fácilmente sin bloquear el swap entero (mala UX).
-El patrón elegido es:
+**Cómo se aplica el fee: cobro atómico directo.** El hook retiene el fee del monto
+transferido en la misma transacción. El sender recibe `amount - fee_total` y el
+`fee_total` se transfiere al ATA del Vault Core en la misma tx.
 
-- **Modo suave:** el hook **registra** el fee-debt para el sender en una cuenta PDA
-  específica (`WhaleDebt`), y una instrucción posterior `collect_whale_debt` (llamada
-  por keeper o por el DEX pre-liquidación) transfiere el fee al Vault. Bajo riesgo
-  de "fee dodging" via reset porque el PDA es por sender y monotónico.
-- **Modo duro (alternativa):** el hook falla la transferencia si el sender no ha
-  pre-pagado el fee. Rompe la UX del swap normal.
+```rust
+// Dentro del transfer_hook, después de calcular fee_tokens:
+let net_amount = amount.checked_sub(fee_tokens).ok_or(LukashError::MathOverflow)?;
+// Token-2022 entrega net_amount al destinatario
+// fee_tokens → CPI transfer al Vault Core ATA (USDC vía Jupiter swap inline)
+transfer_fee_to_vault_cpi(ctx, fee_tokens)?;
+```
 
-**Recomendación técnica:** modo suave. La cola de deuda es pública on-chain (los
-holders ven al ballena moroso). Combinada con el vesting del LP y el hecho de que
-las MMs registradas están exentas, el riesgo residual es aceptable.
+**Ventajas vs modo deuda (descartado):** (1) sin wallets desechables que acumulen
+deuda incobrable; (2) sin instrucción `collect_whale_debt` adicional; (3) el fee
+se cobra garantizado, no depende de un keeper posterior. **Trade-off:** el usuario
+recibe menos tokens de los que espera en el swap — el frontend debe mostrar el
+fee estimado pre-tx (igual que cualquier DEX muestra slippage).
 
 ### 2.3 Anti-Whale (ADR-012 C10) — reglas
 
@@ -104,7 +107,7 @@ let (excedente_bps, penal_bps) = match tx_pct_of_pool_bps as u64 {
 
 let excedente_tokens = mul_bps(amount, excedente_bps);
 let fee_tokens = mul_bps(excedente_tokens, penal_bps);
-// fee_tokens → whale_debt del sender → collect_whale_debt → Vault Core
+// fee_tokens → cobro atómico directo → swap LUKA→USDC → Vault Core
 ```
 
 **Exención por Aura ≥ 10,000 (nivel Jaguar) — override Anti-Whale:** requiere leer
@@ -132,7 +135,7 @@ if cond_price && cond_volume {
         _ => 100,   // Etapa 3+ 1%
     };
     let fee_tokens = mul_bps(amount, fee_bps);
-    // → whale_debt → Vault Core (100% ADR-012)
+    // → cobro atómico directo → swap LUKA→USDC → Vault Core (100% ADR-012)
 }
 ```
 
@@ -163,6 +166,16 @@ fn is_exempt(sender: Pubkey, ctx: &Context<TransferHook>) -> Result<bool> {
 **KOLs: NO están en esta lista.** El mecanismo que los alinea es el vesting on-chain
 (ADR-011) — no una exención estática. Si un KOL logra vender por encima del umbral
 (improbable con vesting escalonado), el Anti-Whale sí aplica.
+
+**Nota sobre la exención de staking sin umbral mínimo (decisión consciente):**
+La exención por staking activo no exige un monto mínimo stakeado. Un holder podría
+stakear una cantidad trivial y calificar. Se acepta este trade-off porque: (1) el fee
+escalonado del Anti-Whale (3%/6%/10%) ya es la protección principal — el incentivo
+económico disuade ventas masivas independientemente de exenciones; (2) el Exit Fee
+(pánico real) NO se exime por staking, así que las ventas en crisis siguen penalizadas;
+(3) añadir un umbral incrementa el compute del hook por tx sin beneficio proporcional.
+Si en producción se observa gaming, el umbral puede añadirse como parámetro en
+`ProtocolConfig` ajustable vía timelock (48h), sin cambiar el contrato.
 
 ### 2.6 Registro de MMs — infraestructura nueva
 
@@ -231,15 +244,6 @@ pub const AURA_JAGUAR_MIN: u64 = 10_000;
 pub sell_pressure_1h_supply_bps: u64,   // rolling: bps de supply vendidos en última hora
 pub sell_pressure_last_reset_ts: i64,
 
-// Nueva PDA: WhaleDebt (por sender)
-#[account]
-pub struct WhaleDebt {
-    pub sender: Pubkey,
-    pub debt_luka: u64,
-    pub last_updated_ts: i64,
-    pub bump: u8,
-}
-
 // Nueva PDA: MMRegistry (por mm_pubkey)
 #[account]
 pub struct MMRegistry {
@@ -254,18 +258,15 @@ pub struct MMRegistry {
 
 | Instrucción | Firmante | Función |
 | --- | --- | --- |
-| `transfer_hook(amount)` | Sistema (Token-2022) | Aplica Anti-Whale + Exit Fee, escribe a `WhaleDebt` |
-| `collect_whale_debt(sender)` | permissionless (keeper) | Cobra `debt_luka` del sender, envía al Vault Core |
-| `register_market_maker(pk)` | Tridente 3-de-3 | Añade MM a la lista de exentos |
-| `revoke_market_maker(pk)` | Tridente 3-de-3 | Quita MM de la lista |
+| `transfer_hook(amount)` | Sistema (Token-2022) | Aplica Anti-Whale + Exit Fee, cobra atómico directo al Vault Core |
+| `register_market_maker(pk)` | authority + Tridente 3-de-3 | Añade MM a la lista de exentos |
+| `revoke_market_maker(pk)` | authority + Tridente 3-de-3 | Quita MM de la lista |
 
 ### 3.4 Errores nuevos
 
 ```rust
 #[msg("MM registry ya existe / no existe para esa pubkey")]
 MMRegistryInvalid,
-#[msg("WhaleDebt del sender excede el saldo disponible")]
-WhaleDebtExceedsBalance,
 #[msg("Pool liquidez cero o no disponible")]
 PoolLiquidityMissing,
 #[msg("Transferencia rechazada: sender es la Pubkey::default()")]
@@ -295,11 +296,11 @@ pub struct ExitFeeTriggered {
 }
 
 #[event]
-pub struct WhaleDebtCollected {
+pub struct ShieldFeeCollected {
     pub sender: Pubkey,
-    pub amount_luka_collected: u64,
-    pub remaining_debt: u64,
-    pub to_vault_core: u64,
+    pub fee_luka: u64,
+    pub fee_usdc_to_vault: u64,
+    pub source: u8,  // 0=Anti-Whale, 1=Exit Fee, 2=ambos
 }
 
 #[event]
@@ -317,13 +318,13 @@ pub struct MarketMakerRevoked    { pub mm: Pubkey, pub ts: i64 }
 - **Compra al pool** (from pool to user): sin fee (ADR-012 C10 — solo ventas).
 - **Venta de 0.5% del pool** por un usuario random: sin Anti-Whale, sin Exit Fee.
 - **Venta de 3% del pool** por usuario random: Anti-Whale tier 2 (6% sobre
-  excedente 2%) → `WhaleDebt` = 0.12% del pool en LUKA.
+  excedente 2%) → fee retenido atómicamente, sender recibe `amount - fee`.
 - **Venta de 7% del pool** por usuario random: Anti-Whale tier 3 (10% sobre
-  excedente 6%) → `WhaleDebt` = 0.6% del pool.
+  excedente 6%) → fee = 0.6% del pool en LUKA, cobrado en la misma tx.
 - **Venta en Génesis con precio en pánico** (`p < 0.7×EMA30` AND `volumen>0.3% supply/h`):
-  Exit Fee 5% sobre monto total → `WhaleDebt` += 5%.
+  Exit Fee 5% sobre monto total → cobro atómico, sender recibe 95%.
 - **Venta con nivel Jaguar (Aura ≥ 10K)**: exento, sin fee.
-- **`collect_whale_debt`**: transfiere el debt al Vault Core, reset `debt_luka = 0`.
+- **Anti-Whale + Exit Fee simultáneos**: ambos fees se suman y se cobran en una sola tx.
 
 ### 4.2 Edge cases
 
@@ -333,17 +334,19 @@ pub struct MarketMakerRevoked    { pub mm: Pubkey, pub ts: i64 }
 - **Sender = Pubkey::default()**: `InvalidSender`.
 - **Pool liquidez = 0** (deshabilitado momentáneamente): `PoolLiquidityMissing`,
   la transferencia falla — mejor pausar que penalizar mal.
-- **Sender debt > balance actual**: `collect_whale_debt` cobra lo que hay,
-  `remaining_debt` refleja el saldo pendiente.
-- **Anti-Whale + Exit Fee simultáneos**: se suman ambos fees al `WhaleDebt`.
+- **Anti-Whale + Exit Fee simultáneos**: se suman ambos fees y se cobran
+  atómicamente. El sender recibe `amount - fee_aw - fee_exit`.
 
 ### 4.3 Invariantes nuevos
 
-- **I20:** los fees cobrados por `collect_whale_debt` van 100% al `usdc_res_amount`
-  (después del swap $LUKA→USDC en Jupiter) o al `luka_balance_core` según la política.
-  Ninguno se pierde en O&M o Staking (ADR-012 explícito: "100% al Vault Core").
-- **I21:** para toda transferencia identificada como COMPRA (from pool), `WhaleDebt`
-  no incrementa. Solo ventas y transferencias P2P entre wallets no-pool.
+- **I20:** los $LUKA cobrados atómicamente por el `transfer_hook` se swapean a USDC
+  vía Jupiter CPI → entran a `usdc_res_amount` del Vault Core. 100% al Vault, nada a
+  O&M ni Staking (ADR-012 explícito). Cobro garantizado en la misma tx, sin deuda pendiente.
+- **I21:** para toda transferencia identificada como COMPRA (from pool), el hook no
+  cobra fee. Anti-Whale aplica solo a ventas al pool de liquidez (donde la métrica de
+  % del pool tiene sentido). Las transferencias P2P no disparan Anti-Whale (no hay pool
+  contra el cual medir el umbral); el Exit Fee dual ya cubre el escenario de pánico en
+  P2P si las condiciones precio+volumen se cumplen.
 - **I22:** `sell_pressure_1h_supply_bps` se resetea cuando `now - last_reset_ts >= 3600`.
 
 ### 4.4 Prueba de simulación
@@ -373,12 +376,11 @@ Es la validación empírica de que el Jaguar Shield hace lo que dice.
 ## 6. Done cuando
 
 - [ ] Constantes nuevas en `constants.rs`.
-- [ ] `WhaleDebt` y `MMRegistry` PDAs definidas.
-- [ ] `transfer_hook`, `collect_whale_debt`, `register/revoke_market_maker`
-      implementadas.
+- [ ] `MMRegistry` PDA definida.
+- [ ] `transfer_hook`, `register/revoke_market_maker` implementadas.
 - [ ] Estado `sell_pressure_1h_supply_bps` + rolling window de 1h funcionan.
 - [ ] `is_exempt()` en el orden fail-fast correcto.
-- [ ] 4 errores + 5 eventos nuevos definidos.
+- [ ] 3 errores + 5 eventos nuevos definidos.
 - [ ] Programa deployado en devnet con **mint Token-2022 dedicado** (nuevo,
       aparte del clásico existente).
 - [ ] Tests: happy path × 7 + edge cases × 6 pasan.

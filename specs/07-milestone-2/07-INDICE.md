@@ -25,8 +25,8 @@ lógica económica completa del protocolo, no una contabilidad simulada.
 
 | # | Spec | Prioridad | Depende de | Habilita |
 | --- | --- | --- | --- | --- |
-| 1 | [**07-b — Cap de quema 1%/día**](./07-b-cap-quema-diaria.md) | alta | — | 07-d |
-| 2 | [**07-d — Throttle: drenaje siempre activo + hard-stop ENZ**](./07-d-acelerado-drenaje-rapido.md) | media (quick win) | 07-b | — |
+| 1 | [**07-b — Cap de quema 1%/día**](./07-b-cap-quema-diaria.md) | alta | — (soft: 07-a para quema real) | 07-d |
+| 2 | [**07-d — Throttle: drenaje siempre activo + hard-stop ENZ**](./07-d-acelerado-drenaje-rapido.md) | media (quick win) | 07-b (soft: 07-a para quema real) | — |
 | 3 | [**07-a — Switch B0→B2 por Pyth + Token Accounting real**](./07-a-switch-b2-por-pyth-y-token-accounting.md) | **alta (estructural)** | 07-b | 07-e, 07-c, 07-f |
 | 4 | [**07-e — Módulo Contra-Cíclico LUKAI**](./07-e-modulo-contraciclico.md) | media | 07-a | — |
 | 5 | [**07-c — Jaguar Shield del Vault + Tridente inactivo**](./07-c-jaguar-shield-vault-tridente.md) | alta | 07-a | Etapa 2 (candado) |
@@ -54,7 +54,7 @@ cambios de este Milestone.
 | Instrucción | Origen | Firmante | One-way |
 | --- | --- | --- | --- |
 | `initialize` | existente | authority | Sí |
-| `process_fee` | **modificada (07-a, 07-b, 07-e, 07-f, 07-c)** | caller | No |
+| `process_fee` | **modificada (07-a, 07-b, 07-e, 07-c)** | caller | No |
 | `update_oracle_state` | **reemplazada por `refresh_vault_valuation`** (permissionless) | cualquiera | No |
 | `refresh_vault_valuation` | nueva (07-a) | permissionless | No |
 | `update_market_regime` | nueva (07-e) | authority (keeper) | No |
@@ -65,32 +65,32 @@ cambios de este Milestone.
 | `activate_tridente(pk1,pk2,pk3)` | nueva (07-c) | authority | **Sí** |
 | `cancel_circuit_breaker` | nueva (07-c) | Tridente 3-de-3 | No |
 | `receive_insurance_recovery(amt)` | nueva (07-c) | Tridente 3-de-3 | No (cooldown 12m) |
-| `register_market_maker(mm)` | nueva (07-f) | Tridente 3-de-3 | No |
-| `revoke_market_maker(mm)` | nueva (07-f) | Tridente 3-de-3 | No |
+| `register_market_maker(mm)` | nueva (07-f) | authority + Tridente 3-de-3 | No |
+| `revoke_market_maker(mm)` | nueva (07-f) | authority + Tridente 3-de-3 | No |
 | `transfer_hook(amount)` | nueva (07-f) | Token-2022 sistema | No |
-| `collect_whale_debt(sender)` | nueva (07-f) | permissionless (keeper) | No |
 | `activate_layer_3_emergency` | stub (07-c, se desarrolla en Milestone 3) | Tridente 3-de-3 | — |
 
 ### 5.2 Estado nuevo total
 
 En `ProtocolConfig`: `tridente_activated`, 3× `tridente_signer_*`, `tridente_activated_ts`.
 
-En `ProtocolState`: 5× `*_amount` (balances por bucket), `k_market_usd_snapshot`,
-`k_market_snapshot_ts`, `k_min_reached_since_ts`, `market_regime`, `regime_updated_ts`,
+En `ProtocolState`: 5× `*_amount` (balances por bucket), `luka_price_usd`,
+`k_market_usd_snapshot`, `k_market_snapshot_ts`, `k_min_reached_since_ts`,
+`market_regime`, `regime_updated_ts`,
 `regime_reason`, `burned_today_tokens`, `burn_day_start_ts`, `cb_active_until_ts`,
 `cb_last_snapshot_usd`, `cb_last_snapshot_ts`, `last_insurance_recovery_ts`,
 `insurance_recoveries_total_usd`, `sell_pressure_1h_supply_bps`,
 `sell_pressure_last_reset_ts`.
 
-PDAs nuevas: `WhaleDebt` (por sender), `MMRegistry` (por MM).
+PDA nueva: `MMRegistry` (por MM).
 
 ### 5.3 Errores nuevos totales (por spec)
 
-07-b: 2 · 07-d: 0 · 07-a: 5 · 07-e: 2 · 07-c: 11 · 07-f: 4 = **24 errores nuevos**.
+07-b: 2 · 07-d: 1 · 07-a: 5 · 07-e: 2 · 07-c: 11 · 07-f: 3 = **24 errores nuevos**.
 
 ### 5.4 Eventos nuevos totales
 
-07-b: 1 · 07-d: 0 (extiende) · 07-a: 2 · 07-e: 1 · 07-c: 4 · 07-f: 5 = **13 eventos nuevos**.
+07-b: 1 · 07-d: 0 (extiende) · 07-a: 3 · 07-e: 1 · 07-c: 4 · 07-f: 5 = **14 eventos nuevos**.
 
 ### 5.5 Constantes nuevas totales
 
