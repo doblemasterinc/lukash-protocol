@@ -140,6 +140,70 @@
 - **Capa 2 (pendiente):** CPI real a Jupiter (swaps), lectura directa Pyth/Switchboard, quema CPI al mint.
 - **Pendiente:** compilar v4 en Playground + deploy + análisis LUKAI.
 
+## 2026-08-24 (sesión 10) — Sprint 3 implementado (07-c + 07-e) + análisis LUKAI
+- **Sprint 3 completo en `contracts/playground/lib.rs`** (1365 líneas, v5). Implementados:
+  - **07-c (Jaguar Shield del Vault):**
+    - **Tridente Multisig 3-de-3** inactivo por defecto, instrucción one-way `activate_tridente(pk1, pk2, pk3)` con 4 validaciones (no-default, distintas, ≠authority). Candado estructural: `execute_admin_change` rechaza Stage≥2 sin Tridente activado.
+    - **Circuit Breaker del Vault** automático: `refresh_vault_valuation` detecta caída >10% en ventana de 1h → pausa 24h. Guards en `process_fee`, `switch_motor_b`, `execute_deferred_burn`. Cancelación temprana con Tridente 3-de-3 (`cancel_circuit_breaker`).
+    - **Seguro Anti-Exploit** `receive_insurance_recovery`: solo entrada (nunca salida), requiere Tridente 3-de-3, activo desde Etapa 2B (Motor B2), cap 5% del Vault por evento, cooldown 12 meses. Incrementa `usdc_res_amount` + `vault_core_usd`.
+    - Helper `assert_tridente_signed`: verifica 3 signers en `remaining_accounts`.
+    - Contexto `TridenteAction` para instrucciones protegidas por Tridente.
+    - **11 errores + 4 eventos nuevos.**
+  - **07-e (Módulo contra-cíclico LUKAI):**
+    - Instrucción `update_market_regime`: keeper envía EMA30/EMA90 BTC + vol 30d + vol Motor A 7d/30d. Lógica de mayoría de 3 señales (primaria EMA, vol confirmadora, vol Motor A). Sin mayoría → NEUTRAL.
+    - `resolve_regime_effective` con fail-safe: si keeper no actualiza en 48h → NEUTRAL por defecto.
+    - `process_fee` Asset Layer ahora usa splits dinámicos por régimen: BULL 40/60 · NEUTRAL 75/25 · BEAR 70/30 (volátiles/USDC). Dentro de volátiles: cBTC 50% / SOL 21.4% / LST 28.6%. Dentro de USDC: reserva 83.3% / lending 16.7%.
+    - **8 constantes + 2 errores + 1 evento nuevos.** Helper `majority_vote`.
+  - **Nota migración:** ProtocolConfig creció (Tridente: 1 bool + 3 Pubkey + 1 i64 = +105 bytes) y ProtocolState creció (CB + Seguro + Régimen: +42 bytes). PDAs de v4 incompatibles → cerrar y re-inicializar en devnet.
+- **Capa 2 confirmada como Sprint 5** (endurecimiento pre-mainnet): CPI real a Pyth/Jupiter/Mint. No bloquea devnet — Capa 1 (authority manual) es el patrón correcto para pruebas.
+- **Análisis LUKAI** en progreso (costo por usuario, arquitectura por etapas, break-even con O&M).
+- **Pendiente:** compilar v5 en Playground + deploy devnet, Sprint 4 (07-f Anti-Whale + Exit Fee + Token-2022 Transfer Hook).
+
+## 2026-08-24 (sesión 10, continuación) — Sprint 4 implementado (07-f Anti-Whale + Exit Fee + Transfer Hook)
+- **Sprint 4 completo en `contracts/playground/lib.rs`** (1718 líneas, v6). Implementados:
+  - **Transfer Hook Capa 1 (`transfer_hook`):** instrucción authority-gated que simula la lógica del Token-2022 Transfer Hook en devnet. Parámetros de contexto (pool liquidity, Aura score, staking, LP lock, MM, internal CPI) alimentados manualmente por authority; en Capa 2 se leen de cuentas on-chain.
+  - **Anti-Whale (ADR-012 C10):** umbral por % del pool de liquidez. Tier único: <1% sin fee, 1-2% 3%, 2-5% 6%, >5% 10% sobre excedente. Solo aplica a ventas al pool (no compras, no P2P). 100% de fees al Vault Core (I20).
+  - **Jaguar Exit Fee (v4.3 §9):** activación dual (precio < 0.7×EMA30 AND sell_pressure > 0.3% supply/hora). Fees por etapa: 5% Génesis / 3% Etapa 2 / 1% Etapa 3+. Anti-Whale y Exit Fee se suman si ambos aplican.
+  - **Exenciones diferenciadas (nota spec §2.5):** Anti-Whale exime 6 condiciones (internal CPI, MM, LP Fundador, LP lock, staking, Aura≥Jaguar). Exit Fee exime 5 condiciones (mismas EXCEPTO staking — el Exit Fee no se exime por staking).
+  - **Presión de venta rodante:** `sell_pressure_1h_supply_bps` acumula bps de supply vendidos en ventana de 1h. Reset automático (I22).
+  - **MMRegistry PDA** `["mm_registry", mm_pubkey]`: `register_market_maker` + `revoke_market_maker` (ambas requieren authority + Tridente 3-de-3). O(1) lookup.
+  - **LP Fundador ATA** en ProtocolConfig (vía timelock kind=4).
+  - **18 constantes** (6 AW + 5 Exit Fee + 1 Aura + 1 sell pressure window + 1 seed + 4 eventos).
+  - **3 errores** (MMRegistryInvalid, PoolLiquidityMissing, InvalidSender).
+  - **6 eventos** (AntiWhaleTriggered, ExitFeeTriggered, ShieldFeeCollected, TransferInspected, MarketMakerRegistered, MarketMakerRevoked).
+  - **3 instrucciones** (transfer_hook, register_market_maker, revoke_market_maker).
+  - **4 helpers** (compute_anti_whale_fee, compute_exit_fee, update_sell_pressure, majority_vote ya existía).
+  - **4 account contexts** (TransferHookCtx, RegisterMM, RevokeMM + MMRegistry struct).
+  - **Nota migración:** ProtocolConfig creció (+32 bytes lp_fundador_ata), ProtocolState creció (+16 bytes sell pressure). PDAs de v5 incompatibles → cerrar y re-inicializar en devnet.
+- **Pendiente:** compilar v6 en Playground + deploy devnet, Sprint 5 (hardening + Capa 2 + auditoría + mainnet).
+
+## 2026-08-25 (sesión 11) — Sprint 4 compilado + desplegado + verificado en devnet
+- **Build successful + Deploy (upgrade) en Solana Playground** ✅. Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy` (mismo, upgrade in-place). `lib.rs` v6 (1718 líneas, Sprint 4 completo).
+- **PDAs re-inicializadas con v6** correctamente (campos nuevos: `sell_pressure_1h_supply_bps`, `sell_pressure_last_reset_ts`, `lp_fundador_ata`).
+- **Verificación funcional en devnet (client.ts en Playground):**
+  - ✅ **Oracle feed** (`updateOracleState`): luka_price=$0.10, ema30=$0.12, supply=10B.
+  - ✅ **Anti-Whale detecta ballena**: venta 3% del pool → fee tier 2 (6% sobre excedente). Vault suma +$0.36 por transacción (fee_usdc = 360,000 µUSD). Acumulación correcta verificada en 3 runs consecutivos (0→360K→720K→1080K).
+  - ✅ **Ventas pequeñas (<1% pool)**: pasan sin fee.
+  - ✅ **Sell pressure tracking**: acumula bps en ventana rodante 1h.
+  - Nota: reads post-write en Playground muestran valor del slot anterior (eventual consistency devnet). Confirmado que los writes SÍ persisten — visible en el siguiente fetch.
+- ✅ **Exit Fee verificado en devnet:** condición dual (precio $0.05 < 0.7×EMA30 $0.084 AND sell_pressure 40 bps > 30 bps) → fee 5% Génesis aplicado correctamente. Vault acumuló $100.6K en fees Shield de una venta de 40M LUKA. Anti-Whale + Exit Fee se suman (source=2).
+- **Sprint 4 COMPLETAMENTE VERIFICADO.** Todos los caminos probados: venta sin fee, Anti-Whale solo, Exit Fee + Anti-Whale combo.
+- **Nota técnica:** campo `sell_pressure_1h_supply_bps` no legible vía JS client (camelCase del `1h`), pero funciona on-chain (demostrado por activación correcta del Exit Fee).
+- **Pendiente:** Sprint 5 (Capa 2: CPI real a Pyth/Jupiter/Mint), landing → producción, bloqueantes pre-TGE.
+
+## 2026-08-25 (sesión 11, continuación) — Sprint 5A: Security hardening verificado en devnet
+- **Sprint 5A completo en `contracts/playground/lib.rs`** (1756 líneas, v7, +38 vs v6). 6 fixes de seguridad:
+  - **Fix #1 (CRÍTICO): Supply tracking on burns.** Burns en `process_fee` (Motor A y B0/D) y `execute_deferred_burn` ahora decrementan `current_supply` vía `usd_to_tokens`. Sin esto, ENZ (hard-stop a 3.3B) era dead letter — el supply nunca bajaba.
+  - **Fix #2:** `revoke_market_maker` cierra PDA (`close = authority`) → devuelve SOL rent.
+  - **Fix #3:** `execute_admin_change` kind=4 valida que `pending_pubkey != Pubkey::default()` antes de asignar LP Fundador ATA.
+  - **Fix #4:** `receive_insurance_recovery` rechaza `amount_usdc == 0`.
+  - **Fix #5:** `cancel_circuit_breaker` verifica que CB esté activo (`cb_active_until_ts > now`). Nuevo error `CircuitBreakerNotActive`.
+  - **Fix #6:** Nueva instrucción `close_protocol` para cerrar PDAs config+state en devnet (devuelve rent al authority).
+- **Build + Deploy (upgrade) + close/re-initialize OK** en Playground. Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`.
+- **Fix #1 VERIFICADO en devnet:** `process_fee` Motor A con $100 → fee 4% = $4 → 35% burn = $1.40 → 14 LUKA quemados a $0.10. `current_supply` decrementó 14,000,000 (6 dec) ✓. `burned_total` = 1,400,000 µUSD ($1.40) ✓. ENZ ahora es funcional.
+- **Reframe de marca aprobado:** "La moneda cripto que se fortalece cada vez que la usas" → copy central para landing, pitch, material de inversión.
+- **Pendiente:** Sprint 5B (Capa 2: CPI real a Pyth/Jupiter/Mint — requiere toolchain local), landing → producción (Vercel + waitlist), bloqueantes pre-TGE T1-T6.
+
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.

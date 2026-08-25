@@ -1,5 +1,8 @@
-// LUKASH Protocol - Milestone 2 Sprint 2 (version de un solo archivo para Solana Playground)
+// LUKASH Protocol - Milestone 2 Sprint 5A (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
+// v7: Sprint 5A (hardening: supply tracking on burn, close_protocol, MM close PDA, validaciones).
+// v6: Sprint 4 (07-f Anti-Whale + Jaguar Exit Fee + MMRegistry + Transfer Hook Capa 1).
+// v5: Sprint 3 (07-c Jaguar Shield: Tridente+CB+Seguro + 07-e módulo contra-cíclico LUKAI).
 // v4: Sprint 2 (07-a switch B0→B2 por valoración de mercado + token accounting + doble candado 7d).
 // v3: Sprint 1 (07-b cap quema 1%/día + 07-d drenaje siempre activo ADR-016 + hard-stop ENZ).
 // v2: endurecido en seguridad (validaciones, freeze en pausa, protección de autoridad, eventos).
@@ -13,6 +16,7 @@ use anchor_lang::prelude::*;
 // ---- Seeds de PDAs ----
 pub const CONFIG_SEED: &[u8] = b"config";
 pub const STATE_SEED: &[u8] = b"state";
+pub const MM_REGISTRY_SEED: &[u8] = b"mm_registry";
 
 // ---- Escala ----
 pub const BPS_DENOMINATOR: u64 = 10_000; // 100.00%
@@ -86,6 +90,58 @@ pub const CBTC_SCALE: u128 = 100_000_000;     // 10^8 (satoshis)
 pub const SOL_SCALE: u128 = 1_000_000_000;    // 10^9 (lamports)
 pub const LST_SCALE: u128 = 1_000_000_000;    // 10^9 (lamports)
 
+// ---- Circuit Breaker del Vault (07-c) ----
+pub const CB_WINDOW_SECONDS: i64 = 3600;          // ventana de detección: 1h
+pub const CB_DROP_THRESHOLD_BPS: u64 = 1_000;     // caída >10% dispara CB
+pub const CB_PAUSE_SECONDS: i64 = 24 * 3600;      // pausa 24h
+
+// ---- Seguro Anti-Exploit (07-c, ADR-015) ----
+pub const INSURANCE_CAP_BPS: u64 = 500;           // 5% del Vault por evento
+pub const INSURANCE_COOLDOWN_SECONDS: i64 = 365 * 86_400; // 12 meses entre eventos
+
+// ---- Régimen de mercado — módulo contra-cíclico (07-e) ----
+pub const REGIME_BULL: u8 = 0;
+pub const REGIME_NEUTRAL: u8 = 1;
+pub const REGIME_BEAR: u8 = 2;
+
+pub const EMA_BULL_THRESHOLD_BPS: u64 = 10_200;   // EMA30 > 1.02×EMA90 → BULL
+pub const EMA_BEAR_THRESHOLD_BPS: u64 = 9_800;    // EMA30 < 0.98×EMA90 → BEAR
+pub const VOL_HIGH_THRESHOLD_BPS: u64 = 6_000;    // 60% anualizado → vol "alta"
+pub const REGIME_MAX_STALENESS: i64 = 48 * 3600;  // 48h sin update → fail-safe NEUTRAL
+
+// Splits por régimen: (volátiles_bps, usdc_bps) del Asset Layer
+pub const SPLIT_BULL: (u64, u64) = (4_000, 6_000);
+pub const SPLIT_NEUTRAL: (u64, u64) = (7_500, 2_500);
+pub const SPLIT_BEAR: (u64, u64) = (7_000, 3_000);
+
+// Proporciones relativas dentro de "volátiles" (suman 10000): cBTC:SOL:LST = 35:15:20 normalizado
+pub const VOLATIL_CBTC_REL_BPS: u64 = 5_000;
+pub const VOLATIL_SOL_REL_BPS: u64 = 2_143;
+pub const VOLATIL_LST_REL_BPS: u64 = 2_857;      // 10000 - 5000 - 2143
+
+// Proporciones relativas dentro de "USDC" (suman 10000): reserva:lending = 25:5 normalizado
+pub const USDC_RES_REL_BPS: u64 = 8_333;
+pub const USDC_LEND_REL_BPS: u64 = 1_667;
+
+// ---- Anti-Whale (07-f, ADR-012 C10): umbral por % del pool ----
+pub const AW_THR_1_BPS: u64 = 100;     // 1% del pool
+pub const AW_THR_2_BPS: u64 = 200;     // 2%
+pub const AW_THR_3_BPS: u64 = 500;     // 5%
+pub const AW_FEE_1_BPS: u64 = 300;     // 3% sobre excedente
+pub const AW_FEE_2_BPS: u64 = 600;     // 6%
+pub const AW_FEE_3_BPS: u64 = 1_000;   // 10%
+
+// ---- Jaguar Exit Fee (07-f, v4.3 §9): activación dual ----
+pub const EXIT_FEE_ET1_BPS: u64 = 500;   // 5% Génesis
+pub const EXIT_FEE_ET2_BPS: u64 = 300;   // 3% Etapa 2
+pub const EXIT_FEE_ET3_BPS: u64 = 100;   // 1% Etapa 3+
+pub const EXIT_FEE_PRICE_TRIG_BPS: u64 = 7_000;  // <0.7×EMA30
+pub const EXIT_FEE_VOL_TRIG_BPS: u64 = 30;        // >0.3% supply/hora (bps)
+pub const SELL_PRESSURE_WINDOW: i64 = 3600;        // ventana rodante de 1h
+
+// ---- Aura — exención nivel Jaguar ----
+pub const AURA_JAGUAR_MIN: u64 = 10_000;
+
 // ---- Modos del Motor B ----
 pub const MOTOR_B_B0: u8 = 0;
 pub const MOTOR_B_B2: u8 = 1;
@@ -151,6 +207,50 @@ pub enum LukashError {
     OracleFeedStale,
     #[msg("CPI a Jupiter falló por slippage (Capa 2)")]
     SwapSlippageExceeded,
+
+    // 07-c: Tridente Multisig
+    #[msg("Tridente Multisig no activado")]
+    TridenteNotActivated,
+    #[msg("Tridente ya activado (one-way, irreversible)")]
+    TridenteAlreadyActivated,
+    #[msg("Firmante del Tridente inválido (pubkey cero)")]
+    InvalidTridenteSigner,
+    #[msg("Los 3 firmantes del Tridente deben ser distintos entre sí")]
+    TridenteSignersMustBeDistinct,
+    #[msg("Un firmante del Tridente no puede ser la authority")]
+    TridenteSignerCannotBeAuthority,
+    #[msg("Faltan firmas del Tridente (requeridas 3-de-3)")]
+    TridenteSignaturesIncomplete,
+    #[msg("Etapa 2 requiere el Tridente activado")]
+    TridenteRequiredForStage2,
+
+    // 07-c: Circuit Breaker del Vault
+    #[msg("Circuit Breaker activo — protocolo en pausa por 24h")]
+    CircuitBreakerActive,
+    #[msg("Circuit Breaker no está activo — nada que cancelar")]
+    CircuitBreakerNotActive,
+
+    // 07-c: Seguro Anti-Exploit
+    #[msg("Seguro Anti-Exploit activo solo desde Etapa 2B (Motor B2)")]
+    InsuranceNotYetActive,
+    #[msg("Cooldown del Seguro: máximo 1 evento cada 12 meses")]
+    InsuranceCooldown,
+    #[msg("Monto excede el cap del 5% del Vault")]
+    InsuranceExceedsCap,
+
+    // 07-e: Módulo contra-cíclico
+    #[msg("Régimen inválido (debe ser 0=BULL, 1=NEUTRAL o 2=BEAR)")]
+    InvalidRegime,
+    #[msg("EMA90 no puede ser cero")]
+    InvalidEmaInput,
+
+    // 07-f: Anti-Whale + Exit Fee + MM Registry
+    #[msg("MM registry ya existe o no existe para esa pubkey")]
+    MMRegistryInvalid,
+    #[msg("Pool de liquidez con valor cero o no disponible")]
+    PoolLiquidityMissing,
+    #[msg("Sender inválido (Pubkey::default())")]
+    InvalidSender,
 }
 
 // ================= estado (cuentas) =================
@@ -186,6 +286,16 @@ pub struct ProtocolConfig {
     pub pending_value: u64,        // nuevo valor (para stage/k_min)
     pub pending_pubkey: Pubkey,    // nueva autoridad (para kind=3)
     pub pending_execute_after: i64,
+
+    // Tridente Multisig 3-de-3 (07-c, ADR-015)
+    pub tridente_activated: bool,
+    pub tridente_signer_1: Pubkey,
+    pub tridente_signer_2: Pubkey,
+    pub tridente_signer_3: Pubkey,
+    pub tridente_activated_ts: i64,
+
+    // LP Fundador ATA — exento de Anti-Whale + Exit Fee (07-f, ADR-015)
+    pub lp_fundador_ata: Pubkey,
 
     pub bump: u8,
 }
@@ -246,6 +356,23 @@ pub struct ProtocolState {
     // Persistencia del umbral K_min para switch B0→B2 (07-a)
     pub k_min_reached_since_ts: i64, // 0 si K_market < K_min actualmente
 
+    // Circuit Breaker del Vault (07-c)
+    pub cb_active_until_ts: i64,     // 0 si no pausado; timestamp fin de pausa si activo
+    pub cb_last_snapshot_usd: u64,   // K_market snapshot hace ~1h para detectar caída
+    pub cb_last_snapshot_ts: i64,
+
+    // Seguro Anti-Exploit (07-c, ADR-015)
+    pub last_insurance_recovery_ts: i64,
+    pub insurance_recoveries_total_usd: u64,
+
+    // Módulo contra-cíclico LUKAI (07-e)
+    pub market_regime: u8,           // 0=BULL, 1=NEUTRAL, 2=BEAR
+    pub regime_updated_ts: i64,
+
+    // Jaguar Exit Fee: presión de venta en ventana rodante de 1h (07-f)
+    pub sell_pressure_1h_supply_bps: u64,
+    pub sell_pressure_last_reset_ts: i64,
+
     pub bump: u8,
 }
 
@@ -257,6 +384,16 @@ pub struct Distribution {
     pub to_lp_burn: u64,
     pub to_om: u64,
     pub to_staking: u64,
+}
+
+/// Market Maker registrado — PDA ["mm_registry", mm_pubkey]. Exento de Anti-Whale + Exit Fee.
+#[account]
+#[derive(InitSpace)]
+pub struct MMRegistry {
+    pub mm: Pubkey,
+    pub is_active: bool,
+    pub registered_at: i64,
+    pub bump: u8,
 }
 
 // ================= programa =================
@@ -297,6 +434,12 @@ pub mod lukash_protocol {
         config.pending_value = 0;
         config.pending_pubkey = Pubkey::default();
         config.pending_execute_after = 0;
+        config.tridente_activated = false;
+        config.tridente_signer_1 = Pubkey::default();
+        config.tridente_signer_2 = Pubkey::default();
+        config.tridente_signer_3 = Pubkey::default();
+        config.tridente_activated_ts = 0;
+        config.lp_fundador_ata = Pubkey::default();
         config.bump = ctx.bumps.config;
 
         let state = &mut ctx.accounts.state;
@@ -331,6 +474,15 @@ pub mod lukash_protocol {
         state.k_market_usd_snapshot = 0;
         state.k_market_snapshot_ts = 0;
         state.k_min_reached_since_ts = 0;
+        state.cb_active_until_ts = 0;
+        state.cb_last_snapshot_usd = 0;
+        state.cb_last_snapshot_ts = 0;
+        state.last_insurance_recovery_ts = 0;
+        state.insurance_recoveries_total_usd = 0;
+        state.market_regime = REGIME_NEUTRAL;
+        state.regime_updated_ts = 0;
+        state.sell_pressure_1h_supply_bps = 0;
+        state.sell_pressure_last_reset_ts = now;
         state.bump = ctx.bumps.state;
 
         Ok(())
@@ -351,6 +503,10 @@ pub mod lukash_protocol {
         require!(!config.paused, LukashError::ProtocolPaused);
         require!(amount > 0, LukashError::ZeroAmount);
         require!(currency <= 1, LukashError::InvalidCurrency);
+
+        let now_ts = Clock::get()?.unix_timestamp;
+        // Circuit Breaker guard (07-c)
+        require!(now_ts >= ctx.accounts.state.cb_active_until_ts, LukashError::CircuitBreakerActive);
 
         let fee_bps = compute_fee_bps(config.stage, motor, layer, currency, is_whitelist)?;
         let fee = mul_bps(amount, fee_bps)?;
@@ -388,15 +544,27 @@ pub mod lukash_protocol {
         state.vault_core_usd = state.vault_core_usd.checked_add(core).ok_or(LukashError::MathOverflow)?;
         state.vault_sociedad_usd = state.vault_sociedad_usd.checked_add(sociedad).ok_or(LukashError::MathOverflow)?;
 
-        let a_cbtc = mul_bps(core, config.vault_cbtc_bps)?;
-        let a_sol = mul_bps(core, config.vault_sol_bps)?;
-        let a_lst = mul_bps(core, config.vault_lst_bps)?;
-        let a_usdc_res = mul_bps(core, config.vault_usdc_res_bps)?;
-        let a_usdc_lend = core
+        // Módulo contra-cíclico (07-e): splits dinámicos por régimen de mercado
+        let regime = resolve_regime_effective(state, now_ts);
+        let (vol_bps, _usdc_bps) = match regime {
+            REGIME_BULL => SPLIT_BULL,
+            REGIME_BEAR => SPLIT_BEAR,
+            _           => SPLIT_NEUTRAL,
+        };
+        let vol_total = mul_bps(core, vol_bps)?;
+        let usdc_total_alloc = core.checked_sub(vol_total).ok_or(LukashError::MathOverflow)?;
+
+        // Dentro de volátiles: cBTC/SOL/LST proporcionales (50/21.4/28.6)
+        let a_cbtc = mul_bps(vol_total, VOLATIL_CBTC_REL_BPS)?;
+        let a_sol = mul_bps(vol_total, VOLATIL_SOL_REL_BPS)?;
+        let a_lst = vol_total
             .checked_sub(a_cbtc).ok_or(LukashError::MathOverflow)?
-            .checked_sub(a_sol).ok_or(LukashError::MathOverflow)?
-            .checked_sub(a_lst).ok_or(LukashError::MathOverflow)?
+            .checked_sub(a_sol).ok_or(LukashError::MathOverflow)?;
+        // Dentro de USDC: reserva/lending proporcionales (83.3/16.7)
+        let a_usdc_res = mul_bps(usdc_total_alloc, USDC_RES_REL_BPS)?;
+        let a_usdc_lend = usdc_total_alloc
             .checked_sub(a_usdc_res).ok_or(LukashError::MathOverflow)?;
+
         state.cbtc_usd = state.cbtc_usd.checked_add(a_cbtc).ok_or(LukashError::MathOverflow)?;
         state.sol_usd = state.sol_usd.checked_add(a_sol).ok_or(LukashError::MathOverflow)?;
         state.lst_usd = state.lst_usd.checked_add(a_lst).ok_or(LukashError::MathOverflow)?;
@@ -404,10 +572,8 @@ pub mod lukash_protocol {
         state.usdc_lend_usd = state.usdc_lend_usd.checked_add(a_usdc_lend).ok_or(LukashError::MathOverflow)?;
 
         // --- LP / Quema (35%) ---
-        let now = Clock::get()?.unix_timestamp;
-
         // Day rollover (07-b): reset diario al cruzar medianoche UTC
-        let day_now = (now / DAY_SECONDS) * DAY_SECONDS;
+        let day_now = (now_ts / DAY_SECONDS) * DAY_SECONDS;
         if state.burn_day_start_ts < day_now {
             state.burned_today_tokens = 0;
             state.burn_day_start_ts = day_now;
@@ -422,9 +588,13 @@ pub mod lukash_protocol {
             // solo existe en Etapa 3 (post-ENZ), donde el guard anterior lo captura.
             let burn_base = to_lp_burn;
             let deferred_by_cap = apply_burn_cap(state, burn_base)?;
+            let effective_burn = burn_base.checked_sub(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
             state.burned_total = state.burned_total
-                .checked_add(burn_base.checked_sub(deferred_by_cap).ok_or(LukashError::MathOverflow)?)
-                .ok_or(LukashError::MathOverflow)?;
+                .checked_add(effective_burn).ok_or(LukashError::MathOverflow)?;
+            if effective_burn > 0 && state.luka_price > 0 {
+                let tokens = usd_to_tokens(effective_burn, state.luka_price)?;
+                state.current_supply = state.current_supply.saturating_sub(tokens);
+            }
             if deferred_by_cap > 0 {
                 state.deferred_burn_queue = state.deferred_burn_queue
                     .checked_add(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
@@ -440,9 +610,13 @@ pub mod lukash_protocol {
             let deferred_by_throttle = to_lp_burn
                 .checked_sub(burn_base).ok_or(LukashError::MathOverflow)?;
             let deferred_by_cap = apply_burn_cap(state, burn_base)?;
+            let effective_burn = burn_base.checked_sub(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
             state.burned_total = state.burned_total
-                .checked_add(burn_base.checked_sub(deferred_by_cap).ok_or(LukashError::MathOverflow)?)
-                .ok_or(LukashError::MathOverflow)?;
+                .checked_add(effective_burn).ok_or(LukashError::MathOverflow)?;
+            if effective_burn > 0 && state.luka_price > 0 {
+                let tokens = usd_to_tokens(effective_burn, state.luka_price)?;
+                state.current_supply = state.current_supply.saturating_sub(tokens);
+            }
             let total_deferred = deferred_by_throttle
                 .checked_add(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
             if total_deferred > 0 {
@@ -457,7 +631,7 @@ pub mod lukash_protocol {
 
         // --- Hito Jaguar Lock: KASH Core >= $30M O 12 meses ---
         if !state.jaguar_lock_hit {
-            let elapsed = now.checked_sub(state.genesis_ts).unwrap_or(0);
+            let elapsed = now_ts.checked_sub(state.genesis_ts).unwrap_or(0);
             if state.vault_core_usd >= config.jaguar_lock_usd || elapsed >= JAGUAR_LOCK_SECONDS {
                 state.jaguar_lock_hit = true;
             }
@@ -529,6 +703,25 @@ pub mod lukash_protocol {
         state.k_market_snapshot_ts = now;
         state.luka_price = luka_price_usd;
 
+        // Circuit Breaker: detectar caída >10% en ventana de 1h (07-c)
+        if state.cb_last_snapshot_ts == 0 || now - state.cb_last_snapshot_ts >= CB_WINDOW_SECONDS {
+            if state.cb_last_snapshot_usd > 0 {
+                let threshold = state.cb_last_snapshot_usd
+                    .saturating_sub(mul_bps(state.cb_last_snapshot_usd, CB_DROP_THRESHOLD_BPS)?);
+                if k_market < threshold {
+                    state.cb_active_until_ts = now.checked_add(CB_PAUSE_SECONDS)
+                        .ok_or(LukashError::MathOverflow)?;
+                    emit!(CircuitBreakerTriggered {
+                        prev_usd: state.cb_last_snapshot_usd,
+                        current_usd: k_market,
+                        paused_until: state.cb_active_until_ts,
+                    });
+                }
+            }
+            state.cb_last_snapshot_usd = k_market;
+            state.cb_last_snapshot_ts = now;
+        }
+
         if k_market >= config.k_min_usd {
             if state.k_min_reached_since_ts == 0 {
                 state.k_min_reached_since_ts = now;
@@ -561,6 +754,8 @@ pub mod lukash_protocol {
         require!(state.motor_b_state == MOTOR_B_B0, LukashError::AlreadyB2);
 
         let now = Clock::get()?.unix_timestamp;
+        // Circuit Breaker guard (07-c)
+        require!(now >= state.cb_active_until_ts, LukashError::CircuitBreakerActive);
 
         // Candado A: valoración fresca (< 15 min)
         require!(
@@ -599,7 +794,7 @@ pub mod lukash_protocol {
 
     /// Encola un cambio de parámetro crítico (Timelock 48h). kind: 1=stage, 2=k_min, 3=authority.
     pub fn queue_admin_change(ctx: Context<AdminOnly>, kind: u8, value: u64, new_pubkey: Pubkey) -> Result<()> {
-        require!(kind >= 1 && kind <= 3, LukashError::InvalidChangeKind);
+        require!(kind >= 1 && kind <= 4, LukashError::InvalidChangeKind);
         let now = Clock::get()?.unix_timestamp;
         let config = &mut ctx.accounts.config;
         config.pending_kind = kind;
@@ -621,6 +816,10 @@ pub mod lukash_protocol {
             1 => {
                 let s = u8::try_from(config.pending_value).map_err(|_| LukashError::InvalidStage)?;
                 require!(s >= 1 && s <= 4, LukashError::InvalidStage);
+                // Candado estructural (07-c): Etapa 2 requiere Tridente activado
+                if s >= 2 {
+                    require!(config.tridente_activated, LukashError::TridenteRequiredForStage2);
+                }
                 config.stage = s;
             }
             2 => {
@@ -630,6 +829,10 @@ pub mod lukash_protocol {
             3 => {
                 require!(config.pending_pubkey != Pubkey::default(), LukashError::InvalidAuthorityPubkey);
                 config.authority = config.pending_pubkey;
+            }
+            4 => {
+                require!(config.pending_pubkey != Pubkey::default(), LukashError::InvalidAuthorityPubkey);
+                config.lp_fundador_ata = config.pending_pubkey;
             }
             _ => return err!(LukashError::NoPendingChange),
         }
@@ -648,12 +851,287 @@ pub mod lukash_protocol {
         Ok(())
     }
 
+    /// Activa el Tridente Multisig 3-de-3 (ONE-WAY, irreversible). Solo authority.
+    /// Las 3 pubkeys deben ser distintas, no-default, y ninguna == authority.
+    /// Candado estructural: sin Tridente activado, el contrato bloquea el paso a Etapa 2.
+    pub fn activate_tridente(ctx: Context<AdminOnly>, pk1: Pubkey, pk2: Pubkey, pk3: Pubkey) -> Result<()> {
+        let config = &mut ctx.accounts.config;
+        require!(!config.tridente_activated, LukashError::TridenteAlreadyActivated);
+        require!(pk1 != Pubkey::default(), LukashError::InvalidTridenteSigner);
+        require!(pk2 != Pubkey::default(), LukashError::InvalidTridenteSigner);
+        require!(pk3 != Pubkey::default(), LukashError::InvalidTridenteSigner);
+        require!(pk1 != pk2 && pk2 != pk3 && pk1 != pk3, LukashError::TridenteSignersMustBeDistinct);
+        require!(
+            pk1 != config.authority && pk2 != config.authority && pk3 != config.authority,
+            LukashError::TridenteSignerCannotBeAuthority
+        );
+        config.tridente_signer_1 = pk1;
+        config.tridente_signer_2 = pk2;
+        config.tridente_signer_3 = pk3;
+        config.tridente_activated = true;
+        config.tridente_activated_ts = Clock::get()?.unix_timestamp;
+        emit!(TridenteActivated { pk1, pk2, pk3, ts: config.tridente_activated_ts });
+        Ok(())
+    }
+
+    /// Cancela el Circuit Breaker del Vault antes de las 24h. Requiere Tridente 3-de-3.
+    pub fn cancel_circuit_breaker(ctx: Context<TridenteAction>) -> Result<()> {
+        let config = &ctx.accounts.config;
+        assert_tridente_signed(config, ctx.remaining_accounts)?;
+        let state = &mut ctx.accounts.state;
+        let now = Clock::get()?.unix_timestamp;
+        require!(state.cb_active_until_ts > now, LukashError::CircuitBreakerNotActive);
+        let was_until = state.cb_active_until_ts;
+        state.cb_active_until_ts = 0;
+        emit!(CircuitBreakerCancelled {
+            cancelled_at: Clock::get()?.unix_timestamp,
+            was_until,
+        });
+        Ok(())
+    }
+
+    /// Recibe reembolso del seguro anti-exploit al Vault (solo entrada, nunca salida).
+    /// Requiere Tridente 3-de-3. Activo desde Etapa 2B. Max 5% del Vault. Cooldown 12 meses.
+    pub fn receive_insurance_recovery(ctx: Context<TridenteAction>, amount_usdc: u64) -> Result<()> {
+        require!(amount_usdc > 0, LukashError::ZeroAmount);
+        let config = &ctx.accounts.config;
+        assert_tridente_signed(config, ctx.remaining_accounts)?;
+        let state = &mut ctx.accounts.state;
+        let now = Clock::get()?.unix_timestamp;
+
+        require!(state.motor_b_state == MOTOR_B_B2, LukashError::InsuranceNotYetActive);
+
+        let elapsed = now.saturating_sub(state.last_insurance_recovery_ts);
+        require!(
+            state.last_insurance_recovery_ts == 0 || elapsed >= INSURANCE_COOLDOWN_SECONDS,
+            LukashError::InsuranceCooldown
+        );
+
+        let max_recovery = mul_bps(state.k_market_usd_snapshot, INSURANCE_CAP_BPS)?;
+        require!(amount_usdc <= max_recovery, LukashError::InsuranceExceedsCap);
+
+        state.usdc_res_amount = state.usdc_res_amount
+            .checked_add(amount_usdc).ok_or(LukashError::MathOverflow)?;
+        state.usdc_res_usd = state.usdc_res_usd
+            .checked_add(amount_usdc).ok_or(LukashError::MathOverflow)?;
+        state.vault_core_usd = state.vault_core_usd
+            .checked_add(amount_usdc).ok_or(LukashError::MathOverflow)?;
+        state.last_insurance_recovery_ts = now;
+        state.insurance_recoveries_total_usd = state.insurance_recoveries_total_usd
+            .checked_add(amount_usdc).ok_or(LukashError::MathOverflow)?;
+
+        emit!(InsuranceRecoveryReceived { amount_usdc, cap_at_event: max_recovery, ts: now });
+        Ok(())
+    }
+
+    /// Actualiza el régimen de mercado (módulo contra-cíclico LUKAI, 07-e).
+    /// Firmante = authority (keeper LUKAI). Típicamente 1×/día.
+    /// Lógica: mayoría de 3 señales (EMA30/EMA90, vol BTC, vol Motor A). Disenso → NEUTRAL.
+    pub fn update_market_regime(
+        ctx: Context<UpdateOracle>,
+        ema30_btc_price: u64,
+        ema90_btc_price: u64,
+        realized_vol_30d_bps: u64,
+        vol_a_7d_usd: u64,
+        vol_a_30d_usd: u64,
+    ) -> Result<()> {
+        require!(ema90_btc_price > 0, LukashError::InvalidEmaInput);
+        require!(ema30_btc_price > 0, LukashError::InvalidEmaInput);
+
+        let ratio_bps = (ema30_btc_price as u128)
+            .checked_mul(BPS_DENOMINATOR as u128).ok_or(LukashError::MathOverflow)?
+            .checked_div(ema90_btc_price as u128).ok_or(LukashError::MathOverflow)?;
+        let ratio = ratio_bps as u64;
+
+        let signal_primary: u8 = if ratio > EMA_BULL_THRESHOLD_BPS { REGIME_BULL }
+            else if ratio < EMA_BEAR_THRESHOLD_BPS { REGIME_BEAR }
+            else { REGIME_NEUTRAL };
+
+        let signal_vol: u8 = if realized_vol_30d_bps > VOL_HIGH_THRESHOLD_BPS {
+            signal_primary
+        } else {
+            REGIME_NEUTRAL
+        };
+
+        let signal_vol_a: u8 = if vol_a_30d_usd == 0 { REGIME_NEUTRAL } else {
+            let norm_30d = (vol_a_30d_usd as u128)
+                .checked_div(30).unwrap_or(1).max(1)
+                .checked_mul(7).unwrap_or(u128::MAX);
+            let ratio_a = (vol_a_7d_usd as u128)
+                .checked_mul(10_000).unwrap_or(0)
+                .checked_div(norm_30d.max(1)).unwrap_or(10_000);
+            if ratio_a > 12_000 { REGIME_BULL }
+            else if ratio_a < 8_000 { REGIME_BEAR }
+            else { REGIME_NEUTRAL }
+        };
+
+        let regime = majority_vote(signal_primary, signal_vol, signal_vol_a);
+
+        let state = &mut ctx.accounts.state;
+        state.market_regime = regime;
+        state.regime_updated_ts = Clock::get()?.unix_timestamp;
+
+        emit!(MarketRegimeUpdated {
+            regime,
+            ema30_btc: ema30_btc_price,
+            ema90_btc: ema90_btc_price,
+            vol_30d_bps: realized_vol_30d_bps,
+            vol_a_7d: vol_a_7d_usd,
+            vol_a_30d: vol_a_30d_usd,
+            signals: [signal_primary, signal_vol, signal_vol_a],
+            ts: state.regime_updated_ts,
+        });
+        Ok(())
+    }
+
+    /// Transfer Hook — Jaguar Shield: Anti-Whale + Jaguar Exit Fee (07-f, ADR-012).
+    /// Capa 1 (devnet): authority alimenta parámetros del contexto manualmente.
+    /// Capa 2 (mainnet Token-2022): invocado automáticamente por el Token Program en cada transfer;
+    /// los parámetros se leen de cuentas on-chain (pool Meteora, Aura PDA, staking PDA, MMRegistry PDA).
+    pub fn transfer_hook(
+        ctx: Context<TransferHookCtx>,
+        amount: u64,
+        sender: Pubkey,
+        is_sale_to_pool: bool,
+        pool_liquidity_usd: u64,
+        sender_aura_score: u64,
+        sender_has_staking: bool,
+        sender_has_lp_lock: bool,
+        sender_is_mm: bool,
+        is_internal_cpi: bool,
+    ) -> Result<()> {
+        require!(amount > 0, LukashError::ZeroAmount);
+        require!(sender != Pubkey::default(), LukashError::InvalidSender);
+
+        let config = &ctx.accounts.config;
+        let state = &mut ctx.accounts.state;
+        let now = Clock::get()?.unix_timestamp;
+
+        require!(now >= state.cb_active_until_ts, LukashError::CircuitBreakerActive);
+
+        // Compras (from pool to user): sin fee (ADR-012 C10)
+        if !is_sale_to_pool {
+            emit!(TransferInspected { sender, amount, fee_aw: 0, fee_exit: 0, exempt: false, is_buy: true });
+            return Ok(());
+        }
+
+        // Exenciones Anti-Whale: todas las 6 condiciones (§2.5 fail-fast)
+        let exempt_aw = is_internal_cpi
+            || sender_is_mm
+            || (config.lp_fundador_ata != Pubkey::default() && sender == config.lp_fundador_ata)
+            || sender_has_lp_lock
+            || sender_has_staking
+            || sender_aura_score >= AURA_JAGUAR_MIN;
+
+        // Exenciones Exit Fee: todas EXCEPTO staking (el Exit Fee no se exime por staking)
+        let exempt_exit = is_internal_cpi
+            || sender_is_mm
+            || (config.lp_fundador_ata != Pubkey::default() && sender == config.lp_fundador_ata)
+            || sender_has_lp_lock
+            || sender_aura_score >= AURA_JAGUAR_MIN;
+
+        // Actualizar presión de venta (ventana rodante 1h, I22)
+        update_sell_pressure(state, amount, now)?;
+
+        if exempt_aw && exempt_exit {
+            emit!(TransferInspected { sender, amount, fee_aw: 0, fee_exit: 0, exempt: true, is_buy: false });
+            return Ok(());
+        }
+
+        // --- Anti-Whale (solo si no exento) ---
+        let fee_aw = if exempt_aw {
+            0
+        } else {
+            require!(pool_liquidity_usd > 0, LukashError::PoolLiquidityMissing);
+            compute_anti_whale_fee(amount, state.luka_price, pool_liquidity_usd)?
+        };
+
+        // --- Exit Fee (solo si no exento) ---
+        let fee_exit = if exempt_exit {
+            0
+        } else {
+            compute_exit_fee(config.stage, amount, state)?
+        };
+
+        let total_fee = fee_aw.checked_add(fee_exit).ok_or(LukashError::MathOverflow)?;
+
+        // 100% de fees del Shield → Vault Core (ADR-012, I20)
+        if total_fee > 0 && state.luka_price > 0 {
+            let fee_usdc = tokens_to_usd(total_fee, state.luka_price)?;
+            state.usdc_res_amount = state.usdc_res_amount
+                .checked_add(fee_usdc).ok_or(LukashError::MathOverflow)?;
+            state.usdc_res_usd = state.usdc_res_usd
+                .checked_add(fee_usdc).ok_or(LukashError::MathOverflow)?;
+            state.vault_core_usd = state.vault_core_usd
+                .checked_add(fee_usdc).ok_or(LukashError::MathOverflow)?;
+
+            if fee_aw > 0 {
+                let tx_usd = tokens_to_usd(amount, state.luka_price)?;
+                let tx_pct_pool_bps = (tx_usd as u128)
+                    .checked_mul(BPS_DENOMINATOR as u128).unwrap_or(0)
+                    .checked_div(pool_liquidity_usd.max(1) as u128).unwrap_or(0) as u64;
+                let excedente_bps = tx_pct_pool_bps.saturating_sub(AW_THR_1_BPS);
+                let excedente_luka = mul_bps(amount, excedente_bps)?;
+                emit!(AntiWhaleTriggered {
+                    sender, amount_luka: amount, tx_pct_pool_bps,
+                    excedente_luka, fee_luka: fee_aw,
+                });
+            }
+            if fee_exit > 0 {
+                emit!(ExitFeeTriggered {
+                    sender, amount_luka: amount, luka_price: state.luka_price,
+                    ema30: state.ema30, fee_luka: fee_exit, stage: config.stage,
+                });
+            }
+
+            let source = if fee_aw > 0 && fee_exit > 0 { 2u8 }
+                else if fee_exit > 0 { 1u8 } else { 0u8 };
+            emit!(ShieldFeeCollected { sender, fee_luka: total_fee, fee_usdc_to_vault: fee_usdc, source });
+        }
+
+        emit!(TransferInspected {
+            sender, amount, fee_aw, fee_exit, exempt: false, is_buy: false,
+        });
+        Ok(())
+    }
+
+    /// Registra un Market Maker como exento de Anti-Whale + Exit Fee.
+    /// Requiere authority + Tridente 3-de-3 (ADR-015). Crea PDA ["mm_registry", mm_pubkey].
+    pub fn register_market_maker(ctx: Context<RegisterMM>, mm_pubkey: Pubkey) -> Result<()> {
+        let config = &ctx.accounts.config;
+        assert_tridente_signed(config, ctx.remaining_accounts)?;
+        let now = Clock::get()?.unix_timestamp;
+        let reg = &mut ctx.accounts.mm_registry;
+        reg.mm = mm_pubkey;
+        reg.is_active = true;
+        reg.registered_at = now;
+        reg.bump = ctx.bumps.mm_registry;
+        emit!(MarketMakerRegistered { mm: mm_pubkey, ts: now });
+        Ok(())
+    }
+
+    /// Revoca un Market Maker y cierra el PDA (devuelve rent a authority).
+    /// Requiere authority + Tridente 3-de-3.
+    pub fn revoke_market_maker(ctx: Context<RevokeMM>, mm_pubkey: Pubkey) -> Result<()> {
+        let config = &ctx.accounts.config;
+        assert_tridente_signed(config, ctx.remaining_accounts)?;
+        let reg = &ctx.accounts.mm_registry;
+        require!(reg.is_active, LukashError::MMRegistryInvalid);
+        let now = Clock::get()?.unix_timestamp;
+        emit!(MarketMakerRevoked { mm: mm_pubkey, ts: now });
+        Ok(())
+    }
+
     /// Drena la cola de quema diferida según el modo Throttle (ADR-016: todos los modos drenan).
     /// ACEL 25% · NORMAL 10% · CONS 5% · DEF 2% por semana. Hard-stop si supply ≤ ENZ.
     /// Permissionless: cualquiera puede gatillarlo si se cumplen las condiciones on-chain.
     pub fn execute_deferred_burn(ctx: Context<ExecuteDeferredBurn>) -> Result<()> {
         require!(!ctx.accounts.config.paused, LukashError::ProtocolPaused);
         let state = &mut ctx.accounts.state;
+        let now = Clock::get()?.unix_timestamp;
+
+        // Circuit Breaker guard (07-c)
+        require!(now >= state.cb_active_until_ts, LukashError::CircuitBreakerActive);
 
         // ENZ hard-stop: si supply ≤ 3.3B, la quema se apaga definitivamente
         if state.current_supply > 0 {
@@ -661,7 +1139,6 @@ pub mod lukash_protocol {
         }
 
         require!(state.deferred_burn_queue > 0, LukashError::EmptyQueue);
-        let now = Clock::get()?.unix_timestamp;
         require!(
             now.checked_sub(state.last_queue_exec_ts).unwrap_or(0) >= WEEK_SECONDS,
             LukashError::QueueCooldown
@@ -724,6 +1201,10 @@ pub mod lukash_protocol {
             .checked_sub(drain).ok_or(LukashError::MathOverflow)?;
         state.burned_total = state.burned_total
             .checked_add(drain).ok_or(LukashError::MathOverflow)?;
+        if drain > 0 && state.luka_price > 0 {
+            let drain_tokens = usd_to_tokens(drain, state.luka_price)?;
+            state.current_supply = state.current_supply.saturating_sub(drain_tokens);
+        }
         state.last_queue_exec_ts = now;
 
         emit!(DeferredBurnExecuted {
@@ -732,6 +1213,12 @@ pub mod lukash_protocol {
             ts: now,
             mode: state.throttle_mode,
         });
+        Ok(())
+    }
+
+    /// Cierra las PDAs del protocolo y devuelve rent a la authority.
+    /// Solo para devnet (migraciones de versión). En mainnet, el programa sería inmutable.
+    pub fn close_protocol(_ctx: Context<CloseProtocol>) -> Result<()> {
         Ok(())
     }
 }
@@ -808,6 +1295,104 @@ fn compute_asset_value(amount: u64, price_usd: u64, scale: u128) -> Result<u64> 
         .checked_mul(price_usd as u128).ok_or(LukashError::MathOverflow)?
         .checked_div(scale).ok_or(LukashError::MathOverflow)?;
     u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
+}
+
+/// Verifica que las 3 firmas del Tridente estén presentes en la transacción (07-c).
+fn assert_tridente_signed(cfg: &ProtocolConfig, remaining: &[AccountInfo]) -> Result<()> {
+    require!(cfg.tridente_activated, LukashError::TridenteNotActivated);
+    let s1 = remaining.iter().any(|a| a.key == &cfg.tridente_signer_1 && a.is_signer);
+    let s2 = remaining.iter().any(|a| a.key == &cfg.tridente_signer_2 && a.is_signer);
+    let s3 = remaining.iter().any(|a| a.key == &cfg.tridente_signer_3 && a.is_signer);
+    require!(s1 && s2 && s3, LukashError::TridenteSignaturesIncomplete);
+    Ok(())
+}
+
+/// Régimen efectivo con fail-safe: si el keeper no actualiza en 48h, usa NEUTRAL (07-e).
+fn resolve_regime_effective(state: &ProtocolState, now_ts: i64) -> u8 {
+    if state.regime_updated_ts == 0 {
+        return REGIME_NEUTRAL;
+    }
+    let age = now_ts.saturating_sub(state.regime_updated_ts);
+    if age > REGIME_MAX_STALENESS {
+        REGIME_NEUTRAL
+    } else {
+        state.market_regime
+    }
+}
+
+/// Mayoría de 3 señales. Si no hay mayoría (3 valores distintos), retorna NEUTRAL.
+fn majority_vote(a: u8, b: u8, c: u8) -> u8 {
+    if a == b || a == c { a }
+    else if b == c { b }
+    else { REGIME_NEUTRAL }
+}
+
+/// Anti-Whale: fee en tokens sobre el excedente del umbral 1% del pool (07-f, ADR-012 C10).
+/// Tier único (no progresivo): <1% sin fee, 1-2% 3%, 2-5% 6%, >5% 10%.
+fn compute_anti_whale_fee(amount: u64, luka_price: u64, pool_liquidity_usd: u64) -> Result<u64> {
+    if luka_price == 0 || pool_liquidity_usd == 0 {
+        return Ok(0);
+    }
+    let tx_usd = tokens_to_usd(amount, luka_price)?;
+    let tx_pct_bps = (tx_usd as u128)
+        .checked_mul(BPS_DENOMINATOR as u128).ok_or(LukashError::MathOverflow)?
+        .checked_div(pool_liquidity_usd as u128).ok_or(LukashError::MathOverflow)?;
+    let tx_pct = u64::try_from(tx_pct_bps).map_err(|_| LukashError::MathOverflow)?;
+
+    if tx_pct < AW_THR_1_BPS {
+        return Ok(0);
+    }
+
+    let excedente_bps = tx_pct.saturating_sub(AW_THR_1_BPS);
+    let penal_bps = if tx_pct <= AW_THR_2_BPS {
+        AW_FEE_1_BPS
+    } else if tx_pct <= AW_THR_3_BPS {
+        AW_FEE_2_BPS
+    } else {
+        AW_FEE_3_BPS
+    };
+
+    let excedente_tokens = mul_bps(amount, excedente_bps)?;
+    mul_bps(excedente_tokens, penal_bps)
+}
+
+/// Exit Fee: fee en tokens si ambas condiciones de pánico se cumplen (07-f, v4.3 §9).
+/// Condición dual: precio < 0.7×EMA30 AND sell_pressure > 0.3% supply/hora.
+fn compute_exit_fee(stage: u8, amount: u64, state: &ProtocolState) -> Result<u64> {
+    if state.ema30 == 0 || state.luka_price == 0 {
+        return Ok(0);
+    }
+    let price_threshold = mul_bps(state.ema30, EXIT_FEE_PRICE_TRIG_BPS)?;
+    let cond_price = state.luka_price < price_threshold;
+    let cond_volume = state.sell_pressure_1h_supply_bps > EXIT_FEE_VOL_TRIG_BPS;
+
+    if !(cond_price && cond_volume) {
+        return Ok(0);
+    }
+
+    let fee_bps = match stage {
+        1 => EXIT_FEE_ET1_BPS,
+        2 => EXIT_FEE_ET2_BPS,
+        _ => EXIT_FEE_ET3_BPS,
+    };
+    mul_bps(amount, fee_bps)
+}
+
+/// Actualiza la presión de venta acumulada en la ventana rodante de 1h (I22).
+fn update_sell_pressure(state: &mut ProtocolState, amount: u64, now_ts: i64) -> Result<()> {
+    if now_ts.saturating_sub(state.sell_pressure_last_reset_ts) >= SELL_PRESSURE_WINDOW {
+        state.sell_pressure_1h_supply_bps = 0;
+        state.sell_pressure_last_reset_ts = now_ts;
+    }
+    if state.current_supply > 0 {
+        let sale_bps = (amount as u128)
+            .checked_mul(BPS_DENOMINATOR as u128).ok_or(LukashError::MathOverflow)?
+            .checked_div(state.current_supply as u128).ok_or(LukashError::MathOverflow)?;
+        let sale_bps_u64 = u64::try_from(sale_bps).map_err(|_| LukashError::MathOverflow)?;
+        state.sell_pressure_1h_supply_bps = state.sell_pressure_1h_supply_bps
+            .checked_add(sale_bps_u64).ok_or(LukashError::MathOverflow)?;
+    }
+    Ok(())
 }
 
 /// Fee en bps según etapa, motor, capa (para D), divisa y whitelist. Valida activación por etapa.
@@ -927,6 +1512,16 @@ pub struct ExecuteDeferredBurn<'info> {
     pub caller: Signer<'info>,
 }
 
+/// Operaciones que requieren Tridente 3-de-3 (los 3 signers van en remaining_accounts).
+#[derive(Accounts)]
+pub struct TridenteAction<'info> {
+    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
+    pub state: Account<'info, ProtocolState>,
+    pub caller: Signer<'info>,
+}
+
 /// Capa 1: authority alimenta precios y balances manualmente.
 /// Capa 2: se reemplaza por lectura directa de Pyth/Switchboard + token accounts → permissionless.
 #[derive(Accounts)]
@@ -936,6 +1531,64 @@ pub struct RefreshVaultValuation<'info> {
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
     pub authority: Signer<'info>,
+}
+
+/// Transfer Hook Capa 1: authority alimenta parámetros de contexto manualmente.
+/// Capa 2 (Token-2022): invocado por el Token Program, cuentas on-chain reemplazan los args.
+#[derive(Accounts)]
+pub struct TransferHookCtx<'info> {
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
+    pub state: Account<'info, ProtocolState>,
+    pub authority: Signer<'info>,
+}
+
+/// Registro de Market Maker (Tridente 3-de-3 requerido via remaining_accounts).
+#[derive(Accounts)]
+#[instruction(mm_pubkey: Pubkey)]
+pub struct RegisterMM<'info> {
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(
+        init,
+        payer = authority,
+        space = 8 + MMRegistry::INIT_SPACE,
+        seeds = [MM_REGISTRY_SEED, mm_pubkey.as_ref()],
+        bump,
+    )]
+    pub mm_registry: Account<'info, MMRegistry>,
+    pub system_program: Program<'info, System>,
+}
+
+/// Cierra PDAs del protocolo (devnet migration). Authority-only.
+#[derive(Accounts)]
+pub struct CloseProtocol<'info> {
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    #[account(mut, close = authority, seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(mut, close = authority, seeds = [STATE_SEED], bump = state.bump)]
+    pub state: Account<'info, ProtocolState>,
+}
+
+/// Revocación de Market Maker — cierra PDA y devuelve rent (Tridente 3-de-3 via remaining_accounts).
+#[derive(Accounts)]
+#[instruction(mm_pubkey: Pubkey)]
+pub struct RevokeMM<'info> {
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(
+        mut,
+        close = authority,
+        seeds = [MM_REGISTRY_SEED, mm_pubkey.as_ref()],
+        bump = mm_registry.bump,
+    )]
+    pub mm_registry: Account<'info, MMRegistry>,
 }
 
 // ------------------------- Eventos -------------------------
@@ -1008,4 +1661,96 @@ pub struct AdminChangeQueued {
 #[event]
 pub struct AdminChangeExecuted {
     pub kind: u8,
+}
+
+// 07-c: Tridente + Circuit Breaker + Seguro
+#[event]
+pub struct TridenteActivated {
+    pub pk1: Pubkey,
+    pub pk2: Pubkey,
+    pub pk3: Pubkey,
+    pub ts: i64,
+}
+
+#[event]
+pub struct CircuitBreakerTriggered {
+    pub prev_usd: u64,
+    pub current_usd: u64,
+    pub paused_until: i64,
+}
+
+#[event]
+pub struct CircuitBreakerCancelled {
+    pub cancelled_at: i64,
+    pub was_until: i64,
+}
+
+#[event]
+pub struct InsuranceRecoveryReceived {
+    pub amount_usdc: u64,
+    pub cap_at_event: u64,
+    pub ts: i64,
+}
+
+// 07-e: Módulo contra-cíclico
+#[event]
+pub struct MarketRegimeUpdated {
+    pub regime: u8,
+    pub ema30_btc: u64,
+    pub ema90_btc: u64,
+    pub vol_30d_bps: u64,
+    pub vol_a_7d: u64,
+    pub vol_a_30d: u64,
+    pub signals: [u8; 3],
+    pub ts: i64,
+}
+
+// 07-f: Anti-Whale + Exit Fee + Transfer Hook
+#[event]
+pub struct AntiWhaleTriggered {
+    pub sender: Pubkey,
+    pub amount_luka: u64,
+    pub tx_pct_pool_bps: u64,
+    pub excedente_luka: u64,
+    pub fee_luka: u64,
+}
+
+#[event]
+pub struct ExitFeeTriggered {
+    pub sender: Pubkey,
+    pub amount_luka: u64,
+    pub luka_price: u64,
+    pub ema30: u64,
+    pub fee_luka: u64,
+    pub stage: u8,
+}
+
+#[event]
+pub struct ShieldFeeCollected {
+    pub sender: Pubkey,
+    pub fee_luka: u64,
+    pub fee_usdc_to_vault: u64,
+    pub source: u8,  // 0=Anti-Whale, 1=Exit Fee, 2=ambos
+}
+
+#[event]
+pub struct TransferInspected {
+    pub sender: Pubkey,
+    pub amount: u64,
+    pub fee_aw: u64,
+    pub fee_exit: u64,
+    pub exempt: bool,
+    pub is_buy: bool,
+}
+
+#[event]
+pub struct MarketMakerRegistered {
+    pub mm: Pubkey,
+    pub ts: i64,
+}
+
+#[event]
+pub struct MarketMakerRevoked {
+    pub mm: Pubkey,
+    pub ts: i64,
 }
