@@ -268,11 +268,24 @@
 - **Nota técnica:** `ORACLE_FEED_MAX_STALENESS` debe volver a 60s para mainnet.
 - **Pendiente:** Sebastián aplica el fix del status check mañana, luego testea `refreshVaultValuation` → `process_fee` → `execute_vault_swaps` → quema real.
 
-## 2026-08-25 (sesión 13) — Fix Pyth devnet fallbacks (v9.1)
+## 2026-08-26 (sesión 13) — Capa 2 COMPLETA: process_fee + execute_vault_swaps verificados en devnet
 - **Root cause del error `InvalidOracleValue`:** feeds Pyth devnet con status != Trading devuelven precio = 0 Y exponente = 0. El fallback parcial (solo precio) causaba overflow en `pyth_price_to_usd6` (expo 0 → adjustment = 6 → scale = 10^6 → precio falso × 10^6 = overflow). Además, el `require!(status == PYTH_STATUS_TRADING)` no se había comentado correctamente.
 - **Fix aplicado en lib.rs v9.1** (2089 líneas, +13 vs v9): fallbacks a nivel de **callers** (`refresh_vault_valuation` y `execute_vault_swaps`), NO en `parse_pyth_price`. Patrón: `match parse_pyth_price { Ok → pyth_price_to_usd6 | Err → 0 }`, luego `if p > 0 { p } else { fallback }`. Fallbacks: BTC ~$65K (`65_000_000_000` USD 6-dec), SOL ~$150 (`150_000_000`). `parse_pyth_price` queda **intacto** con todos sus `require!` estrictos — mainnet seguro.
 - **MAINNET:** eliminar los bloques `match/fallback`, volver al patrón directo `parse_pyth_price(...)?`.
-- **Pendiente:** Sebastián copia v9.1 a Playground, Build, Deploy, testea refreshVaultValuation → process_fee → execute_vault_swaps → quema real.
+- **v9.1 desplegada en devnet por Sebastián.** Build + Deploy OK. refreshVaultValuation ✅ (Pyth fallbacks funcionan).
+- **process_fee Motor A ($100) verificado end-to-end:**
+  - Quema real CPI: supply -14,000,000 tokens (14 LUKA a $0.10) ✅
+  - Distribución atómica: vault_core_usd +980,000 (Core 70% del 35% vault) ✅
+  - Pending swaps acumulados: 980K total (cBTC 367.5K / SOL 157.5K / LST 210K / USDC-r 204K / USDC-l 41K) ✅
+  - Tx: `Q1BBq6hmekT8caxANoNysF9k1D1cktGoxiQTStrcB6YCtiNBLx4jkNCiMLaf3KdtGvWftHPmCMfM9xXC1D6dRy6`
+- **execute_vault_swaps verificado end-to-end:**
+  - 980K USD pendientes convertidos a nativos: cBTC +565 sat, SOL +1.05M lam, LST +1.4M lam, USDC-r +204K (1:1), USDC-l +41K (1:1) ✅
+  - Pending limpiados a 0 ✅
+  - Tx: `2bmSoiE2efowtj8BCJ2YG82wXt7CiJ6ZRJJjA126kme1NXNjcKf2nteiyEbTP32d6MLX2BGjicaS85hiM5U8ScgD`
+- **CAPA 2 COMPLETA.** Flujo end-to-end verificado: `update_oracle_state → refresh_vault_valuation (Pyth) → process_fee (quema real + pending swaps) → execute_vault_swaps (USD→native a oráculo)`.
+- **client.ts actualizado a v9.1** con accounts correctos (burn_vault, luka_mint, tokenProgram, Pyth feeds).
+- **Nota técnica:** `anchor.utils.token.TOKEN_PROGRAM_ID` no funciona en Playground sandbox (error "'location' is not allowed"); usar PublicKey explícita del Token Program.
+- **Próxima sesión:** (1) herramientas estáticas (Sec3/Trident/clippy) sobre lib.rs en Playground/CI, (2) landing → producción (Vercel + waitlist), (3) pitch deck / litepaper para Colosseum/grants, (4) bloqueantes pre-TGE T1-T6.
 
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
