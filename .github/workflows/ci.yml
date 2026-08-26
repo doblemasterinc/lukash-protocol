@@ -1,0 +1,312 @@
+# CI — LUKASH Protocol (Solana / Anchor)
+# Ejecuta clippy, Soteria, build y tests en cada push/PR a main.
+# Anchor 0.30.1 · Solana CLI 1.18 · Rust stable + nightly (clippy)
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  SOLANA_VERSION: "1.18.26"
+  ANCHOR_VERSION: "0.30.1"
+  RUST_TOOLCHAIN: "stable"
+  # Directorio raíz del proyecto Anchor (donde vive Anchor.toml)
+  ANCHOR_WORKSPACE: contracts
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Job 1: Clippy — análisis estático con lints de Solana
+  # ──────────────────────────────────────────────
+  clippy:
+    name: Clippy (lints)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.ANCHOR_WORKSPACE }}
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # ── Toolchain Rust (nightly para clippy más completo) ──
+      - name: Instalar Rust nightly (clippy)
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: clippy
+
+      # ── Cache de Cargo ──
+      - name: Cache de Cargo registry e índice
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          key: cargo-clippy-${{ runner.os }}-${{ hashFiles('contracts/**/Cargo.lock', 'contracts/**/Cargo.toml') }}
+          restore-keys: |
+            cargo-clippy-${{ runner.os }}-
+
+      # ── Cache de Solana CLI (necesario para el linker BPF) ──
+      - name: Cache de Solana CLI
+        id: cache-solana
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/solana/install
+          key: solana-${{ runner.os }}-${{ env.SOLANA_VERSION }}
+
+      - name: Instalar Solana CLI v${{ env.SOLANA_VERSION }}
+        if: steps.cache-solana.outputs.cache-hit != 'true'
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${{ env.SOLANA_VERSION }}/install)"
+
+      - name: Agregar Solana al PATH
+        run: echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      # ── Generar keypair temporal (Anchor lo necesita incluso para build) ──
+      - name: Crear keypair temporal de Solana
+        run: |
+          mkdir -p ~/.config/solana
+          solana-keygen new --no-bip39-passphrase --silent -o ~/.config/solana/id.json
+          solana config set --url devnet
+
+      # ── Ejecutar clippy con lints de seguridad para Solana ──
+      # Lints relevantes para seguridad en contratos Solana:
+      # - arithmetic_side_effects: previene overflow/underflow silencioso
+      # - unwrap_used / expect_used: fuerza manejo explícito de errores
+      - name: Ejecutar clippy
+        run: |
+          cargo clippy --workspace --all-targets --all-features -- \
+            -D warnings \
+            -D clippy::arithmetic_side_effects \
+            -D clippy::unwrap_used \
+            -D clippy::expect_used
+
+  # ──────────────────────────────────────────────
+  # Job 2: Build — compilación con anchor build
+  # ──────────────────────────────────────────────
+  build:
+    name: Anchor Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.ANCHOR_WORKSPACE }}
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # ── Rust stable ──
+      - name: Instalar Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      # ── Cache de Cargo ──
+      - name: Cache de Cargo registry e índice
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            contracts/target
+          key: cargo-build-${{ runner.os }}-${{ hashFiles('contracts/**/Cargo.lock', 'contracts/**/Cargo.toml') }}
+          restore-keys: |
+            cargo-build-${{ runner.os }}-
+
+      # ── Solana CLI ──
+      - name: Cache de Solana CLI
+        id: cache-solana
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/solana/install
+          key: solana-${{ runner.os }}-${{ env.SOLANA_VERSION }}
+
+      - name: Instalar Solana CLI v${{ env.SOLANA_VERSION }}
+        if: steps.cache-solana.outputs.cache-hit != 'true'
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${{ env.SOLANA_VERSION }}/install)"
+
+      - name: Agregar Solana al PATH
+        run: echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      # ── Anchor CLI ──
+      - name: Cache de Anchor CLI
+        id: cache-anchor
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/anchor
+          key: anchor-${{ runner.os }}-${{ env.ANCHOR_VERSION }}
+
+      - name: Instalar Anchor CLI v${{ env.ANCHOR_VERSION }}
+        if: steps.cache-anchor.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli
+
+      # ── Keypair temporal ──
+      - name: Crear keypair temporal de Solana
+        run: |
+          mkdir -p ~/.config/solana
+          solana-keygen new --no-bip39-passphrase --silent -o ~/.config/solana/id.json
+          solana config set --url devnet
+
+      # ── Build ──
+      - name: Anchor build
+        run: anchor build
+
+      # ── Verificar que se generó el .so ──
+      - name: Verificar artefacto de compilación
+        run: |
+          if [ -f target/deploy/lukash_protocol.so ]; then
+            echo "Compilación exitosa: lukash_protocol.so generado"
+            ls -lh target/deploy/lukash_protocol.so
+          else
+            echo "ERROR: No se encontró lukash_protocol.so"
+            exit 1
+          fi
+
+  # ──────────────────────────────────────────────
+  # Job 3: Test — ejecutar tests con validador local
+  # ──────────────────────────────────────────────
+  test:
+    name: Anchor Test
+    runs-on: ubuntu-latest
+    needs: build
+    defaults:
+      run:
+        working-directory: ${{ env.ANCHOR_WORKSPACE }}
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # ── Rust stable ──
+      - name: Instalar Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      # ── Node.js (para tests TypeScript) ──
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ── Cache de Cargo ──
+      - name: Cache de Cargo registry e índice
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            contracts/target
+          key: cargo-build-${{ runner.os }}-${{ hashFiles('contracts/**/Cargo.lock', 'contracts/**/Cargo.toml') }}
+          restore-keys: |
+            cargo-build-${{ runner.os }}-
+
+      # ── Solana CLI ──
+      - name: Cache de Solana CLI
+        id: cache-solana
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/solana/install
+          key: solana-${{ runner.os }}-${{ env.SOLANA_VERSION }}
+
+      - name: Instalar Solana CLI v${{ env.SOLANA_VERSION }}
+        if: steps.cache-solana.outputs.cache-hit != 'true'
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${{ env.SOLANA_VERSION }}/install)"
+
+      - name: Agregar Solana al PATH
+        run: echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      # ── Anchor CLI ──
+      - name: Cache de Anchor CLI
+        id: cache-anchor
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/anchor
+          key: anchor-${{ runner.os }}-${{ env.ANCHOR_VERSION }}
+
+      - name: Instalar Anchor CLI v${{ env.ANCHOR_VERSION }}
+        if: steps.cache-anchor.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli
+
+      # ── Keypair temporal ──
+      - name: Crear keypair temporal de Solana
+        run: |
+          mkdir -p ~/.config/solana
+          solana-keygen new --no-bip39-passphrase --silent -o ~/.config/solana/id.json
+          solana config set --url localhost
+
+      # ── Instalar dependencias de Node ──
+      - name: Instalar dependencias de Node
+        run: yarn install --frozen-lockfile || yarn install
+
+      # ── Ejecutar tests con validador local ──
+      - name: Anchor test (validador local)
+        run: anchor test
+
+  # ──────────────────────────────────────────────
+  # Job 4: Soteria — análisis estático de seguridad Solana
+  # ──────────────────────────────────────────────
+  soteria:
+    name: Soteria (security scan)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.ANCHOR_WORKSPACE }}
+    continue-on-error: true
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # ── Rust stable ──
+      - name: Instalar Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      # ── Solana CLI ──
+      - name: Cache de Solana CLI
+        id: cache-solana
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/solana/install
+          key: solana-${{ runner.os }}-${{ env.SOLANA_VERSION }}
+
+      - name: Instalar Solana CLI v${{ env.SOLANA_VERSION }}
+        if: steps.cache-solana.outputs.cache-hit != 'true'
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${{ env.SOLANA_VERSION }}/install)"
+
+      - name: Agregar Solana al PATH
+        run: echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      # ── Instalar Soteria ──
+      - name: Instalar Soteria
+        run: |
+          sh -c "$(curl -k https://supercompiler.xyz/install)"
+          echo "$HOME/.soteria/bin" >> "$GITHUB_PATH"
+
+      # ── Keypair temporal ──
+      - name: Crear keypair temporal de Solana
+        run: |
+          mkdir -p ~/.config/solana
+          solana-keygen new --no-bip39-passphrase --silent -o ~/.config/solana/id.json
+
+      # ── Ejecutar Soteria sobre el programa ──
+      - name: Ejecutar Soteria (análisis de seguridad)
+        run: |
+          cd programs/lukash_protocol
+          soteria -analyzeAll .
+
+      # ── Guardar reporte como artefacto ──
+      - name: Subir reporte de Soteria
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soteria-report
+          path: ${{ env.ANCHOR_WORKSPACE }}/**/soteria-report*
+          if-no-files-found: ignore
