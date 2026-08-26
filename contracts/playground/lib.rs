@@ -1,6 +1,7 @@
 // LUKASH Protocol - Milestone 2 Sprint 5B (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
 // Cargo.toml requiere: anchor-lang = "0.30.1" Y anchor-spl = "0.30.1"
+// v9.1: Fix devnet Pyth fallbacks (parse_pyth_price intacto para mainnet, fallback en callers).
 // v9: Sprint 5B Fase B+C (Capa 2: oráculos Pyth + execute_vault_swaps a precio de oráculo).
 // v8: Sprint 5B Fase A (Capa 2: quema real SPL burn CPI + initialize_burn_vault).
 // v7: Sprint 5A (hardening: supply tracking on burn, close_protocol, MM close PDA, validaciones).
@@ -743,17 +744,24 @@ pub mod lukash_protocol {
 
         let now = Clock::get()?.unix_timestamp;
 
-        let btc_feed_data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
-        let (btc_raw, btc_expo) = parse_pyth_price(&btc_feed_data, now)?;
-        let btc_price_usd = pyth_price_to_usd6(btc_raw, btc_expo)?;
-        drop(btc_feed_data);
-
-        let sol_feed_data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
-        let (sol_raw, sol_expo) = parse_pyth_price(&sol_feed_data, now)?;
-        let sol_price_usd = pyth_price_to_usd6(sol_raw, sol_expo)?;
-        drop(sol_feed_data);
-
-        require!(btc_price_usd > 0 && sol_price_usd > 0, LukashError::InvalidOracleValue);
+        // Devnet: Pyth feeds pueden no estar en Trading o tener precio 0.
+        // Fallback hardcoded si parse falla. MAINNET: eliminar fallbacks, usar parse_pyth_price directo.
+        let btc_price_usd: u64 = {
+            let data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
+            let p = match parse_pyth_price(&data, now) {
+                Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
+                Err(_) => 0,
+            };
+            if p > 0 { p } else { 65_000_000_000 }
+        };
+        let sol_price_usd: u64 = {
+            let data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
+            let p = match parse_pyth_price(&data, now) {
+                Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
+                Err(_) => 0,
+            };
+            if p > 0 { p } else { 150_000_000 }
+        };
 
         let config = &ctx.accounts.config;
         let state = &mut ctx.accounts.state;
@@ -1355,17 +1363,23 @@ pub mod lukash_protocol {
             .checked_add(state.pending_swap_usdc_lend_usd).ok_or(LukashError::MathOverflow)?;
         require!(total_pending > 0, LukashError::NoPendingSwaps);
 
-        let btc_feed_data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
-        let (btc_raw, btc_expo) = parse_pyth_price(&btc_feed_data, now)?;
-        let btc_price_usd = pyth_price_to_usd6(btc_raw, btc_expo)?;
-        drop(btc_feed_data);
-
-        let sol_feed_data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
-        let (sol_raw, sol_expo) = parse_pyth_price(&sol_feed_data, now)?;
-        let sol_price_usd = pyth_price_to_usd6(sol_raw, sol_expo)?;
-        drop(sol_feed_data);
-
-        require!(btc_price_usd > 0 && sol_price_usd > 0, LukashError::InvalidOracleValue);
+        // Devnet fallback (mismo patrón que refresh_vault_valuation)
+        let btc_price_usd: u64 = {
+            let data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
+            let p = match parse_pyth_price(&data, now) {
+                Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
+                Err(_) => 0,
+            };
+            if p > 0 { p } else { 65_000_000_000 }
+        };
+        let sol_price_usd: u64 = {
+            let data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
+            let p = match parse_pyth_price(&data, now) {
+                Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
+                Err(_) => 0,
+            };
+            if p > 0 { p } else { 150_000_000 }
+        };
 
         // cBTC: pending_usd → satoshis = pending_usd * CBTC_SCALE / btc_price_usd
         let cbtc_native = usd_to_native(state.pending_swap_cbtc_usd, btc_price_usd, CBTC_SCALE)?;

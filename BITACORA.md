@@ -268,6 +268,12 @@
 - **Nota técnica:** `ORACLE_FEED_MAX_STALENESS` debe volver a 60s para mainnet.
 - **Pendiente:** Sebastián aplica el fix del status check mañana, luego testea `refreshVaultValuation` → `process_fee` → `execute_vault_swaps` → quema real.
 
+## 2026-08-25 (sesión 13) — Fix Pyth devnet fallbacks (v9.1)
+- **Root cause del error `InvalidOracleValue`:** feeds Pyth devnet con status != Trading devuelven precio = 0 Y exponente = 0. El fallback parcial (solo precio) causaba overflow en `pyth_price_to_usd6` (expo 0 → adjustment = 6 → scale = 10^6 → precio falso × 10^6 = overflow). Además, el `require!(status == PYTH_STATUS_TRADING)` no se había comentado correctamente.
+- **Fix aplicado en lib.rs v9.1** (2089 líneas, +13 vs v9): fallbacks a nivel de **callers** (`refresh_vault_valuation` y `execute_vault_swaps`), NO en `parse_pyth_price`. Patrón: `match parse_pyth_price { Ok → pyth_price_to_usd6 | Err → 0 }`, luego `if p > 0 { p } else { fallback }`. Fallbacks: BTC ~$65K (`65_000_000_000` USD 6-dec), SOL ~$150 (`150_000_000`). `parse_pyth_price` queda **intacto** con todos sus `require!` estrictos — mainnet seguro.
+- **MAINNET:** eliminar los bloques `match/fallback`, volver al patrón directo `parse_pyth_price(...)?`.
+- **Pendiente:** Sebastián copia v9.1 a Playground, Build, Deploy, testea refreshVaultValuation → process_fee → execute_vault_swaps → quema real.
+
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.
