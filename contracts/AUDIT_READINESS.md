@@ -11,7 +11,7 @@ B0/B2, Timelock 48h, pausa (circuit breaker), control de acceso. Montos como **n
 
 **Fuera (Milestone 2 — a auditar después):** transferencias reales SPL, CPIs a Jupiter, quema real a null,
 staking distributor real, integración de oráculo (Pyth + Switchboard redundante), cNFT/Aura on-chain, y el
-**Jaguar Shield** completo (Exit Fee, Anti-Whale corregido, Circuit Breaker LP, seguro anti-exploit).
+**KASH Shield** completo (Exit Fee, Anti-Whale corregido, Circuit Breaker LP, seguro anti-exploit).
 
 ## 2. Modelo de amenazas
 | Amenaza | Estado en M1 | Mitigación / nota |
@@ -49,7 +49,7 @@ staking distributor real, integración de oráculo (Pyth + Switchboard redundant
 - ✅ Comentarios `//!` inválidos a mitad de archivo → corregidos.
 - ✅ Cola de quema diferida sin drenar → añadido `execute_deferred_burn`.
 - 🔵 Simplificaciones intencionales documentadas: notional USD, ACCEL 125%→100%, `process_fee` sin gate real (M2).
-- 🟡 Pendientes de M2 (no bugs de M1): convergencia de fees Etapa 3, Motor C como inyección-LP (no quema), Anti-Whale/Exit Fee (Jaguar Shield).
+- 🟡 Pendientes de M2 (no bugs de M1): convergencia de fees Etapa 3, Motor C como inyección-LP (no quema), Anti-Whale/Exit Fee (KASH Shield).
 
 ## 6. Herramientas GRATIS para correr antes del auditor pagado
 Córrelas en la terminal de Solana Playground o local (reducen el costo del audit externo):

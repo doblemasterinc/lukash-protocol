@@ -40,7 +40,7 @@ Ninguna cifra absoluta debe publicarse sin etiquetar la fuente.
 - ✅ **El volumen es el driver #1 del Vault** (§4), muy por encima de fee, yield, throttle o K_min.
 - ⚠️ **5 hallazgos a nivel de contrato** (§6): partes del diseño que aún NO viven en `lib.rs`
   (cap de quema, valuación por oráculo del switch, módulo contra-cíclico, modo ACELERADO inerte,
-  Jaguar Shield) — candidatos de Milestone 2.
+  KASH Shield) — candidatos de Milestone 2.
 
 ---
 
@@ -185,15 +185,15 @@ contra-cíclico, v4.3 §5). Ese rebalanceo **no está en Milestone 1**. Efecto m
 débil pasa de ~14% a 44% de espiral. **Milestone 2: rebalanceo dirigido por régimen** (solo
 sobre entradas nuevas, sin tocar el Vault existente — como especifica el diseño).
 
-### 6.5 Jaguar Shield (Anti-Whale, Exit Fee) aún no está en el contrato (prioridad: alta, ya planificada)
-Correcto por ADR-012: el Jaguar Shield es Milestone 2. La simulación **no** pudo estresar
+### 6.5 KASH Shield (Anti-Whale, Exit Fee) aún no está en el contrato (prioridad: alta, ya planificada)
+Correcto por ADR-012: el KASH Shield es Milestone 2. La simulación **no** pudo estresar
 Anti-Whale ni Exit Fee porque no están implementados. Cuando se construyan, re-correr SIM 3 con
 escenarios de ballena vendiendo y pánico coordinado.
 
-### 6.6 (CORREGIDO 2026-08-21) Restauración del Jaguar Shield — ADR-015
+### 6.6 (CORREGIDO 2026-08-21) Restauración del KASH Shield — ADR-015
 En el análisis original de esta sesión, el hallazgo #6 decía "límite de retiro del Vault 5%/día".
 **Ese concepto no existe en ninguna versión del Protocolo LUKASH** (v1.0 a v4.2). Arqueología
-completa en `HISTORIAL_JAGUAR_SHIELD.md`. Fue un artefacto arrastrado del Informe Cuantitativo
+completa en `HISTORIAL_KASH_SHIELD.md`. Fue un artefacto arrastrado del Informe Cuantitativo
 que la primera versión de este reporte incorporó por error.
 
 **Lo que sí queda por implementar del diseño real (ADR-015):**
@@ -215,10 +215,10 @@ que la primera versión de este reporte incorporó por error.
 | --- | --- | --- | --- |
 | R1 | Valuación del Vault por oráculo para el switch B0→B2 | §6.2 | 2 |
 | R2 | Implementar cap de quema 1%/día con diferido | §6.3 | 2 |
-| R3 | **Jaguar Shield seguridad del Vault** (ADR-015): Circuit Breaker 24h + Tridente 3-de-3 para Capa 3 + instrucción `receive_insurance_recovery` para el Seguro Anti-Exploit externo. **NO "5%/día"** (concepto inexistente en el diseño). | §6.6 corregido | 2 |
+| R3 | **KASH Shield seguridad del Vault** (ADR-015): Circuit Breaker 24h + Tridente 3-de-3 para Capa 3 + instrucción `receive_insurance_recovery` para el Seguro Anti-Exploit externo. **NO "5%/día"** (concepto inexistente en el diseño). | §6.6 corregido | 2 |
 | R4 | Definir semántica de ACELERADO (inerte o drenaje acelerado) | §6.1 | 2 |
 | R5 | Módulo contra-cíclico de LUKAI (rebalanceo por régimen) | §6.4 | 2 |
-| R6 | Jaguar Shield: Anti-Whale + Exit Fee, luego re-estresar | §6.5, ADR-012 | 2 |
+| R6 | KASH Shield: Anti-Whale + Exit Fee, luego re-estresar | §6.5, ADR-012 | 2 |
 | R7 | **GTM:** priorizar campaña ≥ BASE y volumen sostenido del Motor A — es el driver estructural, no marketing | §3, §4, §5 | Etapa 0-1 |
 
 ---

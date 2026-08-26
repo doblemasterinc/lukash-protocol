@@ -10,16 +10,16 @@
 | # | Tema | v3.1 (PRD/UI/estrategia) | v4.2 (protocolo) | Recomendación |
 | --- | --- | --- | --- | --- |
 | D1 | **Ticker del token** | "$Lukas" / "$LKS" (PRD, UI Kit, tagline "pagamos con $Lukas") | **"$LUKA"** (consistente en todo v4.2; estrategia y análisis ya usan $LUKA) | **$LUKA** como canónico. Actualizar assets de marca viejos. ¿Confirmas? |
-| D2 | **Niveles de Aura** | 5 niveles con nombres en español, y con umbrales inconsistentes entre sí: PRD Pestaña 3 (Cachorro 0-100 / Rastreador 101-300 / Guerrero 301-600 / Líder 601-900 / Jaguar 901+) vs UI Kit (Cachorro 0-199 / Rastreador 200-499 / Guerrero 500-999 / Líder 1000-1999 / Jaguar 2000+). Estrategia menciona Alpha/Hunter/Cub | **4 niveles**: Cub 0-499 / Jaguar 500-1999 / Alpha 2000-4999 / Emperor 5000+ | **Decisión abierta e importante para el juego.** Propongo revivir los **nombres en español** (mejor para LATAM) mapeados sobre la estructura v4.2. Ver opciones abajo |
+| D2 | **Niveles de Aura** | 5 niveles con nombres en español, y con umbrales inconsistentes entre sí: PRD Pestaña 3 (Cachorro 0-100 / Rastreador 101-300 / Guerrero 301-600 / Líder 601-900 / Jaguar 901+) vs UI Kit (Cachorro 0-199 / Rastreador 200-499 / Guerrero 500-999 / Líder 1000-1999 / Jaguar 2000+). Estrategia menciona Alpha/Glow/Cub | **4 niveles**: Cub 0-499 / Glow 500-1999 / Alpha 2000-4999 / Emperor 5000+ | **Decisión abierta e importante para el juego.** Propongo revivir los **nombres en español** (mejor para LATAM) mapeados sobre la estructura v4.2. Ver opciones abajo |
 | D3 | **cNFT: naming** | "Tótems": Fuego Eterno (cBTC), Espíritu (JitoSOL), Agua Viva (mSOL), USDC Sagrado (USDC), Jaguar Negro (premium). Tiers Bronce/Plata/Oro/Jaguar Negro | 3 tipos: Nativo / Jaguar Universal / Estándar | Mantener los **nombres Tótem** (gran marca) como capa de UI sobre los 3 tipos técnicos v4.2 |
 | D4 | **Nombre del Vault en UI** | "La Reserva Sagrada" (regla: NUNCA decir "Vault" al usuario) | "Vault KASH Core" (técnico) | **Mantener** "La Reserva Sagrada" en UI, "Vault/KASH Core" en contratos/docs técnicos |
 | D5 | **Tagline** | "Ahorra mientras gastas. Crece mientras juegas. Construye el banco que LATAM nunca tuvo." | "Las finanzas del futuro, disponibles hoy para toda Latinoamérica." | Usar la v4.2 como principal; la v3.1 ("Ahorra mientras gastas, crece mientras juegas") sirve como **subtexto de producto/App** (describe bien el loop) |
 
 ### D2 — Opciones para los niveles de Aura (decisión de juego)
 - **Opción 1 (recomendada):** 4 niveles v4.2 con nombres en español y su temática de caza:
-  `Cachorro (0-499) → Jaguar (500-1999) → Alfa (2000-4999) → Emperador (5000+)`. Mantiene umbrales y beneficios v4.2 intactos, solo hispaniza los nombres. Coherente con "manada/selva".
-- **Opción 2:** 5 niveles al estilo v3.1 (Cachorro → Rastreador → Guerrero → Líder → Jaguar) — más granular y con mejor sensación de progresión, pero obliga a recalibrar umbrales y beneficios (más trabajo, cambia gates del cNFT).
-- **Opción 3:** Mantener v4.2 tal cual (Cub/Jaguar/Alpha/Emperor en inglés).
+  `Cachorro (0-499) → Glow (500-1999) → Alfa (2000-4999) → Emperador (5000+)`. Mantiene umbrales y beneficios v4.2 intactos, solo hispaniza los nombres. Coherente con "manada/selva".
+- **Opción 2:** 5 niveles al estilo v3.1 (Cachorro → Rastreador → Guerrero → Líder → Glow) — más granular y con mejor sensación de progresión, pero obliga a recalibrar umbrales y beneficios (más trabajo, cambia gates del cNFT).
+- **Opción 3:** Mantener v4.2 tal cual (Cub/Glow/Alpha/Emperor en inglés).
 
 ## Divergencias técnicas (el protocolo v4.2 gana — solo para trazabilidad)
 

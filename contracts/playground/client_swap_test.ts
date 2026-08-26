@@ -1,4 +1,4 @@
-// client_swap_test.ts — LUKASH v9.1: test execute_vault_swaps
+// client_swap_test.ts — LUKASH v10: test execute_vault_swaps
 // Precondición: process_fee ya ejecutado (hay pending_swap_*_usd > 0).
 
 const PYTH_BTC = new anchor.web3.PublicKey("HovQMDrbAgAYPCmHVSrezcSmkMtXSSUsLDFANExrZh2J");
@@ -42,7 +42,7 @@ if (totalPending === 0n) {
       state: statePda,
       pythBtcFeed: PYTH_BTC,
       pythSolFeed: PYTH_SOL,
-      caller: pg.wallet.publicKey,
+      authority: pg.wallet.publicKey,
     }).rpc();
   console.log("\nTX:", txSwap);
 

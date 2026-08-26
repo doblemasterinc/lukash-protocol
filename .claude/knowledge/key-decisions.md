@@ -9,9 +9,9 @@ El `LUKASH_Protocolo_v4_2_FINAL.docx` (carpeta "Back up conversación 16-03", m�
 que el de raíz) es la fuente técnica de verdad. El BMC debe alinearse a él, no al revés.
 Versiones anteriores (v1–v4.1) se conservan en `docs/protocolo/` solo como historial.
 
-## ADR-002: "Aura" reemplaza a "Jaguar Score" (2026-08-19) — Aprobado por Sebastián
+## ADR-002: Sistema de reputación = "Aura" (2026-08-19) — Aprobado por Sebastián
 El sistema de reputación financiera on-chain pasa a llamarse **Aura**. Es un rebrand puro:
-la mecánica NO cambia (niveles Cub 0-499 / Jaguar 500-1999 / Alpha 2000-4999 / Emperor 5000+,
+la mecánica NO cambia (niveles Cub 0-499 / Glow 500-1999 / Alpha 2000-4999 / Emperor 5000+,
 on-chain, no transferible, decay 2%/semana tras 90d de inactividad, umbral de nivel por
 Score máximo histórico). "Aura" no existía en los documentos v4.2; es terminología nueva.
 Las "misiones para ganar Aura" = las Misiones de Caza de Jungle Arena.
@@ -28,13 +28,13 @@ contracts, brand, docs). Todos los documentos fuente de "PROYECTO CRYPTO" migrad
 por categoría dentro de `docs/` y `brand/`. La carpeta original queda como respaldo intacto.
 
 ## ADR-005: Aura con 5 niveles narrativos (2026-08-19) — Aprobado por Sebastián
-Cachorro (0-499) → Rastreador (500-1999) → Cazador (2000-4999) → Alfa (5000-9999) → Jaguar (10000+).
-Nombres finales (2026-08-19): el pináculo es "Jaguar" (te conviertes en el jaguar, cierra el arco cachorro→jaguar).
-Localización ES/EN/PT: Cachorro/Cub/Filhote · Cazador/Hunter/Caçador · "Jaguar" no se traduce.
-Preserva los umbrales v4.2 (500/2000/5000) y añade el pináculo. Gate del cNFT Jaguar Universal en Rastreador
+Cachorro (0-499) → Rastreador (500-1999) → Cazador (2000-4999) → Alfa (5000-9999) → Emperor (10000+).
+Nombres finales (2026-08-26, ADR rebrand): Cub (0-499) → Glow (500-1999) → Alpha (2000-4999) → Emperor (5000+).
+Localización ES/EN/PT: los nombres de nivel son marca y no se traducen (Cub/Glow/Alpha/Emperor).
+Preserva los umbrales v4.2 (500/2000/5000). Gate del Tótem Universal en Rastreador
 (≥500). Diseño completo en `specs/01-aura-jungle-arena.md`.
 
-## ADR-006: Liberación del Vault Sociedad — regla única Jaguar Lock (2026-08-19) — Aprobado por Sebastián
+## ADR-006: Liberación del Vault Sociedad — regla única KASH Lock (2026-08-19) — Aprobado por Sebastián
 Corrige la discrepancia detectada: un solo hito gobierna la liberación de accionistas. Disparador =
 **KASH Core alcanza $30M o 12 meses** (lo que ocurra primero). Fees a la Sociedad líquidos desde el
 **mes 13** (dentro de Etapa 2B); capital principal lineal en 48 meses. **Etapa 3 (K>$50M) NO reinicia**
@@ -60,14 +60,13 @@ Concepto Objetivo de Socio (`docs/discovery/CONCEPTO_OBJETIVO_SOCIO.md`).
 
 ## ADR-010: Reposicionamiento de marca sin ideología + trilingüe (2026-08-19) — Aprobado por Sebastián
 Quitar toda lectura política/colectivista: fuera "pueblo", cadencias tipo "por/para la manada", tono
-anti-banco/agravio. **Conservar el jaguar y TODA la identidad visual** (no era el problema) reencuadrando su
-significado: de "tótem sagrado del pueblo" → "el que asciende/caza/gana" (fuerza individual + pertenencia +
-orgullo pan-americano). "Soberanía" siempre como soberanía PERSONAL, no política. Posicionamiento = mezcla de
-3 ejes con jerarquía: (1) Dueño de tu ascenso, (2) Tu manada, (3) Tu reserva a la vista; "el banco que vas a
-construir" se reserva para Fase 3. Audiencia = todos los menores de 45 (Segmentos A y B), no solo jóvenes.
-Operar en **ES/EN/PT** (términos de marca no se traducen: LUKA/KASH/Aura/Jaguar/Manada/LUKAI/Reserva).
-Detalle y taglines en `brand/POSICIONAMIENTO_NARRATIVA.md`. Pendiente menor: unificar nombres de los 5 niveles
-de Aura (presentación: Cachorro/Rastreador/Guerrero/Líder/Jaguar vs spec: .../Cazador/Jaguar Maduro/Jaguar Sabio).
+anti-banco/agravio. **Conservar el felino y TODA la identidad visual** (la imagen no era el problema, la palabra "jaguar" sí —
+asociaciones con populismo LATAM) reencuadrando su significado: "el que asciende/caza/gana" (fuerza individual +
+pertenencia + orgullo pan-americano). "Soberanía" siempre como soberanía PERSONAL, no política. Posicionamiento =
+mezcla de 3 ejes con jerarquía: (1) Dueño de tu ascenso, (2) Tu manada, (3) Tu reserva a la vista; "el banco que
+vas a construir" se reserva para Fase 3. Audiencia = todos los menores de 45 (Segmentos A y B), no solo jóvenes.
+Operar en **ES/EN/PT** (términos de marca no se traducen: LUKA/KASH/Aura/Glow/Manada/LUKAI/Reserva).
+Detalle y taglines en `brand/POSICIONAMIENTO_NARRATIVA.md`. Niveles de Aura unificados: Cub→Glow→Alpha→Emperor.
 
 ## ADR-012: Corrección del Anti-Whale + Exit Fee 5% Génesis (2026-08-20) — Aprobado por Sebastián
 **Exit Fee:** se mantiene en **5% para el Génesis** (Et.1), 3%/1% en Et.2/3. Aclaración: el "100% al Vault" es
@@ -76,8 +75,8 @@ el DESTINO del fee, no una penalización del 100% (el fee es 5/3/1%). Solo se ac
 **Anti-Whale (corregido):** (1) aplica **solo a ventas/transferencias, NO a compras** (quieres ballenas
 comprando); (2) el umbral se mide por **% del pool de liquidez, no del supply** — la métrica de supply era
 brutal al inicio (1% supply ≈ $10K al TGE, ahogaba el volumen de lanzamiento) y laxa después. Tiers 3/6/10%
-sobre el excedente, 100% al Vault. (3) Fix del nombre de exención: "Emperor/Jaguar Maduro" → "Jaguar" (nivel
-máx de Aura). Aplicado en Protocolo v4.3 (C10). Se implementa en el Jaguar Shield (Milestone 2).
+sobre el excedente, 100% al Vault. (3) Fix del nombre de exención: nivel máx de Aura = Emperor.
+Aplicado en Protocolo v4.3 (C10). Se implementa en el KASH Shield (Milestone 2).
 
 ## ADR-011: Lanzamiento community-only (fair-launch) como ruta primaria; MM/influencers para después (2026-08-19)
 Con poco capital: **Ruta A = fair-launch comunidad-only** (liquidez propia lockeada/quemada en Meteora + volumen
@@ -108,8 +107,8 @@ por trabajar (corto plazo); (2) **Equipo 2%** = upside del token + voz en DAO (l
 Sociedad ≥10% del 30%** = patrimonio del negocio (largo). Se descartó 0% (pureza fair-launch) por la señal de
 "sin piel en el juego" que incomoda a ángeles/Colosseum. Aplicado en v4.3 (tabla §supply + vesting).
 
-## ADR-015: Jaguar Shield — restauración del Seguro Anti-Exploit + Tridente 3-de-3 + auditor desacoplado (2026-08-21) — Aprobado por Sebastián
-Consolida 4 decisiones tras arqueología del historial v1.0→v4.2 (ver `audits/HISTORIAL_JAGUAR_SHIELD.md`):
+## ADR-015: KASH Shield — restauración del Seguro Anti-Exploit + Tridente 3-de-3 + auditor desacoplado (2026-08-21) — Aprobado por Sebastián
+Consolida 4 decisiones tras arqueología del historial v1.0→v4.2 (ver `audits/HISTORIAL_KASH_SHIELD.md` — archivo renombrado desde HISTORIAL_JAGUAR_SHIELD.md):
 
 **(1) Seguro Anti-Exploit restaurado con condiciones de v1.0/v4.1** (la v4.2 canónica las había perdido y mutado "1×/12 meses" en "renovación anual", que ya no significa lo mismo):
 - Cobertura: **hasta 5% del valor total del Vault**
@@ -126,18 +125,18 @@ Consolida 4 decisiones tras arqueología del historial v1.0→v4.2 (ver `audits/
 
 **(4) Regla de higiene documental:** la v4.2 canónica perdió/mutó decisiones tuyas de v1.0 y v4.1. Cuando algo en v4.2/v4.3 se sienta raro o ambiguo, contrastar con v1.0 y v4.1 antes de dar por buena la canónica. Se anota en `learned-rules.md`.
 
-**(5) Mint del token: Token-2022 con Transfer Hook aprobado (2026-08-21) — Aprobado por Sebastián.** El token de mainnet será **Token-2022** (no SPL clásico) para que el Jaguar Shield (Anti-Whale + Jaguar Exit Fee) se aplique **en cada transferencia on-chain**, imposible de evadir vendiendo en otro DEX. Sin esto, el value prop anti-dump quedaría vacío. **Implicaciones operativas:**
+**(5) Mint del token: Token-2022 con Transfer Hook aprobado (2026-08-21) — Aprobado por Sebastián.** El token de mainnet será **Token-2022** (no SPL clásico) para que el KASH Shield (Anti-Whale + KASH Exit Fee) se aplique **en cada transferencia on-chain**, imposible de evadir vendiendo en otro DEX. Sin esto, el value prop anti-dump quedaría vacío. **Implicaciones operativas:**
 - El mint devnet actual (`2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr`) es SPL clásico y **se mantiene solo para pruebas Milestone 1**. El mint de mainnet será nuevo (Token-2022).
 - Validar antes del TGE: compatibilidad Meteora (LP), Jupiter (routing), CEXs objetivo. Solana Foundation ha empujado adopción Token-2022 desde 2024 y el soporte hoy es amplio (Jupiter y Meteora sí soportan).
-- El transfer hook implementa: Jaguar Exit Fee dual (precio<0.7×EMA30 AND venta>0.3% supply/hora) + Anti-Whale por % del pool (ADR-012) + verificación de exenciones (ver punto 6).
+- El transfer hook implementa: KASH Exit Fee dual (precio<0.7×EMA30 AND venta>0.3% supply/hora) + Anti-Whale por % del pool (ADR-012) + verificación de exenciones (ver punto 6).
 
-**(6) Exenciones canónicas del Jaguar Shield (Anti-Whale + Exit Fee) — de v4.1 §9.1-9.2, ratificadas:**
+**(6) Exenciones canónicas del KASH Shield (Anti-Whale + Exit Fee) — de v4.1 §9.1-9.2, ratificadas:**
 - **Swaps internos del Motor D** (operaciones dentro del protocolo, no son "ventas de verdad").
 - **Staking activo** (holders comprometidos).
 - **LP Comprometido en lock activo** (proveen liquidez, no la sacan).
 - **LP Fundador 365d** (lock máximo, incentivo estructural).
 - **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado — el MM debe estar aprobado por Tridente 3-de-3 para figurar en la lista de exentos).
-- **Nivel Jaguar de Aura** (Aura ≥10,000, el pináculo — ADR-005 y C10). Antes se llamaba "Emperor"; migrado a "Jaguar" por ADR-002/012.
+- **Nivel Emperor de Aura** (Aura ≥5,000, el pináculo — ADR-005). Nivel máximo del sistema Aura.
 - **KOLs no tienen exención Anti-Whale/Exit Fee.** El mecanismo que los alinea es distinto: reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear (aunque el Anti-Whale sí les aplicaría si lograran vender por encima del umbral, lo cual es improbable con vesting escalonado). Esa es la razón por la que en el manual `specs/05` los KOLs se pagan en tokens vesteados, nunca cash — el vesting hace redundante una exención explícita.
 
 **(7) Auditoría externa vía subsidios — ratificado.** No comprometemos gasto directo. La ruta primaria (ya documentada en `contracts/AUDIT_READINESS.md`) es: (a) herramientas gratis pre-cotización (Sec3 X-Ray, Trident fuzzing, clippy); (b) **subsidio Areta $1M** vía Colosseum fast-track; (c) grants Solana Foundation / Superteam Instagrants; (d) recién si nada anterior alcanza, boutique paga $5-20K o Immunefi bug bounty. **Sin ADR de contratación hasta cotización real.**
@@ -174,7 +173,7 @@ arbitraje natural). Cualquier residuo v3.1 que diga lo contrario es un error a c
 ## ADR-P05: cNFT = instrumento financiero tokenizado, no llave de acceso (Protocolo v4.2)
 Cada cNFT representa una posición de inversión (capital + rendimiento). APY variable,
 transferible, con disclaimer on-chain obligatorio en metadata. 3 tipos: Nativo $LUKA (Capa 0,
-0%, nivel Cub), Jaguar Universal (Capas 1/3A, 1.5%, gated por Aura ≥500), Estándar SOL/USDC
+0%, nivel Cub), Tótem Universal (Capas 1/3A, 1.5%, gated por Aura ≥500), Tótem Estándar SOL/USDC
 (Capa 3B, 2%, sin gate).
 
 ## ADR-P06: El Vault NO se toca para defender el precio en B2 (Protocolo v4.2)
@@ -189,3 +188,21 @@ Lanzamiento primario simultáneo Colombia + México. Expansión escalonada por p
 ## ADR-P08: Inversión por fases $500K / $2M / $5M autofinanciada (Protocolo v4.2)
 Solo la Fase 1 requiere capital externo. Fases 2 y 3 se co-financian con el Vault Sociedad
 acumulado en Etapa 1. Sin dependencia de VCs, sin dilución de socios fundadores.
+
+## ADR-017: Rebrand completo — eliminación de la palabra "jaguar" (2026-08-26) — Aprobado por Sebastián
+La palabra "jaguar" se elimina de TODO el vocabulario activo del proyecto. Razón: asociaciones con
+retórica populista en LATAM (economías jaguar, identidad ideológica) que chocan con ADR-010 (cero
+ideología). La identidad visual del felino SE CONSERVA (isotipo, imágenes) — el problema era la
+palabra, no la imagen. Cambios aplicados en contratos, specs, audits, brand, landing, docs y simulaciones:
+
+**Seguridad:** Jaguar Shield → **KASH Shield** · Jaguar Exit Fee → **KASH Exit Fee** · Jaguar Lock → **KASH Lock**
+**Niveles de Aura:** Cub (0-499) → **Glow** (500-1999) → Alpha (2000-4999) → Emperor (5000+).
+  El nivel que era "Jaguar" pasa a "Glow" (tu Aura empieza a brillar). Son nombres de marca, no se traducen.
+**cNFTs:** Los tipos pasan a llamarse **Tótems**: Tótem Nativo / Tótem Universal / Tótem Estándar.
+**Productos:** Jaguar Pay → **LUKASH Pay** · Jaguar Chat → **LUKASH Chat** · Jaguar Games → **LUKASH Games** · Jaguar AI → **LUKAI**
+**Narrativa:** Camino del Jaguar → **Camino del Rugido** · El Resplandor del Jaguar → **El Rugido de la Manada**
+**Comunidad:** "jaguares fundadores" → "rugidores fundadores" o "fundadores"
+
+Archivos históricos (`extracted/historial/`, `docs/presentaciones/`, `docs/app/`) conservan la terminología
+original como registro. La única mención permitida de "jaguar" en docs activos es como referencia al
+motivo del cambio (ej: "la palabra jaguar fue eliminada porque...").

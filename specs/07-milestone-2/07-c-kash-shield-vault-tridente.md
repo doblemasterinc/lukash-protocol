@@ -1,4 +1,4 @@
-# Spec 07-c — Jaguar Shield del Vault: Tridente inactivo + Circuit Breaker + Seguro Anti-Exploit
+# Spec 07-c — KASH Shield del Vault: Tridente inactivo + Circuit Breaker + Seguro Anti-Exploit
 
 > Milestone 2 · Referencia: Protocolo v4.3 §9 (ampliado) + ADR-015 · Prioridad: **alta**
 > Dependencias upstream: 07-a (token accounting real).
@@ -10,7 +10,7 @@
 
 `contracts/playground/lib.rs` tiene ya un patrón de `AdminOnly` + `queue_admin_change`
 + `execute_admin_change` + Timelock 48h — la infraestructura de gobernanza básica.
-**Faltan tres piezas del Jaguar Shield del Vault**, todas confirmadas por ADR-015:
+**Faltan tres piezas del KASH Shield del Vault**, todas confirmadas por ADR-015:
 
 1. **Tridente Multisig 3-de-3** cableado pero **INACTIVO por defecto**, con
    activación one-way y candado estructural que bloquea el paso a Etapa 2 si no

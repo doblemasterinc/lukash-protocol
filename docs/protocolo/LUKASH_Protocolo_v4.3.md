@@ -14,15 +14,15 @@
 | # | Corrección | Antes (v4.2) | Ahora (v4.3) |
 | --- | --- | --- | --- |
 | C1 | **Composición del Vault** | Sumaba 105% (incluía oráculos 5%) | **100%** — se eliminan PYTH/JTO/JUP como reserva (pasan a infraestructura O&M). cBTC 35 / SOL 15 / LST 20 / USDC reserva 25 / lending 5 |
-| C2 | **Liberación Vault Sociedad** | Atada a $30M (TVL) *y* a Etapa 3 ($50M) — contradictorio | **Un solo hito Jaguar Lock**: KASH Core $30M o 12 meses. Fees líquidos desde mes 13 (Etapa 2B). Etapa 3 ya no la "reinicia" |
-| C3 | **Reputación** | "Jaguar Score", 4 niveles | **Aura**, 5 niveles (Cachorro→Rastreador→Cazador→Jaguar Maduro→Jaguar Sabio) |
+| C2 | **Liberación Vault Sociedad** | Atada a $30M (TVL) *y* a Etapa 3 ($50M) — contradictorio | **Un solo hito KASH Lock**: KASH Core $30M o 12 meses. Fees líquidos desde mes 13 (Etapa 2B). Etapa 3 ya no la "reinicia" |
+| C3 | **Reputación** | Sistema de reputación anterior, 4 niveles | **Aura**, 5 niveles (Cachorro→Rastreador→Cazador→Glow Maduro→Glow Sabio) |
 | C4 | **Nomenclatura Precio KASH** | "P_th" y "P_KASH" mezclados | **P_KASH** unificado |
 | C5 | **LUKAI** | "v4.1" + releases v1.0/v2.0 (confuso) | **LUKAI** con releases **v1.0** (orquestador) y **v2.0** (IA). Sin "v4.1" |
 | C6 | **cBTC en capas del Vault** | Listado en Capa 2 y Capa 3 a la vez | Solo en **Capa 3 (Reserva Profunda)**. Capa 2 = SOL+LST+USDC lending |
 | C7 | **Los dos 70/30** | Ambiguos | **Split de Fee** (70% Core / 30% Sociedad) vs **Split de Yield** (70% reinversión / 30% R_op) |
 | C8 | **Ticker** | "$Lukas"/"$LUKA" mezclados en material viejo | **$LUKA** canónico |
 | C9 | **Cifras Monte Carlo** | Atribuidas al modelo v4.2 | Etiquetadas como **modelo conservador v3.1** — reconciliación pendiente (ver `audits/AUDITORIA_COMPLEMENTARIA.md`) |
-| C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Jaguar). Exit Fee se mantiene en 5% para Génesis. |
+| C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Glow). Exit Fee se mantiene en 5% para Génesis. |
 | C11 | **Seguro Anti-Exploit** | v4.2 lo redujo a *"Cobertura hasta 5%. Renovación anual obligatoria"* — perdió las 3 condiciones de v1.0/v4.1 | **Restaurado (ADR-015)**: 5% Vault · **máx 1 evento cada 12 meses** · **activo desde Etapa 2B** (opción B: condición on-chain, no calendario ambiguo "año 1") · DAO redefine en Etapa 4. Auditor(a) externa **desacoplado** — Halborn/OtterSec eran arrastres de v2.1, no decisión formal; a cotizar pre-TGE. Tridente 3-de-3 ratificado; **firmantes concretos pendientes**. |
 
 ---
@@ -50,7 +50,7 @@ reserva creciente. El hype es el bootstrapping, no el producto. *(Narrativa comp
 | Capa | Servicio | Fee $LUKA | Fee SOL/USDC | Identidad / gate |
 | --- | --- | --- | --- | --- |
 | **0** | Staking $LUKA / Pools internos | **0%** | N/A | Base silenciosa. Exención absoluta e incondicional (no modificable por gobernanza) |
-| **1** | DeFi interno premium en $LUKA | 1.5% | — | Club privado. Gated por cNFT Jaguar Universal (**Aura ≥ 500 = nivel Rastreador**). APY variable |
+| **1** | DeFi interno premium en $LUKA | 1.5% | — | Club privado. Gated por cNFT Tótem Universal (**Aura ≥ 500 = nivel Rastreador**). APY variable |
 | **2** | Servicios cotidianos: Crowdfunding, Crowdlending, Fondos, Seguros, Eventos, Marketplaces, Jungle Arena, Bet & Win | **3%** | 3.5% | Corazón de la comunidad. Motor de adopción masiva |
 | **3A** | DeFi externo en $LUKA (Kamino, Marginfi, RWA) | 1.5% | swap previo sin cargo + 1.5% | Puente soberano. Rendimiento externo 100% al usuario |
 | **3B** | DeFi externo SOL/USDC | N/A | 2% | Puerta de entrada sin $LUKA. **Idéntico al Motor C en mecánica de distribución** (no en tasa: fee 2%) |
@@ -91,7 +91,7 @@ vesteado) · Vault Sociedad = patrimonio del negocio (largo).
 | --- | ---: | --- | --- |
 | Pool de Liquidez (LP) | 30% | Soporte de trading en Meteora | Tokens emparejados/quemados. LP Fundador 365d lock |
 | **Vault KASH Core** (Reserva Soberana) | 40% | Respaldo inamovible del valor de $LUKA | Nunca liquidable. Solo crece. Determina P_KASH |
-| **Vault KASH Sociedad** (Equity) | 30% | Renta líquida y crecimiento patrimonial de socios | Bajo Jaguar Lock. Liberación por hitos |
+| **Vault KASH Sociedad** (Equity) | 30% | Renta líquida y crecimiento patrimonial de socios | Bajo KASH Lock. Liberación por hitos |
 
 ### 3.1 Core vs Sociedad — los dos splits (¡son distintos!)
 
@@ -100,16 +100,16 @@ vesteado) · Vault Sociedad = patrimonio del negocio (largo).
 | Función | Respaldo y precio piso. El muro institucional | Renta líquida y patrimonio de socios |
 | **Split de Fee** (del componente KASH de cada fee) | **70% al Core** | **30% a la Sociedad** (líquido desde mes 13) |
 | **Split de Yield** (del rendimiento del Vault) | **70% reinversión compuesta** / **30% a R_op** | 100% capitalizable |
-| Acceso | Nunca liquidable. Solo crece | Bajo Jaguar Lock (ver 3.2) |
+| Acceso | Nunca liquidable. Solo crece | Bajo KASH Lock (ver 3.2) |
 
 > Aclaración de nomenclatura (C7): el **Split de Fee** (70/30 Core/Sociedad) y el **Split de Yield**
 > (70/30 reinversión/R_op) son dos reglas distintas sobre bases distintas. No confundir.
 
-### 3.2 Jaguar Lock — liberación del Vault Sociedad (REGLA ÚNICA, corregida C2)
+### 3.2 KASH Lock — liberación del Vault Sociedad (REGLA ÚNICA, corregida C2)
 
 **Un solo hito gobierna la liberación de los accionistas:**
 
-| Disparador (Jaguar Lock) | Fees a la Sociedad | Capital principal de la Sociedad |
+| Disparador (KASH Lock) | Fees a la Sociedad | Capital principal de la Sociedad |
 | --- | --- | --- |
 | El **KASH Core** alcanza **$30M USD** *o* transcurren **12 meses**, lo que ocurra primero | Líquidos y perpetuos **desde el mes 13** (ocurre en **Etapa 2B**) | Liberación lineal en **48 meses** post-hito |
 
@@ -117,7 +117,7 @@ vesteado) · Vault Sociedad = patrimonio del negocio (largo).
 - **Etapa 3 (K>$50M) NO reinicia** esta distribución: la distribución a la Sociedad ya está activa desde el
   mes 13. El rasgo distintivo de Etapa 3 es Motor C + integración fiat + escala.
 - Escalera canónica de umbrales, toda sobre el **KASH Core**:
-  `$25M (activa B2) → $30M o 12m (Jaguar Lock: libera Sociedad, mes 13) → $50M (Etapa 3: Motor C) → $100M (escala)`.
+  `$25M (activa B2) → $30M o 12m (KASH Lock: libera Sociedad, mes 13) → $50M (Etapa 3: Motor C) → $100M (escala)`.
 
 ### 3.3 Sostenibilidad de infraestructura
 El escalamiento y mantenimiento se financian con una fracción del Vault Sociedad acumulado en Etapa 1.
@@ -215,7 +215,7 @@ Cada fee, en todos los motores y capas, se distribuye: **35% Vault/Asset Layer �
 
 ### 6.1 Flujos atómicos (ejemplos)
 - **Motor A** (100 SOL, fee 4 SOL): 1.40 (35%) → activos KASH → Vault Core `[35% cBTC · 25% USDC · 15% SOL · 20% LST · 5% lending]` · 1.40 (35%) → compra $LUKA → BURN · 0.60 (15%) → O&M · 0.60 (15%) → compra $LUKA → Staking.
-- **Motor B:** 35% Asset Layer → Hard Assets (NUNCA quema, sin R_op) · 35% LP → **B0: burn directo a null / B2: recirculación al pool** · 15% staking · 15% O&M. *Inercia estructural en B2 (sin tocar Vault ni R_op): Motor A activo + Jaguar Exit Fee + Anti-Whale + cola diferida + arbitraje natural.*
+- **Motor B:** 35% Asset Layer → Hard Assets (NUNCA quema, sin R_op) · 35% LP → **B0: burn directo a null / B2: recirculación al pool** · 15% staking · 15% O&M. *Inercia estructural en B2 (sin tocar Vault ni R_op): Motor A activo + KASH Exit Fee + Anti-Whale + cola diferida + arbitraje natural.*
 - **Motor C** (fee 0.5% USDC): 35% → Vault (buffer USDC) · 35% → compra $LUKA → LP · 15% O&M · 15% → $LUKA staking.
 - **Motor D:** decisión por capa (0 exento / 1 = 1.5% $LUKA gated / 2 = 3%-3.5% / 3A = 1.5% / 3B = 2%), luego 35/35/15/15.
 
@@ -248,15 +248,15 @@ auditables, con **disclaimer on-chain obligatorio** (no garantizan rendimiento n
 
 | Tipo cNFT | Capa | Activo | Fee | Gate de Aura | Tótem (UI) |
 | --- | --- | --- | --- | --- | --- |
-| **Nativo $LUKA** | 0 | $LUKA | 0% | Ninguno (Cachorro) | Bronce |
-| **Jaguar Universal** | 1 y 3A | $LUKA | 1.5% | **Aura ≥ 500 (Rastreador)** | Plata/Oro |
-| **Estándar SOL/USDC** | 3B | SOL/USDC | 2% | Ninguno | — |
+| **Tótem Nativo $LUKA** | 0 | $LUKA | 0% | Ninguno (Cachorro) | Bronce |
+| **Tótem Universal** | 1 y 3A | $LUKA | 1.5% | **Aura ≥ 500 (Rastreador)** | Plata/Oro |
+| **Tótem Estándar SOL/USDC** | 3B | SOL/USDC | 2% | Ninguno | — |
 
 Modos de rendimiento: **A — Compuesto** (reinvierte) · **B — Distribución periódica** (paga al holder).
 En Etapa 3, opción C: redimir Modo B y re-emitir Modo A pagando fee de cambio de modo.
 
 > **Nombres de marca (Tótems):** Fuego Eterno (cBTC), Espíritu (JitoSOL), Agua Viva (mSOL), USDC Sagrado,
-> Jaguar Negro (premium) — capa de UI sobre los 3 tipos técnicos. Ver `brand/DESIGN_TOKENS.md`.
+> Tótem Negro (premium) — capa de UI sobre los 3 tipos técnicos. Ver `brand/DESIGN_TOKENS.md`.
 
 **PENDIENTES bloqueantes de smart contract:** (1) mercado secundario de cNFT (fee de venta, herencia del modo,
 actualización de Aura al transferir); (2) frecuencia de distribución del Modo B (semanal/mensual, fija/elegible).
@@ -265,7 +265,7 @@ actualización de Aura al transferir); (2) frecuencia de distribución del Modo 
 
 ## 9. AURA — reputación financiera on-chain (corregido C3)
 
-**Aura** ("el resplandor del Jaguar") reemplaza a "Jaguar Score". On-chain, no transferible, acumulativa.
+**Aura** ("el rugido de la Manada") reemplaza al sistema de reputación anterior. On-chain, no transferible, acumulativa.
 Decae 2%/semana tras 90d de inactividad. El nivel usa el Aura máximo histórico. Calibrada por LUKAI.
 
 ### 9.1 Niveles (5, arco narrativo)
@@ -273,17 +273,17 @@ Decae 2%/semana tras 90d de inactividad. El nivel usa el Aura máximo histórico
 | Nivel | Aura | Beneficios |
 | --- | --- | --- |
 | **Cachorro** | 0–499 | Acceso básico Motor D Capa 2, Manadas estándar, cNFT Nativo |
-| **Rastreador** | 500–1,999 | **cNFT Jaguar Universal → DeFi Capa 1.** Voto Motor D (DAO). Acceso prioritario a nuevos cNFT |
-| **Cazador** | 2,000–4,999 | LP Jaguar 90d +12%. Ranking de Manadas. Acceso anticipado Capas 3A/3B. Liderar Manada |
+| **Rastreador** | 500–1,999 | **cNFT Tótem Universal → DeFi Capa 1.** Voto Motor D (DAO). Acceso prioritario a nuevos cNFT |
+| **Cazador** | 2,000–4,999 | LP LUKASH 90d +12%. Ranking de Manadas. Acceso anticipado Capas 3A/3B. Liderar Manada |
 | **Alfa** | 5,000–9,999 | Gobernanza avanzada. LP Fundador 365d +20%. Override Anti-Whale. Multiplicador Aura ×1.15 |
-| **Jaguar** | 10,000+ | Gobernanza premium. RWA/T-bills tokenizados (Fase 3). Multiplicador ×1.30. Skin legendario |
+| **Glow** | 10,000+ | Gobernanza premium. RWA/T-bills tokenizados (Fase 3). Multiplicador ×1.30. Skin legendario |
 
 Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle de calibración y misiones:
 `specs/01-aura-jungle-arena.md`.
 
 ---
 
-## 10. Jaguar Shield — infraestructura de seguridad
+## 10. KASH Shield — infraestructura de seguridad
 
 | Mecanismo | Descripción |
 | --- | --- |
@@ -294,7 +294,7 @@ Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle 
 | Anti-MEV | Bundles privados Jito |
 | Seguro Anti-Exploit | **Cobertura hasta 5%** del valor total del Vault ante exploits. **Máximo 1 evento cada 12 meses.** **Activo desde Etapa 2B** (K ≥ K_min $25M, Motor B2 activado on-chain). Financiado por auditor(a) externa (Halborn / OtterSec / Sec3 / Zellic / Neodyme o similar — **a cotizar pre-TGE**, sin decisión formal actual). Desde **Etapa 4 (DAO)** la comunidad redefine estas reglas. **Restaurado ADR-015** (las condiciones estaban en v1.0/v4.1 y se perdieron al pasar a v4.2). |
 | Tridente Multisig | **3-de-3** para: activar Capa 3 (cBTC Reserva Profunda), cancelar Circuit Breaker LP, modificar K_min. **Firmantes concretos pendientes pre-TGE** (ADR-015). **Nace INACTIVO** (lógica construida y auditable pero `tridente_activated = false`); instrucción one-way `activate_tridente(pk1, pk2, pk3)` cuando estén los 3 firmantes. **Candado estructural**: el contrato rechaza el paso a Etapa 2 (App launch) si Tridente no está activo — imposible ir a mainnet sin activarlo. |
-| **Jaguar Exit Fee** | Dual: precio <0.7×EMA30 AND venta >0.3% supply/hora → 5%/3%/1% (Et.1/2/3). 100% al Vault Core |
+| **KASH Exit Fee** | Dual: precio <0.7×EMA30 AND venta >0.3% supply/hora → 5%/3%/1% (Et.1/2/3). 100% al Vault Core |
 | **Anti-Whale** | **Solo VENTAS/transferencias** (no compras). Umbral por **% del pool de liquidez** (no del supply): 1-2% pool → 3% · 2-5% → 6% · >5% → 10%, **sobre el excedente**. 100% al Vault Core |
 | **Timelock 48h** | Obligatorio para cambiar K_min, fees, thresholds del Throttle, composición del Vault |
 
@@ -303,7 +303,7 @@ Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle 
 - Staking activo
 - LP Comprometido en lock activo · **LP Fundador 365d**
 - **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado)
-- Nivel **Jaguar** de Aura (Aura ≥10,000, el pináculo — antes "Emperor"; ADR-005/012)
+- Nivel **Glow** de Aura (Aura ≥10,000, el pináculo — antes "Emperor"; ADR-005/012)
 - **KOLs NO tienen exención**: el mecanismo que los alinea es distinto — reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear. El Anti-Whale sí les aplica si intentan vender por encima del umbral.
 
 **Mint del token — Token-2022 con Transfer Hook (ADR-015):** el token de mainnet será Token-2022 (no SPL clásico) para que Anti-Whale y Exit Fee se apliquen **en cada transferencia on-chain**, imposible de evadir. El mint devnet actual (SPL clásico) se mantiene solo para pruebas Milestone 1.
@@ -314,10 +314,10 @@ Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle 
 
 | Etapa | Nombre | Condición | Motores | Capital Inversionistas |
 | --- | --- | --- | --- | --- |
-| 0 | Pre-lanzamiento | Auditoría completa. Vesting on-chain. 4 Frentes listos | — | Capital en KASH Sociedad bajo Jaguar Lock |
-| 1 | Génesis | TGE. LP en Meteora. MM desde D1 | A | LP Fundador 365d. Jaguar Shield activo |
-| 2A | App / B0 | App lanzada. K < $25M | A + B0 + D | Reserva Jaguar Shield. LP Comprometido disponible |
-| **2B** | Madurez / B2 | K ≥ $25M (Pyth) | A + B2 + D | **Libera Vault Sociedad: fees líquidos desde mes 13 (hito Jaguar Lock $30M Core o 12m)** |
+| 0 | Pre-lanzamiento | Auditoría completa. Vesting on-chain. 4 Frentes listos | — | Capital en KASH Sociedad bajo KASH Lock |
+| 1 | Génesis | TGE. LP en Meteora. MM desde D1 | A | LP Fundador 365d. KASH Shield activo |
+| 2A | App / B0 | App lanzada. K < $25M | A + B0 + D | Reserva KASH Shield. LP Comprometido disponible |
+| **2B** | Madurez / B2 | K ≥ $25M (Pyth) | A + B2 + D | **Libera Vault Sociedad: fees líquidos desde mes 13 (hito KASH Lock $30M Core o 12m)** |
 | 3 | Soberanía | K > $50M. Fiat activa | A + B2 + C + D | **Distribución a Sociedad ya activa (desde mes 13). Foco: Motor C y escala** |
 | 4 | DAO | Año 5. Supply ≤ 3.3B. ENZ | Todos (quema suspendida) | Control pasa al DAO |
 
@@ -337,7 +337,7 @@ Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle c
 | Parámetro | Valor v4.3 | Notas |
 | --- | --- | --- |
 | K_min (activa Motor B2) | $25,000,000 | Hardcoded. Modificable solo por DAO (Etapa 4). Verificación Pyth |
-| Jaguar Lock (libera Sociedad) | $30M Core **o** 12 meses | Sobre KASH Core. Fees líquidos mes 13; principal lineal 48m |
+| KASH Lock (libera Sociedad) | $30M Core **o** 12 meses | Sobre KASH Core. Fees líquidos mes 13; principal lineal 48m |
 | Etapa 3 (Motor C) | K > $50M | + integración fiat |
 | Escala final | $100M en Vault **Core** | Objetivo original |
 | Fee Motor A Et.1 / Et.2 | 4.0% / 2.5% | WL 2.5% / 1.5% |
@@ -350,10 +350,10 @@ Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle c
 | Circuit Breaker LP | Delay 12h (>15%/4h) · 48h (>30%/24h) | Override Tridente |
 | UCR | 20% de R_op → Recarga Forzada 15% yield/sem | |
 | Cap burn diario | 1% supply/día | Exceso al día siguiente |
-| Jaguar Exit Fee | precio<0.7×EMA30 AND venta>0.3% supply/h → 5/3/1% | 100% al Vault Core |
+| KASH Exit Fee | precio<0.7×EMA30 AND venta>0.3% supply/h → 5/3/1% | 100% al Vault Core |
 | Anti-Whale | **Solo ventas** · **% del pool** (no supply): 1-2%→3% · 2-5%→6% · >5%→10% (sobre excedente) | 100% al Vault Core. Métrica por liquidez |
 | Timelock gobernanza | 48h | Parámetros críticos |
-| Aura niveles | Cachorro 0-499 · Rastreador 500-1999 · Cazador 2000-4999 · Alfa 5000-9999 · Jaguar 10000+ | Gate cNFT Jaguar Universal: ≥500 |
+| Aura niveles | Cachorro 0-499 · Rastreador 500-1999 · Cazador 2000-4999 · Alfa 5000-9999 · Glow 10000+ | Gate cNFT Tótem Universal: ≥500 |
 | Supply objetivo / ENZ | 3,300M | PDA suspende quema |
 
 ---

@@ -20,7 +20,7 @@ Tres ideas de v1, todas sobre **bootstrapear volumen agresivamente con energía 
 
 1. **El arco de lanzamiento WIF → BONK** (v1, §5 y §8): arrancar *deliberadamente* como memecoin de alto hype (viralidad estilo WIF, volumen agresivo), con fee que decrece por market cap, y graduar a utilidad (estilo BONK). → Reemplazado en v2 por el enfoque institucional de Market Makers.
 2. **Bet & Win / Jungle Arena como generador deliberado de volumen para quemas** (v1 BMC). → Descartado en v2/v3 por "incoherente con el anti-casino"; **revive parcial en v4** como skill-based y gated.
-3. **Los 50 KOLs como co-inversores** con derechos sobre el KASH Sociedad bajo Jaguar Lock ("Concepto Original v1.0", en v3.0 §9.2). → **Eliminado en v3.1**, que solo dejó la tabla cash-vs-vesting.
+3. **Los 50 KOLs como co-inversores** con derechos sobre el KASH Sociedad bajo KASH Lock ("Concepto Original v1.0", en v3.0 §9.2). → **Eliminado en v3.1**, que solo dejó la tabla cash-vs-vesting.
 
 (Aparte, por razones técnicas documentadas, se descartaron: **ETH/LINK** del Vault —correlación + riesgo bridge—, **cBTC 45%→35%**, el **Modo B1**, y el **Fee Antipánico 10/6/2.5%**.)
 
@@ -48,7 +48,7 @@ El punto óptimo —y tu instinto— es **recuperar la energía memecoin de lanz
 | **El arco narrativo WIF → BONK → banco** | Como historia de posicionamiento para inversores/comunidad: "empezamos con viralidad, graduamos a reserva". Energía divertida, NO agravio anti-banco. |
 | **Energía memecoin de lanzamiento** (guerrilla, memes, "la cacería", FOMO) | Vender **aspiración + diversión + transparencia** (marca v2), no "los bancos son estafa". Fun sí, ideología no. |
 | **Bet & Win / Duelos como volumen** | Skill-based, gated por Aura, recompensas desde Marketing/Staking (nunca del Vault). Volumen orgánico, no azar. |
-| **50 KOLs como co-inversores (Jaguar Lock)** | Recuperar el concepto: KOLs con **equity vestido**, alineados a años → generan volumen y defienden ante FUD, y **no dumpean** (anti-dump). |
+| **50 KOLs como co-inversores (KASH Lock)** | Recuperar el concepto: KOLs con **equity vestido**, alineados a años → generan volumen y defienden ante FUD, y **no dumpean** (anti-dump). |
 | **Market Makers como palanca #1** | El piso de volumen contratado ($2-5M/día, $50-100K) sigue siendo lo más determinante del Vault a 5 años. |
 
 **Síntesis en una línea:** *LUKASH es una memecoin con conciencia — usa el hype para arrancar, pero el Vault transparente y creciente es lo que convierte ese hype en algo que dura, en vez de un casino.* Esa frase (versión moderna del subtítulo v1) es probablemente tu mejor gancho de posicionamiento y de volumen a la vez.

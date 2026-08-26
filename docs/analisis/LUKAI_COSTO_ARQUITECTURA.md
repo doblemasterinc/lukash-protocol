@@ -343,9 +343,9 @@ Para generar $X de O&M mensual (15% de fees totales):
 | Rastreador (500--1,999) | 15 msg/hora | Haiku + Sonnet | Usuario comprometido |
 | Cazador (2,000--4,999) | 30 msg/hora | Haiku + Sonnet | Usuario avanzado |
 | Alfa (5,000--9,999) | 60 msg/hora | Haiku + Sonnet | Power user |
-| Jaguar (10,000+) | Sin limite | Haiku + Sonnet | Recompensa maxima |
+| Glow (10,000+) | Sin limite | Haiku + Sonnet | Recompensa maxima |
 
-**Efecto estimado:** Los usuarios Cachorro (mayoria) consumen menos, los Jaguar (minoria) consumen mas pero son pocos. Distribucion Pareto tipica reduce el costo promedio real a ~60--70% del estimado base.
+**Efecto estimado:** Los usuarios Cachorro (mayoria) consumen menos, los Glow (minoria) consumen mas pero son pocos. Distribucion Pareto tipica reduce el costo promedio real a ~60--70% del estimado base.
 
 **C. Compresion de contexto**
 - Resumir conversaciones anteriores en vez de enviar historial completo

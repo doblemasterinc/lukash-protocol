@@ -36,7 +36,7 @@ Dos formas de arrancar sin market maker; para LUKASH (contratos propios) la segu
 **Anti-dump integrado desde el diseño** (para que el desplome inicial engorde la Reserva, no te hunda):
 - **Vesting del equipo on-chain** publicado antes del TGE (elimina el miedo a rug).
 - **Liquidez quemada / lockeada** (nadie jala la liquidez).
-- **Jaguar Exit Fee** (las ventas de pánico pagan fee → 100% al Vault) y **Anti-Whale** (ventas grandes → al Vault).
+- **KASH Exit Fee** (las ventas de pánico pagan fee → 100% al Vault) y **Anti-Whale** (ventas grandes → al Vault).
 - **Airdrop y recompensas siempre vesteadas** (los que reciben tokens no pueden dumpear al TGE).
 
 ## A.2 El motor de volumen orgánico (guerrilla + incentivos) — el corazón
@@ -45,7 +45,7 @@ Dos formas de arrancar sin market maker; para LUKASH (contratos propios) la segu
 **nunca en cash y nunca del Vault**. Y el marketing vende **aspiración/identidad/transparencia, no retornos**.
 
 ### Pre-lanzamiento (F0 — ver calendario en `specs/04`)
-- **Mito fundacional** ("sé jaguar desde el génesis") + **hype de misterio** (posts crípticos del jaguar-infinito, "la reserva viva llega").
+- **Mito fundacional** ("ruge desde el génesis") + **hype de misterio** (posts crípticos del rugido-infinito, "la reserva viva llega").
 - **Canales:** X (hub), Telegram/Discord (la manada), TikTok/IG Reels (Segmento A), en ES/EN/PT.
 - **KOLs seed** (ver Ruta B para el listado) — hispanos de educación financiera, pagados en tokens **vesteados**.
 - **Transparencia como espectáculo:** el **dashboard del Vault en testnet** mostrando el motor real (fees → reserva sube, "El Fuego" quema). Es un hecho verificable, no una promesa — tu mejor pieza.
@@ -60,8 +60,8 @@ Dos formas de arrancar sin market maker; para LUKASH (contratos propios) la segu
 ### Mecánicas de guerrilla (recompensa = puntos/allocation vesteada)
 - **Airdrop de Génesis (10% del supply / Comunidad):** repartido por **hitos verificables**, no gratis. Snapshot antes del TGE. Tiers = pre-Aura (Cachorro → Rastreador → Cazador).
 - **Proof of Roar:** raids de contenido verificable (hilos en X, Reels, "Golden QR" físicos), recompensados con puntos de whitelist. Temáticos (lun/mié/vie), con humor, no spam.
-- **Referral leaderboard:** trae jaguares → subes de tier → más airdrop (escalonado 5 / 20 / 100 referidos; top → llamada con el fundador).
-- **Jaguar Games (semana 1):** "Spot the Whale" (identifica la compra más grande), "Meme Wars" (concurso de memes), "The First Hunt" (holdear + RT = recompensa).
+- **Referral leaderboard:** trae rugidores → subes de tier → más airdrop (escalonado 5 / 20 / 100 referidos; top → llamada con el fundador).
+- **LUKASH Games (semana 1):** "Spot the Whale" (identifica la compra más grande), "Meme Wars" (concurso de memes), "The First Hunt" (holdear + RT = recompensa).
 - **Widgets de urgencia:** "Burn Stream" 24/7 (supply baja / Vault sube), "Vault Challenge" ("muéstranos tu vault o eres scam"), contador de La Bóveda hacia el hito.
 
 ### Métricas (no vanity)
@@ -131,7 +131,7 @@ firmas grandes suelen exigir tracción/listado previo. **Gotbit = NO contratar**
 ---
 
 ## Anti-dump (recordatorio integrado)
-Vesting on-chain (equipo + KOLs + airdrop) · LP quemado/lockeado · Jaguar Exit Fee · Anti-Whale · marketing sin promesas de precio. El desplome inicial (profit-takers) se **absorbe**: el Exit Fee lo manda al Vault, y el piso P_KASH atrae compradores por arbitraje → consolidación.
+Vesting on-chain (equipo + KOLs + airdrop) · LP quemado/lockeado · KASH Exit Fee · Anti-Whale · marketing sin promesas de precio. El desplome inicial (profit-takers) se **absorbe**: el Exit Fee lo manda al Vault, y el piso P_KASH atrae compradores por arbitraje → consolidación.
 
 ## Qué NO hacer
 ❌ Prometer retornos/precio · ❌ "0.0% risk" · ❌ pagar KOLs/MM en cash o tokens líquidos al TGE · ❌ contratar MM predatorio (Gotbit-style) o que prometa "pump" · ❌ lanzar sin vesting on-chain + liquidez quemada · ❌ confiar en un DM que te escribe primero.

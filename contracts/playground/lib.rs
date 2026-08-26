@@ -1,14 +1,16 @@
 // LUKASH Protocol - Milestone 2 Sprint 5B (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
 // Cargo.toml requiere: anchor-lang = "0.30.1" Y anchor-spl = "0.30.1"
+// v10.1: Pyth owner validation movida a runtime (gated por !DEVNET_MODE) — constraint de Anchor
+//   bloqueaba el fallback en devnet. has_one=authority en process_fee/refresh/swaps se mantiene.
 // v10: Security hardening — has_one=authority en process_fee/refresh/swaps, Pyth owner validation,
 //   DEVNET_MODE flag para fallbacks, confidence interval check, u128→u64 safe cast.
 // v9.1: Fix devnet Pyth fallbacks (parse_pyth_price intacto para mainnet, fallback en callers).
 // v9: Sprint 5B Fase B+C (Capa 2: oráculos Pyth + execute_vault_swaps a precio de oráculo).
 // v8: Sprint 5B Fase A (Capa 2: quema real SPL burn CPI + initialize_burn_vault).
 // v7: Sprint 5A (hardening: supply tracking on burn, close_protocol, MM close PDA, validaciones).
-// v6: Sprint 4 (07-f Anti-Whale + Jaguar Exit Fee + MMRegistry + Transfer Hook Capa 1).
-// v5: Sprint 3 (07-c Jaguar Shield: Tridente+CB+Seguro + 07-e módulo contra-cíclico LUKAI).
+// v6: Sprint 4 (07-f Anti-Whale + KASH Exit Fee + MMRegistry + Transfer Hook Capa 1).
+// v5: Sprint 3 (07-c KASH Shield: Tridente+CB+Seguro + 07-e módulo contra-cíclico LUKAI).
 // v4: Sprint 2 (07-a switch B0→B2 por valoración de mercado + token accounting + doble candado 7d).
 // v3: Sprint 1 (07-b cap quema 1%/día + 07-d drenaje siempre activo ADR-016 + hard-stop ENZ).
 // v2: endurecido en seguridad (validaciones, freeze en pausa, protección de autoridad, eventos).
@@ -56,12 +58,12 @@ pub const VAULT_USDC_LEND_BPS: u64 = 500;
 
 // ---- Umbrales de valor (sobre el KASH Core), USD 6 dec ----
 pub const K_MIN_USD: u64 = 25_000_000_000_000; // $25M
-pub const JAGUAR_LOCK_USD: u64 = 30_000_000_000_000; // $30M
+pub const KASH_LOCK_USD: u64 = 30_000_000_000_000; // $30M
 pub const ETAPA3_USD: u64 = 50_000_000_000_000; // $50M
 pub const SCALE_USD: u64 = 100_000_000_000_000; // $100M
 
-// ---- Jaguar Lock por tiempo: 12 meses ----
-pub const JAGUAR_LOCK_SECONDS: i64 = 365 * 24 * 60 * 60;
+// ---- KASH Lock por tiempo: 12 meses ----
+pub const KASH_LOCK_SECONDS: i64 = 365 * 24 * 60 * 60;
 
 // ---- Throttle: umbrales como % de la EMA30 (bps) y % de quema (bps) ----
 pub const THROTTLE_ACCEL_BPS: u64 = 12_000; // P > 1.2x EMA30
@@ -158,7 +160,7 @@ pub const AW_FEE_1_BPS: u64 = 300;     // 3% sobre excedente
 pub const AW_FEE_2_BPS: u64 = 600;     // 6%
 pub const AW_FEE_3_BPS: u64 = 1_000;   // 10%
 
-// ---- Jaguar Exit Fee (07-f, v4.3 §9): activación dual ----
+// ---- KASH Exit Fee (07-f, v4.3 §9): activación dual ----
 pub const EXIT_FEE_ET1_BPS: u64 = 500;   // 5% Génesis
 pub const EXIT_FEE_ET2_BPS: u64 = 300;   // 3% Etapa 2
 pub const EXIT_FEE_ET3_BPS: u64 = 100;   // 1% Etapa 3+
@@ -166,8 +168,8 @@ pub const EXIT_FEE_PRICE_TRIG_BPS: u64 = 7_000;  // <0.7×EMA30
 pub const EXIT_FEE_VOL_TRIG_BPS: u64 = 30;        // >0.3% supply/hora (bps)
 pub const SELL_PRESSURE_WINDOW: i64 = 3600;        // ventana rodante de 1h
 
-// ---- Aura — exención nivel Jaguar ----
-pub const AURA_JAGUAR_MIN: u64 = 10_000;
+// ---- Aura — exención nivel Glow ----
+pub const AURA_GLOW_MIN: u64 = 10_000;
 
 // ---- Modos del Motor B ----
 pub const MOTOR_B_B0: u8 = 0;
@@ -300,7 +302,7 @@ pub struct ProtocolConfig {
 
     // Umbrales de valor (KASH Core, USD 6 dec)
     pub k_min_usd: u64,
-    pub jaguar_lock_usd: u64,
+    pub kash_lock_usd: u64,
     pub etapa3_usd: u64,
 
     // Composición objetivo del Vault Core (bps, debe sumar 10000)
@@ -367,7 +369,7 @@ pub struct ProtocolState {
     pub deferred_burn_queue: u64,
 
     // Hitos
-    pub jaguar_lock_hit: bool,
+    pub kash_lock_hit: bool,
     pub last_queue_exec_ts: i64,
 
     // Sprint 1 (07-b cap quema + 07-d drenaje/ENZ)
@@ -404,7 +406,7 @@ pub struct ProtocolState {
     pub market_regime: u8,           // 0=BULL, 1=NEUTRAL, 2=BEAR
     pub regime_updated_ts: i64,
 
-    // Jaguar Exit Fee: presión de venta en ventana rodante de 1h (07-f)
+    // KASH Exit Fee: presión de venta en ventana rodante de 1h (07-f)
     pub sell_pressure_1h_supply_bps: u64,
     pub sell_pressure_last_reset_ts: i64,
 
@@ -463,7 +465,7 @@ pub mod lukash_protocol {
         config.stage = 1; // Génesis
         config.paused = false;
         config.k_min_usd = K_MIN_USD;
-        config.jaguar_lock_usd = JAGUAR_LOCK_USD;
+        config.kash_lock_usd = KASH_LOCK_USD;
         config.etapa3_usd = ETAPA3_USD;
         config.vault_cbtc_bps = VAULT_CBTC_BPS;
         config.vault_sol_bps = VAULT_SOL_BPS;
@@ -503,7 +505,7 @@ pub mod lukash_protocol {
         state.staking_total = 0;
         state.om_total = 0;
         state.deferred_burn_queue = 0;
-        state.jaguar_lock_hit = false;
+        state.kash_lock_hit = false;
         state.last_queue_exec_ts = now;
         state.burned_today_tokens = 0;
         state.burn_day_start_ts = now;
@@ -681,11 +683,11 @@ pub mod lukash_protocol {
         state.om_total = state.om_total.checked_add(to_om).ok_or(LukashError::MathOverflow)?;
         state.staking_total = state.staking_total.checked_add(to_staking).ok_or(LukashError::MathOverflow)?;
 
-        // --- Hito Jaguar Lock: KASH Core >= $30M O 12 meses ---
-        if !state.jaguar_lock_hit {
+        // --- Hito KASH Lock: KASH Core >= $30M O 12 meses ---
+        if !state.kash_lock_hit {
             let elapsed = now_ts.checked_sub(state.genesis_ts).unwrap_or(0);
-            if state.vault_core_usd >= config.jaguar_lock_usd || elapsed >= JAGUAR_LOCK_SECONDS {
-                state.jaguar_lock_hit = true;
+            if state.vault_core_usd >= config.kash_lock_usd || elapsed >= KASH_LOCK_SECONDS {
+                state.kash_lock_hit = true;
             }
         }
 
@@ -751,6 +753,11 @@ pub mod lukash_protocol {
         usdc_lend_amount: u64,
     ) -> Result<()> {
         require!(luka_price_usd > 0, LukashError::InvalidOracleValue);
+
+        if !DEVNET_MODE {
+            require!(ctx.accounts.pyth_btc_feed.owner == &pyth_oracle::ID, LukashError::InvalidOracleValue);
+            require!(ctx.accounts.pyth_sol_feed.owner == &pyth_oracle::ID, LukashError::InvalidOracleValue);
+        }
 
         let now = Clock::get()?.unix_timestamp;
 
@@ -1078,7 +1085,7 @@ pub mod lukash_protocol {
         Ok(())
     }
 
-    /// Transfer Hook — Jaguar Shield: Anti-Whale + Jaguar Exit Fee (07-f, ADR-012).
+    /// Transfer Hook — KASH Shield: Anti-Whale + KASH Exit Fee (07-f, ADR-012).
     /// Capa 1 (devnet): authority alimenta parámetros del contexto manualmente.
     /// Capa 2 (mainnet Token-2022): invocado automáticamente por el Token Program en cada transfer;
     /// los parámetros se leen de cuentas on-chain (pool Meteora, Aura PDA, staking PDA, MMRegistry PDA).
@@ -1115,14 +1122,14 @@ pub mod lukash_protocol {
             || (config.lp_fundador_ata != Pubkey::default() && sender == config.lp_fundador_ata)
             || sender_has_lp_lock
             || sender_has_staking
-            || sender_aura_score >= AURA_JAGUAR_MIN;
+            || sender_aura_score >= AURA_GLOW_MIN;
 
         // Exenciones Exit Fee: todas EXCEPTO staking (el Exit Fee no se exime por staking)
         let exempt_exit = is_internal_cpi
             || sender_is_mm
             || (config.lp_fundador_ata != Pubkey::default() && sender == config.lp_fundador_ata)
             || sender_has_lp_lock
-            || sender_aura_score >= AURA_JAGUAR_MIN;
+            || sender_aura_score >= AURA_GLOW_MIN;
 
         // Actualizar presión de venta (ventana rodante 1h, I22)
         update_sell_pressure(state, amount, now)?;
@@ -1361,6 +1368,11 @@ pub mod lukash_protocol {
     /// Devnet (mock): accounting puro a precio de oráculo. Mainnet: CPI a Jupiter.
     /// Permissionless — el keeper (o cualquiera) puede llamarla.
     pub fn execute_vault_swaps(ctx: Context<ExecuteVaultSwaps>) -> Result<()> {
+        if !DEVNET_MODE {
+            require!(ctx.accounts.pyth_btc_feed.owner == &pyth_oracle::ID, LukashError::InvalidOracleValue);
+            require!(ctx.accounts.pyth_sol_feed.owner == &pyth_oracle::ID, LukashError::InvalidOracleValue);
+        }
+
         let state = &mut ctx.accounts.state;
         let now = Clock::get()?.unix_timestamp;
 
@@ -1812,11 +1824,9 @@ pub struct RefreshVaultValuation<'info> {
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    /// CHECK: Pyth BTC/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
-    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
+    /// CHECK: Pyth BTC/USD price feed — owner validado en runtime (mainnet: pyth_oracle::ID; devnet: fallback)
     pub pyth_btc_feed: AccountInfo<'info>,
-    /// CHECK: Pyth SOL/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
-    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
+    /// CHECK: Pyth SOL/USD price feed — owner validado en runtime (mainnet: pyth_oracle::ID; devnet: fallback)
     pub pyth_sol_feed: AccountInfo<'info>,
     pub authority: Signer<'info>,
 }
@@ -1828,11 +1838,9 @@ pub struct ExecuteVaultSwaps<'info> {
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    /// CHECK: Pyth BTC/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
-    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
+    /// CHECK: Pyth BTC/USD price feed — owner validado en runtime (mainnet: pyth_oracle::ID; devnet: fallback)
     pub pyth_btc_feed: AccountInfo<'info>,
-    /// CHECK: Pyth SOL/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
-    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
+    /// CHECK: Pyth SOL/USD price feed — owner validado en runtime (mainnet: pyth_oracle::ID; devnet: fallback)
     pub pyth_sol_feed: AccountInfo<'info>,
     pub authority: Signer<'info>,
 }

@@ -136,7 +136,7 @@ MKT = {
         "ret_mensual":  0.62,
     },
     "BASE": {
-        "desc": "3 KOLs con Jaguar Lock. 2 MMs desde dia 1. CAC $6. Flywheel moderado.",
+        "desc": "3 KOLs con KASH Lock. 2 MMs desde dia 1. CAC $6. Flywheel moderado.",
         "app_dia":    120,
         "vol_tge":    800_000,
         "vol_pico":  12_000_000,    # 2M/dia en pico — calibrado con JTO/Jito 2024

@@ -47,7 +47,7 @@ LUKASH es un ecosistema financiero descentralizado basado en Solana que opera ba
 **Del 100% del capital recaudado en preventa:**
 - **30%** → LP Injection (pareado con 300M $LUKA y quemado)
 - **40%** → Vault KASH Core (inamovible, convertido a BTC/SOL/USDC/LINK)
-- **30%** → Vault KASH Society (bloqueado bajo Jaguar Lock)
+- **30%** → Vault KASH Society (bloqueado bajo KASH Lock)
 
 **Composición del Vault KASH:**
 - 45% Bitcoin (BTC)
@@ -146,10 +146,10 @@ LUKASH es un ecosistema financiero descentralizado basado en Solana que opera ba
 │     ├─> SOL_NATIVE_ACCOUNT                                      │
 │     ├─> USDC_TOKEN_ACCOUNT                                      │
 │     ├─> cBTC_TOKEN_ACCOUNT                                      │
-│     └─> CNFT_JAGUAR_ACCOUNT (compressed NFT)                   │
+│     └─> CNFT_TOTEM_ACCOUNT (compressed NFT)                    │
 │                                                                  │
 │ 14. USER_PROFILE_PDA [Per-user data account]                   │
-│     ├─> Jaguar Score (on-chain reputation)                     │
+│     ├─> Aura (on-chain reputation)                              │
 │     ├─> Transaction History Hash                               │
 │     ├─> Staking Position Data                                  │
 │     └─> KYC Tier Level (1/2/3)                                 │
@@ -401,11 +401,11 @@ LUKASH es un ecosistema financiero descentralizado basado en Solana que opera ba
     └─> Total protocol revenue: 83.35 $LUKA (8.335%) ✓
 ```
 
-#### FLUJO 5: Vesting del Vault Society (Jaguar Lock)
+#### FLUJO 5: Vesting del Vault Society (KASH Lock)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ FLUJO: Activación y Distribución Jaguar Lock                   │
+│ FLUJO: Activación y Distribución KASH Lock                     │
 └─────────────────────────────────────────────────────────────────┘
 
 [PYTH_ORACLE_MONITOR] (runs every 24h)
@@ -432,14 +432,14 @@ LUKASH es un ecosistema financiero descentralizado basado en Solana que opera ba
     │ TOTAL TVL = $5,215,000 USD ✓
     │
     ↓
-[JAGUAR_LOCK_STATE_MACHINE]
+[KASH_LOCK_STATE_MACHINE]
     │
     │ Check Activation Conditions:
     │   Condition 1: TVL >= $5,000,000 ✓
     │   Condition 2: OR Month >= 13
     │
     │ IF ACTIVATED:
-    │   └─> Set: JAGUAR_LOCK_STATUS = ACTIVE
+    │   └─> Set: KASH_LOCK_STATUS = ACTIVE
     │       Set: ACTIVATION_TIMESTAMP = current_time
     │
     ↓
@@ -920,18 +920,18 @@ pub struct KashBasket {
 }
 ```
 
-#### MÓDULO 3: JAGUAR_LOCK_PROTOCOL
+#### MÓDULO 3: KASH_LOCK_PROTOCOL
 
 ```rust
 // ============================================================================
-// MÓDULO: JAGUAR_LOCK_PROTOCOL
+// MÓDULO: KASH_LOCK_PROTOCOL
 // Propósito: Gestionar vesting del Vault Society
 // ============================================================================
 
 use anchor_lang::prelude::*;
 
 #[program]
-pub mod jaguar_lock_protocol {
+pub mod kash_lock_protocol {
     use super::*;
 
     // ────────────────────────────────────────────────────────────────────
@@ -942,10 +942,10 @@ pub mod jaguar_lock_protocol {
         ctx: Context<CheckMilestone>,
     ) -> Result<()> {
         
-        let jaguar_state = &mut ctx.accounts.jaguar_lock_state;
+        let kash_state = &mut ctx.accounts.kash_lock_state;
 
         // Skip if already activated
-        if jaguar_state.is_activated {
+        if kash_state.is_activated {
             return Ok(());
         }
 
@@ -965,7 +965,7 @@ pub mod jaguar_lock_protocol {
             .unwrap();
 
         let current_time = Clock::get()?.unix_timestamp;
-        let months_since_genesis = (current_time - jaguar_state.genesis_timestamp)
+        let months_since_genesis = (current_time - kash_state.genesis_timestamp)
             .checked_div(30 * 24 * 60 * 60)
             .unwrap();
 
@@ -975,19 +975,19 @@ pub mod jaguar_lock_protocol {
 
         if total_tvl >= tvl_threshold || months_since_genesis >= month_threshold {
             
-            // ACTIVATE JAGUAR LOCK
-            jaguar_state.is_activated = true;
-            jaguar_state.activation_timestamp = current_time;
-            jaguar_state.total_locked_at_activation = vault_society_value;
+            // ACTIVATE KASH LOCK
+            kash_state.is_activated = true;
+            kash_state.activation_timestamp = current_time;
+            kash_state.total_locked_at_activation = vault_society_value;
 
-            emit!(JaguarLockActivated {
+            emit!(KashLockActivated {
                 total_tvl,
                 society_vault_value: vault_society_value,
                 activation_timestamp: current_time,
                 trigger: if total_tvl >= tvl_threshold { "TVL_THRESHOLD" } else { "MONTH_13" },
             });
 
-            msg!("🐆 JAGUAR LOCK ACTIVATED! TVL: ${}, Society Vault: ${}", 
+            msg!("🐆 KASH LOCK ACTIVATED! TVL: ${}, Society Vault: ${}", 
                  total_tvl / 1_000_000, 
                  vault_society_value / 1_000_000);
         }
@@ -1004,16 +1004,16 @@ pub mod jaguar_lock_protocol {
         beneficiary: Pubkey,
     ) -> Result<()> {
         
-        let jaguar_state = &ctx.accounts.jaguar_lock_state;
+        let kash_state = &ctx.accounts.kash_lock_state;
         let vesting_tracker = &mut ctx.accounts.vesting_tracker;
 
         require!(
-            jaguar_state.is_activated,
-            ErrorCode::JaguarLockNotActivated
+            kash_state.is_activated,
+            ErrorCode::KashLockNotActivated
         );
 
         let current_time = Clock::get()?.unix_timestamp;
-        let months_since_activation = (current_time - jaguar_state.activation_timestamp)
+        let months_since_activation = (current_time - kash_state.activation_timestamp)
             .checked_div(30 * 24 * 60 * 60)
             .unwrap();
 
@@ -1023,7 +1023,7 @@ pub mod jaguar_lock_protocol {
         );
 
         // Calculate vested amount (linear over 48 months)
-        let total_locked = jaguar_state.total_locked_at_activation;
+        let total_locked = kash_state.total_locked_at_activation;
         let monthly_unlock = total_locked.checked_div(48).unwrap();
         
         let total_vested = monthly_unlock
@@ -1072,11 +1072,11 @@ pub mod jaguar_lock_protocol {
         ctx: Context<DistributeSocietyFees>,
     ) -> Result<()> {
         
-        let jaguar_state = &ctx.accounts.jaguar_lock_state;
+        let kash_state = &ctx.accounts.kash_lock_state;
 
         require!(
-            jaguar_state.is_activated,
-            ErrorCode::JaguarLockNotActivated
+            kash_state.is_activated,
+            ErrorCode::KashLockNotActivated
         );
 
         let current_month_fees = ctx.accounts.society_fee_buffer.amount;
@@ -1445,7 +1445,7 @@ pub struct ProtocolState {
 #[account]
 pub struct UserState {
     pub owner: Pubkey,
-    pub jaguar_score: u32,
+    pub aura_score: u32,
     pub total_transactions: u64,
     pub total_volume: u64,
     pub last_transfer_timestamp: i64,
@@ -1456,7 +1456,7 @@ pub struct UserState {
 }
 
 #[account]
-pub struct JaguarLockState {
+pub struct KashLockState {
     pub is_activated: bool,
     pub genesis_timestamp: i64,
     pub activation_timestamp: i64,
@@ -1499,7 +1499,7 @@ pub struct FeeAccumulator {
 ```
 30% LP Injection    = $13,500  →  Pareado con 300M $LUKA y quemado
 40% Vault KASH Core = $18,000  →  Convertido a BTC/SOL/USDC/LINK
-30% Vault Society   = $13,500  →  Bloqueado bajo Jaguar Lock
+30% Vault Society   = $13,500  →  Bloqueado bajo KASH Lock
 ```
 
 **Composición Inicial del Vault KASH ($31,500 total):**
@@ -1545,7 +1545,7 @@ LINK (5%):  $1,575   ≈ 112.5 LINK @ $14/LINK
 **Notas Importantes:**
 1. Las proyecciones asumen crecimiento viral moderado (no incluyen eventos Black Swan positivos)
 2. El Market Cap de $50M para Etapa Adoption podría alcanzarse en el Mes 18-24 con ejecución perfecta
-3. El Vault TVL de $5M para Jaguar Lock probablemente se active por tiempo (mes 13) antes que por valor
+3. El Vault TVL de $5M para KASH Lock probablemente se active por tiempo (mes 13) antes que por valor
 4. La transición a Etapa Expansion (supply ≤33%) proyectada para meses 24-30
 
 ### 4.3 Análisis Detallado de Fees y Distribución
@@ -1633,7 +1633,7 @@ LINK: 2,150 LINK @ $18 = $38,700
 Total Vault: ~$289,300 USD
 ```
 
-**TRAYECTORIA HACIA $5M TVL (JAGUAR LOCK)**
+**TRAYECTORIA HACIA $5M TVL (KASH LOCK)**
 
 ```
 Escenario Base:
@@ -1758,7 +1758,7 @@ Crecimiento mensual proyectado (Stage 3):
 - Path to $5M: 18-24 meses
 ```
 
-**ACTIVACIÓN JAGUAR LOCK**
+**ACTIVACIÓN KASH LOCK**
 
 ```
 Condición Doble (OR lógico):
@@ -1852,7 +1852,7 @@ MES 10-12 (Consolidación)
 □ Vault: $160K → $285K
 □ Market Cap: ~$200K
 
-MES 13 (JAGUAR LOCK ACTIVATION) ⭐
+MES 13 (KASH LOCK ACTIVATION) ⭐
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✓ Activación temporal garantizada
 ✓ Snapshot Vault Society: ~$70K
@@ -1966,7 +1966,7 @@ MES 25-36 (Año 2-3: Maturity)
    - Comunicar claramente en docs
 
 7. **Clockwork/cron Jobs Setup**
-   - Daily: Check Jaguar Lock activation
+   - Daily: Check KASH Lock activation
    - Hourly: Monitor threshold accumulator
    - Weekly: Vault TVL calculation y publish
 
@@ -2046,7 +2046,7 @@ DÍA 8-30
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 □ Full app launch (iOS + Android)
 □ First marketplace listings
-□ Jaguar cNFT airdrops (early adopters)
+□ Tótem cNFT airdrops (early adopters)
 □ Partnerships announcements
 □ First burn report (transparency)
 ```
@@ -2071,7 +2071,7 @@ Métricas Off-Chain:
 8. App Downloads (iOS + Android)
 9. DAU/MAU (usuarios activos)
 10. Transacciones App (por tipo)
-11. Jaguar Score promedio
+11. Aura promedio
 12. NPS (Net Promoter Score)
 
 URL: dashboard.lukash.io (público)
@@ -2230,7 +2230,7 @@ El proyecto LUKASH presenta una arquitectura técnica sólida con un modelo econ
 - Complejidad técnica (múltiples contratos interdependientes)
 
 **MILESTONE CRÍTICO:**
-El MES 13 (Jaguar Lock activation) es el punto de inflexión donde el proyecto demuestra su capacidad de generar y retener valor real. Si se alcanza con métricas sanas (usuarios, volumen, TVL), el proyecto tiene fundamentos para escalar a Fases 4-5.
+El MES 13 (KASH Lock activation) es el punto de inflexión donde el proyecto demuestra su capacidad de generar y retener valor real. Si se alcanza con métricas sanas (usuarios, volumen, TVL), el proyecto tiene fundamentos para escalar a Fases 4-5.
 
 **PRÓXIMOS PASOS INMEDIATOS:**
 1. Completar desarrollo de smart contracts (semana 1-2)

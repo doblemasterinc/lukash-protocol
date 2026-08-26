@@ -9,17 +9,17 @@
 ## 1. Universo narrativo y voz de marca
 
 **Mundo:** una selva digital mística donde el dinero es "fuerza vital" que se escapa "entre las garras
-como niebla". El usuario entra como **cachorro a merced del viento** y madura hasta **Jaguar Sabio /
+como niebla". El usuario entra como **cachorro a merced del viento** y madura hasta **Glow Sabio /
 dueño de su propio banco** — arco de soberanía financiera. La **Reserva Sagrada** (bóveda BTC/SOL/USDC)
 es el santuario. Metáfora rectora: **cazar solo vs. cazar en Manada**.
 
 **Giro narrativo oficial:** de "anti-banco" a **"La Reserva del Pueblo"** — construcción colectiva, no
-confrontación (`NARRATIVA_REVISADA_PEOPLE_RESERVE.md`). Arquetipo de marca: **"El Jaguar Sabio"** —
+confrontación (`NARRATIVA_REVISADA_PEOPLE_RESERVE.md`). Arquetipo de marca: **"El Glow Sabio"** —
 educativo, confiado pero humilde, pro-pueblo, nunca "get rich quick".
 
 **Personajes:**
-- **LUKAI** — IA guía. Jaguar de obsidiana, ojos ámbar. Habla como **chamán digital**: pausado, sin jerga cripto. Firma: *"Respira profundo, Joven Jaguar."*
-- **Los Jaguares** — usuarios. Progresión visible ligada a Aura.
+- **LUKAI** — IA guía. Felino de obsidiana, ojos ámbar. Habla como **chamán digital**: pausado, sin jerga cripto. Firma: *"Respira profundo, Joven Rugidor."*
+- **Los Rugidores** — usuarios. Progresión visible ligada a Aura.
 - **Las Manadas** — grupos que ahorran/invierten/compiten juntos. *"El tiempo de cazar solo ha terminado."*
 - **EROSAI / $EROS** — ⚠️ NO es personaje de LUKASH. Es un proyecto precursor del fundador (agente poeta) del que LUKASH heredó el mecanismo de token con reserva multidivisa. ADN de origen, no lore de usuario. **Confirmar con Sebastián si quiere darle algún rol.**
 
@@ -27,9 +27,9 @@ educativo, confiado pero humilde, pro-pueblo, nunca "get rich quick".
 
 ---
 
-## 2. Sistema Aura (rebrand de Jaguar Score) — insumos de diseño
+## 2. Sistema Aura — insumos de diseño
 
-**Concepto narrativo:** Aura = **"el resplandor del Jaguar"** — reputación visible que se gana cazando
+**Concepto narrativo:** Aura = **"el rugido de la Manada"** — reputación visible que se gana cazando
 bien y cuidando a la Manada, no comprando. On-chain, no transferible (mantiene la mecánica v4.2).
 
 **Fórmula compuesta propuesta** (combina lo que ya definía la doc de la App): 
@@ -39,10 +39,10 @@ bien y cuidando a la Manada, no comprando. On-chain, no transferible (mantiene l
 | Umbral (v4.2) | v4.2 original | Opción hispana (4) | Opción arco narrativo (5)* |
 | --- | --- | --- | --- |
 | 0-499 | Cub | Cachorro | Cachorro |
-| 500-1999 | Jaguar | Jaguar | Rastreador |
+| 500-1999 | Glow | Glow | Rastreador |
 | 2000-4999 | Alpha | Alfa | Cazador |
-| 5000+ | Emperor | Emperador | Jaguar Maduro |
-| (5º nivel) | — | — | Jaguar Sabio |
+| 5000+ | Emperor | Emperador | Glow Maduro |
+| (5º nivel) | — | — | Glow Sabio |
 \* la opción de 5 niveles obliga a recalibrar umbrales y gates del cNFT.
 
 **Regla de oro del sistema de recompensas (inviolable):** el Aura y las recompensas se pagan **siempre
@@ -65,7 +65,7 @@ De la doc de la App (FASE 2/3, plan maestro) + estrategia. **Insumos, no decisio
 - **Stake de Batalla:** para atacar/defender territorios la Manada bloquea $LUKA → genera fee.
 - **Mapa Global de Caza + Geo-Drops:** LUKAI lanza "Presas" (recompensas $LUKA/NFT desde pools Marketing/Staking) en coordenadas.
 - **Conquista de Territorios:** Manadas reclaman zonas y cobran % de fees de la transaccionalidad ahí.
-- **Duelos y torneos** entre Jaguares y entre Manadas; LUKAI narra como chamán-comentarista; leaderboard que **celebra contribución, no solo números**.
+- **Duelos y torneos** entre Rugidores y entre Manadas; LUKAI narra como chamán-comentarista; leaderboard que **celebra contribución, no solo números**.
 
 **Widgets de contenido/urgencia:** "Burn Stream" 24/7 (supply baja / Vault sube), "Vault Challenge", "Inverse Calculator". Alinean con el dashboard v4.2 (La Bóveda / El Fuego / La Cola).
 
@@ -87,7 +87,7 @@ De la doc de la App (FASE 2/3, plan maestro) + estrategia. **Insumos, no decisio
 
 **Módulos clave (de la doc de App — a mapear sobre las 6 pestañas):**
 - **Wallet multi-activo (Gateway):** $LUKA, SOL, USDC, cBTC. Todo movimiento paga el fee de etapa con swap atómico a $LUKA vía Jupiter. **$LUKA es la única unidad de cuenta** (prohibido mostrar precios en FIAT/otras cripto en UI).
-- **Jaguar Chat:** mensajería P2P cifrada con comandos en burbuja (`/enviar`, `/cobrar`, `/vaca`) que ejecutan smart contracts.
+- **LUKASH Chat:** mensajería P2P cifrada con comandos en burbuja (`/enviar`, `/cobrar`, `/vaca`) que ejecutan smart contracts.
 - **Las Vacas / Oracle Bets / Marketplace:** crowdfunding social, apuestas P2P con escrow (rake 2-5%), marketplace con escrow-árbitro.
 - **LUKAI ejecutor:** LUK Pro (adultos/PYMES: contador ISO 20022, pagos programados) y LUK Fun (jóvenes: retos de ahorro).
 - **Módulo Universal Fee Extractor:** motor on-chain que intercepta toda transferencia SPL, calcula el fee según etapa, swapea a $LUKA y distribuye (Burn/Vault/LP/Staking). Batching hasta ~20 SOL equiv. **Es el corazón técnico del primer milestone.**

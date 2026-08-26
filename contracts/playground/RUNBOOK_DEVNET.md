@@ -130,7 +130,7 @@ execute_vault_swaps()                               ← keeper, periódico (conv
 3. El contexto `RefreshVaultValuation` pierde `authority: Signer` y gana:
    - `pyth_btc_feed: AccountInfo` — feed Pyth BTC/USD devnet: `HovQMDrbAgAYPCmHVSrezcSmkMtXSSUsLDFANExrZh2J`
    - `pyth_sol_feed: AccountInfo` — feed Pyth SOL/USD devnet: `J83w4HKfqxwcq3BEMMkPFSppX3gqekLyLJBexebFVkix`
-   - `caller: Signer` — cualquiera puede llamar (permissionless)
+   - `authority: Signer` — restringido a authority (v10: `has_one = authority`)
 
 **Actualizar `client.ts`:**
 ```typescript
@@ -148,7 +148,7 @@ await program.methods
     state: statePda,
     pythBtcFeed: PYTH_BTC_USD_DEVNET,
     pythSolFeed: PYTH_SOL_USD_DEVNET,
-    caller: wallet.publicKey,
+    authority: wallet.publicKey,
   })
   .rpc();
 ```
@@ -171,7 +171,7 @@ await program.methods
     state: statePda,
     pythBtcFeed: PYTH_BTC_USD_DEVNET,
     pythSolFeed: PYTH_SOL_USD_DEVNET,
-    caller: wallet.publicKey,
+    authority: wallet.publicKey,
   })
   .rpc();
 ```
@@ -185,7 +185,7 @@ await program.methods
 - Pone a cero los `pending_swap_*_usd`.
 - Emite `VaultSwapsExecuted` con montos nativos, precios, total swapped, timestamp.
 
-**Nota devnet:** estos "swaps" son accounting puro — no mueven tokens reales. En mainnet, esta instrucción sería reemplazada por CPIs a Jupiter V6. La interfaz de cuentas (Pyth feeds + caller) es compatible.
+**Nota devnet:** estos "swaps" son accounting puro — no mueven tokens reales. En mainnet, esta instrucción sería reemplazada por CPIs a Jupiter V6. La interfaz de cuentas (Pyth feeds + authority) es compatible.
 
 ### Nota migración v7→v8 (Sprint 5B Fase A: Capa 2 quema real)
 `lib.rs` v8 agrega `anchor-spl` como dependencia. Antes de compilar en Playground:

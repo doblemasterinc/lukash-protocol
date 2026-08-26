@@ -62,6 +62,6 @@ anchor deploy --provider.cluster devnet
       fallback de oráculo (Switchboard), y **auditoría Halborn/OtterSec antes de mainnet**.
 
 ## Nota sobre pruebas que requieren avance de tiempo
-`switch_motor_b` real (alcanzar $25M) y el hito Jaguar Lock por tiempo (12 meses) requieren manipular el reloj
+`switch_motor_b` real (alcanzar $25M) y el hito KASH Lock por tiempo (12 meses) requieren manipular el reloj
 del validador (p. ej. con `solana-bankrun` / `Clock` sysvar override). Los tests actuales cubren las
 transiciones y validaciones que no dependen del tiempo; añadir esos casos con bankrun en el milestone 2.

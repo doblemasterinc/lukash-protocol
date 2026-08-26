@@ -22,15 +22,15 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] **07-d ratificada ✅** (drenaje siempre activo 25/10/5/2 + hard-stop ENZ, ADR-016)
    - [x] **07-a ratificada ✅** (Switch B0→B2 por Pyth + Token Accounting real, persistencia 7d aprobada)
    - [x] **07-e ratificada ✅** (módulo contra-cíclico LUKAI, mayoría 3 señales + fail-safe NEUTRAL)
-   - [x] **07-c ratificada ✅** (Jaguar Shield + Tridente inactivo + CB + Seguro Anti-Exploit)
+   - [x] **07-c ratificada ✅** (KASH Shield + Tridente inactivo + CB + Seguro Anti-Exploit)
    - [x] **07-f ratificada ✅** (Anti-Whale + Exit Fee + Token-2022 Transfer Hook + WhaleDebt suave)
    - Orden de implementación: Sprint 1 (07-b + 07-d) → Sprint 2 (07-a) → Sprint 3 (07-c + 07-e) → Sprint 4 (07-f) → Sprint 5 (endurecimiento + auditoría + mainnet).
    - [x] **Sprint 1 implementado** (sesión 8): 07-b (cap quema 1%/día) + 07-d (drenaje 4 modos + ENZ hard-stop) en `lib.rs` v3 (828 líneas). Pendiente: compilar en Playground.
 1. [x] **Compilar Sprint 1 en Playground + deploy devnet** — Build ✅ + Deploy ✅ (2026-08-22). Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`.
 2. [x] **Sprint 2 (07-a) Capa 1**: Switch B0→B2 por valoración de mercado + token accounting + doble candado 7d. Implementado + desplegado en devnet.
    - Capa 2 implementada en Sprint 5B (sesión 12): quema real + oráculos Pyth + swaps a oráculo.
-   - [x] **Sprint 3 (07-c + 07-e) implementado** (sesión 10): Jaguar Shield (Tridente inactivo + CB 24h + Seguro Anti-Exploit) + módulo contra-cíclico LUKAI (régimen BULL/NEUTRAL/BEAR, mayoría 3 señales, fail-safe NEUTRAL 48h) en `lib.rs` v5 (1365 líneas). Pendiente: compilar en Playground + deploy devnet.
-   - [x] **Sprint 4 (07-f) implementado + desplegado + verificado** (sesión 10-11): Anti-Whale (tier 3/6/10% sobre excedente de 1% pool) + Jaguar Exit Fee (dual: <0.7×EMA30 AND >0.3% supply/h, 5/3/1% por etapa) + Transfer Hook Capa 1 + MMRegistry PDA + sell_pressure rodante 1h + LP Fundador ATA + exenciones diferenciadas (AW:6, Exit:5 sin staking) en `lib.rs` v6 (1718 líneas). **Build + Deploy + Anti-Whale verificado en devnet** (sesión 11).
+   - [x] **Sprint 3 (07-c + 07-e) implementado** (sesión 10): KASH Shield (Tridente inactivo + CB 24h + Seguro Anti-Exploit) + módulo contra-cíclico LUKAI (régimen BULL/NEUTRAL/BEAR, mayoría 3 señales, fail-safe NEUTRAL 48h) en `lib.rs` v5 (1365 líneas). Pendiente: compilar en Playground + deploy devnet.
+   - [x] **Sprint 4 (07-f) implementado + desplegado + verificado** (sesión 10-11): Anti-Whale (tier 3/6/10% sobre excedente de 1% pool) + KASH Exit Fee (dual: <0.7×EMA30 AND >0.3% supply/h, 5/3/1% por etapa) + Transfer Hook Capa 1 + MMRegistry PDA + sell_pressure rodante 1h + LP Fundador ATA + exenciones diferenciadas (AW:6, Exit:5 sin staking) en `lib.rs` v6 (1718 líneas). **Build + Deploy + Anti-Whale verificado en devnet** (sesión 11).
    - [x] **Sprint 5A (security hardening) implementado + desplegado + verificado** (sesión 11): 6 fixes de seguridad en `lib.rs` v7 (1756 líneas). Fix #1 (CRÍTICO): burns decrementan `current_supply` (ENZ ya no es dead letter). Fix #2: revoke_mm cierra PDA. Fix #3: LP Fundador ATA valida pubkey. Fix #4: insurance amount>0. Fix #5: CB active check. Fix #6: `close_protocol` para devnet. **Fix #1 verificado: 14M tokens quemados correctamente tras process_fee Motor A $100.**
    - [x] **Sprint 5B Fase A (Capa 2: quema real)** (sesión 12): CPI `token::burn` real en `process_fee` y `execute_deferred_burn`. `lib.rs` v8 (1867 líneas). Nuevos: `initialize_burn_vault` (PDA token account), `burn_vault` en contexts, evento `RealBurnExecuted`, dependencia `anchor-spl`.
    - [x] **Sprint 5B Fase B (Capa 2: oráculos Pyth)** (sesión 12): `refresh_vault_valuation` permissionless con lectura directa de feeds Pyth devnet (BTC/USD, SOL/USD). Deserialización manual Pyth V2 (`parse_pyth_price` + `pyth_price_to_usd6`). LST/LUKA como parámetros. `lib.rs` v9.
@@ -41,6 +41,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] **Post-fix Pyth**: process_fee Motor A $100 → quema real 14M tokens (14 LUKA a $0.10) ✅, vault_core_usd +980K ✅, pending_swap_*_usd acumulados 980K total (cBTC 367K/SOL 157K/LST 210K/USDC-r 204K/USDC-l 41K) ✅. Tx: Q1BBq6hmekT8caxANoNysF9k1D1cktGoxiQTStrcB6YCtiNBLx4jkNCiMLaf3KdtGvWftHPmCMfM9xXC1D6dRy6.
    - [x] **Post-fix Pyth**: execute_vault_swaps ✅ (sesión 13, 2026-08-26). Pending 980K USD convertidos a nativos: cBTC +565 sat, SOL +1.05M lam, LST +1.4M lam, USDC-r +204K (1:1), USDC-l +41K (1:1). Pending limpiados a 0. Tx: 2bmSoiE2efowtj8BCJ2YG82wXt7CiJ6ZRJJjA126kme1NXNjcKf2nteiyEbTP32d6MLX2BGjicaS85hiM5U8ScgD.
    - [x] **CAPA 2 COMPLETA** (sesión 13): process_fee (quema real CPI + distribución atómica + pending swaps) + execute_vault_swaps (USD→native a precio Pyth) verificados end-to-end en devnet v9.1.
+   - [x] **Security hardening v10.1 verificado en devnet** (sesión 15, 2026-08-26): has_one=authority en process_fee/refreshVaultValuation/executeVaultSwaps PASS. Pyth owner validation movida a runtime (constraint Anchor bloqueaba fallback devnet; mainnet valida pyth_oracle::ID). Quema real 14M tokens PASS. Vault +980K PASS. Pending swaps→nativos PASS. Client scripts actualizados (caller→authority). RUNBOOK actualizado.
 3. [x] **Análisis de recursos de LUKAI** completado → `docs/analisis/LUKAI_COSTO_ARQUITECTURA.md`. Resultado: v1.0 keeper $150-500/mes (sin LLM), v2.0 con routing 80/20 Haiku/Sonnet = $1.77/usuario/mes. Break-even a ~$3K O&M (Haiku mínimo) o ~$9K (routing). **Recomendación: solo keeper v1.0 hasta Etapa 2A con O&M>$10K/mes.**
 4. **Landing → producción**: desplegar en Vercel + waitlist real capturando correos (Formspree o Supabase). Landing lista en `landing/index.html` (trilingüe, Artifact `6c7985dd`).
 5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
@@ -63,7 +64,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 ## Diseño de juego / Aura → `specs/01-aura-jungle-arena.md`
 - [x] Diseñar el loop de Jungle Arena (3 senderos: Aprendiz/Rastro Diario/Rugido de la Manada)
 - [x] Definir las Misiones de Caza concretas (catálogo A1-A5, D1-D4, R1-R6 con valores de Aura)
-- [x] Aura 5 niveles (Cachorro→Jaguar Sabio) — ADR-005
+- [x] Aura 5 niveles (Cachorro→Glow Sabio) — ADR-005
 - [x] Economía sin emisión inflacionaria (Energía como sink, recompensas desde Marketing/Staking)
 - [ ] Cerrar pendientes de diseño: costos de Energía, reglas de Duelos, pools de Temporada, fórmula de Aura con pesos
 
@@ -84,7 +85,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 - [x] Estrategia → `specs/03-estrategia-lanzamiento-comunidad.md`
 - [x] Plan ejecutable 12 semanas → `specs/04-plan-f0-comunidad.md`
 - [x] Marca v2 sin ideología + trilingüe → `brand/POSICIONAMIENTO_NARRATIVA.md` [ADR-010]
-- [x] Niveles de Aura unificados: Cachorro/Rastreador/Cazador/Alfa/Jaguar [ADR-005]
+- [x] Niveles de Aura unificados: Cachorro/Rastreador/Cazador/Alfa/Glow [ADR-005]
 - [ ] Acciones semana 1 (Sebastián): reservar handles, founding myth, landing waitlist, lista KOLs
 - [ ] Implementar distribución atómica de fees con overflow checks
 - [ ] Implementar conmutación B0↔B2 (K_min=$25M vía Pyth)

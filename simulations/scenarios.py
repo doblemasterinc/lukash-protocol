@@ -12,7 +12,7 @@ MKT = {
         "hitos": {6: 4_000, 18: 30_000, 36: 120_000, 60: 300_000},
     },
     "BASE": {
-        "desc": "3 KOLs con Jaguar Lock. 2 MMs desde D1. CAC $6. Flywheel moderado.",
+        "desc": "3 KOLs con KASH Lock. 2 MMs desde D1. CAC $6. Flywheel moderado.",
         "app_dia": 120, "vol_tge": 800_000, "vol_pico": 12_000_000, "dias_pico": 900,
         "hitos": {6: 15_000, 18: 120_000, 36: 450_000, 60: 1_100_000},
     },

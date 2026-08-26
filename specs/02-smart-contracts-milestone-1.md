@@ -47,7 +47,7 @@ VaultState (PDA: ["vault"])
   k_usd: u64                                            // valor total del Core en USD (6 dec), vía Pyth
   r_op_usd: u64                                         // Reserva Operativa (idle)
   sociedad_usd: u64                                     // acumulado del Vault Sociedad
-  jaguar_lock_hit: bool                                 // true al cruzar $30M Core o 12 meses
+  kash_lock_hit: bool                                   // true al cruzar $30M Core o 12 meses
   genesis_ts: i64
 
 MotorBState (PDA: ["motor_b"])
@@ -81,7 +81,7 @@ FeeBuffer (PDA: ["buffer"])                             // acumula hasta ~$500/2
 | `distribute` (interna) | — | Split atómico: 35% Asset Layer → `vault.deposit` (compra composición, split Core/Sociedad 70/30) · 35% LP/Quema → **B0: burn / B2: recirc LP** (según MotorBState) · 15% → O&M wallet · 15% → compra $LUKA → StakingPool. **Todo en una tx; overflow checks; suma verificada = monto del fee.** |
 | `update_oracle_state` | orchestrator (keeper) | Lee Pyth: precio $LUKA, valor de activos del Vault → recalcula `k_usd`, `ema30`. Actualiza `throttle.mode` según P vs EMA30. Valida redundancia Pyth+Switchboard (umbral 2%). |
 | `switch_motor_b` | orchestrator | Si `k_usd >= k_min_usd` y `state==B0` → B2 (evento público). Idempotente. Verificación Pyth. |
-| `check_jaguar_lock` | orchestrator | Si `k_usd >= 30M` **o** `now - genesis_ts >= 12 meses` → `jaguar_lock_hit = true` (habilita liberación Sociedad, contabilidad off-chain para vesting). |
+| `check_kash_lock` | orchestrator | Si `k_usd >= 30M` **o** `now - genesis_ts >= 12 meses` → `kash_lock_hit = true` (habilita liberación Sociedad, contabilidad off-chain para vesting). |
 | `execute_deferred_burn` | keeper | Ejecuta ≤10%/semana de `deferred_burn_queue` cuando el modo vuelve a NORMAL. Respeta `burn_daily_cap_bps`. |
 | `rebalance_vault` | orchestrator | Dirige SOLO nuevas entradas hacia la composición objetivo según régimen (contra-cíclico). **No liquida posiciones existentes.** |
 | `distribute_staking` | keeper/usuario | Reparte el 15% acumulado a stakers (accumulator pattern). |
@@ -111,7 +111,7 @@ FeeBuffer (PDA: ["buffer"])                             // acumula hasta ~$500/2
 - **B0→B2:** simular Vault < y ≥ K_min; comprobar switch, idempotencia y que el tramo LP cambia de burn a recirc.
 - **Throttle:** mover el precio simulado a cada zona (ACEL/NORMAL/CONS/DEF) y verificar % de quema y cola diferida.
 - **Cola diferida:** acumular en DEF, volver a NORMAL, verificar ejecución ≤10%/semana y cap 1%/día.
-- **Jaguar Lock:** cruzar $30M Core o simular 12 meses → `jaguar_lock_hit`.
+- **KASH Lock:** cruzar $30M Core o simular 12 meses → `kash_lock_hit`.
 - **Timelock:** intentar cambiar K_min sin esperar 48h → debe fallar; tras 48h → éxito.
 - **Overflow/seguridad:** montos extremos, autoridad incorrecta (debe revertir), pausa de emergencia.
 - **Integración devnet:** desplegar, ejecutar un swap real de prueba, verificar el crecimiento del Vault y los eventos on-chain.

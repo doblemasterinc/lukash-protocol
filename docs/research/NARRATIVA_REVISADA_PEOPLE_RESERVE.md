@@ -227,7 +227,7 @@ Virality: Es meditativo + educativo
 ```
 
 ### HOOK #4: "The Digital Cooperative Manifesto"
-*(Reemplaza "Jaguar Manifesto")*
+*(Reemplaza "LUKASH Manifesto")*
 
 **Concepto:** Documento inspirador sobre el futuro de las finanzas cooperativas
 
@@ -307,7 +307,7 @@ Leaderboard público pero celebrando CONTRIBUCIÓN, no solo números
 
 ---
 
-## 🎭 BRAND PERSONALITY: "EL JAGUAR SABIO"
+## 🎭 BRAND PERSONALITY: "EL HUNTER SABIO"
 
 ### Características del Tono:
 
@@ -433,7 +433,7 @@ Día 1: Open AMA con founders (sin preguntas filtradas)
 Día 2: Live code review con desarrolladores
 Día 3: Vault composition deep dive
 Día 4: Community governance proposals review
-Día 5: "Ask the Jaguar AI" - Q&A con LUK
+Día 5: "Ask LUKAI" - Q&A con LUK
 Día 6-7: Community content showcase
 
 Objetivo: Máxima transparencia > máxima confianza
@@ -452,7 +452,7 @@ Objetivo: Máxima transparencia > máxima confianza
 No es marketing, es construcción real de comunidad técnica
 ```
 
-### "GLOBAL JAGUAR DAY" (Anual)
+### "GLOBAL LUKASH DAY" (Anual)
 
 **Concepto:** Celebración del aniversario del proyecto
 
@@ -475,7 +475,7 @@ Celebrar el crecimiento colectivo
 **Crecimiento del Vault:**
 - Target Mes 1: $500k TVL
 - Target Mes 3: $2M TVL
-- Target Mes 6: $5M TVL (activa Jaguar Lock)
+- Target Mes 6: $5M TVL (activa KASH Lock)
 
 **Engagement Comunitario:**
 - Holders activos (transaccionan 1x/mes): >60%

@@ -4,7 +4,7 @@
 - Revisión completa del Protocolo v4.2 (2.312 líneas) y BMC v4.2 FINAL (1.825 líneas). Diseño económico excepcionalmente maduro y validado con Monte Carlo (5.000 iteraciones, 0.0% ruina).
 - Creada carpeta `LUKASH/` con scaffold completo del Studio.
 - Migrados 126 archivos desde "PROYECTO CRYPTO" (docs núcleo, análisis, app, presentaciones, research + toda la marca: logos, isotipos, personajes, conceptos UI, estilo visual, audio). Carpeta original conservada intacta.
-- Decisión de marca: **Aura = rebrand de Jaguar Score** (ADR-002, aprobado por Sebastián).
+- Decisión de marca: **Aura = nombre final del sistema de reputación** (ADR-002, aprobado por Sebastián).
 - Primer milestone técnico definido: smart contracts core en devnet (ADR-003).
 - Iniciada auditoría de discrepancias del protocolo (primer hallazgo confirmado: composición del Vault suma 105%).
 - Pendiente prioritario de Sebastián: diseño del concepto de juego y las Misiones de Caza para ganar Aura.
@@ -19,12 +19,12 @@
   2. `docs/protocolo/LUKASH_Protocolo_v4.3.md` — protocolo canónico con las 9 correcciones (C1-C9) aplicadas. Base para el código.
   3. `specs/02-smart-contracts-milestone-1.md` — spec de contratos devnet (4 programas Anchor, PDAs, instrucciones, distribución atómica, plan de pruebas).
 - **Estrategia (Concepto Objetivo de Socio):** foco radical — lanzar solo el átomo (token+Vault+dashboard), comunidad primero, fasear el resto. Rating honesto y verdades duras en `docs/discovery/CONCEPTO_OBJETIVO_SOCIO.md`.
-- **Reposicionamiento de marca (ADR-010):** fuera ideología ("pueblo", anti-banco); conservar el jaguar reencuadrado (ascenso, no colectivo); mezcla de 3 ejes; trilingüe ES/EN/PT; audiencia <45. `brand/POSICIONAMIENTO_NARRATIVA.md`.
+- **Reposicionamiento de marca (ADR-010):** fuera ideología ("pueblo", anti-banco); conservar el felino reencuadrado (ascenso, no colectivo); mezcla de 3 ejes; trilingüe ES/EN/PT; audiencia <45. `brand/POSICIONAMIENTO_NARRATIVA.md`.
 - **Lanzamiento faseado (ADR-009):** F0 comunidad → F1 solo cripto (sin distribución a holders) → F2 app → F3/F4 instrumentos. Postura regulatoria de-riesgada. `specs/03` + `specs/04` (plan 12 semanas).
-- **Niveles de Aura finales (ADR-005):** Cachorro → Rastreador → Cazador → Alfa → Jaguar.
+- **Niveles de Aura finales (ADR-005):** Cachorro → Rastreador → Cazador → Alfa → Glow.
 - **Contratos Milestone 1:** scaffold Anchor completo en `contracts/` (programa lukash_protocol con lógica de fees, Vault, Throttle, B0/B2, Timelock, pausa + tests + README).
 - **✅ CONTRATOS COMPILAN** ("Build successful" en Solana Playground, confirmado por Sebastián). Lógica auditada contra Protocolo v4.3 (`contracts/AUDITORIA_LOGICA_MILESTONE1.md`) — núcleo correcto, sin bugs críticos. Se añadió `execute_deferred_burn` (drena la cola de quema ≤10%/semana) y recompiló OK. Milestone 1 CERRADO.
-- **Página Génesis** ([artifact] con arte real: logo, Reserva Sagrada, Camino del Jaguar, Tótems, Jungle Arena) + prototipo app. Marca v2 sin ideología, trilingüe.
+- **Página Génesis** ([artifact] con arte real: logo, Reserva Sagrada, Camino del Rugido, Tótems, Jungle Arena) + prototipo app. Marca v2 sin ideología, trilingüe.
 - **Manual de lanzamiento** (`specs/05`): Ruta A comunidad-only (fair-launch) + Ruta B (directorio real de MM e influencers con contactos). Decisión: community-only primaria, MM fuera de lo público (ADR-011).
 - **Auditoría integral + veredicto** (`audits/AUDITORIA_INTEGRAL_Y_VEREDICTO.md`): concepto 8.5/10, viabilidad con foco 6.5-7/10; vale la pena por el camino disciplinado de bajo capital.
 
@@ -36,8 +36,8 @@
 - **Próxima sesión:** (1) auditoría/revisión contratos + Milestone 2, (2) Etapa 0 (pitch deck, founding myth, one-pager, landing, data room), (3) arrancar Superteam + grants.
 
 ## 2026-08-20 (sesión 2) — Corrección Anti-Whale + cierre del protocolo
-- Aclaración del **Jaguar Exit Fee**: el "100% al Vault" es el DESTINO del fee (5/3/1%), NO una penalización del 100%. Se mantiene **5% para Génesis** (ADR-012).
-- **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); fix del nombre de exención → nivel **Jaguar**. Se implementa en el Jaguar Shield (Milestone 2).
+- Aclaración del **KASH Exit Fee**: el "100% al Vault" es el DESTINO del fee (5/3/1%), NO una penalización del 100%. Se mantiene **5% para Génesis** (ADR-012).
+- **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); fix del nombre de exención → nivel **Glow**. Se implementa en el KASH Shield (Milestone 2).
 
 ## 2026-08-20 (sesión 3) — Token $LUKA vivo en devnet + tokenomics de fundador
 - **🐆 HITO: Token $LUKA CREADO en devnet.** Mint `2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr` (SPL clásico, 6 dec, supply 10B), visible en el explorador. Mint authority = wallet Playground.
@@ -67,21 +67,21 @@
   - **SIM 2 sensibilidad:** Volumen $1287M ≫ Fee A $278M > Yield $7M > Launch $2M > K_min $0M (neutro, correcto). Volumen = driver #1.
   - **SIM 3 estrés:** crash BTC −80% → −3.8%, exploit 15% → −0.3%, retiro LP → −0.8%. Único dañino: Motor A −70% *permanente* → −68%. Alineado con informe.
   - **SIM 4 throttle/usuarios:** throttle irrelevante para el Vault (6 configs = $368M idéntico; solo afecta timing de quema del Motor B, que no toca el Core). Usuarios +$14M de 1K→100K (Motor D amplificador, no motor).
-- **5 hallazgos de contrato (Milestone 2)** al construir el motor fiel: (1) modo ACELERADO inerte (`lib.rs:343` capa 125%→100%); (2) switch B0→B2 usa costo, no valor de mercado (falta oráculo Pyth); (3) sin cap de quema 1%/día (spec §13); (4) sin módulo contra-cíclico LUKAI (composición fija → campaña débil más frágil, explica espiral 44% vs 14%); (5) Jaguar Shield pendiente (correcto, ADR-012). + confirmado: falta límite retiro 5%/día del Vault.
+- **5 hallazgos de contrato (Milestone 2)** al construir el motor fiel: (1) modo ACELERADO inerte (`lib.rs:343` capa 125%→100%); (2) switch B0→B2 usa costo, no valor de mercado (falta oráculo Pyth); (3) sin cap de quema 1%/día (spec §13); (4) sin módulo contra-cíclico LUKAI (composición fija → campaña débil más frágil, explica espiral 44% vs 14%); (5) KASH Shield pendiente (correcto, ADR-012). + confirmado: falta límite retiro 5%/día del Vault.
 - **Entregables:** `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` (reporte) + Artifact dashboard on-brand (`19a8160e`, obsidiana/oro, Cinzel/IBM Plex/Space Mono).
 - **Bloqueado local:** cargo/clippy/Sec3/Trident (requieren toolchain Solana) — el re-run de herramientas estáticas sobre `lib.rs` se hace en Playground/CI, no local.
 - **Próxima sesión:** priorizar hallazgos de contrato en spec de Milestone 2; análisis LUKAI (IA a escala); landing a producción (Vercel+waitlist); deploy del programa (2.12 SOL).
 
 ## 2026-08-21 (sesión 5, continuación) — ADR-015 + specs Milestone 2 (07-a a 07-f)
-- **Arqueología documental** (`audits/HISTORIAL_JAGUAR_SHIELD.md`): rastreo v1.0 → v4.2 confirmó que Seguro Anti-Exploit original tenía 4 condiciones (5% + 1×/12m + activo tras año 1 + DAO año 5) que la v4.2 perdió/mutó. "Tridente" es de v1.0, "3-de-3" entra en v2.3. Halborn/OtterSec eran arrastres de v2.1 sin ADR formal. El "5%/día" **no existe en ninguna versión** — fue error mío arrastrado del informe.
-- **ADR-015 aprobado por Sebastián:** (1) restaurar Seguro Anti-Exploit v1.0/v4.1 con activación desde **Etapa 2B** (opción B, condición on-chain no calendario ambiguo); (2) Tridente 3-de-3 ratificado, firmantes pendientes; (3) sacar Halborn/OtterSec, auditor a cotizar vía subsidios (Solana/Colosseum/Areta/Superteam); (4) regla de higiene documental (contrastar v4.2 con v1.0/v4.1); (5) **Token-2022 con Transfer Hook aprobado** para mainnet; (6) exenciones canónicas ratificadas (swaps Motor D, staking, LP lock, LP Fundador 365d, MMs registrados en Multisig, nivel Jaguar Aura — KOLs NO tienen exención, se alinean por vesting); (7) auditor externa vía subsidios.
+- **Arqueología documental** (`audits/HISTORIAL_KASH_SHIELD.md`): rastreo v1.0 → v4.2 confirmó que Seguro Anti-Exploit original tenía 4 condiciones (5% + 1×/12m + activo tras año 1 + DAO año 5) que la v4.2 perdió/mutó. "Tridente" es de v1.0, "3-de-3" entra en v2.3. Halborn/OtterSec eran arrastres de v2.1 sin ADR formal. El "5%/día" **no existe en ninguna versión** — fue error mío arrastrado del informe.
+- **ADR-015 aprobado por Sebastián:** (1) restaurar Seguro Anti-Exploit v1.0/v4.1 con activación desde **Etapa 2B** (opción B, condición on-chain no calendario ambiguo); (2) Tridente 3-de-3 ratificado, firmantes pendientes; (3) sacar Halborn/OtterSec, auditor a cotizar vía subsidios (Solana/Colosseum/Areta/Superteam); (4) regla de higiene documental (contrastar v4.2 con v1.0/v4.1); (5) **Token-2022 con Transfer Hook aprobado** para mainnet; (6) exenciones canónicas ratificadas (swaps Motor D, staking, LP lock, LP Fundador 365d, MMs registrados en Multisig, nivel Glow Aura — KOLs NO tienen exención, se alinean por vesting); (7) auditor externa vía subsidios.
 - **Tridente inactivo por defecto** (patrón aprobado): el contrato construye toda la lógica 3-de-3 pero nace con `tridente_activated = false`. Instrucción one-way `activate_tridente(pk1, pk2, pk3)`. **Candado estructural**: contrato rechaza paso a Etapa 2 si Tridente no activado — imposible ir a mainnet por olvido.
 - **6 specs Milestone 2 en `specs/07-milestone-2/`** + índice:
   - `07-b` cap quema 1%/día con exceso a cola (reusa cola existente)
   - `07-d` ACELERADO redefinido = drenaje 25%/sem vs 10%/sem NORMAL
   - `07-a` **estructural**: switch B0→B2 por Pyth + token accounting real por bucket + doble candado (frescura + persistencia 7 días para one-way irreversible) + quema real vía CPI
   - `07-e` módulo contra-cíclico EMA30/EMA90 BTC (aplica solo a nuevas entradas, Vault existente no se toca)
-  - `07-c` Jaguar Shield del Vault: Tridente inactivo + Circuit Breaker 24h + `receive_insurance_recovery` (entrada, nunca salida)
+  - `07-c` KASH Shield del Vault: Tridente inactivo + Circuit Breaker 24h + `receive_insurance_recovery` (entrada, nunca salida)
   - `07-f` Anti-Whale + Exit Fee sobre Token-2022 transfer hook (WhaleDebt PDA modo suave; MMRegistry PDA)
 - **Superficie Milestone 2:** ~17 instrucciones (10 nuevas), ~30 constantes nuevas, 24 errores nuevos, 13 eventos nuevos. Invariantes I7-I22 (16 nuevos) validables en `simulations/suite.py`.
 - Correcciones aplicadas: `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` §6.6 + R3 (eliminado el "5%/día" inventado), `tasks/todo.md`, `learned-rules.md` (2 reglas nuevas).
@@ -98,7 +98,7 @@
 - **4 specs ratificadas por Sebastián:**
   - **07-a ✅** (Switch B0→B2 por Pyth + Token Accounting real, persistencia 7d aprobada)
   - **07-e ✅** (módulo contra-cíclico LUKAI, mayoría 3 señales + fail-safe NEUTRAL)
-  - **07-c ✅** (Jaguar Shield + Tridente inactivo + CB + Seguro Anti-Exploit)
+  - **07-c ✅** (KASH Shield + Tridente inactivo + CB + Seguro Anti-Exploit)
   - **07-f ✅** (Anti-Whale + Exit Fee + Token-2022 Transfer Hook)
 - **Milestone 2 completo: las 6 specs ratificadas.** Orden de implementación confirmado: Sprint 1 (07-b+07-d) → Sprint 2 (07-a) → Sprint 3 (07-c+07-e) → Sprint 4 (07-f) → Sprint 5 (hardening+audit+mainnet).
 - **Auditoría integral post-ratificación** (3 agentes: filosofía, consistencia inter-spec, ADRs). 13 hallazgos: 1 BLOCKER + 6 diseño + 6 menores. **Todos resueltos:**
@@ -142,7 +142,7 @@
 
 ## 2026-08-24 (sesión 10) — Sprint 3 implementado (07-c + 07-e) + análisis LUKAI
 - **Sprint 3 completo en `contracts/playground/lib.rs`** (1365 líneas, v5). Implementados:
-  - **07-c (Jaguar Shield del Vault):**
+  - **07-c (KASH Shield del Vault):**
     - **Tridente Multisig 3-de-3** inactivo por defecto, instrucción one-way `activate_tridente(pk1, pk2, pk3)` con 4 validaciones (no-default, distintas, ≠authority). Candado estructural: `execute_admin_change` rechaza Stage≥2 sin Tridente activado.
     - **Circuit Breaker del Vault** automático: `refresh_vault_valuation` detecta caída >10% en ventana de 1h → pausa 24h. Guards en `process_fee`, `switch_motor_b`, `execute_deferred_burn`. Cancelación temprana con Tridente 3-de-3 (`cancel_circuit_breaker`).
     - **Seguro Anti-Exploit** `receive_insurance_recovery`: solo entrada (nunca salida), requiere Tridente 3-de-3, activo desde Etapa 2B (Motor B2), cap 5% del Vault por evento, cooldown 12 meses. Incrementa `usdc_res_amount` + `vault_core_usd`.
@@ -163,8 +163,8 @@
 - **Sprint 4 completo en `contracts/playground/lib.rs`** (1718 líneas, v6). Implementados:
   - **Transfer Hook Capa 1 (`transfer_hook`):** instrucción authority-gated que simula la lógica del Token-2022 Transfer Hook en devnet. Parámetros de contexto (pool liquidity, Aura score, staking, LP lock, MM, internal CPI) alimentados manualmente por authority; en Capa 2 se leen de cuentas on-chain.
   - **Anti-Whale (ADR-012 C10):** umbral por % del pool de liquidez. Tier único: <1% sin fee, 1-2% 3%, 2-5% 6%, >5% 10% sobre excedente. Solo aplica a ventas al pool (no compras, no P2P). 100% de fees al Vault Core (I20).
-  - **Jaguar Exit Fee (v4.3 §9):** activación dual (precio < 0.7×EMA30 AND sell_pressure > 0.3% supply/hora). Fees por etapa: 5% Génesis / 3% Etapa 2 / 1% Etapa 3+. Anti-Whale y Exit Fee se suman si ambos aplican.
-  - **Exenciones diferenciadas (nota spec §2.5):** Anti-Whale exime 6 condiciones (internal CPI, MM, LP Fundador, LP lock, staking, Aura≥Jaguar). Exit Fee exime 5 condiciones (mismas EXCEPTO staking — el Exit Fee no se exime por staking).
+  - **KASH Exit Fee (v4.3 §9):** activación dual (precio < 0.7×EMA30 AND sell_pressure > 0.3% supply/hora). Fees por etapa: 5% Génesis / 3% Etapa 2 / 1% Etapa 3+. Anti-Whale y Exit Fee se suman si ambos aplican.
+  - **Exenciones diferenciadas (nota spec §2.5):** Anti-Whale exime 6 condiciones (internal CPI, MM, LP Fundador, LP lock, staking, Aura≥Glow). Exit Fee exime 5 condiciones (mismas EXCEPTO staking — el Exit Fee no se exime por staking).
   - **Presión de venta rodante:** `sell_pressure_1h_supply_bps` acumula bps de supply vendidos en ventana de 1h. Reset automático (I22).
   - **MMRegistry PDA** `["mm_registry", mm_pubkey]`: `register_market_maker` + `revoke_market_maker` (ambas requieren authority + Tridente 3-de-3). O(1) lookup.
   - **LP Fundador ATA** en ProtocolConfig (vía timelock kind=4).

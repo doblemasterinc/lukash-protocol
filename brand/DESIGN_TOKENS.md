@@ -2,7 +2,7 @@
 
 > Fuentes: `estilo visual lukash.md` (v1.0) + PRD LUKASH (v3.1, §1.3) + UI Kit v1.0 (§08).
 > Estética: "Apple Finance" × Solana. Jungla digital mística, dark mode permanente, glassmorphism,
-> partículas flotantes sutiles, efectos bioluminiscentes. Isotipo: jaguar-bóveda-infinito ciber-bioluminiscente.
+> partículas flotantes sutiles, efectos bioluminiscentes. Isotipo: felino-bóveda-infinito ciber-bioluminiscente.
 
 ## Paleta completa
 
@@ -57,8 +57,8 @@ Color según activo: naranja/ámbar = BTC, verde = SOL, azul = USDC. Duración 2
 - Sello recurrente (esquina inferior derecha): `MONTE CARLO VALIDATED — 0.0% RISK` en Cinzel Bold + isotipo en miniatura.
 
 ## Naming de producto (referencia — reconciliar con v4.2)
-- **Tótems cNFT** (nombres del PRD v3.1, gran material de marca): Fuego Eterno (cBTC), Espíritu (JitoSOL), Agua Viva (mSOL), USDC Sagrado (USDC/Kamino), Jaguar Negro (mixto premium). Tiers Bronce/Plata/Oro/Jaguar Negro.
-  - ⚠️ En v4.2 los cNFT se abstraen como Nativo / Jaguar Universal / Estándar. Decisión pendiente: mapear los Tótems a los 3 tipos v4.2.
+- **Tótems cNFT** (nombres del PRD v3.1, gran material de marca): Fuego Eterno (cBTC), Espíritu (JitoSOL), Agua Viva (mSOL), USDC Sagrado (USDC/Kamino), Tótem Negro (mixto premium). Tiers Bronce/Plata/Oro/Tótem Negro.
+  - ⚠️ En v4.2 los cNFT se abstraen como Tótem Nativo / Tótem Universal / Tótem Estándar. Decisión pendiente: mapear los Tótems a los 3 tipos v4.2.
 - **App = 6 pestañas**: Wallet (La Reserva Sagrada) · Manadas · Jungle Arena · Tótems cNFT · LUKAI · La Reserva.
 
 ## Assets disponibles

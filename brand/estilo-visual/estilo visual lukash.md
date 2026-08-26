@@ -45,7 +45,7 @@ Toda la paleta gráfica de la diapositiva debe utilizar los colores técnicos de
 
 El isotipo es el corazón visual de la reserva y debe integrarse siempre de la siguiente manera:
 
-* **Composición:** Una fusión sofisticada de oro, verde y luz ámbar que forma un isotipo ciber-bioluminiscente de jaguar-bóveda-infinito.
+* **Composición:** Una fusión sofisticada de oro, verde y luz ámbar que forma un isotipo ciber-bioluminiscente de felino-bóveda-infinito.
 * **Contexto:** Se encuentra en el centro de la diapositiva, situado dentro de una gema gigante y multifacética que levita, representando el "Estándar KASH".
 * **Efecto:** El isotipo emite una luz dorada y verde que proyecta sutiles flujos de datos y patrones geométricos de geometría sagrada hacia el exterior.
 

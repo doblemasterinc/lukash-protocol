@@ -23,7 +23,7 @@ real desde volumen — eso es genuinamente mejor. Pero la categoría sigue siend
    los referentes que colapsaron.
 2. **La transparencia como producto.** Un Vault auditable on-chain en tiempo real (La Bóveda / El Fuego / La
    Cola) es un diferenciador real de confianza y un mecanismo de coordinación social potente. Es tu mejor arma.
-3. **Narrativa y marca cohesionadas.** El universo jaguar/selva/soberanía es emocionalmente resonante para el
+3. **Narrativa y marca cohesionadas.** El universo felino/selva/soberanía es emocionalmente resonante para el
    target LATAM y está mejor trabajado que el 95% de los proyectos cripto. La marca es un activo real.
 4. **Mercado y timing.** Inclusión financiera LATAM (utilidad del capital, no bancarización) + ola RWA es un
    problema grande y real con viento de cola institucional verificable.

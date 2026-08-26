@@ -1,4 +1,4 @@
-# Historial del Jaguar Shield — arqueología v1.0 → v4.2
+# Historial del KASH Shield — arqueología v1.0 → v4.2
 
 > Sesión 2026-08-21. Evidencia para el ADR-015.
 > **Objetivo:** rastrear cuándo y cómo entraron a la documentación los conceptos

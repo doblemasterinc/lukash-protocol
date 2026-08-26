@@ -240,7 +240,7 @@ Añadir a SIM 0:
                  ┌──────────────┐
                  │Vault Sociedad│
                  │(#8 PDA)      │
-                 │Jaguar Lock   │
+                 │KASH Lock     │
                  │hasta mes 13  │
                  └──────────────┘
 

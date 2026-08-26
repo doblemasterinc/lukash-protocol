@@ -36,11 +36,11 @@ VAULT_USDC_LEND_BPS = 500
 
 # Umbrales de valor (sobre el KASH Core), USD 6 dec
 K_MIN_USD = 25_000_000 * USD
-JAGUAR_LOCK_USD = 30_000_000 * USD
+KASH_LOCK_USD = 30_000_000 * USD
 ETAPA3_USD = 50_000_000 * USD
 SCALE_USD = 100_000_000 * USD
 
-JAGUAR_LOCK_SECONDS = 365 * 24 * 60 * 60
+KASH_LOCK_SECONDS = 365 * 24 * 60 * 60
 
 # Throttle: umbrales como % de la EMA30 (bps) y % de quema (bps)
 THROTTLE_ACCEL_BPS = 12_000  # P > 1.2x EMA30
@@ -136,7 +136,7 @@ class ProtocolState:
     stage: int = 1
     paused: bool = False
     k_min_usd: int = K_MIN_USD
-    jaguar_lock_usd: int = JAGUAR_LOCK_USD
+    kash_lock_usd: int = KASH_LOCK_USD
 
     # Runtime
     genesis_ts: int = 0
@@ -163,7 +163,7 @@ class ProtocolState:
     deferred_burn_queue: int = 0  # USD en cola de quema diferida
 
     # Hitos
-    jaguar_lock_hit: bool = False
+    kash_lock_hit: bool = False
     last_queue_exec_ts: int = 0
 
     # --- métricas de instrumentación (no están en el contrato; para el análisis) ---
@@ -272,11 +272,11 @@ def process_fee(st: ProtocolState, amount: int, motor: int, layer: int,
     st.om_total += to_om
     st.staking_total += to_staking
 
-    # --- Hito Jaguar Lock: KASH Core >= $30M O 12 meses ---
-    if not st.jaguar_lock_hit:
+    # --- Hito KASH Lock: KASH Core >= $30M O 12 meses ---
+    if not st.kash_lock_hit:
         elapsed = max(0, now_ts - st.genesis_ts)
-        if st.vault_core_usd >= st.jaguar_lock_usd or elapsed >= JAGUAR_LOCK_SECONDS:
-            st.jaguar_lock_hit = True
+        if st.vault_core_usd >= st.kash_lock_usd or elapsed >= KASH_LOCK_SECONDS:
+            st.kash_lock_hit = True
 
     return FeeResult(amount=amount, fee=fee, to_vault=to_vault, to_lp_burn=to_lp_burn,
                      to_om=to_om, to_staking=to_staking, core=core, sociedad=sociedad,

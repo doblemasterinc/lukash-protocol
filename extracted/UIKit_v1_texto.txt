@@ -2,22 +2,22 @@
 
 UI Kit & Design Language -- LUKASH PROTOCOL v3.1 --
 
-           Dark Jungle Aesthetic · Soberania Financiera LATAM
+           Dark Jungle Aesthetic ï¿½ Soberania Financiera LATAM
 
-                      Ing. Sebastian Botero Pabon · Marzo 2026
-                Monte Carlo Validated · 0.0% Risk · Auditoria v3.1
+                      Ing. Sebastian Botero Pabon ï¿½ Marzo 2026
+                Monte Carlo Validated ï¿½ 0.0% Risk ï¿½ Auditoria v3.1
 
 CONTENIDO                                                           p.38
 01 FAB Chat Button -- LUKAI                                         p.46
 02 Chat Dialog Window                                               p.54
 03 Button System                                                    p.60
 04 Badges & Status Levels                                           p.66
-05 Jaguar Score & Progress                                          p.72
+05 Aura & Progress                                                  p.72
 06 Data Cards                                                       p.78
 07 Toast Notifications
 
-                             MONTE CARLO VALIDATED · 0.0% RISK
-                                                                                            LUKASH PROTOCOL · UI KIT
+                             MONTE CARLO VALIDATED ï¿½ 0.0% RISK
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
  01 FAB Chat Button -- LUKAI
 
@@ -36,7 +36,7 @@ Tamanio default: 80x80px | Animacion: pulse infinita | Badge desaparece al abrir
 Tap abre overlay semitransparente + ChatWindow slideUp desde el FAB
 
                                                            LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                            LUKASH PROTOCOL · UI KIT
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
  02 Chat Dialog Window -- LUKAI
 
@@ -46,34 +46,34 @@ Overlay flotante. Aparece con animacion slideUp desde el FAB. Toque fuera o X pa
 
                                                                        x                             Ancho            min(380px, 100vw-48px)
 
-       Orquestador Activo · Pyth Network                                                             Alto             auto · max 80vh
+       Orquestador Activo ï¿½ Pyth Network                                                             Alto             auto ï¿½ max 80vh
 
-   ¿Estas listo para dejar de ser el que                                                             Posicion         fixed bottom: 180px right: 24px
+   ï¿½Estas listo para dejar de ser el que                                                             Posicion         fixed bottom: 180px right: 24px
    gasta y ser el dueno de tu banco?
                                                                                                      Border           1px solid rgba(ORO, 0.22)
-LUKAI · ahora
+LUKAI ï¿½ ahora
                                                                                                      Backdrop         blur(20px)
-                         ¿Como funciona la Reserva Sagrada?
+                         ï¿½Como funciona la Reserva Sagrada?
                                                                                                      Z-index          100 (sobre el FAB)
-                                                                                       Tu · hace 1m
+                                                                                       Tu ï¿½ hace 1m
                                                                                                      Animacion entrada slideUp + scale(0.951)
    La Reserva Sagrada es la boveda
    colectiva de toda la manada. Cada                                                                 Animacion salida fadeOut + scale(10.95)
    transaccion alimenta activos reales
-   -- Bitcoin y dolares digitales.                                                                   HEADER           44x44px · border AMBAR
-                                                                                                     Avatar           SerifB 13.5px · color ORO
-LUKAI · ahora                                                                                        Nombre           MonoB 9px · color VERDE
+   -- Bitcoin y dolares digitales.                                                                   HEADER           44x44px ï¿½ border AMBAR
+                                                                                                     Avatar           SerifB 13.5px ï¿½ color ORO
+LUKAI ï¿½ ahora                                                                                        Nombre           MonoB 9px ï¿½ color VERDE
                                                                                                      Status
 
                                                                                                      MENSAJES
 
-                                                                                                     LUKAI bubbles    bg CARB_L · border ORO 14%
+                                                                                                     LUKAI bubbles    bg CARB_L ï¿½ border ORO 14%
 
-                                                                                                     User bubbles     bg verde-dark · border VERDE 25%
+                                                                                                     User bubbles     bg verde-dark ï¿½ border VERDE 25%
 
-                                                                                                     Typing indicator 3 dots · bounce animation
+                                                                                                     Typing indicator 3 dots ï¿½ bounce animation
 
-¿Jaguar Score?         Ver Reserva  Subir nivel                                                      CHIPS            Scroll horizontal · border ORO
+ï¿½Aura?                  Ver Reserva  Subir nivel                                                      CHIPS            Scroll horizontal ï¿½ border ORO
                                                                                                      Quick replies
 
 Pregunta al Shaman...                            >
@@ -81,7 +81,7 @@ Pregunta al Shaman...                            >
 ESTADO: ESCRIBIENDO
 
                        LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                         LUKASH PROTOCOL · UI KIT
+                                         LUKASH PROTOCOL ï¿½ UI KIT
 
 03 Button System
 
@@ -109,39 +109,39 @@ ESTADOS DEL BOTON             Hover             Pressed               Disabled  
                  Normal
 
                               LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                       LUKASH PROTOCOL · UI KIT
+                                                                                       LUKASH PROTOCOL ï¿½ UI KIT
 
 04 Badges & Status Levels
 
-Sistema de insignias de estado, niveles de jaguar y sellos de validacion del protocolo.
+Sistema de insignias de estado, niveles de Aura y sellos de validacion del protocolo.
 BADGES DE ESTADO
 
 Motor B2 Activo    Motor B0 Pre-hito       Proof of Roar             Bloqueado
 
-NIVELES DE JAGUAR  RASTREADOR              GUERRERO  LIDER                                                       JAGUAR
+NIVELES DE AURA    RASTREADOR              GUERRERO  LIDER                                                       GLOW
    CACHORRO
 
 TARJETAS DE NIVEL
 
-Cachorro           Rastreador                                                                                         Lider         Jaguar
+Cachorro           Rastreador                                                                                         Lider         Glow
 
- 0 ­ 199 JS         200 ­ 499 JS                     Guerrero                                                    1000 ­ 1999 JS      2000+ JS
+ 0 ï¿½ 199 JS         200 ï¿½ 499 JS                     Guerrero                                                    1000 ï¿½ 1999 JS      2000+ JS
 Acceso basico           Acceso a                                                                                     Control de    Acceso total
-                                                     500 ­ 999 JS                                                      Manada
+                                                     500 ï¿½ 999 JS                                                      Manada
    a la selva        Jungle Arena                        Motor D                                                                     + Totems
 
-                                                     exento parcial                                                              K_min $25M TARGET · 71%
+                                                     exento parcial                                                              K_min $25M TARGET ï¿½ 71%
 
-SELLOS DE VALIDACION                                 AUDITORIA v3.1 · ON-CHAIN
-        MONTE CARLO VALIDATED · 0.0% RISK
+SELLOS DE VALIDACION                                 AUDITORIA v3.1 ï¿½ ON-CHAIN
+        MONTE CARLO VALIDATED ï¿½ 0.0% RISK
 
                    LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                            LUKASH PROTOCOL · UI KIT
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
- 05 Jaguar Score & Progress Bars
+ 05 Aura & Progress Bars
 
 Widget de puntaje y barras de progreso del ecosistema -- datos en tiempo real via Pyth Network.
-JAGUAR SCORE WIDGET
+AURA WIDGET
 
                                 PROGRESO ACTUAL
 
@@ -174,7 +174,7 @@ Adopcion LATAM                                                                  
 450K usuarios / 1M meta Fase 2                                                                                        CAC $7-10 USD
 
                                 LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                  LUKASH PROTOCOL · UI KIT
+                                  LUKASH PROTOCOL ï¿½ UI KIT
 
 06 Data Cards
 
@@ -184,13 +184,13 @@ RESERVA SAGRADA                   MI BALANCE                                    
 
 $17.75M                           12,450 LKS                                          +18.4%
 
-Ecosistema · auditado on-chain    ~ $248.90 USD · Motor A activo                      Etapa 1 · Monte Carlo validado
+Ecosistema ï¿½ auditado on-chain    ~ $248.90 USD ï¿½ Motor A activo                      Etapa 1 ï¿½ Monte Carlo validado
 
 PRECIO $LUKA                      USUARIOS ACTIVOS                                    K_min STATUS
 
 $0.0001                           450K                                                71%
 
-TGE · Meta Ano 5: $0.0113 (113x)  Meta B1: 800K · LATAM foco                          $17.75M / $25M · B2 pendiente
+TGE ï¿½ Meta Ano 5: $0.0113 (113x)  Meta B1: 800K ï¿½ LATAM foco                          $17.75M / $25M ï¿½ B2 pendiente
 
  07 Toast Notifications
 
@@ -209,10 +209,10 @@ Notificaciones emergentes del sistema. Aparecen desde abajo con animacion slide-
 
 !  La selva esta ocupada.
 
-   Intenta de nuevo en un momento, jaguar.
+   Intenta de nuevo en un momento, felino.
 
                                   LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                            LUKASH PROTOCOL · UI KIT
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
  08 Design Tokens -- Paleta & Tipografia
 
@@ -237,7 +237,7 @@ Mono  Datos y codigos -- Space Mono (PDF: DejaVu Sans Mono)
 
 Sans  Cuerpo de texto -- IBM Plex Sans (PDF: DejaVu Sans)
 
-MonoB  ETIQUETAS Y LABELS -- 7-9PX · UPPERCASE · TRACKING .15EM
+MonoB  ETIQUETAS Y LABELS -- 7-9PX ï¿½ UPPERCASE ï¿½ TRACKING .15EM
 
 ESCALA DE ESPACIADO
 

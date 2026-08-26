@@ -1,4 +1,4 @@
-# Spec 07-f — Jaguar Shield: Anti-Whale + Jaguar Exit Fee sobre Token-2022 Transfer Hook
+# Spec 07-f — KASH Shield: Anti-Whale + KASH Exit Fee sobre Token-2022 Transfer Hook
 
 > Milestone 2 · Referencia: Protocolo v4.3 §9 (Anti-Whale + Exit Fee) + ADR-012 (C10) + ADR-015 · Prioridad: **alta**
 > Dependencias upstream: 07-a (Pyth), 07-c (Tridente para registro de MMs).
@@ -16,8 +16,8 @@ Anti-Whale/Exit Fee simplemente vende en otro DEX (Raydium, Orca) y esquiva
 completamente el fee.
 
 Para un token cuyo value prop es "cada venta de pánico fortalece la Reserva"
-(Jaguar Exit Fee), un enforcement evadible es **casi inútil**. El diseño del
-Jaguar Shield asume que el fee se aplica **en toda transferencia**, no solo en
+(KASH Exit Fee), un enforcement evadible es **casi inútil**. El diseño del
+KASH Shield asume que el fee se aplica **en toda transferencia**, no solo en
 las nuestras.
 
 Además, la lógica del Anti-Whale (ADR-012 / C10) y Exit Fee (v4.3 §9) **no está
@@ -110,11 +110,11 @@ let fee_tokens = mul_bps(excedente_tokens, penal_bps);
 // fee_tokens → cobro atómico directo → swap LUKA→USDC → Vault Core
 ```
 
-**Exención por Aura ≥ 10,000 (nivel Jaguar) — override Anti-Whale:** requiere leer
+**Exención por Aura ≥ 10,000 (nivel Glow) — override Anti-Whale:** requiere leer
 el registro Aura del sender (existente en el diseño, PDA por wallet). Si `aura ≥ 10_000`,
 se salta la penalización. Esto además libera de escala automática a Circuit Breaker LP.
 
-### 2.4 Jaguar Exit Fee (v4.3 §9) — activación dual
+### 2.4 KASH Exit Fee (v4.3 §9) — activación dual
 
 Se activa cuando **ambas** condiciones se cumplen:
 
@@ -157,7 +157,7 @@ fn is_exempt(sender: Pubkey, ctx: &Context<TransferHook>) -> Result<bool> {
     if has_active_lp_lock(ctx, sender)? { return Ok(true); }
     // 5. Staking activo — sender tiene una posición staking > 0
     if has_active_staking(ctx, sender)? { return Ok(true); }
-    // 6. Nivel Jaguar (Aura ≥ 10_000)
+    // 6. Nivel Glow (Aura ≥ 10_000)
     if get_aura_level(ctx, sender)? >= 10_000 { return Ok(true); }
     Ok(false)
 }
@@ -233,8 +233,8 @@ pub const EXIT_FEE_ET3_BPS: u64 = 100;
 pub const EXIT_FEE_PRICE_TRIG_BPS: u64 = 7_000;  // <0.7×EMA30
 pub const EXIT_FEE_VOL_TRIG_BPS:   u64 = 30;     // >0.3% supply/hora
 
-// Aura Jaguar
-pub const AURA_JAGUAR_MIN: u64 = 10_000;
+// Aura Glow
+pub const AURA_GLOW_MIN: u64 = 10_000;
 ```
 
 ### 3.2 Estado nuevo
@@ -323,7 +323,7 @@ pub struct MarketMakerRevoked    { pub mm: Pubkey, pub ts: i64 }
   excedente 6%) → fee = 0.6% del pool en LUKA, cobrado en la misma tx.
 - **Venta en Génesis con precio en pánico** (`p < 0.7×EMA30` AND `volumen>0.3% supply/h`):
   Exit Fee 5% sobre monto total → cobro atómico, sender recibe 95%.
-- **Venta con nivel Jaguar (Aura ≥ 10K)**: exento, sin fee.
+- **Venta con nivel Glow (Aura ≥ 10K)**: exento, sin fee.
 - **Anti-Whale + Exit Fee simultáneos**: ambos fees se suman y se cobran en una sola tx.
 
 ### 4.2 Edge cases
@@ -358,7 +358,7 @@ verificar:
 - Con Anti-Whale: espiral se mantiene ~0% (el fee del 10% sobre 9% de excedente
   al Vault cierra el loop deflacionario y estabiliza).
 
-Es la validación empírica de que el Jaguar Shield hace lo que dice.
+Es la validación empírica de que el KASH Shield hace lo que dice.
 
 ---
 

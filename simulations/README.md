@@ -19,7 +19,7 @@ El informe cuantitativo v4.2 (`docs/analisis/`, `docs/protocolo/lukash_mc_v4.py`
 
 | Módulo | Rol |
 | --- | --- |
-| `engine.py` | **Réplica fiel de `lib.rs`** — mismas constantes y aritmética entera USD 6-dec. `process_fee`, distribución, Throttle, cola, `switch_motor_b`, `execute_deferred_burn`, Jaguar Lock. NO añade nada que el contrato no haga. |
+| `engine.py` | **Réplica fiel de `lib.rs`** — mismas constantes y aritmética entera USD 6-dec. `process_fee`, distribución, Throttle, cola, `switch_motor_b`, `execute_deferred_burn`, KASH Lock. NO añade nada que el contrato no haga. |
 | `economic.py` | Capa que el contrato NO tiene (off-chain/oráculo): Markov + ciclos halving, precios BTC/SOL, precio $LUKA = **P_KASH × prima**, vesting, adopción. Portada de `lukash_mc_v4.py`. |
 | `trajectory.py` | Una trayectoria de 5 años: conduce `engine.py` con `economic.py`. Detecta espiral (trampa B0) y ruina. |
 | `scenarios.py` | 3 campañas de lanzamiento: CONSERVADOR / BASE / AGRESIVO. |
@@ -56,5 +56,5 @@ El motor fiel expuso qué partes del diseño **aún no viven en el contrato** (c
   (fees depositados, sin apreciar) contra K_min; el diseño mide K por valor de mercado (Pyth).
 - **Módulo contra-cíclico de LUKAI** (rebalanceo USDC según régimen): NO en el contrato →
   la composición fija hace la campaña débil más frágil (ver hallazgos).
-- **Jaguar Shield activo** (Anti-Whale, Exit Fee): NO en Milestone 1 (ADR-012, va en Milestone 2).
+- **KASH Shield activo** (Anti-Whale, Exit Fee): NO en Milestone 1 (ADR-012, va en Milestone 2).
 - **Yield del Vault**: lo aplica el keeper off-chain, no el contrato.

@@ -10,7 +10,7 @@ pub struct ProtocolConfig {
 
     // Umbrales de valor (KASH Core, USD 6 dec)
     pub k_min_usd: u64,
-    pub jaguar_lock_usd: u64,
+    pub kash_lock_usd: u64,
     pub etapa3_usd: u64,
 
     // Composición objetivo del Vault Core (bps, debe sumar 10000)
@@ -67,7 +67,7 @@ pub struct ProtocolState {
     pub deferred_burn_queue: u64,
 
     // Hitos
-    pub jaguar_lock_hit: bool,
+    pub kash_lock_hit: bool,
     pub last_queue_exec_ts: i64,
 
     pub bump: u8,

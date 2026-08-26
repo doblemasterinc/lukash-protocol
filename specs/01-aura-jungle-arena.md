@@ -7,10 +7,10 @@
 
 ---
 
-## 1. AURA — "El Resplandor del Jaguar"
+## 1. AURA — "El Rugido de la Manada"
 
-Aura es la reputación financiera on-chain del usuario: su historial de caza en la selva. Reemplaza al
-"Jaguar Score". Mecánica heredada de v4.2 (inalterada):
+Aura es la reputación financiera on-chain del usuario: su historial de caza en la selva. Mecánica
+heredada de v4.2 (inalterada):
 - **On-chain, no transferible, acumulativa.** Vinculada a la wallet.
 - **Decae 2%/semana tras 90 días de inactividad.** Se detiene al retomar actividad.
 - **El nivel usa el Aura máximo histórico** — los niveles alcanzados no retroceden por decaimiento.
@@ -21,20 +21,20 @@ Aura es la reputación financiera on-chain del usuario: su historial de caza en 
 | Nivel | Aura | Narrativa | Beneficios desbloqueados |
 | --- | --- | --- | --- |
 | **Cachorro** | 0–499 | Acabas de llegar a la selva | Acceso básico a servicios Motor D Capa 2. Manadas estándar. cNFT Nativo $LUKA (0%). Misiones del Sendero del Aprendiz. |
-| **Rastreador** | 500–1,999 | Aprendiste a leer las huellas | **Desbloquea cNFT Jaguar Universal → DeFi Capa 1** (gate ≥500, igual que v4.2). Voto en parámetros Motor D (DAO). Acceso prioritario a nuevos cNFT. |
-| **Cazador** | 2,000–4,999 | Cazas por ti mismo | LP Jaguar 90d con +12% rewards. Visibilidad en ranking de Manadas. Acceso anticipado a integraciones Capas 3A/3B. Puede liderar Manada. |
+| **Rastreador** | 500–1,999 | Aprendiste a leer las huellas | **Desbloquea cNFT Tótem Universal → DeFi Capa 1** (gate ≥500, igual que v4.2). Voto en parámetros Motor D (DAO). Acceso prioritario a nuevos cNFT. |
+| **Cazador** | 2,000–4,999 | Cazas por ti mismo | LP LUKASH 90d con +12% rewards. Visibilidad en ranking de Manadas. Acceso anticipado a integraciones Capas 3A/3B. Puede liderar Manada. |
 | **Alfa** | 5,000–9,999 | Proteges a tu manada | Gobernanza avanzada. LP Fundador 365d con +20% rewards. Override Anti-Whale automático. Multiplicador de Aura ×1.15. |
-| **Jaguar** | 10,000+ | Eres leyenda de la selva | Gobernanza premium (peso extra). Acceso a instrumentos **RWA y T-bills tokenizados** (Fase 3). Multiplicador de Aura ×1.30. Skin cNFT legendario. Puede fundar "Dinastías" (federación de Manadas). |
+| **Glow** | 10,000+ | Eres leyenda de la selva | Gobernanza premium (peso extra). Acceso a instrumentos **RWA y T-bills tokenizados** (Fase 3). Multiplicador de Aura ×1.30. Skin cNFT legendario. Puede fundar "Dinastías" (federación de Manadas). |
 
 > **Compatibilidad con v4.2:** los umbrales 500 / 2,000 / 5,000 se preservan exactos (Cachorro=Cub,
-> Rastreador=Jaguar, Cazador=Alpha, Alfa=Emperor). Solo se añade el pináculo **Jaguar (10,000+)**,
+> Rastreador=Glow, Cazador=Alpha, Alfa=Emperor). Solo se añade el pináculo **Glow (10,000+)**,
 > que hereda los beneficios de RWA/T-bills. Ningún gate de cNFT existente se rompe.
 
 ### 1.2 Calibración base (cómo se gana Aura — heredado de v4.2 §7D.1)
 
 | Acción | Aura | Nota |
 | --- | ---: | --- |
-| Holding activo cNFT Jaguar Universal | 10 / sem | Máximo incentivo de holdeo premium |
+| Holding activo cNFT Tótem Universal | 10 / sem | Máximo incentivo de holdeo premium |
 | Holding activo cNFT Nativo o Estándar | 5 / sem | Holding comprometido en cualquier instrumento |
 | Participación en Manada activa (Capa 2) | 15 / evento | Por transacción completada en Manada |
 | Apuesta Bet & Win completada (Capa 2) | 8 / evento | Independiente del resultado |
@@ -44,7 +44,7 @@ Aura es la reputación financiera on-chain del usuario: su historial de caza en 
 | Staking activo $LUKA (mín 7d) | 3 / día | Requiere staking, no solo holding |
 | LP Comprometido 30 / 90 / 365d | 5 / 10 / 20 / sem | Escalonado por lock |
 
-Los multiplicadores de nivel (×1.15 Alfa, ×1.30 Jaguar) aplican sobre estas ganancias.
+Los multiplicadores de nivel (×1.15 Alfa, ×1.30 Glow) aplican sobre estas ganancias.
 **PENDIENTE (ajustable por gobernanza, Timelock 48h en Etapa 2A):** valores de lanzamiento, se recalibran con datos reales.
 
 ---
@@ -73,7 +73,7 @@ sin emisión de recompensas fuera de los pools Marketing/Staking ya asignados.
 | A2 | **La Reserva Sagrada** | Aprende cómo la Reserva respalda a $LUKA + haz tu 1er aporte (mín 1 $LUKA) | +20 | Sendero Rastro Diario |
 | A3 | **El Rugido del Ahorro** | Simulador: interés compuesto y hold | +20 | — |
 | A4 | **Cazar sin Miedo** | Módulo de riesgo/volatilidad + configura tu 1er staking | +50 | Activa staking del usuario |
-| A5 | **El Puente DeFi** | Aprende Capa 1 + mint tu 1er cNFT Jaguar Universal (requiere Rastreador) | +50 | DeFi Capa 1 |
+| A5 | **El Puente DeFi** | Aprende Capa 1 + mint tu 1er cNFT Tótem Universal (requiere Rastreador) | +50 | DeFi Capa 1 |
 
 **Rastro Diario (retención) — repetible, Aura bajo, con rachas:**
 | # | Misión | Aura | Nota |
@@ -113,7 +113,7 @@ sin emisión de recompensas fuera de los pools Marketing/Staking ya asignados.
 - **Geo-Drops / Presas:** LUKAI lanza recompensas ($LUKA/NFT desde pools Marketing/Staking) en coordenadas o
   eventos; reclamarlas exige Energía/Stake. Motor de eventos y volumen.
 - **cNFT evolutivo ("Estatus de Depredador"):** representación visual del nivel de Aura (skins por nivel:
-  Cachorro → … → Jaguar legendario). Niveles altos dan multiplicadores de staking y descuentos de fee.
+  Cachorro → … → Glow legendario). Niveles altos dan multiplicadores de staking y descuentos de fee.
 
 ### 2.5 Anti-abuso (para que el Aura signifique algo)
 - Aura solo por acciones verificables on-chain o validadas por LUKAI (Proof of Roar).

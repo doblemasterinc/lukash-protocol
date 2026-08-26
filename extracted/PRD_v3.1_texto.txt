@@ -2,114 +2,114 @@
 
                    Product Requirements Document (PRD)
 
-            Protocolo v3.1 · Aplicación LUKASH · Soberanía Financiera LATAM
+            Protocolo v3.1 ï¿½ Aplicaciï¿½n LUKASH ï¿½ Soberanï¿½a Financiera LATAM
 
-                 Ing. Sebastián Botero Pabón · Arquitecto del Protocolo · Marzo 2026
+                 Ing. Sebastiï¿½n Botero Pabï¿½n ï¿½ Arquitecto del Protocolo ï¿½ Marzo 2026
 
 "En la manada pagamos con $Lukas, mientras nos protegemos con la Reserva Sagrada"
 
-                          MONTE CARLO VALIDATED · 0.0% RISK · SOLANA · v3.1 
+                          MONTE CARLO VALIDATED ï¿½ 0.0% RISK ï¿½ SOLANA ï¿½ v3.1 
 PARTE 0 -- INSTRUCCIONES AL AGENTE DE PRD
 
-0.1 Propósito de este documento
+0.1 Propï¿½sito de este documento
 
 Este PRD es el prompt maestro para un agente de IA (Cursor, GPT-4o, Claude con herramientas de
-código) encargado de generar el prototipo funcional de la aplicación LUKASH. Contiene toda la
-información necesaria para construir la arquitectura de pantallas, lógica de negocio y diseño visual sin
-requerir documentos adicionales durante la sesión de generación.
+cï¿½digo) encargado de generar el prototipo funcional de la aplicaciï¿½n LUKASH. Contiene toda la
+informaciï¿½n necesaria para construir la arquitectura de pantallas, lï¿½gica de negocio y diseï¿½o visual sin
+requerir documentos adicionales durante la sesiï¿½n de generaciï¿½n.
 
 0.2 Documentos que DEBES adjuntar al agente
 
-Adjunta los siguientes archivos al inicio de la sesión de trabajo con el agente. Son la fuente de verdad del
+Adjunta los siguientes archivos al inicio de la sesiï¿½n de trabajo con el agente. Son la fuente de verdad del
 protocolo:
 
     DOCUMENTOS OBLIGATORIOS
-       · LUKASH_Protocolo_v3_1_CORREGIDO.docx -- Arquitectura técnica completa de los 4
-           motores económicos, tokenomics, Throttle Dinámico y orquestación LUKAI v3.1. Referencia
-           principal para la lógica financiera.
-       · LUKASH_BMC_v3_0.docx -- Business Model Canvas v3.0. Contiene los segmentos de
-           cliente, funnel de soberanía, canales de distribución, Proof of Roar, métricas de retención y
-           toda la validación Monte Carlo.
-       · Estrategia_de_Soberanía_Bancaria_Gamificada.docx -- Estrategia de go-to-market, datos
-           del mercado LATAM (Banco Mundial, ENIF 2024), benchmarks de CAC y análisis competitivo.
-       · guía_visual.docx / marca_1_0_lukash.docx -- Guía de marca completa: paleta de colores,
-           tipografías, tono de comunicación y lineamientos visuales.
+       ï¿½ LUKASH_Protocolo_v3_1_CORREGIDO.docx -- Arquitectura tï¿½cnica completa de los 4
+           motores econï¿½micos, tokenomics, Throttle Dinï¿½mico y orquestaciï¿½n LUKAI v3.1. Referencia
+           principal para la lï¿½gica financiera.
+       ï¿½ LUKASH_BMC_v3_0.docx -- Business Model Canvas v3.0. Contiene los segmentos de
+           cliente, funnel de soberanï¿½a, canales de distribuciï¿½n, Proof of Roar, mï¿½tricas de retenciï¿½n y
+           toda la validaciï¿½n Monte Carlo.
+       ï¿½ Estrategia_de_Soberanï¿½a_Bancaria_Gamificada.docx -- Estrategia de go-to-market, datos
+           del mercado LATAM (Banco Mundial, ENIF 2024), benchmarks de CAC y anï¿½lisis competitivo.
+       ï¿½ guï¿½a_visual.docx / marca_1_0_lukash.docx -- Guï¿½a de marca completa: paleta de colores,
+           tipografï¿½as, tono de comunicaciï¿½n y lineamientos visuales.
 
-    IMÁGENES DE REFERENCIA (adjuntar como contexto visual)
-       · LUKAI_imagen.png -- Avatar oficial de LUKAI (jaguar obsidiana con ojos ámbar)
-       · jaguar_masculino.png / jaguar_femenino_2.png -- Personajes de la aplicación
-       · arena.png -- Jungle Arena holográfica (referencia para Pestaña 3)
-       · KASH_reserva_sagrada.png -- Caverna sagrada con activos (referencia para Pestaña 6)
-       · cnft.png -- Tótems cNFT Bronce / Plata / Oro (referencia para Pestaña 4)
-       · ISOTIPO_V2.png y LUKASH_Protocol_logotipo.png -- Logo oficial
+    IMï¿½GENES DE REFERENCIA (adjuntar como contexto visual)
+       ï¿½ LUKAI_imagen.png -- Avatar oficial de LUKAI (felino obsidiana con ojos ï¿½mbar)
+       ï¿½ jaguar_masculino.png / jaguar_femenino_2.png -- Personajes de la aplicaciï¿½n
+       ï¿½ arena.png -- Jungle Arena hologrï¿½fica (referencia para Pestaï¿½a 3)
+       ï¿½ KASH_reserva_sagrada.png -- Caverna sagrada con activos (referencia para Pestaï¿½a 6)
+       ï¿½ cnft.png -- Tï¿½tems cNFT Bronce / Plata / Oro (referencia para Pestaï¿½a 4)
+       ï¿½ ISOTIPO_V2.png y LUKASH_Protocol_logotipo.png -- Logo oficial
 
-0.3 Stack tecnológico recomendado
+0.3 Stack tecnolï¿½gico recomendado
 
 Indica al agente que use el siguiente stack para el prototipo:
-   · Frontend: React Native (Expo) para mobile-first. Alternativa: Next.js para web prototype.
-   · Blockchain: Solana Web3.js + Anchor Framework. Wallet: Phantom / Solflare adapter.
-   · IA (LUKAI): API de Anthropic (claude-sonnet-4-5) con system prompt del personaje LUKAI v3.1.
-   · Datos en tiempo real: Pyth Network para precios de activos. Jupiter SDK para swaps.
-   · Estilos: Tailwind CSS (web) o StyleSheet con design tokens del sistema LUKASH.
-   · Animaciones: Framer Motion (web) o Reanimated 3 (mobile) para efectos bioluminiscentes.
-0.4 Instrucción de arranque para el agente
+   ï¿½ Frontend: React Native (Expo) para mobile-first. Alternativa: Next.js para web prototype.
+   ï¿½ Blockchain: Solana Web3.js + Anchor Framework. Wallet: Phantom / Solflare adapter.
+   ï¿½ IA (LUKAI): API de Anthropic (claude-sonnet-4-5) con system prompt del personaje LUKAI v3.1.
+   ï¿½ Datos en tiempo real: Pyth Network para precios de activos. Jupiter SDK para swaps.
+   ï¿½ Estilos: Tailwind CSS (web) o StyleSheet con design tokens del sistema LUKASH.
+   ï¿½ Animaciones: Framer Motion (web) o Reanimated 3 (mobile) para efectos bioluminiscentes.
+0.4 Instrucciï¿½n de arranque para el agente
 
-Copia y pega este texto exacto al inicio de tu sesión con el agente:
+Copia y pega este texto exacto al inicio de tu sesiï¿½n con el agente:
 
      PROMPT DE ARRANQUE 
-    Eres el agente de desarrollo del Protocolo LUKASH. Tu misión es construir el prototipo
-    funcional de la aplicación LUKASH siguiendo este PRD como documento maestro. Los
+    Eres el agente de desarrollo del Protocolo LUKASH. Tu misiï¿½n es construir el prototipo
+    funcional de la aplicaciï¿½n LUKASH siguiendo este PRD como documento maestro. Los
     archivos adjuntos son la fuente de verdad. El sistema se llama LUKASH, la moneda es
-    $Lukas, la IA es LUKAI v3.1 y la bóveda colectiva del ecosistema se llama "La Reserva
-    Sagrada" (también referida como KASH Vault internamente). Nunca uses el término "Vault"
+    $Lukas, la IA es LUKAI v3.1 y la bï¿½veda colectiva del ecosistema se llama "La Reserva
+    Sagrada" (tambiï¿½n referida como KASH Vault internamente). Nunca uses el tï¿½rmino "Vault"
     en la interfaz de usuario -- siempre "Reserva Sagrada". Construye pantalla por pantalla
-    siguiendo el orden del PRD. Por cada pantalla: (1) genera el código, (2) lista los
-    componentes creados, (3) indica qué conectar al backend. Respeta estrictamente la
+    siguiendo el orden del PRD. Por cada pantalla: (1) genera el cï¿½digo, (2) lista los
+    componentes creados, (3) indica quï¿½ conectar al backend. Respeta estrictamente la
     paleta de colores y el lenguaje de marca.
-PARTE 1 -- VISIÓN GENERAL DEL PRODUCTO
+PARTE 1 -- VISIï¿½N GENERAL DEL PRODUCTO
 
-1.1 Qué es LUKASH
+1.1 Quï¿½ es LUKASH
 
 LUKASH es un ecosistema financiero descentralizado construido sobre Solana que transiciona de la
-cultura de las memecoins hacia una infraestructura bancaria soberana para Latinoamérica. No es un
-token especulativo ni un neobanco convencional: es la arquitectura de un nuevo estándar de valor donde
-cada transacción en $Lukas alimenta la Reserva Sagrada colectiva del ecosistema.
+cultura de las memecoins hacia una infraestructura bancaria soberana para Latinoamï¿½rica. No es un
+token especulativo ni un neobanco convencional: es la arquitectura de un nuevo estï¿½ndar de valor donde
+cada transacciï¿½n en $Lukas alimenta la Reserva Sagrada colectiva del ecosistema.
 
-Problema que resuelve                           Cómo lo resuelve
+Problema que resuelve                           Cï¿½mo lo resuelve
 
-   · Solo 29% de LATAM ahorra formalmente          · Cada transacción en $Lukas  % a la
+   ï¿½ Solo 29% de LATAM ahorra formalmente          ï¿½ Cada transacciï¿½n en $Lukas  % a la
        (Banco Mundial)                                 Reserva Sagrada
 
-   · Crédito formal: Colombia 35.5%, México        · Reserva respaldada por cBTC, JitoSOL y
+   ï¿½ Crï¿½dito formal: Colombia 35.5%, Mï¿½xico        ï¿½ Reserva respaldada por cBTC, JitoSOL y
        37.3%                                           USDC reales
 
-   · Remesas cuestan 13.4% en promedio             · Gamificación convierte ahorro en progreso
-   · Inflación 8­40% anual devora el ahorro            visible
+   ï¿½ Remesas cuestan 13.4% en promedio             ï¿½ Gamificaciï¿½n convierte ahorro en progreso
+   ï¿½ Inflaciï¿½n 8ï¿½40% anual devora el ahorro            visible
 
-       informal                                    · LUKAI (IA) elimina fricción técnica --
-   · El cripto actual: casino especulativo sin         lenguaje natural
+       informal                                    ï¿½ LUKAI (IA) elimina fricciï¿½n tï¿½cnica --
+   ï¿½ El cripto actual: casino especulativo sin         lenguaje natural
 
-       respaldo                                    · Jaguar Score = historial crediticio digital on-
+       respaldo                                    ï¿½ Aura = historial crediticio digital on-
                                                        chain
 
 1.2 Propuesta de valor en una frase
 
       "Ahorra mientras gastas. Crece mientras juegas. Construye el banco que
-                                       Latinoamérica nunca tuvo."
+                                       Latinoamï¿½rica nunca tuvo."
 
 1.3 Identidad visual -- Design Tokens
 
-El agente DEBE usar estos tokens en todo el código generado:
+El agente DEBE usar estos tokens en todo el cï¿½digo generado:
 
              Token                Hex                         Uso                     Nombre
 --oro               #C9A84C                                                Oro LUKASH
                                                 Acento primario, botones
---ambar             #E8940A                     CTA, bordes activos        Ámbar Fuego
+--ambar             #E8940A                     CTA, bordes activos        ï¿½mbar Fuego
 
 --verde             #3DAA6B                     Alertas, nivel Guerrero,   Verde Selva
                                                 valores positivos
 --obs               #0A0A0C                                                Negro Obsidiana
---carbon            #0F0F12                     Éxito, datos confirmados,  Carbón
+--carbon            #0F0F12                     ï¿½xito, datos confirmados,  Carbï¿½n
                                                 estado online
 
                                                 Fondo principal app
@@ -119,304 +119,304 @@ El agente DEBE usar estos tokens en todo el código generado:
 --blanco  #F0EAD6  Texto principal sobre  Marfil Sagrado
                    fondos oscuros
 
-· Tipografías: Cinzel Bold (títulos y headings) · Space Mono (datos numéricos, labels técnicos) · IBM
-   Plex Sans (cuerpo y párrafos)
+ï¿½ Tipografï¿½as: Cinzel Bold (tï¿½tulos y headings) ï¿½ Space Mono (datos numï¿½ricos, labels tï¿½cnicos) ï¿½ IBM
+   Plex Sans (cuerpo y pï¿½rrafos)
 
-· Idioma UI: Español latinoamericano. Tono: cercano, soberano, sin jerga técnica blockchain.
+ï¿½ Idioma UI: Espaï¿½ol latinoamericano. Tono: cercano, soberano, sin jerga tï¿½cnica blockchain.
 
-· Estética general: Dark mode permanente. Misticismo urbano -- jungla digital. Glassmorphism en
-   cards. Partículas flotantes sutiles en fondos.
+ï¿½ Estï¿½tica general: Dark mode permanente. Misticismo urbano -- jungla digital. Glassmorphism en
+   cards. Partï¿½culas flotantes sutiles en fondos.
 PARTE 2 -- ARQUITECTURA DE PANTALLAS
 
-La aplicación tiene una barra de navegación inferior con 6 pestañas. La navegación es persistente. El
-estado global incluye: saldo $Lukas, Jaguar Score, nivel del usuario, estado del Motor B (B0/B2) y
-conexión de wallet.
+La aplicaciï¿½n tiene una barra de navegaciï¿½n inferior con 6 pestaï¿½as. La navegaciï¿½n es persistente. El
+estado global incluye: saldo $Lukas, Aura, nivel del usuario, estado del Motor B (B0/B2) y
+conexiï¿½n de wallet.
 
-PESTAÑA 1 -- WALLET · La Bóveda
+PESTAï¿½A 1 -- WALLET ï¿½ La Bï¿½veda
 
  PRIORIDAD ALTA -- Pantalla principal de entrada
 
-Propósito
+Propï¿½sito
 
-Pantalla de inicio y resumen financiero del usuario. Diseño inspirado en Apple Wallet / Apple Finance --
-limpio, minimalista, con los datos más importantes visibles de un vistazo sin scroll. Genera confianza
+Pantalla de inicio y resumen financiero del usuario. Diseï¿½o inspirado en Apple Wallet / Apple Finance --
+limpio, minimalista, con los datos mï¿½s importantes visibles de un vistazo sin scroll. Genera confianza
 inmediata.
 
 Componentes principales
 
-   · Header: Saludo personalizado ("Hola, Jaguar ·") + nivel actual (ej:  Guerrero) + botón de
+   ï¿½ Header: Saludo personalizado ("Hola, felino ï¿½") + nivel actual (ej:  Guerrero) + botï¿½n de
        notificaciones.
 
-   · Card Principal -- Saldo $Lukas: Número grande centrado (formato: 12,450 $LKS). Equivalente en
-       USD abajo en gris. Fondo: gradiente obsidiana con partículas doradas sutiles. Bordes redondeados
+   ï¿½ Card Principal -- Saldo $Lukas: Nï¿½mero grande centrado (formato: 12,450 $LKS). Equivalente en
+       USD abajo en gris. Fondo: gradiente obsidiana con partï¿½culas doradas sutiles. Bordes redondeados
        (24px). Efecto glassmorphism.
 
-   · Card Secundaria -- La Reserva Sagrada: Muestra el TOTAL de la Reserva Sagrada del
-       ecosistema (dato público on-chain), NO solo la porción del usuario. Composición: cBTC 40% ·
-       JitoSOL 35% · USDC 25%. Barra de progreso hacia K_min ($25M). Etiqueta: "Reserva del
+   ï¿½ Card Secundaria -- La Reserva Sagrada: Muestra el TOTAL de la Reserva Sagrada del
+       ecosistema (dato pï¿½blico on-chain), NO solo la porciï¿½n del usuario. Composiciï¿½n: cBTC 40% ï¿½
+       JitoSOL 35% ï¿½ USDC 25%. Barra de progreso hacia K_min ($25M). Etiqueta: "Reserva del
        Ecosistema -- auditada on-chain".
 
-   · Jaguar Score Widget: Número grande en dorado con barra circular de progreso. Nivel actual +
+   ï¿½ Aura Widget: Nï¿½mero grande en dorado con barra circular de progreso. Nivel actual +
        siguiente nivel. Tap  navega a Jungle Arena.
 
-   · Botones de acción rápida: "Enviar " (verde) y "Recibir " (dorado). Diseño pill/capsule. Efecto
+   ï¿½ Botones de acciï¿½n rï¿½pida: "Enviar " (verde) y "Recibir " (dorado). Diseï¿½o pill/capsule. Efecto
        haptic en mobile.
 
-   · Historial reciente: Lista de últimas 3 transacciones con ícono de tipo, monto, y timestamp. Tap 
-       detalle. Swipe  más opciones.
+   ï¿½ Historial reciente: Lista de ï¿½ltimas 3 transacciones con ï¿½cono de tipo, monto, y timestamp. Tap 
+       detalle. Swipe  mï¿½s opciones.
 
 Reglas de negocio
 
-   · El saldo se actualiza en tiempo real via WebSocket (Solana RPC).
-   · La Reserva Sagrada es del ecosistema completo -- nunca mostrar como "tu reserva".
-   · Si Motor B = B0: mostrar badge "Creciendo hacia K_min" con progreso %.
-   · Si Motor B = B2: mostrar badge "Distribución Activa" en verde con animación de pulso.
-   · Primer acceso: mostrar modal de bienvenida con LUKAI y tutorial de 3 pasos.
+   ï¿½ El saldo se actualiza en tiempo real via WebSocket (Solana RPC).
+   ï¿½ La Reserva Sagrada es del ecosistema completo -- nunca mostrar como "tu reserva".
+   ï¿½ Si Motor B = B0: mostrar badge "Creciendo hacia K_min" con progreso %.
+   ï¿½ Si Motor B = B2: mostrar badge "Distribuciï¿½n Activa" en verde con animaciï¿½n de pulso.
+   ï¿½ Primer acceso: mostrar modal de bienvenida con LUKAI y tutorial de 3 pasos.
 
-Especificaciones técnicas              // Saldo $Lukas + USD
+Especificaciones tï¿½cnicas              // Saldo $Lukas + USD
                                        // Datos del ecosistema on-chain
             // Componentes a generar:
             WalletScreen.tsx
              BalanceCard.tsx
              ReservaSagradaCard.tsx
- JaguarScoreWidget.tsx       // Score + nivel + barra circular
+ AuraWidget.tsx              // Score + nivel + barra circular
  QuickActionButtons.tsx      // Enviar / Recibir
  TransactionList.tsx         // Historial reciente
 
-PESTAÑA 2 -- MANADAS · Red de Soberanía
+PESTAï¿½A 2 -- MANADAS ï¿½ Red de Soberanï¿½a
 
  MOTOR D -- Fee 1.5% fijo
 
-Propósito
+Propï¿½sito
 
-Interfaz social de grupos de ahorro e inversión colectiva. Aprovecha el hecho de que solo el 29% de
+Interfaz social de grupos de ahorro e inversiï¿½n colectiva. Aprovecha el hecho de que solo el 29% de
 LATAM ahorra formalmente: LUKASH convierte el ahorro en un acto social, visible y celebrado. Los
-grupos se llaman "Manadas" y cada una tiene avatares jaguar diferenciados.
+grupos se llaman "Manadas" y cada una tiene avatares felinos diferenciados.
 
 Componentes principales
 
-   · Header: "Mis Manadas" + botón "Crear Manada +" en dorado.
+   ï¿½ Header: "Mis Manadas" + botï¿½n "Crear Manada +" en dorado.
 
-   · Mis Manadas (lista activa): Cada card de manada muestra: nombre, avatar colectivo (stack de
-       íconos jaguar), tipo (Ahorro / Inversión / Crowdlending / Eventos), balance colectivo, rendimiento del
-       mes en verde, número de miembros activos. Tap  detalle de la manada.
+   ï¿½ Mis Manadas (lista activa): Cada card de manada muestra: nombre, avatar colectivo (stack de
+       ï¿½conos felinos), tipo (Ahorro / Inversiï¿½n / Crowdlending / Eventos), balance colectivo, rendimiento del
+       mes en verde, nï¿½mero de miembros activos. Tap  detalle de la manada.
 
-   · Mapa de Red (optional expandible): Vista visual tipo "constelación" que muestra las manadas del
-       usuario como nodos conectados. Cuanto más grande el nodo, mayor el balance colectivo.
+   ï¿½ Mapa de Red (optional expandible): Vista visual tipo "constelaciï¿½n" que muestra las manadas del
+       usuario como nodos conectados. Cuanto mï¿½s grande el nodo, mayor el balance colectivo.
 
-   · Explorar Manadas: Sección de manadas públicas a las que el usuario puede solicitar unirse.
-       Filtros: por tipo, región, rendimiento. Badge "Jaguar Elite" para manadas con score promedio alto.
+   ï¿½ Explorar Manadas: Secciï¿½n de manadas pï¿½blicas a las que el usuario puede solicitar unirse.
+       Filtros: por tipo, regiï¿½n, rendimiento. Badge "Tï¿½tem Elite" para manadas con score promedio alto.
 
-   · Proof of Roar Banner: Card en la parte superior explicando que si compartes contenido verificable
+   ï¿½ Proof of Roar Banner: Card en la parte superior explicando que si compartes contenido verificable
        sobre LUKASH, recibes recompensas. CTA: "Rugir ahora ".
 
-Tipos de Manada (Motor D)             Fee: 1.5% sobre depósitos
-                                     Fee: 1.5% sobre préstamos
+Tipos de Manada (Motor D)             Fee: 1.5% sobre depï¿½sitos
+                                     Fee: 1.5% sobre prï¿½stamos
 Manadas de Ahorro Colectivo    Fee: 1.5% (Fase 3 con Motor C)
 Manadas de Crowdlending      Fee: 1.5% sobre apuestas/tickets
-Manadas de Inversión RWA     EXENTO de Motor D -- beneficio
+Manadas de Inversiï¿½n RWA     EXENTO de Motor D -- beneficio
 Manadas de Eventos
 cNFT DeFi (Staking/Pools)                                     exclusivo
 
 Reglas de negocio
 
-   · Una manada requiere mínimo 2 miembros activos para activarse.
-   · El Jaguar Score de los miembros contribuye al "Score de Manada" -- visible públicamente.
-   · El Líder de Manada que genere contenido verificable on-chain (Proof of Roar) recibe recompensas
+   ï¿½ Una manada requiere mï¿½nimo 2 miembros activos para activarse.
+   ï¿½ El Aura de los miembros contribuye al "Score de Manada" -- visible pï¿½blicamente.
+   ï¿½ El Lï¿½der de Manada que genere contenido verificable on-chain (Proof of Roar) recibe recompensas
 
        adicionales del protocolo.
-   · Las manadas tienen niveles: Cachorro (2-5 miembros)  Jauría (6-20)  Legado (21+).
+   ï¿½ Las manadas tienen niveles: Cachorro (2-5 miembros)  Jaurï¿½a (6-20)  Legado (21+).
 
-Especificaciones técnicas
+Especificaciones tï¿½cnicas
 
             // Componentes a generar:
             ManadasScreen.tsx
  ManadaCard.tsx          // Card individual con avatar stack
  ManadaDetailScreen.tsx  // Vista detallada de una manada
- CreateManadaFlow.tsx    // Flujo de creación 3 pasos
- ExploreManadas.tsx      // Descubrimiento de manadas públicas
+ CreateManadaFlow.tsx    // Flujo de creaciï¿½n 3 pasos
+ ExploreManadas.tsx      // Descubrimiento de manadas pï¿½blicas
  ProofOfRoarBanner.tsx   // CTA de viralidad
 
-PESTAÑA 3 -- JUNGLE ARENA · Micro-retos
+PESTAï¿½A 3 -- JUNGLE ARENA ï¿½ Micro-retos
 
- GAMIFICACIÓN -- Jaguar Score Engine
+ GAMIFICACIï¿½N -- Aura Engine
 
-Propósito
+Propï¿½sito
 
-Mapa interactivo de misiones y micro-retos educativos. Es el motor de onboarding y retención del
-protocolo. Convierte el aprendizaje financiero en progreso tangible medido en Jaguar Score. Cada reto
+Mapa interactivo de misiones y micro-retos educativos. Es el motor de onboarding y retenciï¿½n del
+protocolo. Convierte el aprendizaje financiero en progreso tangible medido en Aura. Cada reto
 completado desbloquea beneficios reales en el ecosistema.
 
 Micro-reto activo de referencia
 
      MICRO-RETO ACTIVO
 
-   "Aprende sobre la Reserva Sagrada y sube tu Jaguar Score (+20 JS)"
+   "Aprende sobre la Reserva Sagrada y sube tu Aura (+20 JS)"
 
-       · Paso 1: Lee el resumen de La Reserva Sagrada en la app (2 min)
-       · Paso 2: Responde 3 preguntas sobre cómo funciona
-       · Paso 3: Realiza tu primer aporte a la Reserva (mínimo 1 $Luka)
-    Recompensa: +20 Jaguar Score · Desbloquea: Acceso a Tótems Bronce
+       ï¿½ Paso 1: Lee el resumen de La Reserva Sagrada en la app (2 min)
+       ï¿½ Paso 2: Responde 3 preguntas sobre cï¿½mo funciona
+       ï¿½ Paso 3: Realiza tu primer aporte a la Reserva (mï¿½nimo 1 $Luka)
+    Recompensa: +20 Aura ï¿½ Desbloquea: Acceso a Tï¿½tems Bronce
 
 Componentes principales
 
-   · Mapa de Misiones (Hero): Visualización tipo mapa de videojuego con senderos. Nodos
+   ï¿½ Mapa de Misiones (Hero): Visualizaciï¿½n tipo mapa de videojuego con senderos. Nodos
        completados en dorado brillante, nodo activo pulsando, nodos bloqueados en gris oscuro. Fondo:
-       jungla holográfica sutil.
+       jungla hologrï¿½fica sutil.
 
-   · Reto Activo Card: Siempre visible en la parte superior. Muestra: nombre del reto, descripción en 1
-       línea, progreso (pasos completados / total), JS a ganar, tiempo estimado.
+   ï¿½ Reto Activo Card: Siempre visible en la parte superior. Muestra: nombre del reto, descripciï¿½n en 1
+       lï¿½nea, progreso (pasos completados / total), JS a ganar, tiempo estimado.
 
-   · Niveles del Jaguar Score:  Cachorro (0-100)   Rastreador (101-300)   Guerrero (301-
-       600)   Líder (601-900)   Jaguar (901+). Cada nivel desbloquea contenido y beneficios
+   ï¿½ Niveles de Aura:  Cachorro (0-100)   Rastreador (101-300)   Guerrero (301-
+       600)   Lï¿½der (601-900)   Glow (901+). Cada nivel desbloquea contenido y beneficios
        distintos.
 
-   · Historial de logros: Lista de retos completados con fecha, JS ganado y badge visual. Compartible
+   ï¿½ Historial de logros: Lista de retos completados con fecha, JS ganado y badge visual. Compartible
        en redes (genera imagen para Proof of Roar).
 
-   · Ranking de Manada: Leaderboard del Jaguar Score dentro de cada manada del usuario. Fomenta
+   ï¿½ Ranking de Manada: Leaderboard del Aura dentro de cada manada del usuario. Fomenta
        competencia sana.
 
-Biblioteca de micro-retos (ejemplos para el agente)       +20 JS · Desbloquea Tótem Bronce
-                                                       +15 JS · Desbloquea misión Manadas
-Aprende sobre La Reserva Sagrada                     +50 JS · Activa Motor D para el usuario
-Envía tu primer $Luka a un amigo
-Crea o únete a una Manada                                  +10 JS · Personalización de avatar
-Configura tu perfil Jaguar
-Completa 30 días de ahorro activo               +100 JS · Desbloquea Tótem Plata
-Proof of Roar: comparte en redes                    +30 JS · Recompensa on-chain
+Biblioteca de micro-retos (ejemplos para el agente)       +20 JS ï¿½ Desbloquea Tï¿½tem Bronce
+                                                       +15 JS ï¿½ Desbloquea misiï¿½n Manadas
+Aprende sobre La Reserva Sagrada                     +50 JS ï¿½ Activa Motor D para el usuario
+Envï¿½a tu primer $Luka a un amigo
+Crea o ï¿½nete a una Manada                                  +10 JS ï¿½ Personalizaciï¿½n de avatar
+Configura tu perfil de felino
+Completa 30 dï¿½as de ahorro activo               +100 JS ï¿½ Desbloquea Tï¿½tem Plata
+Proof of Roar: comparte en redes                    +30 JS ï¿½ Recompensa on-chain
 
-Especificaciones técnicas              // Mapa visual con nodos y senderos
+Especificaciones tï¿½cnicas              // Mapa visual con nodos y senderos
                                        // Reto activo siempre visible
             // Componentes a generar:  // Detalle expandido del reto
-            JungleArenaScreen.tsx      // Visualización de niveles
+            JungleArenaScreen.tsx      // Visualizaciï¿½n de niveles
              MissionMap.tsx            // Logros completados
              ActiveChallengeCard.tsx   // Ranking interno
              ChallengeDetail.tsx
-             JaguarScoreLevels.tsx
+             AuraLevels.tsx
              AchievementHistory.tsx
              ManadaLeaderboard.tsx
 
-PESTAÑA 4 -- INVERSIÓN · Tótems cNFT
+PESTAï¿½A 4 -- INVERSIï¿½N ï¿½ Tï¿½tems cNFT
 
- ACTIVOS DIGITALES -- Staking · EXENTO Motor D
+ ACTIVOS DIGITALES -- Staking ï¿½ EXENTO Motor D
 
-Propósito
+Propï¿½sito
 
-Galería de Tótems cNFT vinculados a activos reales (BTC y SOL). Son los instrumentos de inversión
-avanzados del protocolo, con acceso gateado por Jaguar Score. El efecto visual bioluminiscente
-comunica que estos son activos vivos, en crecimiento. Los cNFT DeFi están exentos del Motor D -- es el
+Galerï¿½a de Tï¿½tems cNFT vinculados a activos reales (BTC y SOL). Son los instrumentos de inversiï¿½n
+avanzados del protocolo, con acceso gateado por Aura. El efecto visual bioluminiscente
+comunica que estos son activos vivos, en crecimiento. Los cNFT DeFi estï¿½n exentos del Motor D -- es el
 mayor beneficio para holders activos.
 
-Tótems disponibles
+Tï¿½tems disponibles
 
-Tótem               Activo             Tier     JS Mínimo                            Yield
-                                       Tier 3      600 JS                   0% + apreciación
+Tï¿½tem               Activo             Tier     JS Mï¿½nimo                            Yield
+                                       Tier 3      600 JS                   0% + apreciaciï¿½n
 Fuego Eterno  cBTC (Bitcoin)                                                BTC
-                                       Tier 2      300 JS                   6­8% anual
-Espíritu      JitoSOL                  Tier 2      300 JS                   5­7% anual
-Agua Viva     mSOL                     Tier 1      100 JS                   4­8% anual
+                                       Tier 2      300 JS                   6ï¿½8% anual
+Espï¿½ritu      JitoSOL                  Tier 2      300 JS                   5ï¿½7% anual
+Agua Viva     mSOL                     Tier 1      100 JS                   4ï¿½8% anual
 USDC Sagrado  USDC (Kamino)            Tier 4     1000 JS
-Jaguar Negro  Mixto premium                                                 Privado 
+Tï¿½tem Negro   Mixto premium                                                 Privado
 
 Componentes principales
 
-   · Galería de Tótems (Hero): Grid 2 columnas de cards. Cada Tótem: imagen del cNFT con efecto
-       glow bioluminiscente animado (color según activo: naranja para BTC, verde para SOL, azul para
-       USDC). Badge de Tier en esquina. Si el usuario no tiene el JS mínimo: tarjeta en gris con candado
+   ï¿½ Galerï¿½a de Tï¿½tems (Hero): Grid 2 columnas de cards. Cada Tï¿½tem: imagen del cNFT con efecto
+       glow bioluminiscente animado (color segï¿½n activo: naranja para BTC, verde para SOL, azul para
+       USDC). Badge de Tier en esquina. Si el usuario no tiene el JS mï¿½nimo: tarjeta en gris con candado
        " Requiere X JS".
 
-   · Card de Tótem desbloqueado: Brillo activo pulsando. Datos: activo vinculado, rendimiento actual,
-       total stakeado, botón "Depositar" en dorado.
+   ï¿½ Card de Tï¿½tem desbloqueado: Brillo activo pulsando. Datos: activo vinculado, rendimiento actual,
+       total stakeado, botï¿½n "Depositar" en dorado.
 
-   · Efecto bioluminiscente: Implementar con CSS animation o Framer Motion: glow alternante entre
-       0.6 y 1.0 de opacidad, color según activo, duración 2­3s, infinite. Partículas flotantes desde el
+   ï¿½ Efecto bioluminiscente: Implementar con CSS animation o Framer Motion: glow alternante entre
+       0.6 y 1.0 de opacidad, color segï¿½n activo, duraciï¿½n 2ï¿½3s, infinite. Partï¿½culas flotantes desde el
        borde del cNFT.
 
-   · Detalle de Tótem: Al tocar: modal expandido con gráfica de rendimiento histórico, composición del
-       activo, ruta de adquisición (qué JS se necesita), y botón de stake.
-· Banner EXENTO Motor D: Siempre visible: " Los Tótems cNFT DeFi están exentos del Motor D
+   ï¿½ Detalle de Tï¿½tem: Al tocar: modal expandido con grï¿½fica de rendimiento histï¿½rico, composiciï¿½n del
+       activo, ruta de adquisiciï¿½n (quï¿½ JS se necesita), y botï¿½n de stake.
+ï¿½ Banner EXENTO Motor D: Siempre visible: " Los Tï¿½tems cNFT DeFi estï¿½n exentos del Motor D
    -- el mayor beneficio para holders activos".
 
-Especificaciones técnicas              // Grid con efecto bioluminiscente
+Especificaciones tï¿½cnicas              // Grid con efecto bioluminiscente
                                        // Card individual con glow animado
-            // Componentes a generar:  // Modal expandido con gráfica
-            TotemScreen.tsx            // Flujo de depósito/stake
-             TotemGallery.tsx          // Banner exención Motor D
+            // Componentes a generar:  // Modal expandido con grï¿½fica
+            TotemScreen.tsx            // Flujo de depï¿½sito/stake
+             TotemGallery.tsx          // Banner exenciï¿½n Motor D
              TotemCard.tsx
              TotemDetailModal.tsx
              StakeFlow.tsx
              ExemptionBanner.tsx
 
-// Animación bioluminiscente (referencia CSS):
+// Animaciï¿½n bioluminiscente (referencia CSS):
 @keyframes bioGlow {
 
    0%, 100% { box-shadow: 0 0 20px rgba(var(--color), 0.6); }
    50% { box-shadow: 0 0 45px rgba(var(--color), 1.0); }
 }
 
-PESTAÑA 5 -- LUKAI · Guía y Shaman
+PESTAï¿½A 5 -- LUKAI ï¿½ Guï¿½a y Shaman
 
  IA CONVERSACIONAL -- Orquestador de Estados
 
-Propósito
+Propï¿½sito
 
-Ventana de chat interactivo con LUKAI v3.1, el orquestador de estados del protocolo y guía espiritual-
-financiero del ecosistema. LUKAI habla como un shaman digital: sabio, directo, nunca técnico. Usa
-lenguaje de la selva y metáforas de la manada. Esta es la cara humana del protocolo.
+Ventana de chat interactivo con LUKAI v3.1, el orquestador de estados del protocolo y guï¿½a espiritual-
+financiero del ecosistema. LUKAI habla como un shaman digital: sabio, directo, nunca tï¿½cnico. Usa
+lenguaje de la selva y metï¿½foras de la manada. Esta es la cara humana del protocolo.
 
 Mensaje de bienvenida -- EXACTO
 
-     LUKAI -- Mensaje de bienvenida (copiar exacto en el código):
+     LUKAI -- Mensaje de bienvenida (copiar exacto en el cï¿½digo):
 
-       "¿Estás listo para dejar de ser el que gasta y ser el dueño de tu banco?"
+       "ï¿½Estï¿½s listo para dejar de ser el que gasta y ser el dueï¿½o de tu banco?"
 
 Componentes principales
 
-   · Avatar de LUKAI: Imagen circular de LUKAI_imagen.png (jaguar obsidiana con ojos ámbar) con
+   ï¿½ Avatar de LUKAI: Imagen circular de LUKAI_imagen.png (felino obsidiana con ojos ï¿½mbar) con
        borde dorado pulsante. Encima: nombre "LUKAI v3.1" + indicador verde " Orquestador Activo". Al
-       enviar mensaje: animación de "pensando" (3 puntos animados).
+       enviar mensaje: animaciï¿½n de "pensando" (3 puntos animados).
 
-   · Área de chat: Burbujas de mensajes. LUKAI a la izquierda (fondo carbón, borde dorado sutil).
+   ï¿½ ï¿½rea de chat: Burbujas de mensajes. LUKAI a la izquierda (fondo carbï¿½n, borde dorado sutil).
        Usuario a la derecha (fondo verde oscuro). Fuente IBM Plex Sans 14px. Timestamp en gris.
 
-   · Input de texto: Campo inferior con placeholder "Pregunta al Shaman...". Botón enviar en dorado
-       (). Soporte para sugerencias rápidas (chips pre-escritos).
+   ï¿½ Input de texto: Campo inferior con placeholder "Pregunta al Shaman...". Botï¿½n enviar en dorado
+       (). Soporte para sugerencias rï¿½pidas (chips pre-escritos).
 
-   · Chips de sugerencias rápidas: Botones de acceso rápido sobre el input. Ejemplos: "¿Cómo
-       funciona La Reserva?" · "¿Qué es el Jaguar Score?" · "¿Cómo subo de nivel?" · "¿Cuánto tengo en
-       la Reserva?" · "Explícame los Tótems"
+   ï¿½ Chips de sugerencias rï¿½pidas: Botones de acceso rï¿½pido sobre el input. Ejemplos: "ï¿½Cï¿½mo
+       funciona La Reserva?" ï¿½ "ï¿½Quï¿½ es Aura?" ï¿½ "ï¿½Cï¿½mo subo de nivel?" ï¿½ "ï¿½Cuï¿½nto tengo en
+       la Reserva?" ï¿½ "Explï¿½came los Tï¿½tems"
 Personalidad de LUKAI -- Instrucciones para el system prompt
 
     // SYSTEM PROMPT DE LUKAI (incluir en la llamada a la API)
     Eres LUKAI v3.1, el orquestador de estados y shaman digital del Protocolo LUKASH. Tu
-    personalidad: sabio, directo, empoderador. Usas metáforas de la selva (manada, jaguar,
-    rugido, reserva sagrada). NUNCA usas jerga blockchain técnica (no dices "on-chain", "smart
-    contract", "DEX", "tokenomics"). En cambio dices: "la bóveda del ecosistema", "el sistema de
-    puntos", "activos digitales reales", "la comunidad". Tus respuestas son cortas (máximo 3
-    oraciones). Siempre terminas con una pregunta o llamada a la acción. El usuario tiene acceso
-    a: su wallet en $Lukas, sus cNFTs, su Jaguar Score, sus Manadas y La Reserva Sagrada del
+    personalidad: sabio, directo, empoderador. Usas metï¿½foras de la selva (manada, felino,
+    rugido, reserva sagrada). NUNCA usas jerga blockchain tï¿½cnica (no dices "on-chain", "smart
+    contract", "DEX", "tokenomics"). En cambio dices: "la bï¿½veda del ecosistema", "el sistema de
+    puntos", "activos digitales reales", "la comunidad". Tus respuestas son cortas (mï¿½ximo 3
+    oraciones). Siempre terminas con una pregunta o llamada a la acciï¿½n. El usuario tiene acceso
+    a: su wallet en $Lukas, sus cNFTs, su Aura, sus Manadas y La Reserva Sagrada del
     ecosistema (que es colectiva, no personal). El modelo financiero se basa en que cada
-    transacción alimenta La Reserva Sagrada con activos reales -- Bitcoin, dólares digitales y
+    transacciï¿½n alimenta La Reserva Sagrada con activos reales -- Bitcoin, dï¿½lares digitales y
     Solana.
 
-Respuestas programadas mínimas (hardcoded para el prototipo)
+Respuestas programadas mï¿½nimas (hardcoded para el prototipo)
 
-   · "¿Cómo funciona La Reserva?"  "La Reserva Sagrada es la bóveda colectiva de toda la manada.
+   ï¿½ "ï¿½Cï¿½mo funciona La Reserva?"  "La Reserva Sagrada es la bï¿½veda colectiva de toda la manada.
        Cada vez que alguien usa LUKASH, una parte se convierte en activos reales que respaldan el valor
-       de cada $Luka. Cuantos más jaguares participen, más crece. ¿Quieres ver cuánto hay ahora?"
+       de cada $Luka. Cuantos mï¿½s felinos participen, mï¿½s crece. ï¿½Quieres ver cuï¿½nto hay ahora?"
 
-   · "¿Qué es el Jaguar Score?"  "Es tu reputación en la selva -- tu historial financiero digital. Cuanto
-       más participas, aprendes y ahorras, más sube. Y con más Score, más puertas se abren: Tótems,
-       créditos, inversiones reales. ¿Cuántos puntos tienes hoy?"
+   ï¿½ "ï¿½Quï¿½ es Aura?"  "Es tu reputaciï¿½n en la selva -- tu historial financiero digital. Cuanto
+       mï¿½s participas, aprendes y ahorras, mï¿½s sube. Y con mï¿½s Score, mï¿½s puertas se abren: Tï¿½tems,
+       crï¿½ditos, inversiones reales. ï¿½Cuï¿½ntos puntos tienes hoy?"
 
-   · "¿Cómo subo de nivel?"  "Completa micro-retos en la Jungle Arena, participa en tu Manada y haz
-       crecer tu ahorro. Cada acción suma. El próximo nivel te espera. ¿Vamos a la Arena?"
+   ï¿½ "ï¿½Cï¿½mo subo de nivel?"  "Completa micro-retos en la Jungle Arena, participa en tu Manada y haz
+       crecer tu ahorro. Cada acciï¿½n suma. El prï¿½ximo nivel te espera. ï¿½Vamos a la Arena?"
 
-Especificaciones técnicas              // Avatar circular con borde pulsante
+Especificaciones tï¿½cnicas              // Avatar circular con borde pulsante
                                        // Burbujas LUKAI / Usuario
-            // Componentes a generar:  // Input + botón enviar
-            LUKAIScreen.tsx            // Sugerencias rápidas
+            // Componentes a generar:  // Input + botï¿½n enviar
+            LUKAIScreen.tsx            // Sugerencias rï¿½pidas
              LUKAIAvatar.tsx           // Llamada a Anthropic API con system prompt
              ChatBubble.tsx
              ChatInput.tsx
@@ -437,86 +437,86 @@ const response = await fetch("https://api.anthropic.com/v1/messages", {
    })
 });
 
-PESTAÑA 6 -- LA RESERVA · Auditoría v3.1
+PESTAï¿½A 6 -- LA RESERVA ï¿½ Auditorï¿½a v3.1
 
  MONTE CARLO VALIDATED -- 0.0% RISK
 
-Propósito
-Infografía técnica de la Reserva Sagrada del ecosistema. Es la pantalla de confianza institucional --
-diseñada para inversores, partners y usuarios que quieren verificar la solidez matemática del protocolo.
-Muestra el desglose de activos, la auditoría Monte Carlo y el sello de validación.
+Propï¿½sito
+Infografï¿½a tï¿½cnica de la Reserva Sagrada del ecosistema. Es la pantalla de confianza institucional --
+diseï¿½ada para inversores, partners y usuarios que quieren verificar la solidez matemï¿½tica del protocolo.
+Muestra el desglose de activos, la auditorï¿½a Monte Carlo y el sello de validaciï¿½n.
 
 Componentes principales
 
-   · Sello de validación (Hero): Elemento visual prominente: " MONTE CARLO VALIDATED · 0.0%
-       RISK " en verde sobre fondo oscuro con borde dorado. Debajo: "5,000 simulaciones · 1,825 días ·
-       Auditoría v3.1 · Marzo 2026".
+   ï¿½ Sello de validaciï¿½n (Hero): Elemento visual prominente: " MONTE CARLO VALIDATED ï¿½ 0.0%
+       RISK " en verde sobre fondo oscuro con borde dorado. Debajo: "5,000 simulaciones ï¿½ 1,825 dï¿½as ï¿½
+       Auditorï¿½a v3.1 ï¿½ Marzo 2026".
 
-   · Gráfica circular de activos: Donut chart animado. Segmentos: cBTC 40% (naranja) · JitoSOL 35%
-       (verde) · USDC Reserva 20% (azul) · USDC Lending 5% (azul claro). En el centro: total de la
-       reserva en USD o "K_min $25M" si aún no alcanza.
+   ï¿½ Grï¿½fica circular de activos: Donut chart animado. Segmentos: cBTC 40% (naranja) ï¿½ JitoSOL 35%
+       (verde) ï¿½ USDC Reserva 20% (azul) ï¿½ USDC Lending 5% (azul claro). En el centro: total de la
+       reserva en USD o "K_min $25M" si aï¿½n no alcanza.
 
-   · Tabla de activos: Para cada activo: nombre, porcentaje, función ("Reserva de valor primaria"),
+   ï¿½ Tabla de activos: Para cada activo: nombre, porcentaje, funciï¿½n ("Reserva de valor primaria"),
        yield anual estimado y estado ("On-chain verificable").
 
-   · Métricas Monte Carlo: Cards de datos clave en formato grande y limpio.
-   · Barra de progreso K_min: "Progreso hacia activación Motor B2" -- barra dorada con % y monto
+   ï¿½ Mï¿½tricas Monte Carlo: Cards de datos clave en formato grande y limpio.
+   ï¿½ Barra de progreso K_min: "Progreso hacia activaciï¿½n Motor B2" -- barra dorada con % y monto
 
        actual vs $25M objetivo.
-   · Botón de verificación: "Verificar on-chain " que abre el explorador de Solana para la dirección
+   ï¿½ Botï¿½n de verificaciï¿½n: "Verificar on-chain " que abre el explorador de Solana para la direcciï¿½n
 
        del Vault.
 
-Métricas a mostrar                                                                         $37.2M USD
-                                                                                     $18.9M ­ $67.1M
-Vault Mediana (5 años)                                                   0.0% (5,000 trayectorias)
-Rango P25­P75 (5 años)
+Mï¿½tricas a mostrar                                                                         $37.2M USD
+                                                                                     $18.9M ï¿½ $67.1M
+Vault Mediana (5 aï¿½os)                                                   0.0% (5,000 trayectorias)
+Rango P25ï¿½P75 (5 aï¿½os)
 Riesgo de Ruina Total                                                                               86.1%
-P(B2 activo antes Año 2)                                                 1.4% (con Jaguar Shield)
+P(B2 activo antes Aï¿½o 2)                                                 1.4% (con KASH Shield)
 Probabilidad Espiral Muerte
-Precio KASH proyectado (Año 5)                                              $0.0113 = 113x vs TGE
-Ventaja módulo contra-cíclico                                                   +22­23% Vault final
+Precio KASH proyectado (Aï¿½o 5)                                              $0.0113 = 113x vs TGE
+Ventaja mï¿½dulo contra-cï¿½clico                                                   +22ï¿½23% Vault final
 Sharpe Ratio                                                                                           2.34
-Drawdown máximo                                                                                      -8.2%
+Drawdown mï¿½ximo                                                                                      -8.2%
 
-Tabla de composición del Vault
+Tabla de composiciï¿½n del Vault
 
-Activo          %               Función estratégica Yield anual                  Estado
+Activo          %               Funciï¿½n estratï¿½gica Yield anual                  Estado
                                                                                         On-chain 
-cBTC (Bitcoin      40%          Reserva de valor           0% + apreciación BTC
+cBTC (Bitcoin      40%          Reserva de valor           0% + apreciaciï¿½n BTC
 nativo)                         primaria -- cbBTC sin                                   On-chain 
                                 Wormhole                                                 Meteora 
                                                                                         Inmediato 
-SOL nativo         15%          Liquidez operativa del     0% + apreciación              Kamino 
+SOL nativo         15%          Liquidez operativa del     0% + apreciaciï¿½n              Kamino 
                                 ecosistema
 
-JitoSOL + mSOL     20%          Exposición SOL con yield   6­8% anual
+JitoSOL + mSOL     20%          Exposiciï¿½n SOL con yield   6ï¿½8% anual
 (LST)              20%          adicional
 
-USDC Reserva                    Buffer Capa 1 --           0% (líquido)
-                                disponible sin conversión
+USDC Reserva                    Buffer Capa 1 --           0% (lï¿½quido)
+                                disponible sin conversiï¿½n
 
-USDC Lending       5%           Capital generando yield    4­8% anual
+USDC Lending       5%           Capital generando yield    4ï¿½8% anual
                                 en Kamino/Marginfi
-Especificaciones técnicas              // Sello visual prominente
-                                       // Gráfica circular animada
-            // Componentes a generar:  // Tabla de composición
-            ReservaScreen.tsx          // Cards de métricas clave
+Especificaciones tï¿½cnicas              // Sello visual prominente
+                                       // Grï¿½fica circular animada
+            // Componentes a generar:  // Tabla de composiciï¿½n
+            ReservaScreen.tsx          // Cards de mï¿½tricas clave
              MonteCarloSeal.tsx        // Barra progreso hacia $25M
              AssetDonutChart.tsx       // Link al explorador Solana
              AssetBreakdownTable.tsx
              MonteCarloMetrics.tsx
              KminProgressBar.tsx
              VerifyOnChainButton.tsx
-PARTE 3 -- LÓGICA GLOBAL Y NAVEGACIÓN
+PARTE 3 -- Lï¿½GICA GLOBAL Y NAVEGACIï¿½N
 
-3.1 Barra de navegación inferior
+3.1 Barra de navegaciï¿½n inferior
 
-Persistente en todas las pantallas. 6 tabs con ícono + label:
+Persistente en todas las pantallas. 6 tabs con ï¿½cono + label:
 
- Inicio   Manadas             Arena         Tótems              LUKAI     Reserva
+ Inicio   Manadas             Arena         Tï¿½tems              LUKAI     Reserva
                                                                   LUKAI   La Reserva
-Wallet      Manadas          Jungle Arena  Tótems cNFT
+Wallet      Manadas          Jungle Arena  Tï¿½tems cNFT
 
 3.2 Estado global de la app
 
@@ -526,15 +526,15 @@ interface LUKASHGlobalState {
 
 // Usuario
 
-wallet: string;                // Dirección Solana
+wallet: string;                // Direcciï¿½n Solana
 
 lukasBalance: number;          // Saldo en $Lukas
 
 usdEquivalent: number;         // Equivalente USD
 
-jaguarScore: number;           // JS actual (0­)
+auraScore: number;             // JS actual (0ï¿½)
 
-level: "Cachorro" | "Rastreador" | "Guerrero" | "Líder" | "Jaguar";
+level: "Cachorro" | "Rastreador" | "Guerrero" | "Lï¿½der" | "Glow";
 
 // Protocolo
 
@@ -558,63 +558,63 @@ myTotems: Totem[];
 
 3.3 Reglas de UI globales
 
-   · Dark mode permanente -- nunca light mode. Fondo: #0A0A0C.
-   · Todas las transacciones muestran un loader con animación de jaguar corriendo.
-   · Errores de red: toast con borde rojo y mensaje en lenguaje simple ("La selva está ocupada, intenta
+   ï¿½ Dark mode permanente -- nunca light mode. Fondo: #0A0A0C.
+   ï¿½ Todas las transacciones muestran un loader con animaciï¿½n de felino corriendo.
+   ï¿½ Errores de red: toast con borde rojo y mensaje en lenguaje simple ("La selva estï¿½ ocupada, intenta
 
        de nuevo").
-   · Onboarding de primer acceso: flujo de 3 pasos con LUKAI como guía. No se puede saltar.
-   · Nunca usar el término "Vault" en la UI. Siempre "La Reserva Sagrada" o "La Reserva".
-   · Nunca mostrar la Reserva como un activo personal del usuario -- siempre es colectiva.
-   · Las cantidades en $Lukas van siempre con 2 decimales: 12,450.00 $LKS.
-   · Los % del Jaguar Score van con 1 decimal: 847.3 JS.
+   ï¿½ Onboarding de primer acceso: flujo de 3 pasos con LUKAI como guï¿½a. No se puede saltar.
+   ï¿½ Nunca usar el tï¿½rmino "Vault" en la UI. Siempre "La Reserva Sagrada" o "La Reserva".
+   ï¿½ Nunca mostrar la Reserva como un activo personal del usuario -- siempre es colectiva.
+   ï¿½ Las cantidades en $Lukas van siempre con 2 decimales: 12,450.00 $LKS.
+   ï¿½ Los % del Aura van con 1 decimal: 847.3 JS.
 PARTE 4 -- RESUMEN EJECUTIVO PARA EL AGENTE
 
-4.1 Orden de construcción recomendado
+4.1 Orden de construcciï¿½n recomendado
 
-   1. Setup: Design tokens, fuentes, navegación base, estado global (Zustand)
-   2. Pestaña 1 (Wallet): Es la pantalla más importante. Prioridad máxima.
-   3. Pestaña 5 (LUKAI): Integrar API de Anthropic con system prompt del shaman.
-   4. Pestaña 6 (La Reserva): Datos estáticos primero, luego conectar a on-chain.
-   5. Pestaña 3 (Jungle Arena): Mapa de misiones con 5 retos hardcoded para el prototipo.
-   6. Pestaña 4 (Tótems): Galería con 4 Tótems y efecto bioluminiscente.
-   7. Pestaña 2 (Manadas): Interfaz social con 3 manadas de ejemplo.
-   8. Integración Solana: Conectar wallet, leer balances, simular transacciones.
+   1. Setup: Design tokens, fuentes, navegaciï¿½n base, estado global (Zustand)
+   2. Pestaï¿½a 1 (Wallet): Es la pantalla mï¿½s importante. Prioridad mï¿½xima.
+   3. Pestaï¿½a 5 (LUKAI): Integrar API de Anthropic con system prompt del shaman.
+   4. Pestaï¿½a 6 (La Reserva): Datos estï¿½ticos primero, luego conectar a on-chain.
+   5. Pestaï¿½a 3 (Jungle Arena): Mapa de misiones con 5 retos hardcoded para el prototipo.
+   6. Pestaï¿½a 4 (Tï¿½tems): Galerï¿½a con 4 Tï¿½tems y efecto bioluminiscente.
+   7. Pestaï¿½a 2 (Manadas): Interfaz social con 3 manadas de ejemplo.
+   8. Integraciï¿½n Solana: Conectar wallet, leer balances, simular transacciones.
 
 4.2 Lo que NO debe hacer el agente
 
-   · NO llamar a la Reserva Sagrada "Vault" en ningún texto de UI visible al usuario.
-   · NO mostrar la Reserva como propiedad individual del usuario.
-   · NO usar jerga blockchain en mensajes de UI o de LUKAI ("smart contract", "DEX", "on-chain",
+   ï¿½ NO llamar a la Reserva Sagrada "Vault" en ningï¿½n texto de UI visible al usuario.
+   ï¿½ NO mostrar la Reserva como propiedad individual del usuario.
+   ï¿½ NO usar jerga blockchain en mensajes de UI o de LUKAI ("smart contract", "DEX", "on-chain",
 
        "tokenomics").
-   · NO generar un light mode o modo claro.
-   · NO omitir el sello " MONTE CARLO VALIDATED · 0.0% RISK " en La Reserva.
-   · NO cambiar el mensaje de bienvenida de LUKAI.
+   ï¿½ NO generar un light mode o modo claro.
+   ï¿½ NO omitir el sello " MONTE CARLO VALIDATED ï¿½ 0.0% RISK " en La Reserva.
+   ï¿½ NO cambiar el mensaje de bienvenida de LUKAI.
 
-                                            LUKASH PROTOCOL · PRD v1.0 · Marzo 2026
-                                                  Ing. Sebastián Botero Pabón · Arquitecto del Protocolo
-                                         MONTE CARLO VALIDATED · 0.0% RISK · SOLANA · v3.1 
+                                            LUKASH PROTOCOL ï¿½ PRD v1.0 ï¿½ Marzo 2026
+                                                  Ing. Sebastiï¿½n Botero Pabï¿½n ï¿½ Arquitecto del Protocolo
+                                         MONTE CARLO VALIDATED ï¿½ 0.0% RISK ï¿½ SOLANA ï¿½ v3.1 
                                   COMPONENT SYSTEM
 
 UI Kit & Design Language -- LUKASH PROTOCOL v3.1 --
 
-           Dark Jungle Aesthetic · Soberania Financiera LATAM
+           Dark Jungle Aesthetic ï¿½ Soberania Financiera LATAM
 
-                      Ing. Sebastian Botero Pabon · Marzo 2026
-                Monte Carlo Validated · 0.0% Risk · Auditoria v3.1
+                      Ing. Sebastian Botero Pabon ï¿½ Marzo 2026
+                Monte Carlo Validated ï¿½ 0.0% Risk ï¿½ Auditoria v3.1
 
 CONTENIDO                                                           p.38
 01 FAB Chat Button -- LUKAI                                         p.46
 02 Chat Dialog Window                                               p.54
 03 Button System                                                    p.60
 04 Badges & Status Levels                                           p.66
-05 Jaguar Score & Progress                                          p.72
+05 Aura & Progress                                                  p.72
 06 Data Cards                                                       p.78
 07 Toast Notifications
 
-                             MONTE CARLO VALIDATED · 0.0% RISK
-                                                                                            LUKASH PROTOCOL · UI KIT
+                             MONTE CARLO VALIDATED ï¿½ 0.0% RISK
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
  01 FAB Chat Button -- LUKAI
 
@@ -633,7 +633,7 @@ Tamanio default: 80x80px | Animacion: pulse infinita | Badge desaparece al abrir
 Tap abre overlay semitransparente + ChatWindow slideUp desde el FAB
 
                                                            LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                            LUKASH PROTOCOL · UI KIT
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
  02 Chat Dialog Window -- LUKAI
 
@@ -643,34 +643,34 @@ Overlay flotante. Aparece con animacion slideUp desde el FAB. Toque fuera o X pa
 
                                                                        x                             Ancho            min(380px, 100vw-48px)
 
-       Orquestador Activo · Pyth Network                                                             Alto             auto · max 80vh
+       Orquestador Activo ï¿½ Pyth Network                                                             Alto             auto ï¿½ max 80vh
 
-   ¿Estas listo para dejar de ser el que                                                             Posicion         fixed bottom: 180px right: 24px
+   ï¿½Estas listo para dejar de ser el que                                                             Posicion         fixed bottom: 180px right: 24px
    gasta y ser el dueno de tu banco?
                                                                                                      Border           1px solid rgba(ORO, 0.22)
-LUKAI · ahora
+LUKAI ï¿½ ahora
                                                                                                      Backdrop         blur(20px)
-                         ¿Como funciona la Reserva Sagrada?
+                         ï¿½Como funciona la Reserva Sagrada?
                                                                                                      Z-index          100 (sobre el FAB)
-                                                                                       Tu · hace 1m
+                                                                                       Tu ï¿½ hace 1m
                                                                                                      Animacion entrada slideUp + scale(0.951)
    La Reserva Sagrada es la boveda
    colectiva de toda la manada. Cada                                                                 Animacion salida fadeOut + scale(10.95)
    transaccion alimenta activos reales
-   -- Bitcoin y dolares digitales.                                                                   HEADER           44x44px · border AMBAR
-                                                                                                     Avatar           SerifB 13.5px · color ORO
-LUKAI · ahora                                                                                        Nombre           MonoB 9px · color VERDE
+   -- Bitcoin y dolares digitales.                                                                   HEADER           44x44px ï¿½ border AMBAR
+                                                                                                     Avatar           SerifB 13.5px ï¿½ color ORO
+LUKAI ï¿½ ahora                                                                                        Nombre           MonoB 9px ï¿½ color VERDE
                                                                                                      Status
 
                                                                                                      MENSAJES
 
-                                                                                                     LUKAI bubbles    bg CARB_L · border ORO 14%
+                                                                                                     LUKAI bubbles    bg CARB_L ï¿½ border ORO 14%
 
-                                                                                                     User bubbles     bg verde-dark · border VERDE 25%
+                                                                                                     User bubbles     bg verde-dark ï¿½ border VERDE 25%
 
-                                                                                                     Typing indicator 3 dots · bounce animation
+                                                                                                     Typing indicator 3 dots ï¿½ bounce animation
 
-¿Jaguar Score?         Ver Reserva  Subir nivel                                                      CHIPS            Scroll horizontal · border ORO
+ï¿½Aura?                  Ver Reserva  Subir nivel                                                      CHIPS            Scroll horizontal ï¿½ border ORO
                                                                                                      Quick replies
 
 Pregunta al Shaman...                            >
@@ -678,7 +678,7 @@ Pregunta al Shaman...                            >
 ESTADO: ESCRIBIENDO
 
                        LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                         LUKASH PROTOCOL · UI KIT
+                                         LUKASH PROTOCOL ï¿½ UI KIT
 
 03 Button System
 
@@ -706,39 +706,39 @@ ESTADOS DEL BOTON             Hover             Pressed               Disabled  
                  Normal
 
                               LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                       LUKASH PROTOCOL · UI KIT
+                                                                                       LUKASH PROTOCOL ï¿½ UI KIT
 
 04 Badges & Status Levels
 
-Sistema de insignias de estado, niveles de jaguar y sellos de validacion del protocolo.
+Sistema de insignias de estado, niveles de Aura y sellos de validacion del protocolo.
 BADGES DE ESTADO
 
 Motor B2 Activo    Motor B0 Pre-hito       Proof of Roar             Bloqueado
 
-NIVELES DE JAGUAR  RASTREADOR              GUERRERO  LIDER                                                       JAGUAR
+NIVELES DE AURA    RASTREADOR              GUERRERO  LIDER                                                       GLOW
    CACHORRO
 
 TARJETAS DE NIVEL
 
-Cachorro           Rastreador                                                                                         Lider         Jaguar
+Cachorro           Rastreador                                                                                         Lider         Glow
 
- 0 ­ 199 JS         200 ­ 499 JS                     Guerrero                                                    1000 ­ 1999 JS      2000+ JS
+ 0 ï¿½ 199 JS         200 ï¿½ 499 JS                     Guerrero                                                    1000 ï¿½ 1999 JS      2000+ JS
 Acceso basico           Acceso a                                                                                     Control de    Acceso total
-                                                     500 ­ 999 JS                                                      Manada
+                                                     500 ï¿½ 999 JS                                                      Manada
    a la selva        Jungle Arena                        Motor D                                                                     + Totems
 
-                                                     exento parcial                                                              K_min $25M TARGET · 71%
+                                                     exento parcial                                                              K_min $25M TARGET ï¿½ 71%
 
-SELLOS DE VALIDACION                                 AUDITORIA v3.1 · ON-CHAIN
-        MONTE CARLO VALIDATED · 0.0% RISK
+SELLOS DE VALIDACION                                 AUDITORIA v3.1 ï¿½ ON-CHAIN
+        MONTE CARLO VALIDATED ï¿½ 0.0% RISK
 
                    LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                            LUKASH PROTOCOL · UI KIT
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
- 05 Jaguar Score & Progress Bars
+ 05 Aura & Progress Bars
 
 Widget de puntaje y barras de progreso del ecosistema -- datos en tiempo real via Pyth Network.
-JAGUAR SCORE WIDGET
+AURA WIDGET
 
                                 PROGRESO ACTUAL
 
@@ -771,7 +771,7 @@ Adopcion LATAM                                                                  
 450K usuarios / 1M meta Fase 2                                                                                        CAC $7-10 USD
 
                                 LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                  LUKASH PROTOCOL · UI KIT
+                                  LUKASH PROTOCOL ï¿½ UI KIT
 
 06 Data Cards
 
@@ -781,13 +781,13 @@ RESERVA SAGRADA                   MI BALANCE                                    
 
 $17.75M                           12,450 LKS                                          +18.4%
 
-Ecosistema · auditado on-chain    ~ $248.90 USD · Motor A activo                      Etapa 1 · Monte Carlo validado
+Ecosistema ï¿½ auditado on-chain    ~ $248.90 USD ï¿½ Motor A activo                      Etapa 1 ï¿½ Monte Carlo validado
 
 PRECIO $LUKA                      USUARIOS ACTIVOS                                    K_min STATUS
 
 $0.0001                           450K                                                71%
 
-TGE · Meta Ano 5: $0.0113 (113x)  Meta B1: 800K · LATAM foco                          $17.75M / $25M · B2 pendiente
+TGE ï¿½ Meta Ano 5: $0.0113 (113x)  Meta B1: 800K ï¿½ LATAM foco                          $17.75M / $25M ï¿½ B2 pendiente
 
  07 Toast Notifications
 
@@ -806,10 +806,10 @@ Notificaciones emergentes del sistema. Aparecen desde abajo con animacion slide-
 
 !  La selva esta ocupada.
 
-   Intenta de nuevo en un momento, jaguar.
+   Intenta de nuevo en un momento, felino.
 
                                   LUKASH Protocol -- UI Kit v1.0 -- Ing. Sebastian Botero Pabon
-                                                                                            LUKASH PROTOCOL · UI KIT
+                                                                                            LUKASH PROTOCOL ï¿½ UI KIT
 
  08 Design Tokens -- Paleta & Tipografia
 
@@ -834,7 +834,7 @@ Mono  Datos y codigos -- Space Mono (PDF: DejaVu Sans Mono)
 
 Sans  Cuerpo de texto -- IBM Plex Sans (PDF: DejaVu Sans)
 
-MonoB  ETIQUETAS Y LABELS -- 7-9PX · UPPERCASE · TRACKING .15EM
+MonoB  ETIQUETAS Y LABELS -- 7-9PX ï¿½ UPPERCASE ï¿½ TRACKING .15EM
 
 ESCALA DE ESPACIADO
 

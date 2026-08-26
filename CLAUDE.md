@@ -28,16 +28,19 @@ mundo institucional ya construye.
   - **Motor D** (El Alma, multi, 4 capas 0%/1.5%/3-3.5%/1.5%/2%): Manadas, gaming, cNFTs, DeFi.
 - **Vault KASH Core**: cBTC, SOL, LST (JitoSOL/mSOL), USDC reserva, USDC lending, oráculos. K_min=$25M activa Motor B2.
 - **LUKAI**: orquestador de estados on-chain (v1.0, TGE) + interfaz IA conversacional (v2.0, Etapa 2A).
-- **Aura** (antes "Jaguar Score"): reputación financiera on-chain, no transferible. Niveles Cub→Jaguar→Alpha→Emperor.
-- **Jaguar Shield**: Circuit Breakers + Exit Fee + Anti-Whale + Timelock 48h + Tridente Multisig + oráculos redundantes.
+- **Aura**: reputación financiera on-chain, no transferible. Niveles Cub→Glow→Alpha→Emperor.
+- **KASH Shield**: Circuit Breakers + Exit Fee + Anti-Whale + Timelock 48h + Tridente Multisig + oráculos redundantes.
 - **Throttle dinámico dual**: Etapas 1-2 modula velocidad de quema; Etapa 3 (post-ENZ) invierte la lógica.
-- **cNFT**: instrumentos financieros tokenizados (NO llaves de acceso). 3 tipos: Nativo / Jaguar Universal / Estándar.
+- **cNFT**: instrumentos financieros tokenizados (NO llaves de acceso). 3 tipos: Tótem Nativo / Tótem Universal / Tótem Estándar.
 - **Etapas**: 0 Pre-lanzamiento · 1 Génesis · 2A App/B0 · 2B Madurez/B2 · 3 Soberanía · 4 DAO.
 
-## DECISIÓN DE MARCA CRÍTICA (sesión 2026-08-19)
-- **"Aura" = rebrand de "Jaguar Score"** (ADR-002). En TODO código, UI y docs nuevos se usa **Aura**.
-  La mecánica no cambia (niveles Cub→Emperor, on-chain, no transferible, decay 2%/sem tras 90d).
-  Los documentos históricos v4.2 dicen "Jaguar Score" — al reescribir, migrar a Aura.
+## DECISIONES DE MARCA (ADR-002, ADR-010, ADR-017)
+- **"Aura"** = sistema de reputación. Niveles: Cub→Glow→Alpha→Emperor (no se traducen, son marca).
+- **Rebrand completo (ADR-017, 2026-08-26)**: la palabra "jaguar" se eliminó de TODO el vocabulario activo.
+  La identidad visual del felino se conserva; el problema era la palabra (asociaciones populistas LATAM).
+  - KASH Shield (antes Jaguar Shield) · KASH Exit Fee · KASH Lock
+  - Nivel Glow (antes Jaguar/Hunter) · Tótems (antes cNFTs Jaguar) · Productos LUKASH (Pay/Chat/Games)
+  - Narrativa: Camino del Rugido · El Rugido de la Manada · Rugidores (no "jaguares")
 - Las "misiones para ganar Aura" = las **Misiones de Caza** de Jungle Arena (PENDIENTE de diseño detallado).
 
 ## Stack técnico (estándar DeFi Solana)

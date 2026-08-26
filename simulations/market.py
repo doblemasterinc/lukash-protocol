@@ -269,7 +269,7 @@ class Simulation:
             "fee_total_usd": fee_total_usd, "users": users,
             "buy_pressure": buy_pressure, "sell_pressure": sell_pressure,
             "lp_depth_usd": m.lp_depth_usd, "burn_cap_hit": burn_cap_hit,
-            "jaguar_lock_hit": st.jaguar_lock_hit,
+            "kash_lock_hit": st.kash_lock_hit,
         })
 
     def run(self):

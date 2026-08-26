@@ -88,7 +88,7 @@ EJEMPLO:
 
 ## PARTE 2: ESTRATEGIA MASIVA DE LANZAMIENTO
 
-### 🚀 THE JAGUAR GENESIS - Estrategia de Lanzamiento de Alto Impacto
+### 🚀 THE LUKASH GENESIS - Estrategia de Lanzamiento de Alto Impacto
 
 #### FASE PRE-LAUNCH (4-6 semanas antes)
 
@@ -97,7 +97,7 @@ EJEMPLO:
 
 **Ejecución:**
 - Crear cuenta de Twitter @LukashProtocol
-- Postear SOLO imágenes crípticas de jaguares con números
+- Postear SOLO imágenes crípticas de felinos con números
 - "45-30-20-5" con imagen de BTC/SOL/USDC/LINK
 - "The inverse is coming"
 - "Banks lend nothing. We burn everything."
@@ -130,10 +130,10 @@ EJEMPLO:
 **Mecánica:**
 ```
 WHITELIST TIERS:
-- Tier 1 "Alpha Jaguars": Solo 100 spots, max $5,000 c/u
+- Tier 1 "Alpha Rugidores": Solo 100 spots, max $5,000 c/u
   → Requisito: Completar 5 tareas sociales + tener >1000 followers
   
-- Tier 2 "Hunters": 500 spots, max $2,000 c/u
+- Tier 2 "Glows": 500 spots, max $2,000 c/u
   → Requisito: 3 tareas sociales + referir 5 personas
   
 - Tier 3 "Cubs": 2000 spots, max $500 c/u
@@ -192,7 +192,7 @@ TAREAS SOCIALES:
 - Raid en otros proyectos Solana (amigable)
 - Trending en Crypto Twitter con #LukashLaunch
 
-##### 6. THE JAGUAR GAMES (Primera Semana)
+##### 6. THE LUKASH GAMES (Primera Semana)
 **Objetivo:** Retener atención post-launch
 
 **Día 1-2: "Spot the Whale"**
@@ -217,18 +217,18 @@ TAREAS SOCIALES:
 ##### 7. THE UTILITY BOMB (Demostrar que NO es solo especulación)
 **Semana 2: Anunciar LUKASH App Beta**
 - Cerrada, solo para holders de >100k tokens
-- Mostrar screenshots reales del Jaguar Chat
+- Mostrar screenshots reales del LUKASH Chat
 - Demostrar que la App es REAL, no vaporware
 
 **Semana 3: First Marketplace Transaction**
-- Publicar el primer producto vendido en Bazar Jaguar
+- Publicar el primer producto vendido en Bazar LUKASH
 - Aunque sea staged, demostrar que funciona
 - Artículo: "First Real-World Purchase with $LUKA"
 
 **Semana 4: IA LUK Preview**
 - Video de la IA respondiendo preguntas
 - Dejar que la comunidad haga preguntas
-- Mostrar personalidad única (tono jaguar/cazador)
+- Mostrar personalidad única (tono felino/cazador)
 
 ##### 8. THE PARTNERSHIP AVALANCHE
 **Estrategia:** Anunciar 1 partnership por semana
@@ -340,7 +340,7 @@ Virality: Hipnótico, la gente lo deja abierto
 Comparar con "Slow TV" que es trending
 ```
 
-**HOOK #4: "The Jaguar Manifesto"**
+**HOOK #4: "The LUKASH Manifesto"**
 ```
 Documento viral (PDF descargable):
 "10 Razones por las que el Sistema Bancario es una Estafa

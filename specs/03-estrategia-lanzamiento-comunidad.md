@@ -57,7 +57,7 @@ Objetivo de F0: llegar al TGE con **demanda ya formada y una manada con identida
 compradores. En cripto, la comunidad se construye ANTES del token; el token premia a los que llegaron temprano.
 
 ### 2.1 La narrativa fundacional (el imán)
-- **"La Reserva del Pueblo — sé jaguar desde el génesis."** El mito de origen: una manada que construye su
+- **"La Reserva del Pueblo — ruge desde el génesis."** El mito de origen: una manada que construye su
   propia bóveda soberana, a la vista de todos, desde cero. El que llega primero, funda.
 - **Founder-led:** tu historia (arquitecto que diseñó esto solo) es contenido. La autenticidad vende.
 - **LUKAI como personaje** desde el día 1: el chamán que guía a la manada. Voz, memes, sabiduría.
@@ -68,23 +68,23 @@ compradores. En cripto, la comunidad se construye ANTES del token; el token prem
 ### 2.2 Canales
 - **X (Twitter):** hub principal. Hilos de lore, transparencia, educación. Founder + LUKAI.
 - **Telegram / Discord:** la "manada" — roles por tier (Cachorro → Rastreador → Cazador como pre-Aura), voz, memes.
-- **TikTok / IG Reels:** Segmento A (12-25). #FinTok: educación financiera con estética jaguar. LUKAI clips.
+- **TikTok / IG Reels:** Segmento A (12-25). #FinTok: educación financiera con estética LUKASH. LUKAI clips.
 - **Farcaster Frames + Lens:** DeSoc nativo cripto; misiones dentro del feed.
 
 ### 2.3 Mecánicas de adquisición (del BMC v4.2 + discovery)
 - **Whitelist gamificada (Galxe / Zealy / Layer3):** misiones pre-token = ganar acceso al airdrop/whitelist.
   Filtran bots y premian contribución real. Tiers de whitelist = pre-Aura.
 - **Airdrop de Génesis (10% del supply / Comunidad):** repartido por **hitos verificables**, no gratis. Los
-  primeros jaguares se ganan su lugar. Snapshot antes del TGE.
+  primeros fundadores se ganan su lugar. Snapshot antes del TGE.
 - **Proof of Roar (BMC):** raids de contenido verificable on-chain/social, recompensados con puntos de
   whitelist. Raids temáticos (lun/mié/vie) con humor, no spam.
-- **Referral leaderboard:** trae jaguares → subes de tier → más airdrop. Escalonado (ej. 5 / 20 / 100
+- **Referral leaderboard:** trae rugidores → subes de tier → más airdrop. Escalonado (ej. 5 / 20 / 100
   referidos → recompensas crecientes, top referrers → llamada con el fundador).
 - **Retos de "Meme Wars" / "Spot the Whale":** cultura de manada, engagement Gen Z, bajo costo.
 - **Learn-to-earn pre-token:** misiones educativas ("¿qué es la Reserva Sagrada?", "¿por qué deflación?")
   que dan puntos de whitelist. Educa y filtra a la comunidad correcta.
 
-### 2.4 KOLs con Jaguar Lock (BMC — clave)
+### 2.4 KOLs con KASH Lock (BMC — clave)
 - **Mínimo 3 KOLs** fintech/cripto LATAM (100K-500K seguidores), pagados en **$LUKA con vesting 6-12 meses por
   hitos de volumen** — **nunca pago único**. Así defienden el proyecto ante FUD porque su retorno depende del éxito.
 - Evitar KOLs de "get rich quick"; buscar voces de **educación financiera** (alinea con la postura regulatoria).
@@ -100,7 +100,7 @@ Medir: **wallets en whitelist**, misiones completadas, tasa de referido, retenci
 
 Los primeros 90 días definen la trayectoria a 5 años. Activar los 4 Frentes en simultáneo:
 1. **Market Makers:** piso $2-5M/día de volumen desde D1 (firmado ANTES del TGE). Es lo que enciende el motor.
-2. **KOLs con Jaguar Lock:** narrativa sostenida, no un post y adiós.
+2. **KOLs con KASH Lock:** narrativa sostenida, no un post y adiós.
 3. **Dashboard público del Vault:** La Bóveda (K vs K_min) / El Fuego (quema) / La Cola (quemas diferidas).
    Coordinación social: "estamos a $X del hito". +15% volumen orgánico.
 4. **Integraciones técnicas:** listado en Meteora/Jupiter, wallets (Phantom/Backpack).

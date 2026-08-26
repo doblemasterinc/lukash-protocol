@@ -28,12 +28,12 @@ pub const VAULT_USDC_LEND_BPS: u64 = 500;
 
 // ---- Umbrales de valor (sobre el KASH Core), USD 6 dec ----
 pub const K_MIN_USD: u64 = 25_000_000_000_000; // $25M
-pub const JAGUAR_LOCK_USD: u64 = 30_000_000_000_000; // $30M
+pub const KASH_LOCK_USD: u64 = 30_000_000_000_000; // $30M
 pub const ETAPA3_USD: u64 = 50_000_000_000_000; // $50M
 pub const SCALE_USD: u64 = 100_000_000_000_000; // $100M
 
-// ---- Jaguar Lock por tiempo: 12 meses ----
-pub const JAGUAR_LOCK_SECONDS: i64 = 365 * 24 * 60 * 60;
+// ---- KASH Lock por tiempo: 12 meses ----
+pub const KASH_LOCK_SECONDS: i64 = 365 * 24 * 60 * 60;
 
 // ---- Throttle: umbrales como % de la EMA30 (bps) y % de quema (bps) ----
 pub const THROTTLE_ACCEL_BPS: u64 = 12_000; // P > 1.2x EMA30

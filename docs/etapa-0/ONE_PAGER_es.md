@@ -3,7 +3,7 @@
 > Etapa 0 · 2026-08-20. Audiencia: grants (Superteam Earn, Finternet, Solana Foundation), Colosseum,
 > ángeles LatAm. Tono ADR-010 (aspiracional, sin ideología, sin promesa de retornos). Marco de utilidad
 > ADR-009: $LUKA es moneda transaccional; la reserva es respaldo, **no se reparte a holders**.
-> Términos de marca no se traducen (LUKA/KASH/Aura/Jaguar/Manada/LUKAI).
+> Términos de marca no se traducen (LUKA/KASH/Aura/Glow/Manada/LUKAI).
 
 ---
 
@@ -25,13 +25,13 @@ progreso que la gente de verdad quiere usar.
 ## Cómo funciona (el átomo)
 1. **Motor de fees universal** — cada operación distribuye 35/35/15/15 → Vault / Quema-LP / O&M / Staking. Atómico, on-chain.
 2. **Vault KASH Core** — reserva dura auditable que solo crece; nunca liquidable. Determina el "Precio KASH" (piso de valor).
-3. **Deflación con throttle** — supply 10B → 3.3B; la quema se acelera o frena según salud del mercado (Jaguar Shield: circuit breakers, exit fee, anti-whale).
-4. **Aura** — reputación financiera on-chain, no transferible. Subes de nivel **participando**: Cachorro → Rastreador → Cazador → Alfa → **Jaguar**.
+3. **Deflación con throttle** — supply 10B → 3.3B; la quema se acelera o frena según salud del mercado (KASH Shield: circuit breakers, exit fee, anti-whale).
+4. **Aura** — reputación financiera on-chain, no transferible. Subes de nivel **participando**: Cachorro → Rastreador → Cazador → Alfa → **Glow**.
 
 ## Por qué la gente lo usa (el gancho): *farmea tu Aura*
 La calle ya habla de "farmear aura". En LUKASH el Aura deja de ser social e intangible y se vuelve **tuya,
 medible y con valor real on-chain**: completas Misiones de Caza, subes de nivel y desbloqueas beneficios
-(acceso a cNFTs Jaguar, exenciones, estatus). Es el loop de engagement que convierte "abrir una app financiera"
+(acceso a Tótems cNFT, exenciones, estatus). Es el loop de engagement que convierte "abrir una app financiera"
 en algo que un joven de 19 y un adulto de 40 quieren hacer todos los días. **Tu aura, por fin, cuenta.**
 
 ## Por qué ahora / por qué Solana
@@ -40,9 +40,9 @@ Pyth) para construir sin reinventar. Momento cultural: identidad, gaming financi
 audiencia <45, trilingüe (ES/EN/PT), sin fronteras.
 
 ## Tracción / estado (Ago 2026)
-- ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + Jaguar Shield), 3 auditorías internas.
+- ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + KASH Shield), 3 auditorías internas.
 - ✅ Smart contracts **Milestone 1 compilan** (núcleo económico: distribución, Vault, throttle, timelock, pausa). Deploy a devnet inminente.
-- ✅ Marca, identidad visual (jaguar) y diseño de app (Jungle Arena) listos, trilingües.
+- ✅ Marca, identidad visual (felino) y diseño de app (Jungle Arena) listos, trilingües.
 - ▶ Siguiente: token $LUKA en devnet, Milestone 2 (SPL/Jupiter/burn/staking/oráculos), auditoría externa vía ruta capital-cero.
 
 ## Modelo y financiación (no dilutiva primero)

@@ -7,7 +7,7 @@
 
 **Versión hero (3 líneas)**
 > Tus **Lucas** se escurren entre las garras como niebla en la mañana.
-> El **Jaguar** no solo caza: conserva. Convierte tu esfuerzo en una **Reserva** que dura y crece —a la vista, con tu **Manada**.
+> El **Rugidor** no solo caza: conserva. Convierte tu esfuerzo en una **Reserva** que dura y crece —a la vista, con tu **Manada**.
 > **Sé dueño de tu ascenso.**
 
 **Versión bio (1 línea)**
@@ -20,7 +20,7 @@
 
 **Hero (3 lines)**
 > Your **Lucas** slip through your claws like morning mist.
-> The **Jaguar** doesn't only hunt: it keeps. It turns your effort into a **Reserva** that lasts and grows —in plain sight, with your **Manada**.
+> The **Roarer** doesn't only hunt: it keeps. It turns your effort into a **Reserva** that lasts and grows —in plain sight, with your **Manada**.
 > **Own your rise.**
 
 **Bio (1 line)**
@@ -33,7 +33,7 @@
 
 **Hero (3 linhas)**
 > Seus **Lucas** escorrem entre as garras como névoa da manhã.
-> O **Jaguar** não só caça: conserva. Transforma o seu esforço numa **Reserva** que dura e cresce —à vista, com a sua **Manada**.
+> O **Rugidor** não só caça: conserva. Transforma o seu esforço numa **Reserva** que dura e cresce —à vista, com a sua **Manada**.
 > **Seja dono da sua ascensão.**
 
 **Bio (1 linha)**

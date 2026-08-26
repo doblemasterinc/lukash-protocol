@@ -18,11 +18,11 @@ que las instituciones grandes ya usan. "Las finanzas del futuro, disponibles hoy
 ## Piezas clave
 - **Vault KASH Core** — reserva 100% Solana-nativa. K_min=$25M activa Motor B2.
 - **LUKAI** — orquestador de estados on-chain (v1.0) + IA conversacional (v2.0).
-- **Aura** (rebrand de Jaguar Score) — reputación financiera on-chain, niveles Cub→Emperor.
+- **Aura** — reputación financiera on-chain, niveles Cub→Emperor.
 - **Manadas** — natilleras/tandas del siglo XXI: ahorro comunitario con smart contracts.
 - **Jungle Arena** — gaming financiero. Misiones de Caza → ganar Aura. *(Diseño pendiente.)*
 - **cNFT** — instrumentos financieros tokenizados (3 tipos).
-- **Jaguar Shield** — capa de seguridad (circuit breakers, exit fee, anti-whale, timelock, multisig).
+- **KASH Shield** — capa de seguridad (circuit breakers, exit fee, anti-whale, timelock, multisig).
 
 ## Segmentos
 - **A (12-25)**: nativos de la atención. Entran por Jungle Arena. Gamificación + estatus.
@@ -32,7 +32,7 @@ que las instituciones grandes ya usan. "Las finanzas del futuro, disponibles hoy
 1. **[ACTUAL]** Setup + auditoría del protocolo → cerrar discrepancias (v4.3 limpia).
 2. Diseño del juego / Misiones de Caza (Aura) + parámetros de Manadas.
 3. **Primer milestone técnico**: smart contracts core en devnet (Motores A/B/D + Vault + Throttle).
-4. LUKAI v1.0 orquestador + Jaguar Shield.
+4. LUKAI v1.0 orquestador + KASH Shield.
 5. Prototipo App + Jungle Arena.
 6. Auditoría Halborn/OtterSec → TGE.
 

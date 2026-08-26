@@ -13,7 +13,7 @@ milestone prueba. Hay 1 ajuste opcional que vale la pena y varios puntos que son
 - **Vault:** split de fee **70% Core / 30% Sociedad** + composición **cBTC 35 / SOL 15 / LST 20 / USDC res 25 / lending 5 = 100%**. Validado que suma 100% en `initialize`.
 - **B0/B2:** Motor A siempre quema; Motor B/D queman en **B0** (modulado por el Throttle) o **recirculan** en **B2**.
 - **Throttle:** umbrales correctos (P>1.2× ACEL · 0.8-1.2× NORMAL · 0.5-0.8× CONS · <0.5× DEF) y % de quema (100/60/25) con el resto a la cola diferida.
-- **Jaguar Lock** ($30M Core o 12 meses) y **switch a B2** (K ≥ $25M) — correctos.
+- **KASH Lock** ($30M Core o 12 meses) y **switch a B2** (K ≥ $25M) — correctos.
 - **Timelock 48h**, **pausa (circuit breaker)** y **control de acceso** (`has_one = authority`) — correctos.
 - **Overflow checks** (`checked_*` / u128 intermedio) en toda la aritmética.
 

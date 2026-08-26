@@ -127,7 +127,7 @@ def milestones(df):
 
     m = {}
     m["K_min $25M (B2)"] = first_day(df["vault_core_usd"] >= 25_000_000)
-    m["Jaguar Lock $30M"] = first_day(df["vault_core_usd"] >= 30_000_000)
+    m["KASH Lock $30M"] = first_day(df["vault_core_usd"] >= 30_000_000)
     m["Etapa 3 $50M"] = first_day(df["vault_core_usd"] >= 50_000_000)
     m["Escala $100M"] = first_day(df["vault_core_usd"] >= 100_000_000)
     m["ENZ (supply 3.3B)"] = first_day(df["supply"] <= 3_300_000_001)
@@ -154,7 +154,7 @@ def summarize(name, df, sim, checks):
         "quemado_pct": round((1 - end["supply"] / 10e9) * 100, 1),
         "dia_K_min": ms["K_min $25M (B2)"],
         "dia_switch_B2": ms["Switch a B2"],
-        "dia_jaguar_lock": ms["Jaguar Lock $30M"],
+        "dia_kash_lock": ms["KASH Lock $30M"],
         "dia_etapa3": ms["Etapa 3 $50M"],
         "dia_ENZ": ms["ENZ (supply 3.3B)"],
         "dias_defensivo": days_defensive,
@@ -173,7 +173,7 @@ def plot_scenario(name, df):
     ax = axes[0, 0]
     ax.plot(df["day"], df["vault_core_usd"] / 1e6, label="Vault Core", color="#1470CC")
     ax.plot(df["day"], df["vault_sociedad_usd"] / 1e6, label="Vault Sociedad", color="#CC7818")
-    for y, lb in [(25, "K_min $25M"), (30, "Jaguar $30M"), (50, "Etapa3 $50M"), (100, "Escala $100M")]:
+    for y, lb in [(25, "K_min $25M"), (30, "KASH $30M"), (50, "Etapa3 $50M"), (100, "Escala $100M")]:
         ax.axhline(y, ls="--", lw=0.6, color="gray")
     ax.set_title("Vault (USD M)"); ax.set_xlabel("día"); ax.legend(fontsize=7)
 

@@ -38,7 +38,7 @@ pub mod lukash_protocol {
         config.stage = 1; // Génesis
         config.paused = false;
         config.k_min_usd = K_MIN_USD;
-        config.jaguar_lock_usd = JAGUAR_LOCK_USD;
+        config.kash_lock_usd = KASH_LOCK_USD;
         config.etapa3_usd = ETAPA3_USD;
         config.vault_cbtc_bps = VAULT_CBTC_BPS;
         config.vault_sol_bps = VAULT_SOL_BPS;
@@ -72,7 +72,7 @@ pub mod lukash_protocol {
         state.staking_total = 0;
         state.om_total = 0;
         state.deferred_burn_queue = 0;
-        state.jaguar_lock_hit = false;
+        state.kash_lock_hit = false;
         state.last_queue_exec_ts = now;
         state.bump = ctx.bumps.state;
 
@@ -165,12 +165,12 @@ pub mod lukash_protocol {
         state.om_total = state.om_total.checked_add(to_om).ok_or(LukashError::MathOverflow)?;
         state.staking_total = state.staking_total.checked_add(to_staking).ok_or(LukashError::MathOverflow)?;
 
-        // --- Hito Jaguar Lock: KASH Core >= $30M O 12 meses ---
+        // --- Hito KASH Lock: KASH Core >= $30M O 12 meses ---
         let now = Clock::get()?.unix_timestamp;
-        if !state.jaguar_lock_hit {
+        if !state.kash_lock_hit {
             let elapsed = now.checked_sub(state.genesis_ts).unwrap_or(0);
-            if state.vault_core_usd >= config.jaguar_lock_usd || elapsed >= JAGUAR_LOCK_SECONDS {
-                state.jaguar_lock_hit = true;
+            if state.vault_core_usd >= config.kash_lock_usd || elapsed >= KASH_LOCK_SECONDS {
+                state.kash_lock_hit = true;
             }
         }
 

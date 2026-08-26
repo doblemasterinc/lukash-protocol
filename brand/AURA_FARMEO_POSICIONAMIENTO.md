@@ -1,7 +1,7 @@
 # Aura + "Farmear Aura" — Convergencia cultural (posicionamiento)
 
 > Nota de marca. Origen: sesión 2026-08-20 (insight de Sebastián).
-> Alinea con ADR-002 (Aura = rebrand Jaguar Score) y ADR-010 (marca sin ideología, audiencia <45).
+> Alinea con ADR-002 (Aura = nombre final del sistema de reputación) y ADR-010 (marca sin ideología, audiencia <45).
 
 ## El insight
 El slang Gen Z **"farmear aura" / "aura points"** (ganar/perder reputación social según qué tan
@@ -12,7 +12,7 @@ nativo de la audiencia <45. No hay que educar sobre "qué es Aura" — ya lo sab
 ## El giro que aporta LUKASH
 - La calle: aura = social, intangible, te lo dan/quitan los demás.
 - LUKASH: aura = **tuya, medible, on-chain, no transferible, con consecuencias financieras reales**
-  (gate cNFT Jaguar ≥500, exenciones Anti-Whale nivel Jaguar, decay 2%/sem tras 90d).
+  (gate cNFT Tótem Universal ≥500, exenciones Anti-Whale nivel Glow, decay 2%/sem tras 90d).
 - Punchline candidato: **"tu aura, por fin, cuenta"**. Refuerza el eje "dueño de tu ascenso".
 - "Farmear aura" = describe literalmente el loop de las **Misiones de Caza** del Jungle Arena (spec 01).
 
@@ -20,7 +20,7 @@ nativo de la audiencia <45. No hay que educar sobre "qué es Aura" — ya lo sab
 - ✅ **Adoptar "farmear aura" como copy/posicionamiento core** (F1+). Costo cero, es lenguaje.
 - 🟡 **Estética pixel tipo DefiLand** para Jungle Arena = dirección visual CANDIDATA. Se decide en
   diseño de App (F2), no ahora. Referente guardado.
-- 🔴 **Mini-juego plataformas estilo Mario (jaguar corriendo misiones)** = DIFERIDO. Mucho desarrollo,
+- 🔴 **Mini-juego plataformas estilo Mario (felino corriendo misiones)** = DIFERIDO. Mucho desarrollo,
   distrae del átomo (F1 = token + Vault + dashboard). Idea para F2+, no entra al roadmap actual.
 
 ## Pendiente cuando toque copy/App

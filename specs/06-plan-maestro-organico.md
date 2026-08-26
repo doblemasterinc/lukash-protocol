@@ -56,7 +56,7 @@ nunca cash. Detalle completo en `specs/04` y `specs/05` (Ruta A). Resumen operat
 - **Stack gratis:** Guild.xyz (roles/gating) · Zealy (quests/XP/leaderboard) · Galxe (awareness) · X + Telegram + TikTok/Reels + Farcaster. Todo en ES/EN/PT.
 - **Motor de contenido founder-led:** 3–4 piezas/semana. Transparencia como espectáculo (dashboard del Vault en testnet, "El Fuego").
 - **Whitelist gamificada + airdrop por hitos** (tokens, no cash). Tiers pre-Aura.
-- **Guerrilla:** Proof of Roar (raids verificables lun/mié/vie), referral leaderboard, Jaguar Games (Spot the Whale, Meme Wars, First Hunt), Burn Stream.
+- **Guerrilla:** Proof of Roar (raids verificables lun/mié/vie), referral leaderboard, LUKASH Games (Spot the Whale, Meme Wars, First Hunt), Burn Stream.
 - **1–3 KOLs seed** hispanos de educación financiera, pagados en **tokens vesteados**. Contacto por DM (ver directorio en `specs/05`).
 - **Métricas (no vanity):** wallets en whitelist · % que completa misiones · tasa de referido · CPW < $3.
 

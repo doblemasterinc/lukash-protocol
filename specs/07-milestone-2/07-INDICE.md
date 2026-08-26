@@ -9,7 +9,7 @@
 ## 1. Qué cubre Milestone 2
 
 Cerrar la brecha entre el contrato Milestone 1 (contabilidad pura en USD) y el
-Protocolo v4.3 completo: introducir oráculos, swaps reales, quema real, Jaguar
+Protocolo v4.3 completo: introducir oráculos, swaps reales, quema real, KASH
 Shield activo, Tridente Multisig (inactivo por defecto), Anti-Whale + Exit Fee
 sobre Token-2022 transfer hook, y módulo contra-cíclico de LUKAI.
 
@@ -29,21 +29,21 @@ lógica económica completa del protocolo, no una contabilidad simulada.
 | 2 | [**07-d — Throttle: drenaje siempre activo + hard-stop ENZ**](./07-d-acelerado-drenaje-rapido.md) | media (quick win) | 07-b (soft: 07-a para quema real) | — |
 | 3 | [**07-a — Switch B0→B2 por Pyth + Token Accounting real**](./07-a-switch-b2-por-pyth-y-token-accounting.md) | **alta (estructural)** | 07-b | 07-e, 07-c, 07-f |
 | 4 | [**07-e — Módulo Contra-Cíclico LUKAI**](./07-e-modulo-contraciclico.md) | media | 07-a | — |
-| 5 | [**07-c — Jaguar Shield del Vault + Tridente inactivo**](./07-c-jaguar-shield-vault-tridente.md) | alta | 07-a | Etapa 2 (candado) |
+| 5 | [**07-c — KASH Shield del Vault + Tridente inactivo**](./07-c-kash-shield-vault-tridente.md) | alta | 07-a | Etapa 2 (candado) |
 | 6 | [**07-f — Anti-Whale + Exit Fee + Token-2022**](./07-f-antiwhale-exitfee-token2022.md) | alta | 07-a, 07-c | Mainnet TGE |
 
 ## 3. ADRs referenciados
 
-- **ADR-005** — Aura con 5 niveles narrativos (usado en exención Jaguar de Anti-Whale/Exit Fee).
+- **ADR-005** — Aura con 5 niveles narrativos (usado en exención Glow de Anti-Whale/Exit Fee).
 - **ADR-011** — KOLs pagados en tokens vesteados (por qué NO tienen exención Anti-Whale).
 - **ADR-012** — Anti-Whale corregido (C10): solo ventas, umbral por % del pool.
-- **ADR-015** — Jaguar Shield restaurado + Token-2022 + Tridente inactivo + exenciones canónicas + auditor desacoplado.
+- **ADR-015** — KASH Shield restaurado + Token-2022 + Tridente inactivo + exenciones canónicas + auditor desacoplado.
 
 ## 4. Cambios en el Protocolo v4.3
 
 Las specs actualizan operativamente §4.1 (composición dinámica del Vault vía
 contra-cíclico), §5.1 (LUKAI orquestador), §7 (Throttle con ACELERADO redefinido),
-§9 (Jaguar Shield completo), §13 (parámetros formales del Blueprint). El documento
+§9 (KASH Shield completo), §13 (parámetros formales del Blueprint). El documento
 `docs/protocolo/LUKASH_Protocolo_v4.3.md` refleja el estado tras aplicar todos los
 cambios de este Milestone.
 
