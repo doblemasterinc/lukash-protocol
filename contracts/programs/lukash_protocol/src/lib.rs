@@ -382,11 +382,11 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct ProcessFee<'info> {
-    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    pub caller: Signer<'info>,
+    pub authority: Signer<'info>,
 }
 
 #[derive(Accounts)]

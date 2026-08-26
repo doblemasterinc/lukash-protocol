@@ -1,6 +1,8 @@
 // LUKASH Protocol - Milestone 2 Sprint 5B (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
 // Cargo.toml requiere: anchor-lang = "0.30.1" Y anchor-spl = "0.30.1"
+// v10: Security hardening — has_one=authority en process_fee/refresh/swaps, Pyth owner validation,
+//   DEVNET_MODE flag para fallbacks, confidence interval check, u128→u64 safe cast.
 // v9.1: Fix devnet Pyth fallbacks (parse_pyth_price intacto para mainnet, fallback en callers).
 // v9: Sprint 5B Fase B+C (Capa 2: oráculos Pyth + execute_vault_swaps a precio de oráculo).
 // v8: Sprint 5B Fase A (Capa 2: quema real SPL burn CPI + initialize_burn_vault).
@@ -13,6 +15,13 @@
 
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Mint, Burn};
+
+/// Pyth V2 Oracle Program ID (owner de las price feed accounts).
+/// Devnet: gSbePebfvPy7tRqimPoVecS2UsBvYv46ynrzWocc92s — MAINNET: FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH
+pub mod pyth_oracle {
+    use super::*;
+    declare_id!("gSbePebfvPy7tRqimPoVecS2UsBvYv46ynrzWocc92s");
+}
 
 // ================= constantes =================
 // Constantes del protocolo LUKASH (valores de lanzamiento del Blueprint v4.3 §13).
@@ -89,6 +98,7 @@ pub const VALUATION_MAX_STALENESS: i64 = 900;              // 15 min: snapshot d
 pub const K_MIN_PERSISTENCE_SECONDS: i64 = 7 * 24 * 3600;  // 7 días: anti-pump transitorio
 pub const ORACLE_DEVIATION_BPS_MAX: u64 = 200;             // 2% (Capa 2: Pyth vs Switchboard)
 pub const ORACLE_FEED_MAX_STALENESS: i64 = 86400;          // 86400s devnet (mainnet: 60s) (Capa 2: frescura feed Pyth)
+pub const DEVNET_MODE: bool = true;                         // MAINNET: set to false — desactiva fallbacks de precio y relaja staleness
 pub const JUPITER_MAX_SLIPPAGE_BPS: u64 = 50;              // 0.5% (Capa 2: CPI Jupiter)
 
 // ---- Pyth V2 Price Account layout offsets (deserialización manual, Capa 2) ----
@@ -744,15 +754,13 @@ pub mod lukash_protocol {
 
         let now = Clock::get()?.unix_timestamp;
 
-        // Devnet: Pyth feeds pueden no estar en Trading o tener precio 0.
-        // Fallback hardcoded si parse falla. MAINNET: eliminar fallbacks, usar parse_pyth_price directo.
         let btc_price_usd: u64 = {
             let data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
             let p = match parse_pyth_price(&data, now) {
                 Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
                 Err(_) => 0,
             };
-            if p > 0 { p } else { 65_000_000_000 }
+            if p > 0 { p } else if DEVNET_MODE { 65_000_000_000 } else { return Err(LukashError::InvalidOracleValue.into()) }
         };
         let sol_price_usd: u64 = {
             let data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
@@ -760,7 +768,7 @@ pub mod lukash_protocol {
                 Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
                 Err(_) => 0,
             };
-            if p > 0 { p } else { 150_000_000 }
+            if p > 0 { p } else if DEVNET_MODE { 150_000_000 } else { return Err(LukashError::InvalidOracleValue.into()) }
         };
 
         let config = &ctx.accounts.config;
@@ -1027,7 +1035,7 @@ pub mod lukash_protocol {
         let ratio_bps = (ema30_btc_price as u128)
             .checked_mul(BPS_DENOMINATOR as u128).ok_or(LukashError::MathOverflow)?
             .checked_div(ema90_btc_price as u128).ok_or(LukashError::MathOverflow)?;
-        let ratio = ratio_bps as u64;
+        let ratio = u64::try_from(ratio_bps).map_err(|_| LukashError::MathOverflow)?;
 
         let signal_primary: u8 = if ratio > EMA_BULL_THRESHOLD_BPS { REGIME_BULL }
             else if ratio < EMA_BEAR_THRESHOLD_BPS { REGIME_BEAR }
@@ -1363,14 +1371,13 @@ pub mod lukash_protocol {
             .checked_add(state.pending_swap_usdc_lend_usd).ok_or(LukashError::MathOverflow)?;
         require!(total_pending > 0, LukashError::NoPendingSwaps);
 
-        // Devnet fallback (mismo patrón que refresh_vault_valuation)
         let btc_price_usd: u64 = {
             let data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
             let p = match parse_pyth_price(&data, now) {
                 Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
                 Err(_) => 0,
             };
-            if p > 0 { p } else { 65_000_000_000 }
+            if p > 0 { p } else if DEVNET_MODE { 65_000_000_000 } else { return Err(LukashError::InvalidOracleValue.into()) }
         };
         let sol_price_usd: u64 = {
             let data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
@@ -1378,7 +1385,7 @@ pub mod lukash_protocol {
                 Ok((raw, expo)) => pyth_price_to_usd6(raw, expo).unwrap_or(0),
                 Err(_) => 0,
             };
-            if p > 0 { p } else { 150_000_000 }
+            if p > 0 { p } else if DEVNET_MODE { 150_000_000 } else { return Err(LukashError::InvalidOracleValue.into()) }
         };
 
         // cBTC: pending_usd → satoshis = pending_usd * CBTC_SCALE / btc_price_usd
@@ -1520,6 +1527,14 @@ fn parse_pyth_price(feed_data: &[u8], now: i64) -> Result<(i64, i32)> {
         feed_data[PYTH_AGG_PRICE_OFFSET..PYTH_AGG_PRICE_OFFSET + 8].try_into().unwrap(),
     );
     require!(price > 0, LukashError::InvalidOracleValue);
+
+    let conf = u64::from_le_bytes(
+        feed_data[PYTH_AGG_CONF_OFFSET..PYTH_AGG_CONF_OFFSET + 8].try_into().unwrap(),
+    );
+    let conf_pct_bps = (conf as u128)
+        .checked_mul(BPS_DENOMINATOR as u128).ok_or(LukashError::MathOverflow)?
+        .checked_div(price as u128).ok_or(LukashError::MathOverflow)?;
+    require!(conf_pct_bps <= ORACLE_DEVIATION_BPS_MAX as u128, LukashError::InvalidOracleValue);
 
     let expo = i32::from_le_bytes(
         feed_data[PYTH_EXPO_OFFSET..PYTH_EXPO_OFFSET + 4].try_into().unwrap(),
@@ -1727,11 +1742,11 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct ProcessFee<'info> {
-    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    pub caller: Signer<'info>,
+    pub authority: Signer<'info>,
     // Capa 2: quema real
     #[account(mut, seeds = [BURN_VAULT_SEED], bump, token::mint = luka_mint, token::authority = state)]
     pub burn_vault: Account<'info, TokenAccount>,
@@ -1790,32 +1805,36 @@ pub struct TridenteAction<'info> {
     pub caller: Signer<'info>,
 }
 
-/// Capa 2: permissionless. BTC/SOL vía Pyth feeds; LST/LUKA como parámetros.
+/// Capa 2: restringido a authority. BTC/SOL vía Pyth feeds; LST/LUKA como parámetros.
 #[derive(Accounts)]
 pub struct RefreshVaultValuation<'info> {
-    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    /// CHECK: Pyth BTC/USD price feed — validado en instrucción (magic, staleness, status)
+    /// CHECK: Pyth BTC/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
+    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
     pub pyth_btc_feed: AccountInfo<'info>,
-    /// CHECK: Pyth SOL/USD price feed — validado en instrucción (magic, staleness, status)
+    /// CHECK: Pyth SOL/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
+    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
     pub pyth_sol_feed: AccountInfo<'info>,
-    pub caller: Signer<'info>,
+    pub authority: Signer<'info>,
 }
 
 /// Ejecuta swaps pendientes del Vault a precios de oráculo Pyth (Capa 2 Fase C).
 #[derive(Accounts)]
 pub struct ExecuteVaultSwaps<'info> {
-    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    /// CHECK: Pyth BTC/USD price feed — validado en instrucción
+    /// CHECK: Pyth BTC/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
+    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
     pub pyth_btc_feed: AccountInfo<'info>,
-    /// CHECK: Pyth SOL/USD price feed — validado en instrucción
+    /// CHECK: Pyth SOL/USD price feed — owner validado como pyth_oracle::ID + magic/staleness/status en instrucción
+    #[account(owner = pyth_oracle::ID @ LukashError::InvalidOracleValue)]
     pub pyth_sol_feed: AccountInfo<'info>,
-    pub caller: Signer<'info>,
+    pub authority: Signer<'info>,
 }
 
 /// Transfer Hook Capa 1: authority alimenta parámetros de contexto manualmente.
