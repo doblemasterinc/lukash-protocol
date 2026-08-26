@@ -92,7 +92,116 @@ spl-token update-metadata <MINT> uri "https://<tu-host>/luka.json"
 - **Programa deployado en devnet: 2026-08-22** ✅
   - Program Id: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`
   - Explorer: https://explorer.solana.com/address/AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy?cluster=devnet
-  - Versión: lib.rs v3 (Sprint 1 — 07-b cap quema + 07-d drenaje + ENZ hard-stop)
+  - Versión deployada: lib.rs v7 (Sprint 5A — hardening). Pendiente: v9 (Sprint 5B Fase A+B+C).
+
+### Nota migración v8→v9 (Sprint 5B Fase B+C: Capa 2 oráculos Pyth + swaps)
+
+> v9 cambia `refresh_vault_valuation` y agrega `execute_vault_swaps`. ProtocolState crece (+40 bytes: 5 pending swap fields). PDAs de v8 incompatibles → cerrar y re-inicializar en devnet.
+
+**Secuencia de deploy completa para v9:**
+1. En Playground, pegar `lib.rs` v9 completo en `src/lib.rs`. Cargo.toml ya tiene `anchor-spl`.
+2. Build (puede tardar ~2 min si es primer build con anchor-spl).
+3. Si hay PDAs existentes de v8: ejecutar `close_protocol` (cierra config + state, devuelve rent).
+4. Deploy (upgrade in-place al mismo Program Id).
+5. Llamar `initialize` para crear nuevas PDAs con los campos actualizados.
+6. Llamar `initialize_burn_vault` para crear el burn_vault PDA.
+7. Fondear burn_vault con tokens $LUKA: `spl-token transfer <MINT> <AMOUNT> <BURN_VAULT_PDA> --fund-recipient`.
+8. Verificar con `update_oracle_state` (para luka_price, ema30, current_supply).
+9. Probar `refresh_vault_valuation` con feeds Pyth devnet reales.
+10. Probar `process_fee` Motor A → verificar `pending_swap_*_usd` acumulados.
+11. Probar `execute_vault_swaps` → verificar `*_amount` actualizados a precio Pyth.
+
+**Flujo operativo completo post-deploy:**
+```
+update_oracle_state(luka_price, ema30, supply)     ← keeper, Capa 1
+refresh_vault_valuation(lst, luka, amounts...)      ← permissionless, Pyth BTC/SOL
+process_fee(amount, motor)                          ← cada transacción
+execute_vault_swaps()                               ← keeper, periódico (convierte pending → native)
+```
+
+### Detalle cambios en v9
+
+#### `refresh_vault_valuation` (Capa 2 oráculos Pyth)
+`lib.rs` v9 cambia `refresh_vault_valuation` de authority-gated a **permissionless** con feeds Pyth.
+
+**Cambios en la interfaz:**
+1. `refresh_vault_valuation` pierde 2 parámetros (`btc_price_usd`, `sol_price_usd`) — se leen de Pyth.
+2. Los 7 parámetros restantes se mantienen: `lst_price_usd`, `luka_price_usd`, `cbtc_amount`, `sol_amount`, `lst_amount`, `usdc_res_amount`, `usdc_lend_amount`.
+3. El contexto `RefreshVaultValuation` pierde `authority: Signer` y gana:
+   - `pyth_btc_feed: AccountInfo` — feed Pyth BTC/USD devnet: `HovQMDrbAgAYPCmHVSrezcSmkMtXSSUsLDFANExrZh2J`
+   - `pyth_sol_feed: AccountInfo` — feed Pyth SOL/USD devnet: `J83w4HKfqxwcq3BEMMkPFSppX3gqekLyLJBexebFVkix`
+   - `caller: Signer` — cualquiera puede llamar (permissionless)
+
+**Actualizar `client.ts`:**
+```typescript
+const PYTH_BTC_USD_DEVNET = new PublicKey("HovQMDrbAgAYPCmHVSrezcSmkMtXSSUsLDFANExrZh2J");
+const PYTH_SOL_USD_DEVNET = new PublicKey("J83w4HKfqxwcq3BEMMkPFSppX3gqekLyLJBexebFVkix");
+
+await program.methods
+  .refreshVaultValuation(
+    lstPriceUsd,    // u64, USD 6-dec
+    lukaPriceUsd,   // u64, USD 6-dec
+    cbtcAmount, solAmount, lstAmount, usdcResAmount, usdcLendAmount
+  )
+  .accounts({
+    config: configPda,
+    state: statePda,
+    pythBtcFeed: PYTH_BTC_USD_DEVNET,
+    pythSolFeed: PYTH_SOL_USD_DEVNET,
+    caller: wallet.publicKey,
+  })
+  .rpc();
+```
+
+**Nuevo evento `VaultValuationRefreshed`:** ahora incluye `btc_price_usd` y `sol_price_usd` (precios leídos de Pyth).
+
+#### `execute_vault_swaps` (Capa 2 swaps a precio de oráculo)
+
+Nueva instrucción permissionless. Convierte los USD pendientes de swap (acumulados por `process_fee`) a balances nativos de activos a precio de oráculo Pyth.
+
+**Campos nuevos en `ProtocolState`:**
+- `pending_swap_cbtc_usd`, `pending_swap_sol_usd`, `pending_swap_lst_usd`, `pending_swap_usdc_res_usd`, `pending_swap_usdc_lend_usd` — USD 6-dec acumulados por `process_fee`, consumidos por `execute_vault_swaps`.
+
+**Contexto `ExecuteVaultSwaps`:**
+```typescript
+await program.methods
+  .executeVaultSwaps()
+  .accounts({
+    config: configPda,
+    state: statePda,
+    pythBtcFeed: PYTH_BTC_USD_DEVNET,
+    pythSolFeed: PYTH_SOL_USD_DEVNET,
+    caller: wallet.publicKey,
+  })
+  .rpc();
+```
+
+**Comportamiento:**
+- Lee `pending_swap_*_usd` del state.
+- Si total_pending == 0 → error `NoPendingSwaps`.
+- Convierte USD a nativos: `native = usd * scale / price` (helper `usd_to_native`).
+- cBTC usa BTC/USD de Pyth, SOL usa SOL/USD, LST usa SOL/USD como proxy, USDC es 1:1.
+- Actualiza `*_amount` en state.
+- Pone a cero los `pending_swap_*_usd`.
+- Emite `VaultSwapsExecuted` con montos nativos, precios, total swapped, timestamp.
+
+**Nota devnet:** estos "swaps" son accounting puro — no mueven tokens reales. En mainnet, esta instrucción sería reemplazada por CPIs a Jupiter V6. La interfaz de cuentas (Pyth feeds + caller) es compatible.
+
+### Nota migración v7→v8 (Sprint 5B Fase A: Capa 2 quema real)
+`lib.rs` v8 agrega `anchor-spl` como dependencia. Antes de compilar en Playground:
+1. En la pestaña **Cargo.toml** del proyecto, agregar `anchor-spl = "0.30.1"` bajo `[dependencies]`.
+2. Pegar el `lib.rs` v8 completo en `src/lib.rs`.
+3. Build. El primer build con anchor-spl tarda más (~2 min) porque descarga las crates.
+4. Después del deploy, llamar `initialize_burn_vault` para crear el burn_vault PDA:
+   - Requiere que el mint de $LUKA ya exista (`2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr`).
+   - El burn_vault se crea con authority = state PDA.
+5. Fondear el burn_vault con tokens $LUKA para que las quemas reales funcionen:
+   ```bash
+   spl-token transfer <LUKA_MINT> <AMOUNT> <BURN_VAULT_PDA> --fund-recipient
+   ```
+   La PDA burn_vault se deriva: `findProgramAddress([b"burn_vault"], programId)`.
+6. `process_fee` y `execute_deferred_burn` ahora requieren 3 cuentas adicionales:
+   `burn_vault`, `luka_mint`, `token_program`. Actualizar el `client.ts` correspondientemente.
 
 ### Nota migración v3→v4 (Sprint 2)
 `ProtocolState` creció en 64 bytes (8 campos nuevos para token accounting). Si el programa v3

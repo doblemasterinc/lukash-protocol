@@ -147,6 +147,9 @@ Aplicado: parche Protocolo v4.3 §9 · corrección `audits/VALIDACION_MOTORES_SI
 ## ADR-016: Drenaje de cola en todos los modos + hard-stop ENZ (2026-08-22) — Aprobado por Sebastián
 **Evolución consciente** del diseño original (v2.1→v4.3 decían "al regresar a NORMAL" / "bono de deflación futura"). Razón del cambio: en un bear prolongado (2+ años), la cola se acumula tanto que al normalizar el drenaje de 10%/sem tardaría meses en limpiarla — riesgo de acumulación excesiva. La quema inmediata por tx (25-100% del tramo LP) ya ocurre en todos los modos; lo nuevo es que la cola también drena siempre. Escala geométrica: ACEL 25%/sem · NORMAL 10% · CONS 5% · DEF 2%. El "bono de deflación futura" sigue existiendo (la cola crece en bear porque el inflow supera el drenaje), solo es de menor magnitud. **Hard-stop ENZ:** toda la maquinaria de quema se apaga definitivamente cuando `supply ≤ 3.3B` (alineado con todas las versiones del protocolo). La cola se congela con su saldo residual (destino = DAO Etapa 4). Supply NUNCA baja de 3.3B. Spec `07-d`.
 
+## ADR-017: Capa 2 sin programa mock separado — swaps como accounting a oráculo (2026-08-25) — Aprobado por Sebastián
+Sprint 5B implementa Capa 2 (interacciones reales on-chain) sin requerir un programa mock swap separado. En devnet, `execute_vault_swaps` convierte USD pendientes a balances nativos a precio de oráculo Pyth (accounting puro). En mainnet, misma instrucción haría CPIs reales a Jupiter V6. Quema real via CPI `token::burn`; oráculos BTC/SOL via deserialización manual Pyth V2 (sin dependencia `pyth-sdk-solana`). `refresh_vault_valuation` es permissionless.
+
 ## ADR-P01: Vault KASH Core 100% Solana-nativo — composición RESUELTA (Protocolo v4.3)
 Composición canónica (suma 100%): cBTC 35% · SOL 15% · SOL/LST 20% · USDC reserva 25% · USDC lending 5%.
 Los oráculos (PYTH/Switchboard/Jupiter) son **infraestructura operativa (O&M), no reserva** (resuelve la

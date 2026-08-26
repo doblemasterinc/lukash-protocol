@@ -1,5 +1,8 @@
-// LUKASH Protocol - Milestone 2 Sprint 5A (version de un solo archivo para Solana Playground)
+// LUKASH Protocol - Milestone 2 Sprint 5B (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
+// Cargo.toml requiere: anchor-lang = "0.30.1" Y anchor-spl = "0.30.1"
+// v9: Sprint 5B Fase B+C (Capa 2: oráculos Pyth + execute_vault_swaps a precio de oráculo).
+// v8: Sprint 5B Fase A (Capa 2: quema real SPL burn CPI + initialize_burn_vault).
 // v7: Sprint 5A (hardening: supply tracking on burn, close_protocol, MM close PDA, validaciones).
 // v6: Sprint 4 (07-f Anti-Whale + Jaguar Exit Fee + MMRegistry + Transfer Hook Capa 1).
 // v5: Sprint 3 (07-c Jaguar Shield: Tridente+CB+Seguro + 07-e módulo contra-cíclico LUKAI).
@@ -8,6 +11,7 @@
 // v2: endurecido en seguridad (validaciones, freeze en pausa, protección de autoridad, eventos).
 
 use anchor_lang::prelude::*;
+use anchor_spl::token::{self, Token, TokenAccount, Mint, Burn};
 
 // ================= constantes =================
 // Constantes del protocolo LUKASH (valores de lanzamiento del Blueprint v4.3 §13).
@@ -17,6 +21,7 @@ use anchor_lang::prelude::*;
 pub const CONFIG_SEED: &[u8] = b"config";
 pub const STATE_SEED: &[u8] = b"state";
 pub const MM_REGISTRY_SEED: &[u8] = b"mm_registry";
+pub const BURN_VAULT_SEED: &[u8] = b"burn_vault";
 
 // ---- Escala ----
 pub const BPS_DENOMINATOR: u64 = 10_000; // 100.00%
@@ -82,8 +87,19 @@ pub const INITIAL_SUPPLY: u64 = 10_000_000_000_000_000; // 10B × 10^6 decimals
 pub const VALUATION_MAX_STALENESS: i64 = 900;              // 15 min: snapshot debe ser fresco para switch
 pub const K_MIN_PERSISTENCE_SECONDS: i64 = 7 * 24 * 3600;  // 7 días: anti-pump transitorio
 pub const ORACLE_DEVIATION_BPS_MAX: u64 = 200;             // 2% (Capa 2: Pyth vs Switchboard)
-pub const ORACLE_FEED_MAX_STALENESS: i64 = 60;             // 60s (Capa 2: frescura feed Pyth)
+pub const ORACLE_FEED_MAX_STALENESS: i64 = 86400;          // 86400s devnet (mainnet: 60s) (Capa 2: frescura feed Pyth)
 pub const JUPITER_MAX_SLIPPAGE_BPS: u64 = 50;              // 0.5% (Capa 2: CPI Jupiter)
+
+// ---- Pyth V2 Price Account layout offsets (deserialización manual, Capa 2) ----
+pub const PYTH_MAGIC: u32 = 0xa1b2c3d4;
+pub const PYTH_MAGIC_OFFSET: usize = 0;
+pub const PYTH_EXPO_OFFSET: usize = 20;       // exponent (i32)
+pub const PYTH_TIMESTAMP_OFFSET: usize = 112;  // unix timestamp del último update
+pub const PYTH_AGG_PRICE_OFFSET: usize = 224;  // aggregate price (i64)
+pub const PYTH_AGG_CONF_OFFSET: usize = 232;   // aggregate confidence (u64)
+pub const PYTH_AGG_STATUS_OFFSET: usize = 240; // aggregate status (u32, 1=Trading)
+pub const PYTH_STATUS_TRADING: u32 = 1;
+pub const PYTH_MIN_DATA_LEN: usize = 256;      // mínimo para leer todos los campos
 
 // ---- Escalas de decimales por activo (para valoración) ----
 pub const CBTC_SCALE: u128 = 100_000_000;     // 10^8 (satoshis)
@@ -251,6 +267,14 @@ pub enum LukashError {
     PoolLiquidityMissing,
     #[msg("Sender inválido (Pubkey::default())")]
     InvalidSender,
+
+    // Sprint 5B Capa 2: quema real
+    #[msg("Burn vault sin tokens suficientes para la quema solicitada (quema parcial aplicada)")]
+    BurnVaultInsufficient,
+
+    // Sprint 5B Capa 2: swaps
+    #[msg("No hay swaps pendientes (todos los pending_swap_*_usd son cero)")]
+    NoPendingSwaps,
 }
 
 // ================= estado (cuentas) =================
@@ -372,6 +396,13 @@ pub struct ProtocolState {
     // Jaguar Exit Fee: presión de venta en ventana rodante de 1h (07-f)
     pub sell_pressure_1h_supply_bps: u64,
     pub sell_pressure_last_reset_ts: i64,
+
+    // Pending vault swaps: USD 6-dec pendientes de convertir a activos nativos (Capa 2 Fase C)
+    pub pending_swap_cbtc_usd: u64,
+    pub pending_swap_sol_usd: u64,
+    pub pending_swap_lst_usd: u64,
+    pub pending_swap_usdc_res_usd: u64,
+    pub pending_swap_usdc_lend_usd: u64,
 
     pub bump: u8,
 }
@@ -512,6 +543,7 @@ pub mod lukash_protocol {
         let fee = mul_bps(amount, fee_bps)?;
 
         let state = &mut ctx.accounts.state;
+        let mut tokens_to_burn_real: u64 = 0;
 
         // Capa 0 (exención total) u otros fees nulos: no hay nada que distribuir.
         if fee == 0 {
@@ -571,6 +603,13 @@ pub mod lukash_protocol {
         state.usdc_res_usd = state.usdc_res_usd.checked_add(a_usdc_res).ok_or(LukashError::MathOverflow)?;
         state.usdc_lend_usd = state.usdc_lend_usd.checked_add(a_usdc_lend).ok_or(LukashError::MathOverflow)?;
 
+        // Acumular montos pendientes de swap (Capa 2 Fase C: execute_vault_swaps los convierte)
+        state.pending_swap_cbtc_usd = state.pending_swap_cbtc_usd.checked_add(a_cbtc).ok_or(LukashError::MathOverflow)?;
+        state.pending_swap_sol_usd = state.pending_swap_sol_usd.checked_add(a_sol).ok_or(LukashError::MathOverflow)?;
+        state.pending_swap_lst_usd = state.pending_swap_lst_usd.checked_add(a_lst).ok_or(LukashError::MathOverflow)?;
+        state.pending_swap_usdc_res_usd = state.pending_swap_usdc_res_usd.checked_add(a_usdc_res).ok_or(LukashError::MathOverflow)?;
+        state.pending_swap_usdc_lend_usd = state.pending_swap_usdc_lend_usd.checked_add(a_usdc_lend).ok_or(LukashError::MathOverflow)?;
+
         // --- LP / Quema (35%) ---
         // Day rollover (07-b): reset diario al cruzar medianoche UTC
         let day_now = (now_ts / DAY_SECONDS) * DAY_SECONDS;
@@ -594,6 +633,7 @@ pub mod lukash_protocol {
             if effective_burn > 0 && state.luka_price > 0 {
                 let tokens = usd_to_tokens(effective_burn, state.luka_price)?;
                 state.current_supply = state.current_supply.saturating_sub(tokens);
+                tokens_to_burn_real = tokens;
             }
             if deferred_by_cap > 0 {
                 state.deferred_burn_queue = state.deferred_burn_queue
@@ -616,6 +656,7 @@ pub mod lukash_protocol {
             if effective_burn > 0 && state.luka_price > 0 {
                 let tokens = usd_to_tokens(effective_burn, state.luka_price)?;
                 state.current_supply = state.current_supply.saturating_sub(tokens);
+                tokens_to_burn_real = tokens;
             }
             let total_deferred = deferred_by_throttle
                 .checked_add(deferred_by_cap).ok_or(LukashError::MathOverflow)?;
@@ -641,6 +682,31 @@ pub mod lukash_protocol {
             amount, fee, to_vault, to_lp_burn, to_om, to_staking, motor,
             k_usd: state.vault_core_usd,
         });
+
+        // Capa 2: quema real de tokens vía CPI al Token Program
+        if tokens_to_burn_real > 0 {
+            let available = ctx.accounts.burn_vault.amount;
+            let actual = tokens_to_burn_real.min(available);
+            if actual > 0 {
+                let bump = ctx.accounts.state.bump;
+                let seeds: &[&[u8]] = &[STATE_SEED, &[bump]];
+                let signer_seeds = &[seeds];
+                token::burn(
+                    CpiContext::new_with_signer(
+                        ctx.accounts.token_program.to_account_info(),
+                        Burn {
+                            mint: ctx.accounts.luka_mint.to_account_info(),
+                            from: ctx.accounts.burn_vault.to_account_info(),
+                            authority: ctx.accounts.state.to_account_info(),
+                        },
+                        signer_seeds,
+                    ),
+                    actual,
+                )?;
+                emit!(RealBurnExecuted { tokens_requested: tokens_to_burn_real, tokens_burned: actual });
+            }
+        }
+
         Ok(())
     }
 
@@ -659,14 +725,12 @@ pub mod lukash_protocol {
         Ok(())
     }
 
-    /// Actualiza la valoración de mercado del Vault KASH Core (07-a).
-    /// Capa 1 (devnet): authority alimenta precios y balances manualmente.
-    /// Capa 2 (mainnet): se reemplaza por lectura directa de feeds Pyth/Switchboard
-    /// + token account balances → instrucción permissionless.
+    /// Actualiza la valoración de mercado del Vault KASH Core (07-a, Capa 2).
+    /// BTC/USD y SOL/USD se leen directamente de feeds Pyth (permissionless).
+    /// LST y LUKA no tienen feed Pyth propio → se pasan como parámetros.
+    /// Balances de vault se pasan como parámetros (Capa 2 parcial: los vault ATAs se crean en Fase D).
     pub fn refresh_vault_valuation(
         ctx: Context<RefreshVaultValuation>,
-        btc_price_usd: u64,
-        sol_price_usd: u64,
         lst_price_usd: u64,
         luka_price_usd: u64,
         cbtc_amount: u64,
@@ -675,12 +739,24 @@ pub mod lukash_protocol {
         usdc_res_amount: u64,
         usdc_lend_amount: u64,
     ) -> Result<()> {
-        require!(btc_price_usd > 0 && sol_price_usd > 0, LukashError::InvalidOracleValue);
         require!(luka_price_usd > 0, LukashError::InvalidOracleValue);
+
+        let now = Clock::get()?.unix_timestamp;
+
+        let btc_feed_data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
+        let (btc_raw, btc_expo) = parse_pyth_price(&btc_feed_data, now)?;
+        let btc_price_usd = pyth_price_to_usd6(btc_raw, btc_expo)?;
+        drop(btc_feed_data);
+
+        let sol_feed_data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
+        let (sol_raw, sol_expo) = parse_pyth_price(&sol_feed_data, now)?;
+        let sol_price_usd = pyth_price_to_usd6(sol_raw, sol_expo)?;
+        drop(sol_feed_data);
+
+        require!(btc_price_usd > 0 && sol_price_usd > 0, LukashError::InvalidOracleValue);
 
         let config = &ctx.accounts.config;
         let state = &mut ctx.accounts.state;
-        let now = Clock::get()?.unix_timestamp;
 
         state.cbtc_amount = cbtc_amount;
         state.sol_amount = sol_amount;
@@ -738,6 +814,8 @@ pub mod lukash_protocol {
             usdc_total,
             k_min_reached_since_ts: state.k_min_reached_since_ts,
             ts: now,
+            btc_price_usd,
+            sol_price_usd,
         });
         Ok(())
     }
@@ -1129,6 +1207,7 @@ pub mod lukash_protocol {
         require!(!ctx.accounts.config.paused, LukashError::ProtocolPaused);
         let state = &mut ctx.accounts.state;
         let now = Clock::get()?.unix_timestamp;
+        let mut deferred_tokens_to_burn: u64 = 0;
 
         // Circuit Breaker guard (07-c)
         require!(now >= state.cb_active_until_ts, LukashError::CircuitBreakerActive);
@@ -1204,6 +1283,7 @@ pub mod lukash_protocol {
         if drain > 0 && state.luka_price > 0 {
             let drain_tokens = usd_to_tokens(drain, state.luka_price)?;
             state.current_supply = state.current_supply.saturating_sub(drain_tokens);
+            deferred_tokens_to_burn = drain_tokens;
         }
         state.last_queue_exec_ts = now;
 
@@ -1213,12 +1293,117 @@ pub mod lukash_protocol {
             ts: now,
             mode: state.throttle_mode,
         });
+
+        // Capa 2: quema real de la cola diferida
+        if deferred_tokens_to_burn > 0 {
+            let available = ctx.accounts.burn_vault.amount;
+            let actual = deferred_tokens_to_burn.min(available);
+            if actual > 0 {
+                let bump = ctx.accounts.state.bump;
+                let seeds: &[&[u8]] = &[STATE_SEED, &[bump]];
+                let signer_seeds = &[seeds];
+                token::burn(
+                    CpiContext::new_with_signer(
+                        ctx.accounts.token_program.to_account_info(),
+                        Burn {
+                            mint: ctx.accounts.luka_mint.to_account_info(),
+                            from: ctx.accounts.burn_vault.to_account_info(),
+                            authority: ctx.accounts.state.to_account_info(),
+                        },
+                        signer_seeds,
+                    ),
+                    actual,
+                )?;
+                emit!(RealBurnExecuted { tokens_requested: deferred_tokens_to_burn, tokens_burned: actual });
+            }
+        }
+
         Ok(())
     }
 
     /// Cierra las PDAs del protocolo y devuelve rent a la authority.
     /// Solo para devnet (migraciones de versión). En mainnet, el programa sería inmutable.
-    pub fn close_protocol(_ctx: Context<CloseProtocol>) -> Result<()> {
+    /// v9-migration: state es UncheckedAccount para cerrar PDAs de versiones anteriores con layout distinto.
+    pub fn close_protocol(ctx: Context<CloseProtocol>) -> Result<()> {
+        let state_info = ctx.accounts.state.to_account_info();
+        let authority_info = ctx.accounts.authority.to_account_info();
+        **authority_info.try_borrow_mut_lamports()? += **state_info.try_borrow_lamports()?;
+        **state_info.try_borrow_mut_lamports()? = 0;
+        state_info.assign(&anchor_lang::solana_program::system_program::ID);
+        state_info.realloc(0, false)?;
+        Ok(())
+    }
+
+    /// Crea el burn_vault (PDA token account para $LUKA). Authority = state PDA.
+    /// Llamar después de initialize y después de crear el mint de $LUKA.
+    pub fn initialize_burn_vault(_ctx: Context<InitializeBurnVault>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Ejecuta los swaps pendientes del Vault a precios de oráculo Pyth (Capa 2 Fase C).
+    /// Convierte los USD pendientes (acumulados por process_fee) a balances nativos de activos.
+    /// Devnet (mock): accounting puro a precio de oráculo. Mainnet: CPI a Jupiter.
+    /// Permissionless — el keeper (o cualquiera) puede llamarla.
+    pub fn execute_vault_swaps(ctx: Context<ExecuteVaultSwaps>) -> Result<()> {
+        let state = &mut ctx.accounts.state;
+        let now = Clock::get()?.unix_timestamp;
+
+        let total_pending = state.pending_swap_cbtc_usd
+            .checked_add(state.pending_swap_sol_usd).ok_or(LukashError::MathOverflow)?
+            .checked_add(state.pending_swap_lst_usd).ok_or(LukashError::MathOverflow)?
+            .checked_add(state.pending_swap_usdc_res_usd).ok_or(LukashError::MathOverflow)?
+            .checked_add(state.pending_swap_usdc_lend_usd).ok_or(LukashError::MathOverflow)?;
+        require!(total_pending > 0, LukashError::NoPendingSwaps);
+
+        let btc_feed_data = ctx.accounts.pyth_btc_feed.try_borrow_data()?;
+        let (btc_raw, btc_expo) = parse_pyth_price(&btc_feed_data, now)?;
+        let btc_price_usd = pyth_price_to_usd6(btc_raw, btc_expo)?;
+        drop(btc_feed_data);
+
+        let sol_feed_data = ctx.accounts.pyth_sol_feed.try_borrow_data()?;
+        let (sol_raw, sol_expo) = parse_pyth_price(&sol_feed_data, now)?;
+        let sol_price_usd = pyth_price_to_usd6(sol_raw, sol_expo)?;
+        drop(sol_feed_data);
+
+        require!(btc_price_usd > 0 && sol_price_usd > 0, LukashError::InvalidOracleValue);
+
+        // cBTC: pending_usd → satoshis = pending_usd * CBTC_SCALE / btc_price_usd
+        let cbtc_native = usd_to_native(state.pending_swap_cbtc_usd, btc_price_usd, CBTC_SCALE)?;
+        state.cbtc_amount = state.cbtc_amount.checked_add(cbtc_native).ok_or(LukashError::MathOverflow)?;
+
+        // SOL: pending_usd → lamports = pending_usd * SOL_SCALE / sol_price_usd
+        let sol_native = usd_to_native(state.pending_swap_sol_usd, sol_price_usd, SOL_SCALE)?;
+        state.sol_amount = state.sol_amount.checked_add(sol_native).ok_or(LukashError::MathOverflow)?;
+
+        // LST: usa precio SOL como proxy (LST ≈ SOL con exchange rate ~1:1 en devnet)
+        let lst_native = usd_to_native(state.pending_swap_lst_usd, sol_price_usd, LST_SCALE)?;
+        state.lst_amount = state.lst_amount.checked_add(lst_native).ok_or(LukashError::MathOverflow)?;
+
+        // USDC: 1:1 con USD (ambos 6 decimales), no requiere swap
+        state.usdc_res_amount = state.usdc_res_amount
+            .checked_add(state.pending_swap_usdc_res_usd).ok_or(LukashError::MathOverflow)?;
+        state.usdc_lend_amount = state.usdc_lend_amount
+            .checked_add(state.pending_swap_usdc_lend_usd).ok_or(LukashError::MathOverflow)?;
+
+        emit!(VaultSwapsExecuted {
+            cbtc_native,
+            sol_native,
+            lst_native,
+            usdc_res: state.pending_swap_usdc_res_usd,
+            usdc_lend: state.pending_swap_usdc_lend_usd,
+            btc_price_usd,
+            sol_price_usd,
+            total_usd_swapped: total_pending,
+            ts: now,
+        });
+
+        // Limpiar pendientes
+        state.pending_swap_cbtc_usd = 0;
+        state.pending_swap_sol_usd = 0;
+        state.pending_swap_lst_usd = 0;
+        state.pending_swap_usdc_res_usd = 0;
+        state.pending_swap_usdc_lend_usd = 0;
+
         Ok(())
     }
 }
@@ -1295,6 +1480,63 @@ fn compute_asset_value(amount: u64, price_usd: u64, scale: u128) -> Result<u64> 
         .checked_mul(price_usd as u128).ok_or(LukashError::MathOverflow)?
         .checked_div(scale).ok_or(LukashError::MathOverflow)?;
     u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
+}
+
+/// Deserializa un feed Pyth V2 y devuelve (price_raw: i64, exponent: i32).
+/// Valida: magic number, tamaño mínimo, status=Trading, staleness.
+fn parse_pyth_price(feed_data: &[u8], now: i64) -> Result<(i64, i32)> {
+    require!(feed_data.len() >= PYTH_MIN_DATA_LEN, LukashError::InvalidOracleValue);
+
+    let magic = u32::from_le_bytes(
+        feed_data[PYTH_MAGIC_OFFSET..PYTH_MAGIC_OFFSET + 4].try_into().unwrap(),
+    );
+    require!(magic == PYTH_MAGIC, LukashError::InvalidOracleValue);
+
+    let status = u32::from_le_bytes(
+        feed_data[PYTH_AGG_STATUS_OFFSET..PYTH_AGG_STATUS_OFFSET + 4].try_into().unwrap(),
+    );
+    require!(status == PYTH_STATUS_TRADING, LukashError::OracleFeedStale);
+
+    let timestamp = i64::from_le_bytes(
+        feed_data[PYTH_TIMESTAMP_OFFSET..PYTH_TIMESTAMP_OFFSET + 8].try_into().unwrap(),
+    );
+    require!(now - timestamp <= ORACLE_FEED_MAX_STALENESS, LukashError::OracleFeedStale);
+
+    let price = i64::from_le_bytes(
+        feed_data[PYTH_AGG_PRICE_OFFSET..PYTH_AGG_PRICE_OFFSET + 8].try_into().unwrap(),
+    );
+    require!(price > 0, LukashError::InvalidOracleValue);
+
+    let expo = i32::from_le_bytes(
+        feed_data[PYTH_EXPO_OFFSET..PYTH_EXPO_OFFSET + 4].try_into().unwrap(),
+    );
+
+    Ok((price, expo))
+}
+
+/// Convierte USD 6-dec a unidades nativas de un activo dado su precio y escala.
+/// Inversa de compute_asset_value: native = usd * scale / price.
+fn usd_to_native(usd_amount: u64, price_usd: u64, scale: u128) -> Result<u64> {
+    if usd_amount == 0 || price_usd == 0 {
+        return Ok(0);
+    }
+    let r = (usd_amount as u128)
+        .checked_mul(scale).ok_or(LukashError::MathOverflow)?
+        .checked_div(price_usd as u128).ok_or(LukashError::MathOverflow)?;
+    u64::try_from(r).map_err(|_| LukashError::MathOverflow.into())
+}
+
+/// Convierte un precio Pyth (raw × 10^expo) a USD con 6 decimales.
+fn pyth_price_to_usd6(price_raw: i64, expo: i32) -> Result<u64> {
+    let price = price_raw as u64;
+    let adjustment = 6i32 + expo;
+    if adjustment >= 0 {
+        let scale = 10u64.checked_pow(adjustment as u32).ok_or(LukashError::MathOverflow)?;
+        price.checked_mul(scale).ok_or(LukashError::MathOverflow.into())
+    } else {
+        let scale = 10u64.checked_pow((-adjustment) as u32).ok_or(LukashError::MathOverflow)?;
+        Ok(price / scale)
+    }
 }
 
 /// Verifica que las 3 firmas del Tridente estén presentes en la transacción (07-c).
@@ -1476,6 +1718,12 @@ pub struct ProcessFee<'info> {
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
     pub caller: Signer<'info>,
+    // Capa 2: quema real
+    #[account(mut, seeds = [BURN_VAULT_SEED], bump, token::mint = luka_mint, token::authority = state)]
+    pub burn_vault: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub luka_mint: Account<'info, Mint>,
+    pub token_program: Program<'info, Token>,
 }
 
 #[derive(Accounts)]
@@ -1510,6 +1758,12 @@ pub struct ExecuteDeferredBurn<'info> {
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
     pub caller: Signer<'info>,
+    // Capa 2: quema real
+    #[account(mut, seeds = [BURN_VAULT_SEED], bump, token::mint = luka_mint, token::authority = state)]
+    pub burn_vault: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub luka_mint: Account<'info, Mint>,
+    pub token_program: Program<'info, Token>,
 }
 
 /// Operaciones que requieren Tridente 3-de-3 (los 3 signers van en remaining_accounts).
@@ -1522,15 +1776,32 @@ pub struct TridenteAction<'info> {
     pub caller: Signer<'info>,
 }
 
-/// Capa 1: authority alimenta precios y balances manualmente.
-/// Capa 2: se reemplaza por lectura directa de Pyth/Switchboard + token accounts → permissionless.
+/// Capa 2: permissionless. BTC/SOL vía Pyth feeds; LST/LUKA como parámetros.
 #[derive(Accounts)]
 pub struct RefreshVaultValuation<'info> {
-    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
     pub config: Account<'info, ProtocolConfig>,
     #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
     pub state: Account<'info, ProtocolState>,
-    pub authority: Signer<'info>,
+    /// CHECK: Pyth BTC/USD price feed — validado en instrucción (magic, staleness, status)
+    pub pyth_btc_feed: AccountInfo<'info>,
+    /// CHECK: Pyth SOL/USD price feed — validado en instrucción (magic, staleness, status)
+    pub pyth_sol_feed: AccountInfo<'info>,
+    pub caller: Signer<'info>,
+}
+
+/// Ejecuta swaps pendientes del Vault a precios de oráculo Pyth (Capa 2 Fase C).
+#[derive(Accounts)]
+pub struct ExecuteVaultSwaps<'info> {
+    #[account(seeds = [CONFIG_SEED], bump = config.bump)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(mut, seeds = [STATE_SEED], bump = state.bump)]
+    pub state: Account<'info, ProtocolState>,
+    /// CHECK: Pyth BTC/USD price feed — validado en instrucción
+    pub pyth_btc_feed: AccountInfo<'info>,
+    /// CHECK: Pyth SOL/USD price feed — validado en instrucción
+    pub pyth_sol_feed: AccountInfo<'info>,
+    pub caller: Signer<'info>,
 }
 
 /// Transfer Hook Capa 1: authority alimenta parámetros de contexto manualmente.
@@ -1563,15 +1834,40 @@ pub struct RegisterMM<'info> {
     pub system_program: Program<'info, System>,
 }
 
+/// Crea el burn_vault PDA token account. Llamar una vez post-initialize.
+#[derive(Accounts)]
+pub struct InitializeBurnVault<'info> {
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    #[account(seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
+    pub config: Account<'info, ProtocolConfig>,
+    #[account(seeds = [STATE_SEED], bump = state.bump)]
+    pub state: Account<'info, ProtocolState>,
+    #[account(
+        init,
+        payer = authority,
+        token::mint = luka_mint,
+        token::authority = state,
+        seeds = [BURN_VAULT_SEED],
+        bump,
+    )]
+    pub burn_vault: Account<'info, TokenAccount>,
+    pub luka_mint: Account<'info, Mint>,
+    pub token_program: Program<'info, Token>,
+    pub system_program: Program<'info, System>,
+}
+
 /// Cierra PDAs del protocolo (devnet migration). Authority-only.
+/// State es UncheckedAccount para soportar migración entre versiones con layout distinto.
 #[derive(Accounts)]
 pub struct CloseProtocol<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(mut, close = authority, seeds = [CONFIG_SEED], bump = config.bump, has_one = authority @ LukashError::Unauthorized)]
     pub config: Account<'info, ProtocolConfig>,
-    #[account(mut, close = authority, seeds = [STATE_SEED], bump = state.bump)]
-    pub state: Account<'info, ProtocolState>,
+    /// CHECK: Legacy state PDA — puede tener layout de versión anterior. Validado por seeds.
+    #[account(mut, seeds = [STATE_SEED], bump)]
+    pub state: UncheckedAccount<'info>,
 }
 
 /// Revocación de Market Maker — cierra PDA y devuelve rent (Tridente 3-de-3 via remaining_accounts).
@@ -1622,6 +1918,8 @@ pub struct VaultValuationRefreshed {
     pub usdc_total: u64,
     pub k_min_reached_since_ts: i64,
     pub ts: i64,
+    pub btc_price_usd: u64,
+    pub sol_price_usd: u64,
 }
 
 #[event]
@@ -1661,6 +1959,27 @@ pub struct AdminChangeQueued {
 #[event]
 pub struct AdminChangeExecuted {
     pub kind: u8,
+}
+
+// Sprint 5B Capa 2: quema real
+#[event]
+pub struct RealBurnExecuted {
+    pub tokens_requested: u64,
+    pub tokens_burned: u64,
+}
+
+// Sprint 5B Capa 2: swaps a precio de oráculo
+#[event]
+pub struct VaultSwapsExecuted {
+    pub cbtc_native: u64,
+    pub sol_native: u64,
+    pub lst_native: u64,
+    pub usdc_res: u64,
+    pub usdc_lend: u64,
+    pub btc_price_usd: u64,
+    pub sol_price_usd: u64,
+    pub total_usd_swapped: u64,
+    pub ts: i64,
 }
 
 // 07-c: Tridente + Circuit Breaker + Seguro
