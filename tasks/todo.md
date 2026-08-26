@@ -15,7 +15,8 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
 0. [x] **★ AUDITORÍA PROFUNDA DE LOS MOTORES por SIMULACIÓN FIEL AL CONTRATO** (sesión 5): suite `simulations/` (engine=réplica de lib.rs + capa económica prima/Markov/vesting). SIM 0 invariantes OK · SIM 1 MC (espiral CONSERV 44%/BASE 0%/AGRESIVO 0% → tesis lanzamiento agresivo confirmada) · SIM 2 sensibilidad (volumen driver #1) · SIM 3 estrés (resiliente salvo Motor A −70% perm) · SIM 4 throttle irrelevante al Vault. Reporte `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` + Artifact `19a8160e`.
-   - [ ] Pendiente: re-correr herramientas estáticas (Sec3/Trident/clippy) sobre `lib.rs` — BLOQUEADO local (sin toolchain Solana); hacer en Playground/CI.
+   - [x] **Herramientas estáticas DESBLOQUEADAS** (sesión 14, 2026-08-26): GitHub Actions CI con clippy (lints DeFi: arithmetic_side_effects, unwrap_used, expect_used) + Soteria (25+ vulns Solana) + anchor build + anchor test. Sec3 X-Ray descartado (requiere cuenta). Auditoría manual de seguridad: 3 CRITICAL + 2 HIGH + 3 MEDIUM + 5 LOW + 12 patrones positivos → reporte `audits/SECURITY_AUDIT_LIB_RS_V9_1.md`.
+   - [x] **Security hardening v10** (sesión 14): 7 fixes aplicados, Build + Deploy ✅ en devnet. Fixes: has_one=authority en process_fee/refresh_vault_valuation/execute_vault_swaps (CRITICAL×3), Pyth owner validation via pyth_oracle::ID (CRITICAL), DEVNET_MODE flag para fallbacks (HIGH), confidence interval check conf/price<2% (MEDIUM), safe u64::try_from en update_market_regime (MEDIUM).
    - [x] **Specs Milestone 2 en `specs/07-milestone-2/`** (2026-08-21, sesión 5): 07-INDICE + 6 specs (07-a a 07-f). Base: ADR-015.
    - [x] **07-b ratificada ✅** (cap quema 1%/día)
    - [x] **07-d ratificada ✅** (drenaje siempre activo 25/10/5/2 + hard-stop ENZ, ADR-016)

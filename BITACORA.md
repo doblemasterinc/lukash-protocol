@@ -287,6 +287,20 @@
 - **Nota técnica:** `anchor.utils.token.TOKEN_PROGRAM_ID` no funciona en Playground sandbox (error "'location' is not allowed"); usar PublicKey explícita del Token Program.
 - **Próxima sesión:** (1) herramientas estáticas (Sec3/Trident/clippy) sobre lib.rs en Playground/CI, (2) landing → producción (Vercel + waitlist), (3) pitch deck / litepaper para Colosseum/grants, (4) bloqueantes pre-TGE T1-T6.
 
+## 2026-08-26 (sesión 14) — Security hardening v10 + CI pipeline
+
+- **Auditoría manual de seguridad de lib.rs v9.1** (~2090 líneas, 10 categorías DeFi): 3 CRITICAL + 2 HIGH + 3 MEDIUM + 5 LOW + 12 patrones positivos. Reporte completo en `audits/SECURITY_AUDIT_LIB_RS_V9_1.md`. Lógica económica correcta; los CRITICAL eran todos del patrón Capa 1 trusted-authority (funciones permissionless que deberían estar restringidas).
+- **GitHub Actions CI** configurado (`.github/workflows/ci.yml`): 4 jobs paralelos — clippy (lints DeFi: arithmetic_side_effects, unwrap_used, expect_used), Soteria (25+ vulns Solana), anchor build, anchor test. Con caching de Cargo/Solana/Anchor. Sec3 X-Ray descartado (requiere cuenta paga).
+- **7 fixes de seguridad aplicados → lib.rs v10:**
+  - CRITICAL×3: `has_one = authority` en ProcessFee, RefreshVaultValuation, ExecuteVaultSwaps (`caller` → `authority`).
+  - CRITICAL: validación de owner de feeds Pyth (`#[account(owner = pyth_oracle::ID)]` + módulo `pyth_oracle` con `declare_id!` para Pyth V2 devnet).
+  - HIGH: constante `DEVNET_MODE` controla fallbacks de precio — mainnet revierte con error en vez de usar BTC=$65K/SOL=$150 hardcoded.
+  - MEDIUM: verificación de confidence interval Pyth (`conf/price < ORACLE_DEVIATION_BPS_MAX` = 2%) en `parse_pyth_price`.
+  - MEDIUM: `u64::try_from(ratio_bps)` en `update_market_regime` previene truncamiento silencioso u128→u64.
+- **Build ✅ + Deploy ✅ en devnet** (Playground, mismo program ID `AmRWTQ...`).
+- **Hallazgos LOW pendientes** (deuda técnica aceptable para devnet): BURN_ACCEL_BPS 125% capped a 100% (#9), saturating_sub en supply (#10), staleness 86400s (#11), TridenteAction sin has_one (#12), close_protocol UncheckedAccount (#13). Se corrigen en Sprint final pre-mainnet.
+- **Próxima sesión:** (1) verificar instrucciones parcheadas en devnet (process_fee con authority, Pyth owner check), (2) landing → producción (Vercel + waitlist), (3) pitch deck / litepaper para Colosseum/grants, (4) bloqueantes pre-TGE T1-T6.
+
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.
