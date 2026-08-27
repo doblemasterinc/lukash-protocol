@@ -18,7 +18,7 @@ que las instituciones grandes ya usan. "Las finanzas del futuro, disponibles hoy
 ## Piezas clave
 - **Vault KASH Core** — reserva 100% Solana-nativa. K_min=$25M activa Motor B2.
 - **LUKAI** — orquestador de estados on-chain (v1.0) + IA conversacional (v2.0).
-- **Aura** — reputación financiera on-chain, niveles Cub→Emperor.
+- **Aura** — reputación financiera on-chain, 7 niveles Cachorro→Titán.
 - **Manadas** — natilleras/tandas del siglo XXI: ahorro comunitario con smart contracts.
 - **Jungle Arena** — gaming financiero. Misiones de Caza → ganar Aura. *(Diseño pendiente.)*
 - **cNFT** — instrumentos financieros tokenizados (3 tipos).

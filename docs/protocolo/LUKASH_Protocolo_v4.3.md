@@ -15,14 +15,14 @@
 | --- | --- | --- | --- |
 | C1 | **Composición del Vault** | Sumaba 105% (incluía oráculos 5%) | **100%** — se eliminan PYTH/JTO/JUP como reserva (pasan a infraestructura O&M). cBTC 35 / SOL 15 / LST 20 / USDC reserva 25 / lending 5 |
 | C2 | **Liberación Vault Sociedad** | Atada a $30M (TVL) *y* a Etapa 3 ($50M) — contradictorio | **Un solo hito KASH Lock**: KASH Core $30M o 12 meses. Fees líquidos desde mes 13 (Etapa 2B). Etapa 3 ya no la "reinicia" |
-| C3 | **Reputación** | Sistema de reputación anterior, 4 niveles | **Aura**, 5 niveles (Cachorro→Rastreador→Cazador→Glow Maduro→Glow Sabio) |
+| C3 | **Reputación** | Sistema de reputación anterior, 4 niveles | **Aura**, 7 niveles (Cachorro→Rastreador→Cazador→Alfa→Emperador→Shamán→Titán) |
 | C4 | **Nomenclatura Precio KASH** | "P_th" y "P_KASH" mezclados | **P_KASH** unificado |
 | C5 | **LUKAI** | "v4.1" + releases v1.0/v2.0 (confuso) | **LUKAI** con releases **v1.0** (orquestador) y **v2.0** (IA). Sin "v4.1" |
 | C6 | **cBTC en capas del Vault** | Listado en Capa 2 y Capa 3 a la vez | Solo en **Capa 3 (Reserva Profunda)**. Capa 2 = SOL+LST+USDC lending |
 | C7 | **Los dos 70/30** | Ambiguos | **Split de Fee** (70% Core / 30% Sociedad) vs **Split de Yield** (70% reinversión / 30% R_op) |
 | C8 | **Ticker** | "$Lukas"/"$LUKA" mezclados en material viejo | **$LUKA** canónico |
 | C9 | **Cifras Monte Carlo** | Atribuidas al modelo v4.2 | Etiquetadas como **modelo conservador v3.1** — reconciliación pendiente (ver `audits/AUDITORIA_COMPLEMENTARIA.md`) |
-| C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Glow). Exit Fee se mantiene en 5% para Génesis. |
+| C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Titán ≥25,000). Exit Fee se mantiene en 5% para Génesis. |
 | C11 | **Seguro Anti-Exploit** | v4.2 lo redujo a *"Cobertura hasta 5%. Renovación anual obligatoria"* — perdió las 3 condiciones de v1.0/v4.1 | **Restaurado (ADR-015)**: 5% Vault · **máx 1 evento cada 12 meses** · **activo desde Etapa 2B** (opción B: condición on-chain, no calendario ambiguo "año 1") · DAO redefine en Etapa 4. Auditor(a) externa **desacoplado** — Halborn/OtterSec eran arrastres de v2.1, no decisión formal; a cotizar pre-TGE. Tridente 3-de-3 ratificado; **firmantes concretos pendientes**. |
 
 ---
@@ -268,17 +268,19 @@ actualización de Aura al transferir); (2) frecuencia de distribución del Modo 
 **Aura** ("el rugido de la Manada") reemplaza al sistema de reputación anterior. On-chain, no transferible, acumulativa.
 Decae 2%/semana tras 90d de inactividad. El nivel usa el Aura máximo histórico. Calibrada por LUKAI.
 
-### 9.1 Niveles (5, arco narrativo)
+### 9.1 Niveles (7, arco narrativo — ADR-005 actualizado)
 
 | Nivel | Aura | Beneficios |
 | --- | --- | --- |
 | **Cachorro** | 0–499 | Acceso básico Motor D Capa 2, Manadas estándar, cNFT Nativo |
-| **Rastreador** | 500–1,999 | **cNFT Tótem Universal → DeFi Capa 1.** Voto Motor D (DAO). Acceso prioritario a nuevos cNFT |
-| **Cazador** | 2,000–4,999 | LP LUKASH 90d +12%. Ranking de Manadas. Acceso anticipado Capas 3A/3B. Liderar Manada |
-| **Alfa** | 5,000–9,999 | Gobernanza avanzada. LP Fundador 365d +20%. Override Anti-Whale. Multiplicador Aura ×1.15 |
-| **Glow** | 10,000+ | Gobernanza premium. RWA/T-bills tokenizados (Fase 3). Multiplicador ×1.30. Skin legendario |
+| **Rastreador** | 500–1,499 | **cNFT Tótem Universal → DeFi Capa 1.** Voto Motor D (DAO). Acceso prioritario a nuevos cNFT |
+| **Cazador** | 1,500–2,999 | LP LUKASH 90d +12%. Ranking de Manadas. Acceso anticipado Capas 3A/3B. Liderar Manada |
+| **Alfa** | 3,000–4,999 | Gobernanza avanzada. LP Fundador 365d +20%. Multiplicador Aura ×1.10 |
+| **Emperador** | 5,000–9,999 | Override Anti-Whale. Multiplicador Aura ×1.15. Acceso anticipado a instrumentos premium |
+| **Shamán** | 10,000–24,999 | Gobernanza premium. RWA/T-bills tokenizados (Fase 3). Multiplicador ×1.25. Skin legendario |
+| **Titán** | 25,000+ | Multiplicador ×1.30. Exención total Anti-Whale y Exit Fee. Puede fundar Dinastías. Máximo estatus |
 
-Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle de calibración y misiones:
+Umbral gate cNFT Tótem Universal (≥500) preservado de v4.2. Detalle de calibración y misiones:
 `specs/01-aura-jungle-arena.md`.
 
 ---
@@ -303,7 +305,7 @@ Umbrales 500/2,000/5,000 preservados de v4.2 (compatibilidad de gates). Detalle 
 - Staking activo
 - LP Comprometido en lock activo · **LP Fundador 365d**
 - **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado)
-- Nivel **Glow** de Aura (Aura ≥10,000, el pináculo — antes "Emperor"; ADR-005/012)
+- Nivel **Titán** de Aura (Aura ≥25,000, el pináculo; ADR-005/012)
 - **KOLs NO tienen exención**: el mecanismo que los alinea es distinto — reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear. El Anti-Whale sí les aplica si intentan vender por encima del umbral.
 
 **Mint del token — Token-2022 con Transfer Hook (ADR-015):** el token de mainnet será Token-2022 (no SPL clásico) para que Anti-Whale y Exit Fee se apliquen **en cada transferencia on-chain**, imposible de evadir. El mint devnet actual (SPL clásico) se mantiene solo para pruebas Milestone 1.
@@ -353,7 +355,7 @@ Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle c
 | KASH Exit Fee | precio<0.7×EMA30 AND venta>0.3% supply/h → 5/3/1% | 100% al Vault Core |
 | Anti-Whale | **Solo ventas** · **% del pool** (no supply): 1-2%→3% · 2-5%→6% · >5%→10% (sobre excedente) | 100% al Vault Core. Métrica por liquidez |
 | Timelock gobernanza | 48h | Parámetros críticos |
-| Aura niveles | Cachorro 0-499 · Rastreador 500-1999 · Cazador 2000-4999 · Alfa 5000-9999 · Glow 10000+ | Gate cNFT Tótem Universal: ≥500 |
+| Aura niveles | Cachorro 0-499 · Rastreador 500-1499 · Cazador 1500-2999 · Alfa 3000-4999 · Emperador 5000-9999 · Shamán 10000-24999 · Titán 25000+ | Gate cNFT Tótem Universal: ≥500 |
 | Supply objetivo / ENZ | 3,300M | PDA suspende quema |
 
 ---

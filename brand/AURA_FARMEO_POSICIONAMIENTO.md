@@ -12,7 +12,7 @@ nativo de la audiencia <45. No hay que educar sobre "qué es Aura" — ya lo sab
 ## El giro que aporta LUKASH
 - La calle: aura = social, intangible, te lo dan/quitan los demás.
 - LUKASH: aura = **tuya, medible, on-chain, no transferible, con consecuencias financieras reales**
-  (gate cNFT Tótem Universal ≥500, exenciones Anti-Whale nivel Glow, decay 2%/sem tras 90d).
+  (gate cNFT Tótem Universal ≥500, exenciones Anti-Whale nivel Titán ≥25,000, decay 2%/sem tras 90d).
 - Punchline candidato: **"tu aura, por fin, cuenta"**. Refuerza el eje "dueño de tu ascenso".
 - "Farmear aura" = describe literalmente el loop de las **Misiones de Caza** del Jungle Arena (spec 01).
 

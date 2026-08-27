@@ -21,7 +21,7 @@
 - **Estrategia (Concepto Objetivo de Socio):** foco radical — lanzar solo el átomo (token+Vault+dashboard), comunidad primero, fasear el resto. Rating honesto y verdades duras en `docs/discovery/CONCEPTO_OBJETIVO_SOCIO.md`.
 - **Reposicionamiento de marca (ADR-010):** fuera ideología ("pueblo", anti-banco); conservar el felino reencuadrado (ascenso, no colectivo); mezcla de 3 ejes; trilingüe ES/EN/PT; audiencia <45. `brand/POSICIONAMIENTO_NARRATIVA.md`.
 - **Lanzamiento faseado (ADR-009):** F0 comunidad → F1 solo cripto (sin distribución a holders) → F2 app → F3/F4 instrumentos. Postura regulatoria de-riesgada. `specs/03` + `specs/04` (plan 12 semanas).
-- **Niveles de Aura finales (ADR-005):** Cachorro → Rastreador → Cazador → Alfa → Glow.
+- **Niveles de Aura (ADR-005):** Cachorro → Rastreador → Cazador → Alfa → ~~Glow~~ *(actualizado a 7 niveles 2026-08-26: +Emperador+Shamán+Titán)*.
 - **Contratos Milestone 1:** scaffold Anchor completo en `contracts/` (programa lukash_protocol con lógica de fees, Vault, Throttle, B0/B2, Timelock, pausa + tests + README).
 - **✅ CONTRATOS COMPILAN** ("Build successful" en Solana Playground, confirmado por Sebastián). Lógica auditada contra Protocolo v4.3 (`contracts/AUDITORIA_LOGICA_MILESTONE1.md`) — núcleo correcto, sin bugs críticos. Se añadió `execute_deferred_burn` (drena la cola de quema ≤10%/semana) y recompiló OK. Milestone 1 CERRADO.
 - **Página Génesis** ([artifact] con arte real: logo, Reserva Sagrada, Camino del Rugido, Tótems, Jungle Arena) + prototipo app. Marca v2 sin ideología, trilingüe.
@@ -37,7 +37,7 @@
 
 ## 2026-08-20 (sesión 2) — Corrección Anti-Whale + cierre del protocolo
 - Aclaración del **KASH Exit Fee**: el "100% al Vault" es el DESTINO del fee (5/3/1%), NO una penalización del 100%. Se mantiene **5% para Génesis** (ADR-012).
-- **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); fix del nombre de exención → nivel **Glow**. Se implementa en el KASH Shield (Milestone 2).
+- **Anti-Whale corregido (C10 en Protocolo v4.3):** aplica solo a **ventas** (no compras); umbral por **% del pool de liquidez** (no del supply — que era brutal al inicio: 1% supply ≈ $10K al TGE); exención por nivel **Titán** (≥25,000). Se implementa en el KASH Shield (Milestone 2).
 
 ## 2026-08-20 (sesión 3) — Token $LUKA vivo en devnet + tokenomics de fundador
 - **🐆 HITO: Token $LUKA CREADO en devnet.** Mint `2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr` (SPL clásico, 6 dec, supply 10B), visible en el explorador. Mint authority = wallet Playground.
@@ -74,7 +74,7 @@
 
 ## 2026-08-21 (sesión 5, continuación) — ADR-015 + specs Milestone 2 (07-a a 07-f)
 - **Arqueología documental** (`audits/HISTORIAL_KASH_SHIELD.md`): rastreo v1.0 → v4.2 confirmó que Seguro Anti-Exploit original tenía 4 condiciones (5% + 1×/12m + activo tras año 1 + DAO año 5) que la v4.2 perdió/mutó. "Tridente" es de v1.0, "3-de-3" entra en v2.3. Halborn/OtterSec eran arrastres de v2.1 sin ADR formal. El "5%/día" **no existe en ninguna versión** — fue error mío arrastrado del informe.
-- **ADR-015 aprobado por Sebastián:** (1) restaurar Seguro Anti-Exploit v1.0/v4.1 con activación desde **Etapa 2B** (opción B, condición on-chain no calendario ambiguo); (2) Tridente 3-de-3 ratificado, firmantes pendientes; (3) sacar Halborn/OtterSec, auditor a cotizar vía subsidios (Solana/Colosseum/Areta/Superteam); (4) regla de higiene documental (contrastar v4.2 con v1.0/v4.1); (5) **Token-2022 con Transfer Hook aprobado** para mainnet; (6) exenciones canónicas ratificadas (swaps Motor D, staking, LP lock, LP Fundador 365d, MMs registrados en Multisig, nivel Glow Aura — KOLs NO tienen exención, se alinean por vesting); (7) auditor externa vía subsidios.
+- **ADR-015 aprobado por Sebastián:** (1) restaurar Seguro Anti-Exploit v1.0/v4.1 con activación desde **Etapa 2B** (opción B, condición on-chain no calendario ambiguo); (2) Tridente 3-de-3 ratificado, firmantes pendientes; (3) sacar Halborn/OtterSec, auditor a cotizar vía subsidios (Solana/Colosseum/Areta/Superteam); (4) regla de higiene documental (contrastar v4.2 con v1.0/v4.1); (5) **Token-2022 con Transfer Hook aprobado** para mainnet; (6) exenciones canónicas ratificadas (swaps Motor D, staking, LP lock, LP Fundador 365d, MMs registrados en Multisig, nivel Titán Aura ≥25,000 — KOLs NO tienen exención, se alinean por vesting); (7) auditor externa vía subsidios.
 - **Tridente inactivo por defecto** (patrón aprobado): el contrato construye toda la lógica 3-de-3 pero nace con `tridente_activated = false`. Instrucción one-way `activate_tridente(pk1, pk2, pk3)`. **Candado estructural**: contrato rechaza paso a Etapa 2 si Tridente no activado — imposible ir a mainnet por olvido.
 - **6 specs Milestone 2 en `specs/07-milestone-2/`** + índice:
   - `07-b` cap quema 1%/día con exceso a cola (reusa cola existente)
@@ -164,7 +164,7 @@
   - **Transfer Hook Capa 1 (`transfer_hook`):** instrucción authority-gated que simula la lógica del Token-2022 Transfer Hook en devnet. Parámetros de contexto (pool liquidity, Aura score, staking, LP lock, MM, internal CPI) alimentados manualmente por authority; en Capa 2 se leen de cuentas on-chain.
   - **Anti-Whale (ADR-012 C10):** umbral por % del pool de liquidez. Tier único: <1% sin fee, 1-2% 3%, 2-5% 6%, >5% 10% sobre excedente. Solo aplica a ventas al pool (no compras, no P2P). 100% de fees al Vault Core (I20).
   - **KASH Exit Fee (v4.3 §9):** activación dual (precio < 0.7×EMA30 AND sell_pressure > 0.3% supply/hora). Fees por etapa: 5% Génesis / 3% Etapa 2 / 1% Etapa 3+. Anti-Whale y Exit Fee se suman si ambos aplican.
-  - **Exenciones diferenciadas (nota spec §2.5):** Anti-Whale exime 6 condiciones (internal CPI, MM, LP Fundador, LP lock, staking, Aura≥Glow). Exit Fee exime 5 condiciones (mismas EXCEPTO staking — el Exit Fee no se exime por staking).
+  - **Exenciones diferenciadas (nota spec §2.5):** Anti-Whale exime 6 condiciones (internal CPI, MM, LP Fundador, LP lock, staking, Aura≥Titán). Exit Fee exime 5 condiciones (mismas EXCEPTO staking — el Exit Fee no se exime por staking).
   - **Presión de venta rodante:** `sell_pressure_1h_supply_bps` acumula bps de supply vendidos en ventana de 1h. Reset automático (I22).
   - **MMRegistry PDA** `["mm_registry", mm_pubkey]`: `register_market_maker` + `revoke_market_maker` (ambas requieren authority + Tridente 3-de-3). O(1) lookup.
   - **LP Fundador ATA** en ProtocolConfig (vía timelock kind=4).
@@ -300,6 +300,25 @@
 - **Build ✅ + Deploy ✅ en devnet** (Playground, mismo program ID `AmRWTQ...`).
 - **Hallazgos LOW pendientes** (deuda técnica aceptable para devnet): BURN_ACCEL_BPS 125% capped a 100% (#9), saturating_sub en supply (#10), staleness 86400s (#11), TridenteAction sin has_one (#12), close_protocol UncheckedAccount (#13). Se corrigen en Sprint final pre-mainnet.
 - **Próxima sesión:** (1) verificar instrucciones parcheadas en devnet (process_fee con authority, Pyth owner check), (2) landing → producción (Vercel + waitlist), (3) pitch deck / litepaper para Colosseum/grants, (4) bloqueantes pre-TGE T1-T6.
+
+## 2026-08-26 (sesión 16) — Aura 7 niveles + landing waitlist Supabase + estrategia Ruta 3
+
+- **Rebrand Aura de 4 a 7 niveles (ADR-005 actualizado):** Sebastián rechazó "Glow" y pidió nombres imponentes en español. Iteración colaborativa → 7 niveles: Cachorro→Rastreador→Cazador→Alfa→Emperador→Shamán→Titán. Progresión narrativa: habilidad física → liderazgo → trascendencia. Nombres son marca, no se traducen.
+  - **Contrato actualizado:** `AURA_GLOW_MIN` → `AURA_TITAN_MIN = 25,000` en `lib.rs`. Exención KASH Shield cambiada a nivel Titán.
+  - **~25 archivos actualizados** (ADRs 002/005/010/012/017, specs, brand, docs, audits, prototypes, landing, CLAUDE.md, learned-rules). Agente en background verificó: cero referencias a nombres viejos en archivos activos.
+- **Landing page rediseñada:**
+  - **Niveles de Aura: layout 4+3** centrado (grid 4 cols arriba + 3 centrados abajo). Colores progresivos: gris→verde→oro→ámbar→púrpura→dorado con text-shadow. Mobile responsive (2 cols + Titán centrado abajo).
+  - **Waitlist con Supabase:** función `sbInsert(email, lang)` via `fetch()` al REST API de Supabase. Placeholders `TU_SUPABASE_URL` y `TU_SUPABASE_ANON_KEY` pendientes de reemplazar.
+  - **`landing/supabase-setup.sql`** creado: tabla `waitlist` con RLS (anon insert sí, anon read no).
+  - **`landing/vercel.json`** creado: rewrites SPA + headers de seguridad + cache para logo.
+  - Todos los textos "Glow" → "Titán" en ES/EN/PT, incluyendo footer brand terms.
+- **Discusión estratégica — Ruta 3 (venta % Vault Sociedad a inversores):**
+  - **Insight clave:** fair launch y levantar capital NO son mutuamente excluyentes. Fair launch = distribución del TOKEN (≥40% público). Vender % del Vault Sociedad = operación de NEGOCIO (equity del fee stream). Son ejes independientes.
+  - **Ruta 3 compatible con fair launch:** el Vault Sociedad es ingreso del fundador por fees del protocolo (ADR-006: $30M o 12 meses trigger, líquido desde mes 13). Ceder un % a inversores es como vender equity en una empresa — no toca la distribución del token.
+  - **Decisión pendiente (ADR-018):** % a ceder, número de inversores, estructura legal, capital target, aplicabilidad del KASH Lock.
+  - La espiral 44% del escenario CONSERVADOR (SIM 1) se resuelve con VOLUMEN (driver #1, $1,287M swing), no con capital estático. Capital compra tiempo y credibilidad para generar volumen.
+- **Prototipos examinados:** `prototype/lukash-app-prototipo.html` (mockup UI de la app) y `prototype/lukash-genesis.html` (visualización Génesis). Sebastián tiene una idea para discutir en próxima sesión.
+- **Próxima sesión:** (1) configurar Supabase waitlist + reemplazar placeholders, (2) deploy landing en Vercel, (3) discutir idea de Sebastián sobre los prototipos, (4) continuar estrategia Ruta 3 → ADR-018.
 
 ## 2026-08-20 (sesión 3) — Endurecimiento de seguridad + rutas de auditoría baratas
 - **Contrato endurecido v2** (✅ Build successful confirmado): validaciones de inputs, freeze en pausa (switch_motor_b + execute_deferred_burn), protección de cambio de autoridad (no dirección cero), eventos de observabilidad (PauseSet/AdminChangeQueued/AdminChangeExecuted). Basado en sealevel-attacks/Neodyme/Helius. Ya cumplía checked math, has_one, seeds+bump, init anti-reinit, tipos tipados, Timelock.

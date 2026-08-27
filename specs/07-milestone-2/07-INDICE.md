@@ -34,7 +34,7 @@ lógica económica completa del protocolo, no una contabilidad simulada.
 
 ## 3. ADRs referenciados
 
-- **ADR-005** — Aura con 5 niveles narrativos (usado en exención Glow de Anti-Whale/Exit Fee).
+- **ADR-005** — Aura con 7 niveles narrativos (usado en exención Titán de Anti-Whale/Exit Fee).
 - **ADR-011** — KOLs pagados en tokens vesteados (por qué NO tienen exención Anti-Whale).
 - **ADR-012** — Anti-Whale corregido (C10): solo ventas, umbral por % del pool.
 - **ADR-015** — KASH Shield restaurado + Token-2022 + Tridente inactivo + exenciones canónicas + auditor desacoplado.

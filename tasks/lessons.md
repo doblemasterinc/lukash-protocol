@@ -76,5 +76,11 @@ El Pyth V2 Oracle Program tiene program IDs diferentes: devnet `gSbePebfvPy7tRqi
 ## 2026-08-26 (sesión 14) — Sec3 X-Ray requiere cuenta paga; Soteria CLI es la alternativa gratuita
 Sec3 X-Ray (pro.sec3.dev) no tiene tier gratuito sin registro. La alternativa viable es Soteria (CLI, `sh -c "$(curl -k https://supercompiler.xyz/install)"`, corre `soteria -analyzeAll .`). Como no tenemos toolchain Solana local (Windows), la solución fue meterlo como job en GitHub Actions CI. Lección: para herramientas de seguridad Solana sin toolchain local, la ruta es CI (GitHub Actions con ubuntu-latest + Solana CLI + la herramienta).
 
+## 2026-08-26 (sesión 16) — `const top` es un global reservado del navegador
+En JavaScript del navegador, `top` es una propiedad reservada de `window` (referencia al frame superior). Declarar `const top = ...` causa errores silenciosos o de asignación. Fix: usar nombres como `_t`, `topGrid`, etc. Lección: evitar nombrar variables con nombres de globals del navegador (`top`, `self`, `name`, `status`, `length`).
+
+## 2026-08-26 (sesión 16) — Fair launch y levantar capital son ejes independientes
+Fair launch = cómo se DISTRIBUYE el token (≥40% público, sin pre-mine concentrado). Levantar capital = cómo se FINANCIA la operación del negocio. Vender un % del Vault Sociedad (fee stream del fundador) a inversores es equivalente a vender equity — no toca la distribución del token ni viola el fair launch. Es un error mental común confundir "fair launch" con "no buscar inversión". Capital → credibilidad → volumen → motor #1 del protocolo.
+
 ## 2026-08-22 (sesión 8) — Cada motor tiene una ventana temporal: no codificar branches para etapas imposibles
 Motor C (motor=2) estaba en el branch de quema junto con Motor A. Pero Motor C solo existe en Etapa 3 (post-ENZ, supply fijo 3.3B), donde toda quema ya se detuvo. El guard ENZ siempre lo captura antes. Lección: al implementar lógica condicional por motor, verificar en QUÉ ETAPA opera cada motor — si un motor solo existe cuando una condición ya está activa (ej. ENZ), incluirlo en el branch alternativo es dead code que confunde el modelo mental. Patrón: Motor A (Etapas 1-3, quema hasta ENZ) · Motor B (Etapa 2+, B0 quema/B2 recircula) · Motor C (Etapa 3 only, post-ENZ, inyección LP) · Motor D (gradual, throttle).

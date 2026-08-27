@@ -110,8 +110,8 @@ let fee_tokens = mul_bps(excedente_tokens, penal_bps);
 // fee_tokens → cobro atómico directo → swap LUKA→USDC → Vault Core
 ```
 
-**Exención por Aura ≥ 10,000 (nivel Glow) — override Anti-Whale:** requiere leer
-el registro Aura del sender (existente en el diseño, PDA por wallet). Si `aura ≥ 10_000`,
+**Exención por Aura ≥ 25,000 (nivel Titán) — override Anti-Whale:** requiere leer
+el registro Aura del sender (existente en el diseño, PDA por wallet). Si `aura ≥ 25_000`,
 se salta la penalización. Esto además libera de escala automática a Circuit Breaker LP.
 
 ### 2.4 KASH Exit Fee (v4.3 §9) — activación dual
@@ -157,8 +157,8 @@ fn is_exempt(sender: Pubkey, ctx: &Context<TransferHook>) -> Result<bool> {
     if has_active_lp_lock(ctx, sender)? { return Ok(true); }
     // 5. Staking activo — sender tiene una posición staking > 0
     if has_active_staking(ctx, sender)? { return Ok(true); }
-    // 6. Nivel Glow (Aura ≥ 10_000)
-    if get_aura_level(ctx, sender)? >= 10_000 { return Ok(true); }
+    // 6. Nivel Titán (Aura ≥ 25_000)
+    if get_aura_level(ctx, sender)? >= 25_000 { return Ok(true); }
     Ok(false)
 }
 ```
@@ -233,8 +233,8 @@ pub const EXIT_FEE_ET3_BPS: u64 = 100;
 pub const EXIT_FEE_PRICE_TRIG_BPS: u64 = 7_000;  // <0.7×EMA30
 pub const EXIT_FEE_VOL_TRIG_BPS:   u64 = 30;     // >0.3% supply/hora
 
-// Aura Glow
-pub const AURA_GLOW_MIN: u64 = 10_000;
+// Aura Titán
+pub const AURA_TITAN_MIN: u64 = 25_000;
 ```
 
 ### 3.2 Estado nuevo
@@ -323,7 +323,7 @@ pub struct MarketMakerRevoked    { pub mm: Pubkey, pub ts: i64 }
   excedente 6%) → fee = 0.6% del pool en LUKA, cobrado en la misma tx.
 - **Venta en Génesis con precio en pánico** (`p < 0.7×EMA30` AND `volumen>0.3% supply/h`):
   Exit Fee 5% sobre monto total → cobro atómico, sender recibe 95%.
-- **Venta con nivel Glow (Aura ≥ 10K)**: exento, sin fee.
+- **Venta con nivel Titán (Aura ≥ 25K)**: exento, sin fee.
 - **Anti-Whale + Exit Fee simultáneos**: ambos fees se suman y se cobran en una sola tx.
 
 ### 4.2 Edge cases

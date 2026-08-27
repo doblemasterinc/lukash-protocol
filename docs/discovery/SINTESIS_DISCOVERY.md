@@ -9,12 +9,12 @@
 ## 1. Universo narrativo y voz de marca
 
 **Mundo:** una selva digital mística donde el dinero es "fuerza vital" que se escapa "entre las garras
-como niebla". El usuario entra como **cachorro a merced del viento** y madura hasta **Glow Sabio /
+como niebla". El usuario entra como **cachorro a merced del viento** y madura hasta **Titán /
 dueño de su propio banco** — arco de soberanía financiera. La **Reserva Sagrada** (bóveda BTC/SOL/USDC)
 es el santuario. Metáfora rectora: **cazar solo vs. cazar en Manada**.
 
 **Giro narrativo oficial:** de "anti-banco" a **"La Reserva del Pueblo"** — construcción colectiva, no
-confrontación (`NARRATIVA_REVISADA_PEOPLE_RESERVE.md`). Arquetipo de marca: **"El Glow Sabio"** —
+confrontación (`NARRATIVA_REVISADA_PEOPLE_RESERVE.md`). Arquetipo de marca: **"El Titán"** —
 educativo, confiado pero humilde, pro-pueblo, nunca "get rich quick".
 
 **Personajes:**
@@ -36,14 +36,16 @@ bien y cuidando a la Manada, no comprando. On-chain, no transferible (mantiene l
 `Aura = volumen transaccional + tiempo de hold + uso de LUKAI + victorias en Arena + puntualidad en Vacas + misiones educativas completadas`. Se mapea a los umbrales v4.2.
 
 **Niveles — 3 esquemas de naming en la mesa** (misma estructura v4.2, decisión de marca D2):
-| Umbral (v4.2) | v4.2 original | Opción hispana (4) | Opción arco narrativo (5)* |
-| --- | --- | --- | --- |
-| 0-499 | Cub | Cachorro | Cachorro |
-| 500-1999 | Glow | Glow | Rastreador |
-| 2000-4999 | Alpha | Alfa | Cazador |
-| 5000+ | Emperor | Emperador | Glow Maduro |
-| (5º nivel) | — | — | Glow Sabio |
-\* la opción de 5 niveles obliga a recalibrar umbrales y gates del cNFT.
+| Umbral | v4.2 original | **v4.3 definitivo (ADR-005, 7 niveles)** |
+| --- | --- | --- |
+| 0-499 | Cub | **Cachorro** |
+| 500-1,499 | Glow | **Rastreador** |
+| 1,500-2,999 | Alpha | **Cazador** |
+| 3,000-4,999 | Emperor | **Alfa** |
+| 5,000-9,999 | — | **Emperador** |
+| 10,000-24,999 | — | **Shamán** |
+| 25,000+ | — | **Titán** |
+Decisión cerrada (2026-08-26): 7 niveles con umbrales recalibrados. Gate cNFT Tótem Universal (≥500) se preserva.
 
 **Regla de oro del sistema de recompensas (inviolable):** el Aura y las recompensas se pagan **siempre
 en $LUKA desde los pools de Marketing/Staking, NUNCA del Vault KASH**. El Vault solo crece.

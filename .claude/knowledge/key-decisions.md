@@ -11,7 +11,8 @@ Versiones anteriores (v1–v4.1) se conservan en `docs/protocolo/` solo como his
 
 ## ADR-002: Sistema de reputación = "Aura" (2026-08-19) — Aprobado por Sebastián
 El sistema de reputación financiera on-chain pasa a llamarse **Aura**. Es un rebrand puro:
-la mecánica NO cambia (niveles Cub 0-499 / Glow 500-1999 / Alpha 2000-4999 / Emperor 5000+,
+la mecánica NO cambia (7 niveles: Cachorro 0-499 / Rastreador 500-1499 / Cazador 1500-2999 /
+Alfa 3000-4999 / Emperador 5000-9999 / Shamán 10000-24999 / Titán 25000+,
 on-chain, no transferible, decay 2%/semana tras 90d de inactividad, umbral de nivel por
 Score máximo histórico). "Aura" no existía en los documentos v4.2; es terminología nueva.
 Las "misiones para ganar Aura" = las Misiones de Caza de Jungle Arena.
@@ -27,12 +28,12 @@ Carpeta `LUKASH/` con scaffold completo (CLAUDE.md, .claude/knowledge, specs, ta
 contracts, brand, docs). Todos los documentos fuente de "PROYECTO CRYPTO" migrados y organizados
 por categoría dentro de `docs/` y `brand/`. La carpeta original queda como respaldo intacto.
 
-## ADR-005: Aura con 5 niveles narrativos (2026-08-19) — Aprobado por Sebastián
-Cachorro (0-499) → Rastreador (500-1999) → Cazador (2000-4999) → Alfa (5000-9999) → Emperor (10000+).
-Nombres finales (2026-08-26, ADR rebrand): Cub (0-499) → Glow (500-1999) → Alpha (2000-4999) → Emperor (5000+).
-Localización ES/EN/PT: los nombres de nivel son marca y no se traducen (Cub/Glow/Alpha/Emperor).
-Preserva los umbrales v4.2 (500/2000/5000). Gate del Tótem Universal en Rastreador
-(≥500). Diseño completo en `specs/01-aura-jungle-arena.md`.
+## ADR-005: Aura con 7 niveles narrativos (2026-08-19, actualizado 2026-08-26) — Aprobado por Sebastián
+7 niveles del Camino del Rugido — progresión: habilidad física → liderazgo → trascendencia:
+Cachorro (0-499) → Rastreador (500-1499) → Cazador (1500-2999) → Alfa (3000-4999) → Emperador (5000-9999) → Shamán (10000-24999) → Titán (25000+).
+Nombres en español, son marca y no se traducen entre ES/EN/PT.
+Gate del Tótem Universal en Rastreador (≥500). Exención Anti-Whale/Exit Fee en Titán (≥25000).
+Diseño completo en `specs/01-aura-jungle-arena.md`.
 
 ## ADR-006: Liberación del Vault Sociedad — regla única KASH Lock (2026-08-19) — Aprobado por Sebastián
 Corrige la discrepancia detectada: un solo hito gobierna la liberación de accionistas. Disparador =
@@ -65,8 +66,8 @@ asociaciones con populismo LATAM) reencuadrando su significado: "el que asciende
 pertenencia + orgullo pan-americano). "Soberanía" siempre como soberanía PERSONAL, no política. Posicionamiento =
 mezcla de 3 ejes con jerarquía: (1) Dueño de tu ascenso, (2) Tu manada, (3) Tu reserva a la vista; "el banco que
 vas a construir" se reserva para Fase 3. Audiencia = todos los menores de 45 (Segmentos A y B), no solo jóvenes.
-Operar en **ES/EN/PT** (términos de marca no se traducen: LUKA/KASH/Aura/Glow/Manada/LUKAI/Reserva).
-Detalle y taglines en `brand/POSICIONAMIENTO_NARRATIVA.md`. Niveles de Aura unificados: Cub→Glow→Alpha→Emperor.
+Operar en **ES/EN/PT** (términos de marca no se traducen: LUKA/KASH/Aura/Manada/LUKAI/Reserva/Titán/Shamán/Emperador).
+Detalle y taglines en `brand/POSICIONAMIENTO_NARRATIVA.md`. Niveles de Aura (7): Cachorro→Rastreador→Cazador→Alfa→Emperador→Shamán→Titán.
 
 ## ADR-012: Corrección del Anti-Whale + Exit Fee 5% Génesis (2026-08-20) — Aprobado por Sebastián
 **Exit Fee:** se mantiene en **5% para el Génesis** (Et.1), 3%/1% en Et.2/3. Aclaración: el "100% al Vault" es
@@ -75,7 +76,7 @@ el DESTINO del fee, no una penalización del 100% (el fee es 5/3/1%). Solo se ac
 **Anti-Whale (corregido):** (1) aplica **solo a ventas/transferencias, NO a compras** (quieres ballenas
 comprando); (2) el umbral se mide por **% del pool de liquidez, no del supply** — la métrica de supply era
 brutal al inicio (1% supply ≈ $10K al TGE, ahogaba el volumen de lanzamiento) y laxa después. Tiers 3/6/10%
-sobre el excedente, 100% al Vault. (3) Fix del nombre de exención: nivel máx de Aura = Emperor.
+sobre el excedente, 100% al Vault. (3) Fix del nombre de exención: nivel máx de Aura = **Titán** (≥25000).
 Aplicado en Protocolo v4.3 (C10). Se implementa en el KASH Shield (Milestone 2).
 
 ## ADR-011: Lanzamiento community-only (fair-launch) como ruta primaria; MM/influencers para después (2026-08-19)
@@ -136,7 +137,7 @@ Consolida 4 decisiones tras arqueología del historial v1.0→v4.2 (ver `audits/
 - **LP Comprometido en lock activo** (proveen liquidez, no la sacan).
 - **LP Fundador 365d** (lock máximo, incentivo estructural).
 - **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado — el MM debe estar aprobado por Tridente 3-de-3 para figurar en la lista de exentos).
-- **Nivel Emperor de Aura** (Aura ≥5,000, el pináculo — ADR-005). Nivel máximo del sistema Aura.
+- **Nivel Titán de Aura** (Aura ≥25,000, el pináculo — ADR-005). Nivel máximo del sistema Aura.
 - **KOLs no tienen exención Anti-Whale/Exit Fee.** El mecanismo que los alinea es distinto: reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear (aunque el Anti-Whale sí les aplicaría si lograran vender por encima del umbral, lo cual es improbable con vesting escalonado). Esa es la razón por la que en el manual `specs/05` los KOLs se pagan en tokens vesteados, nunca cash — el vesting hace redundante una exención explícita.
 
 **(7) Auditoría externa vía subsidios — ratificado.** No comprometemos gasto directo. La ruta primaria (ya documentada en `contracts/AUDIT_READINESS.md`) es: (a) herramientas gratis pre-cotización (Sec3 X-Ray, Trident fuzzing, clippy); (b) **subsidio Areta $1M** vía Colosseum fast-track; (c) grants Solana Foundation / Superteam Instagrants; (d) recién si nada anterior alcanza, boutique paga $5-20K o Immunefi bug bounty. **Sin ADR de contratación hasta cotización real.**
@@ -173,7 +174,7 @@ arbitraje natural). Cualquier residuo v3.1 que diga lo contrario es un error a c
 ## ADR-P05: cNFT = instrumento financiero tokenizado, no llave de acceso (Protocolo v4.2)
 Cada cNFT representa una posición de inversión (capital + rendimiento). APY variable,
 transferible, con disclaimer on-chain obligatorio en metadata. 3 tipos: Nativo $LUKA (Capa 0,
-0%, nivel Cub), Tótem Universal (Capas 1/3A, 1.5%, gated por Aura ≥500), Tótem Estándar SOL/USDC
+0%, nivel Cachorro), Tótem Universal (Capas 1/3A, 1.5%, gated por Aura ≥500), Tótem Estándar SOL/USDC
 (Capa 3B, 2%, sin gate).
 
 ## ADR-P06: El Vault NO se toca para defender el precio en B2 (Protocolo v4.2)
@@ -196,8 +197,8 @@ ideología). La identidad visual del felino SE CONSERVA (isotipo, imágenes) —
 palabra, no la imagen. Cambios aplicados en contratos, specs, audits, brand, landing, docs y simulaciones:
 
 **Seguridad:** Jaguar Shield → **KASH Shield** · Jaguar Exit Fee → **KASH Exit Fee** · Jaguar Lock → **KASH Lock**
-**Niveles de Aura:** Cub (0-499) → **Glow** (500-1999) → Alpha (2000-4999) → Emperor (5000+).
-  El nivel que era "Jaguar" pasa a "Glow" (tu Aura empieza a brillar). Son nombres de marca, no se traducen.
+**Niveles de Aura (7 niveles, ADR-005 actualizado):** Cachorro (0-499) → Rastreador (500-1499) → Cazador (1500-2999) → Alfa (3000-4999) → Emperador (5000-9999) → Shamán (10000-24999) → Titán (25000+).
+  Nombres en español, son marca y no se traducen.
 **cNFTs:** Los tipos pasan a llamarse **Tótems**: Tótem Nativo / Tótem Universal / Tótem Estándar.
 **Productos:** Jaguar Pay → **LUKASH Pay** · Jaguar Chat → **LUKASH Chat** · Jaguar Games → **LUKASH Games** · Jaguar AI → **LUKAI**
 **Narrativa:** Camino del Jaguar → **Camino del Rugido** · El Resplandor del Jaguar → **El Rugido de la Manada**

@@ -59,7 +59,7 @@ una región y su diáspora. Trilingüe = comunidad **sin fronteras**, no movimie
 
 ## 4. Sistema trilingüe (ES / EN / PT)
 
-**Regla:** los **términos de marca no se traducen** — LUKA, KASH, Aura, Glow, Manada, LUKAI, Reserva.
+**Regla:** los **términos de marca no se traducen** — LUKA, KASH, Aura, Manada, LUKAI, Reserva, Titán, Shamán, Emperador.
 Todo lo demás sí.
 
 ### Taglines
@@ -91,10 +91,9 @@ LUKAI mantiene su voz de guía sereno (sin jerga cripto), pero enfocada en **tu 
 - **Nombres de misión (reutilizar):** Primer Rugido, Muro de Piedra, Rugido Colectivo, Guardián Vault.
 - **Cierre cálido (mantener el espíritu):** de *"protejan el sueño de los felinos, ¿se unen a la manada?"* →
   *"construye tu ascenso con la manada. ¿Ruges con nosotros?"* (aspiración + pertenencia, sin política).
-- **Camino del Rugido (niveles de Aura):** la presentación usa Cachorro → Rastreador → **Guerrero → Líder** →
-  Glow. La spec de Aura usa Cachorro → Rastreador → Cazador → Glow Maduro → Glow Sabio.
-  ⚑ **Pendiente menor:** unificar los nombres de los 5 niveles (recomiendo decidir con Sebastián; ambos son
-  válidos y aspiracionales).
+- **Camino del Rugido (niveles de Aura):** 7 niveles unificados (ADR-005 actualizado):
+  Cachorro → Rastreador → Cazador → Alfa → Emperador → Shamán → Titán.
+  ✅ **Resuelto:** nombres definitivos aprobados por Sebastián (2026-08-26).
 
 ---
 

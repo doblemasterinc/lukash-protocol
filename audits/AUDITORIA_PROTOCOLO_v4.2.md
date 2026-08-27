@@ -102,13 +102,13 @@ evitar que un lector mezcle "Fase 2" con "Etapa 2".
 - **Distribución de supply §2.1**: 45+30+10+10+5 = 100% (4.5B+3B+1B+1B+0.5B = 10B). Correcto.
 - **Arquitectura de capital §3**: LP 30 + Vault Core 40 + Vault Sociedad 30 = 100%. Correcto.
 - **Precio KASH** (recalculado fila por fila): Año1 $20.9M/3.3B=$0.0063 (63x) · Año2 $29.6M=$0.0090 (90x) · Año3 $33.7M=$0.0102 (102x) · Año5 $37.2M=$0.0113 (113x). **Todas exactas.**
-- **Puntajes de Aura**: los 9 valores de calibración (10/5/15/8/5/20/12/3/5-10-20) y los 4 niveles (Cub 0-499 / Glow 500-1999 / Alpha 2000-4999 / Emperor 5000+) son **idénticos** en Protocolo §7D y BMC §12.
+- **Puntajes de Aura**: los 9 valores de calibración (10/5/15/8/5/20/12/3/5-10-20) y los 4 niveles originales (Cub 0-499 / Glow 500-1999 / Alpha 2000-4999 / Emperor 5000+) eran **idénticos** en Protocolo §7D y BMC §12. *(Nota: estos niveles fueron reemplazados por 7 niveles en v4.3 — ADR-005 actualizado.)*
 - **Throttle**: umbrales (1.2x/0.8x/0.5x EMA30) y % de quema (125/100/60/25) y cola diferida (0/0/40/75) consistentes entre §7 y §18.
 - **KASH Exit Fee**: 5%/3%/1% con condición dual (precio<0.7xEMA30 AND venta>0.3% supply/hora), 100% al Vault. Consistente §9/§18/BMC.
 - **Anti-Whale**: 1-2%→3%, 2-5%→6%, >5%→10%. Consistente §9/§18.
 - **Fees Motor D 4 capas**: Capa 0 (0%), Capa 1 (1.5%), Capa 2 (3%/3.5%), Capa 3A (1.5%), Capa 3B (2%). Consistente §1.1/§6.4/§18/BMC §5.5. Diferencial 0.5% $LUKA vs SOL/USDC verificado.
 - **Jerarquía de fees por etapa**: 4%/2.5%→2.5%/1.5%→0.5% consistente (BMC separa 2A/2B, ambos a 2.5%/1.5%, coherente).
-- **Gating Tótem Universal**: "nivel Glow (≥500 pts)" idéntico en §7C.1, §7D.2 y BMC §12.
+- **Gating Tótem Universal**: "≥500 pts" (nivel Rastreador en v4.3) idéntico en §7C.1, §7D.2 y BMC §12.
 - **Monte Carlo**: $37.2M mediana, 0.0% ruina, ~1.4% espiral transición / <0.5% B2 consolidado, 86.1% P(B2<Año2), 53.6%→82.3% P(B2 Año1) sin/con 4 Frentes. Consistente en headers, §10, §17 y §21.
 - **Inversión y CAC**: $500K/$2M/$5M y CAC $5-9/$3-5/$1 consistentes protocolo §15/§15.1 y BMC §9.2/§2.2.
 - **Flujos Motor A/B/C**: cada distribución atómica suma 100% del fee. Correcto (salvo el tema de oráculos, H2).

@@ -43,8 +43,14 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] **CAPA 2 COMPLETA** (sesión 13): process_fee (quema real CPI + distribución atómica + pending swaps) + execute_vault_swaps (USD→native a precio Pyth) verificados end-to-end en devnet v9.1.
    - [x] **Security hardening v10.1 verificado en devnet** (sesión 15, 2026-08-26): has_one=authority en process_fee/refreshVaultValuation/executeVaultSwaps PASS. Pyth owner validation movida a runtime (constraint Anchor bloqueaba fallback devnet; mainnet valida pyth_oracle::ID). Quema real 14M tokens PASS. Vault +980K PASS. Pending swaps→nativos PASS. Client scripts actualizados (caller→authority). RUNBOOK actualizado.
 3. [x] **Análisis de recursos de LUKAI** completado → `docs/analisis/LUKAI_COSTO_ARQUITECTURA.md`. Resultado: v1.0 keeper $150-500/mes (sin LLM), v2.0 con routing 80/20 Haiku/Sonnet = $1.77/usuario/mes. Break-even a ~$3K O&M (Haiku mínimo) o ~$9K (routing). **Recomendación: solo keeper v1.0 hasta Etapa 2A con O&M>$10K/mes.**
-4. **Landing → producción**: desplegar en Vercel + waitlist real capturando correos (Formspree o Supabase). Landing lista en `landing/index.html` (trilingüe, Artifact `6c7985dd`).
+4. [~] **Landing → producción**: Landing actualizada con 7 niveles Aura + waitlist Supabase (sesión 16). **Pendiente:**
+   - [ ] Crear tabla `waitlist` en Supabase (SQL en `landing/supabase-setup.sql`)
+   - [ ] Obtener URL + anon key de Supabase y reemplazar `TU_SUPABASE_URL` y `TU_SUPABASE_ANON_KEY` en `landing/index.html`
+   - [ ] Deploy a Vercel: `cd landing && vercel` (cuenta existente de Oílo)
+   - [ ] Configurar dominio custom cuando se tenga
 5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
+5b. [ ] **Estrategia Ruta 3 (ADR-018)**: decidir % del Vault Sociedad a ceder, # inversores, estructura legal, capital target, KASH Lock. Fair launch compatible.
+5c. [ ] **Discutir idea de Sebastián sobre prototipos** (`prototype/lukash-app-prototipo.html` y `lukash-genesis.html`).
 6. **Contratos Milestone 2 (restante)**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
 6. [x] **Sub-estructura del 45% "Venta"** decidida → Seed dinámico→Public (ADR-013) + fila Equipo/Fundador 2% (ADR-014).
 
@@ -64,7 +70,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 ## Diseño de juego / Aura → `specs/01-aura-jungle-arena.md`
 - [x] Diseñar el loop de Jungle Arena (3 senderos: Aprendiz/Rastro Diario/Rugido de la Manada)
 - [x] Definir las Misiones de Caza concretas (catálogo A1-A5, D1-D4, R1-R6 con valores de Aura)
-- [x] Aura 5 niveles (Cachorro→Glow Sabio) — ADR-005
+- [x] Aura 7 niveles (Cachorro→Titán) — ADR-005 actualizado
 - [x] Economía sin emisión inflacionaria (Energía como sink, recompensas desde Marketing/Staking)
 - [ ] Cerrar pendientes de diseño: costos de Energía, reglas de Duelos, pools de Temporada, fórmula de Aura con pesos
 
@@ -85,7 +91,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 - [x] Estrategia → `specs/03-estrategia-lanzamiento-comunidad.md`
 - [x] Plan ejecutable 12 semanas → `specs/04-plan-f0-comunidad.md`
 - [x] Marca v2 sin ideología + trilingüe → `brand/POSICIONAMIENTO_NARRATIVA.md` [ADR-010]
-- [x] Niveles de Aura unificados: Cachorro/Rastreador/Cazador/Alfa/Glow [ADR-005]
+- [x] Niveles de Aura unificados: Cachorro/Rastreador/Cazador/Alfa/Emperador/Shamán/Titán [ADR-005 actualizado]
 - [ ] Acciones semana 1 (Sebastián): reservar handles, founding myth, landing waitlist, lista KOLs
 - [ ] Implementar distribución atómica de fees con overflow checks
 - [ ] Implementar conmutación B0↔B2 (K_min=$25M vía Pyth)

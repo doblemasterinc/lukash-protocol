@@ -3,7 +3,7 @@
 > Etapa 0 · 2026-08-20. Audiencia: grants (Superteam Earn, Finternet, Solana Foundation), Colosseum,
 > ángeles LatAm. Tono ADR-010 (aspiracional, sin ideología, sin promesa de retornos). Marco de utilidad
 > ADR-009: $LUKA es moneda transaccional; la reserva es respaldo, **no se reparte a holders**.
-> Términos de marca no se traducen (LUKA/KASH/Aura/Glow/Manada/LUKAI).
+> Términos de marca no se traducen (LUKA/KASH/Aura/Manada/LUKAI/Titán/Shamán/Emperador).
 
 ---
 
@@ -26,7 +26,7 @@ progreso que la gente de verdad quiere usar.
 1. **Motor de fees universal** — cada operación distribuye 35/35/15/15 → Vault / Quema-LP / O&M / Staking. Atómico, on-chain.
 2. **Vault KASH Core** — reserva dura auditable que solo crece; nunca liquidable. Determina el "Precio KASH" (piso de valor).
 3. **Deflación con throttle** — supply 10B → 3.3B; la quema se acelera o frena según salud del mercado (KASH Shield: circuit breakers, exit fee, anti-whale).
-4. **Aura** — reputación financiera on-chain, no transferible. Subes de nivel **participando**: Cachorro → Rastreador → Cazador → Alfa → **Glow**.
+4. **Aura** — reputación financiera on-chain, no transferible. Subes de nivel **participando**: Cachorro → Rastreador → Cazador → Alfa → Emperador → Shamán → **Titán**.
 
 ## Por qué la gente lo usa (el gancho): *farmea tu Aura*
 La calle ya habla de "farmear aura". En LUKASH el Aura deja de ser social e intangible y se vuelve **tuya,

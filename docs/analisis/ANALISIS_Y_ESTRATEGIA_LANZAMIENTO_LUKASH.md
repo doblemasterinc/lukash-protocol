@@ -130,13 +130,13 @@ EJEMPLO:
 **Mecánica:**
 ```
 WHITELIST TIERS:
-- Tier 1 "Alpha Rugidores": Solo 100 spots, max $5,000 c/u
+- Tier 1 "Alfa Rugidores": Solo 100 spots, max $5,000 c/u
   → Requisito: Completar 5 tareas sociales + tener >1000 followers
   
-- Tier 2 "Glows": 500 spots, max $2,000 c/u
+- Tier 2 "Emperadores": 500 spots, max $2,000 c/u
   → Requisito: 3 tareas sociales + referir 5 personas
   
-- Tier 3 "Cubs": 2000 spots, max $500 c/u
+- Tier 3 "Cachorros": 2000 spots, max $500 c/u
   → Requisito: Seguir, RT, tag 3 amigos
 
 TAREAS SOCIALES:

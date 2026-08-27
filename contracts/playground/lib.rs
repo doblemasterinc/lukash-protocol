@@ -168,8 +168,8 @@ pub const EXIT_FEE_PRICE_TRIG_BPS: u64 = 7_000;  // <0.7×EMA30
 pub const EXIT_FEE_VOL_TRIG_BPS: u64 = 30;        // >0.3% supply/hora (bps)
 pub const SELL_PRESSURE_WINDOW: i64 = 3600;        // ventana rodante de 1h
 
-// ---- Aura — exención nivel Glow ----
-pub const AURA_GLOW_MIN: u64 = 10_000;
+// ---- Aura — exención nivel Titán ----
+pub const AURA_TITAN_MIN: u64 = 25_000;
 
 // ---- Modos del Motor B ----
 pub const MOTOR_B_B0: u8 = 0;
@@ -1122,14 +1122,14 @@ pub mod lukash_protocol {
             || (config.lp_fundador_ata != Pubkey::default() && sender == config.lp_fundador_ata)
             || sender_has_lp_lock
             || sender_has_staking
-            || sender_aura_score >= AURA_GLOW_MIN;
+            || sender_aura_score >= AURA_TITAN_MIN;
 
         // Exenciones Exit Fee: todas EXCEPTO staking (el Exit Fee no se exime por staking)
         let exempt_exit = is_internal_cpi
             || sender_is_mm
             || (config.lp_fundador_ata != Pubkey::default() && sender == config.lp_fundador_ata)
             || sender_has_lp_lock
-            || sender_aura_score >= AURA_GLOW_MIN;
+            || sender_aura_score >= AURA_TITAN_MIN;
 
         // Actualizar presión de venta (ventana rodante 1h, I22)
         update_sell_pressure(state, amount, now)?;

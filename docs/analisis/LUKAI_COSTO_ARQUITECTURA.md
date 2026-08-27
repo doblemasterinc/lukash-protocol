@@ -340,12 +340,14 @@ Para generar $X de O&M mensual (15% de fees totales):
 | Nivel Aura | Rate limit | Modelo disponible | Justificacion |
 |-----------|-----------|-------------------|---------------|
 | Cachorro (0--499) | 5 msg/hora | Solo Haiku | Nivel basico, queries simples |
-| Rastreador (500--1,999) | 15 msg/hora | Haiku + Sonnet | Usuario comprometido |
-| Cazador (2,000--4,999) | 30 msg/hora | Haiku + Sonnet | Usuario avanzado |
-| Alfa (5,000--9,999) | 60 msg/hora | Haiku + Sonnet | Power user |
-| Glow (10,000+) | Sin limite | Haiku + Sonnet | Recompensa maxima |
+| Rastreador (500--1,499) | 15 msg/hora | Haiku + Sonnet | Usuario comprometido |
+| Cazador (1,500--2,999) | 30 msg/hora | Haiku + Sonnet | Usuario avanzado |
+| Alfa (3,000--4,999) | 45 msg/hora | Haiku + Sonnet | Power user |
+| Emperador (5,000--9,999) | 60 msg/hora | Haiku + Sonnet | Power user avanzado |
+| Shaman (10,000--24,999) | 90 msg/hora | Haiku + Sonnet | Usuario elite |
+| Titan (25,000+) | Sin limite | Haiku + Sonnet | Recompensa maxima |
 
-**Efecto estimado:** Los usuarios Cachorro (mayoria) consumen menos, los Glow (minoria) consumen mas pero son pocos. Distribucion Pareto tipica reduce el costo promedio real a ~60--70% del estimado base.
+**Efecto estimado:** Los usuarios Cachorro (mayoria) consumen menos, los Titan (minoria) consumen mas pero son pocos. Distribucion Pareto tipica reduce el costo promedio real a ~60--70% del estimado base.
 
 **C. Compresion de contexto**
 - Resumir conversaciones anteriores en vez de enviar historial completo

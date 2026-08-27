@@ -4,7 +4,7 @@
 > deck y copy. **Fuente:** MASTER SPEECH de Sebastián — el problema real no es "estar excluido" (abstracto),
 > sino que **el fruto de tu trabajo se evapora**: te enseñan a gastar, no a conservar la fuerza de tu esfuerzo.
 > Tono ADR-010: aspiracional, místico pero accesible, soberanía = **personal** (nunca "pueblo"/anti-banco/
-> "hazte rico"). Términos de marca NO se traducen: LUKA · KASH · Aura · Glow · Manada · LUKAI · Reserva.
+> "hazte rico"). Términos de marca NO se traducen: LUKA · KASH · Aura · Manada · LUKAI · Reserva · Titán · Shamán · Emperador.
 
 ---
 
@@ -20,7 +20,7 @@ El **Rugidor** no solo caza: conserva. Marca su territorio y construye algo que 
 
 Y no lo hace solo. La **Manada** —tus amigos, tu familia— se une para ahorrar, para crecer juntos, para volver el ahorro una meta compartida y no una batalla solitaria. El día a día lo pagas con **$LUKA**. Pero creces con la **Reserva**: un blindaje de activos duros que toma tus Lucas fugaces y los convierte en valor que dura. A la vista de todos, vivo en la cadena. Ya no ves tu esfuerzo desvanecerse —lo ves **crecer**.
 
-Nadie nace Glow. Se empieza **Cachorro**, a merced del viento. Se aprende a rastrear, a cazar, a resistir —y cada paso deja una marca que no se finge ni se compra: tu **Aura**. No te la regala el aplauso de nadie; te la ganas, y queda escrita para siempre. Así se sube: Cachorro, Rastreador, Cazador, Alfa… hasta convertirte en el **Glow**. Ya no un cachorro a merced del viento: el dueño de tu propio ascenso.
+Nadie nace Titán. Se empieza **Cachorro**, a merced del viento. Se aprende a rastrear, a cazar, a resistir —y cada paso deja una marca que no se finge ni se compra: tu **Aura**. No te la regala el aplauso de nadie; te la ganas, y queda escrita para siempre. Así se sube: Cachorro, Rastreador, Cazador, Alfa, Emperador, Shamán… hasta convertirte en el **Titán**. Ya no un cachorro a merced del viento: el dueño de tu propio ascenso.
 
 **LUKAI** camina contigo —una voz serena que disuelve los espejismos, que quita la fricción y la jerga, y te recuerda que esto siempre se trató de ti: de tu progreso, de tu Reserva, de lo tuyo.
 
@@ -42,7 +42,7 @@ The **Roarer** doesn't only hunt: it keeps. It marks its territory and builds so
 
 And it doesn't do it alone. The **Manada** —your friends, your family— comes together to save, to grow as one, to make saving a shared goal instead of a solitary fight. Day to day you pay with **$LUKA**. But you grow with the **Reserva**: a shield of hard assets that takes your fleeting Lucas and turns them into value that lasts. In plain sight, alive on-chain. No longer do you watch your effort fade —you watch it **grow**.
 
-No one is born a Glow. You start as a **Cachorro**, at the mercy of the wind. You learn to track, to hunt, to endure —and every step leaves a mark you can't fake or buy: your **Aura**. No passing applause hands it to you; you earn it, and it's written for good. That's how you rise: Cachorro, Rastreador, Cazador, Alfa… until you become the **Glow**. No longer a cub at the mercy of the wind: the owner of your own rise.
+No one is born a Titán. You start as a **Cachorro**, at the mercy of the wind. You learn to track, to hunt, to endure —and every step leaves a mark you can't fake or buy: your **Aura**. No passing applause hands it to you; you earn it, and it's written for good. That's how you rise: Cachorro, Rastreador, Cazador, Alfa, Emperador, Shamán… until you become the **Titán**. No longer a cub at the mercy of the wind: the owner of your own rise.
 
 **LUKAI** walks with you —a calm voice that dissolves the mirages, strips away the friction and the jargon, and reminds you this was always about you: your progress, your Reserva, what's yours.
 
@@ -64,7 +64,7 @@ O **Rugidor** não só caça: conserva. Marca o seu território e constrói algo
 
 E não faz isso sozinho. A **Manada** —seus amigos, sua família— se une para poupar, para crescer junto, para transformar a poupança numa meta compartilhada e não numa batalha solitária. O dia a dia você paga com **$LUKA**. Mas cresce com a **Reserva**: um escudo de ativos duros que pega os seus Lucas fugazes e os transforma em valor que dura. À vista de todos, vivo na blockchain. Você não vê mais o seu esforço se desfazer —você o vê **crescer**.
 
-Ninguém nasce Glow. Começa-se **Cachorro**, à mercê do vento. Aprende-se a rastrear, a caçar, a resistir —e cada passo deixa uma marca que não se finge nem se compra: a sua **Aura**. Nenhum aplauso passageiro te dá; você conquista, e fica escrita para sempre. É assim que se sobe: Cachorro, Rastreador, Cazador, Alfa… até virar o **Glow**. Não mais um filhote à mercê do vento: o dono da sua própria ascensão.
+Ninguém nasce Titán. Começa-se **Cachorro**, à mercê do vento. Aprende-se a rastrear, a caçar, a resistir —e cada passo deixa uma marca que não se finge nem se compra: a sua **Aura**. Nenhum aplauso passageiro te dá; você conquista, e fica escrita para sempre. É assim que se sobe: Cachorro, Rastreador, Cazador, Alfa, Emperador, Shamán… até virar o **Titán**. Não mais um filhote à mercê do vento: o dono da sua própria ascensão.
 
 **LUKAI** caminha com você —uma voz serena que dissolve as miragens, tira a fricção e o jargão, e lembra que isto sempre foi sobre você: o seu progresso, a sua Reserva, o que é seu.
 

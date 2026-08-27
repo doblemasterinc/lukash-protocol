@@ -1,6 +1,6 @@
 # Diseño: AURA + JUNGLE ARENA — Sistema de Reputación y Juego
 
-> v1.0 · 2026-08-19 · Base: Protocolo v4.2 (mecánica) + Síntesis de Discovery + decisión de 5 niveles.
+> v1.1 · 2026-08-26 · Base: Protocolo v4.2 (mecánica) + Síntesis de Discovery + decisión de 7 niveles (ADR-005 actualizado).
 > Objetivo del loop (los 4 que definió Sebastián): **educación financiera + retención diaria + adquisición viral + volumen económico.**
 > Regla de oro: el Aura NO se compra; se gana con participación real. Las recompensas se pagan en $LUKA
 > desde los pools de **Marketing/Staking**, NUNCA del Vault KASH (el Vault solo crece).
@@ -16,19 +16,20 @@ heredada de v4.2 (inalterada):
 - **El nivel usa el Aura máximo histórico** — los niveles alcanzados no retroceden por decaimiento.
 - Calibrada en tiempo real por LUKAI según participación en el ecosistema (Motor D).
 
-### 1.1 Los 5 niveles (arco narrativo cachorro → sabio)
+### 1.1 Los 7 niveles (arco narrativo cachorro → titán)
 
 | Nivel | Aura | Narrativa | Beneficios desbloqueados |
 | --- | --- | --- | --- |
 | **Cachorro** | 0–499 | Acabas de llegar a la selva | Acceso básico a servicios Motor D Capa 2. Manadas estándar. cNFT Nativo $LUKA (0%). Misiones del Sendero del Aprendiz. |
-| **Rastreador** | 500–1,999 | Aprendiste a leer las huellas | **Desbloquea cNFT Tótem Universal → DeFi Capa 1** (gate ≥500, igual que v4.2). Voto en parámetros Motor D (DAO). Acceso prioritario a nuevos cNFT. |
-| **Cazador** | 2,000–4,999 | Cazas por ti mismo | LP LUKASH 90d con +12% rewards. Visibilidad en ranking de Manadas. Acceso anticipado a integraciones Capas 3A/3B. Puede liderar Manada. |
-| **Alfa** | 5,000–9,999 | Proteges a tu manada | Gobernanza avanzada. LP Fundador 365d con +20% rewards. Override Anti-Whale automático. Multiplicador de Aura ×1.15. |
-| **Glow** | 10,000+ | Eres leyenda de la selva | Gobernanza premium (peso extra). Acceso a instrumentos **RWA y T-bills tokenizados** (Fase 3). Multiplicador de Aura ×1.30. Skin cNFT legendario. Puede fundar "Dinastías" (federación de Manadas). |
+| **Rastreador** | 500–1,499 | Aprendiste a leer las huellas | **Desbloquea cNFT Tótem Universal → DeFi Capa 1** (gate ≥500, igual que v4.2). Voto en parámetros Motor D (DAO). Acceso prioritario a nuevos cNFT. |
+| **Cazador** | 1,500–2,999 | Cazas por ti mismo | LP LUKASH 90d con +12% rewards. Visibilidad en ranking de Manadas. Acceso anticipado a integraciones Capas 3A/3B. Puede liderar Manada. |
+| **Alfa** | 3,000–4,999 | Proteges a tu manada | Gobernanza avanzada. LP Fundador 365d con +20% rewards. Multiplicador de Aura ×1.10. |
+| **Emperador** | 5,000–9,999 | Tu rugido se escucha lejos | Override Anti-Whale automático. Multiplicador de Aura ×1.15. Acceso anticipado a instrumentos premium. |
+| **Shamán** | 10,000–24,999 | Guías a la manada con sabiduría | Gobernanza premium (peso extra). Acceso a instrumentos **RWA y T-bills tokenizados** (Fase 3). Multiplicador de Aura ×1.25. Skin cNFT legendario. |
+| **Titán** | 25,000+ | Eres leyenda de la selva | Multiplicador de Aura ×1.30. Exención total Anti-Whale y Exit Fee. Puede fundar "Dinastías" (federación de Manadas). Máximo estatus del ecosistema. |
 
-> **Compatibilidad con v4.2:** los umbrales 500 / 2,000 / 5,000 se preservan exactos (Cachorro=Cub,
-> Rastreador=Glow, Cazador=Alpha, Alfa=Emperor). Solo se añade el pináculo **Glow (10,000+)**,
-> que hereda los beneficios de RWA/T-bills. Ningún gate de cNFT existente se rompe.
+> **Compatibilidad con v4.2:** el gate cNFT Tótem Universal (≥500) se preserva exacto. Los umbrales
+> se recalibran para 7 niveles (ADR-005 actualizado): 500/1,500/3,000/5,000/10,000/25,000.
 
 ### 1.2 Calibración base (cómo se gana Aura — heredado de v4.2 §7D.1)
 
@@ -44,7 +45,7 @@ heredada de v4.2 (inalterada):
 | Staking activo $LUKA (mín 7d) | 3 / día | Requiere staking, no solo holding |
 | LP Comprometido 30 / 90 / 365d | 5 / 10 / 20 / sem | Escalonado por lock |
 
-Los multiplicadores de nivel (×1.15 Alfa, ×1.30 Glow) aplican sobre estas ganancias.
+Los multiplicadores de nivel (×1.10 Alfa, ×1.15 Emperador, ×1.25 Shamán, ×1.30 Titán) aplican sobre estas ganancias.
 **PENDIENTE (ajustable por gobernanza, Timelock 48h en Etapa 2A):** valores de lanzamiento, se recalibran con datos reales.
 
 ---
@@ -113,7 +114,7 @@ sin emisión de recompensas fuera de los pools Marketing/Staking ya asignados.
 - **Geo-Drops / Presas:** LUKAI lanza recompensas ($LUKA/NFT desde pools Marketing/Staking) en coordenadas o
   eventos; reclamarlas exige Energía/Stake. Motor de eventos y volumen.
 - **cNFT evolutivo ("Estatus de Depredador"):** representación visual del nivel de Aura (skins por nivel:
-  Cachorro → … → Glow legendario). Niveles altos dan multiplicadores de staking y descuentos de fee.
+  Cachorro → … → Titán legendario). Niveles altos dan multiplicadores de staking y descuentos de fee.
 
 ### 2.5 Anti-abuso (para que el Aura signifique algo)
 - Aura solo por acciones verificables on-chain o validadas por LUKAI (Proof of Roar).
