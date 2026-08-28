@@ -1,11 +1,85 @@
 # TODO — LUKASH
 
+## 📋 PLAN DE TRABAJO CONTINUO (orden de ejecución)
+
+### FASE A — Decisiones estratégicas (sesión actual, ago-2026)
+- [x] A1. Revisión BMC v4.2 punto por punto (12 secciones analizadas)
+- [x] A2. Redistribución de costos $500K (de 50/25/15/10 → 35/20/30/10/5)
+- [x] A3. Estrategia MM/KOL en 3 fases (TGE orgánico → MM contingente mes 2-3 → CEX mes 4+)
+- [x] A4. Separar tokens vesteados (servicios) de KASH Sociedad (equity) — regla confirmada
+- [x] A5. Rondas de inversión escalonadas: Seed ángeles $500K → Estratégica fintech $1-2M
+- [x] A6. Roadmap KASH Sociedad (30%): ~17% fundador / 5-8% seed / 5-8% estratégica / ~6-13% reserva
+- [x] A7. Identidad del fundador: pseudónimo conocido con exposición por niveles
+- [x] A8. Gaming, Tótems, Avatar, educación financiera y Sellos de Manada — ADR-022 a 026 (sesión 18, 2026-08-28)
+- [x] A9. Totem Guard — seguro digital con reaseguro externo: póliza O&M (Capa 1) + microseguro paramétrico para Tótems (Capa 2). ADR-027 (sesión 18, 2026-08-28)
+- [x] A10. Sandbox híbrido — ABSORBIDO en Jungle Arena (sesión 18). No se construye sandbox separado; la Arena ya gamifica las interacciones DeFi. Evolución visual tipo DeFi Land diferida post-Etapa 2
+- [x] A11. Diseño detallado de Manadas: Sellos de Manada como cNFT custom para membresía — ADR-025
+- [x] A12. Consolidar BMC v4.3 con ADR-022 a 027 (sesión 18, 2026-08-28): tabla de cambios, §04 Relaciones, §12 Aura, §13 KASH Shield actualizados
+- [x] A13. Registrar decisiones como ADRs — ADR-022 a 026 registrados
+
+### FASE B — Preparación inversión (pre-ronda seed)
+- [ ] B1. Estructura legal: entidad en El Salvador o equivalente, framing regulatorio cNFT/Motor C
+- [ ] B2. Pitch deck para ángeles cripto-nativos (incluye: tesis, Vault, simulaciones, team, ask $500K por 5-8%)
+- [ ] B3. Data room / litepaper (tokenomics completo, Vault Sociedad, vesting, proyecciones honestas con rangos)
+- [ ] B4. One-pager EN/PT (ES ya existe)
+- [ ] B5. Preparar dashboard de Vault en testnet como pieza de credibilidad
+- [ ] B6. Identificar y contactar 10-20 ángeles cripto (Colosseum alumni, Superteam, ecosistema Solana)
+- [ ] B7. Aplicar a grants no dilutivos: Superteam Earn, Finternet, Colosseum hackathon ($250K pre-seed)
+- [ ] B8. Consulta legal: abogado cripto (framing cNFT como no-security, Motor C como no-transmisión)
+
+### FASE C — Pre-lanzamiento (F0 comunidad, 8-12 semanas pre-TGE)
+- [ ] C1. Reservar handles (X, TG, Discord) con alias del fundador
+- [ ] C2. Founding myth + hype de misterio ("ruge desde el génesis")
+- [ ] C3. Landing en producción (Vercel + Supabase waitlist)
+- [ ] C4. Configurar plataformas orgánicas: Zealy (quests), Galxe (credenciales), Guild.xyz (roles)
+- [ ] C5. Contactar KOLs hispanos educativos (Hugo Botto, Catalina Castro, Daniel Muvdi, Criptolawyer)
+- [ ] C6. Contratar community manager 24/7
+- [ ] C7. Whitelist gamificada con tiers (Alfa/Emperador/Cachorro) + snapshot pre-TGE
+- [ ] C8. Dashboard del Vault en testnet público como marketing de transparencia
+- [ ] C9. AMAs de voz (X Spaces, Discord) — voz sin cara en primeras etapas
+- [ ] C10. Contenido 30 días: threads educativos, Reels, memes, founding myth
+
+### FASE D — Técnica (en paralelo con B y C)
+- [ ] **D0. Build + deploy v10.2 en Solana devnet** (cambios: Guardian 2-de-3, Capa 0→1.5%, Totem Guard placeholder). Verificar con tests existentes
+- [ ] **D0b. Ejecutar MC v4.3** — correr simulación con parámetros actualizados y reemplazar cifras v3.1 en BMC/protocolo
+- [ ] **D0c. Crear PDF/versión legible de la presentación v4.3** para enviar a potenciales inversores
+- [ ] D1. Migración Token-2022 con Transfer Hook (devnet)
+- [ ] D2. Contratos Milestone 2 restantes: staking, cNFT/Aura, CPI safety
+- [ ] D3. Auditoría estática + Soteria CI (ya configurado) — mantener limpio
+- [ ] D4. Frontend App MVP (wallet + dashboard Vault + LUKAI v1 keeper)
+- [ ] D5. Deploy Milestone 2 en devnet 2+ semanas sin bugs
+- [ ] D6. Auditoría externa pre-mainnet (Halborn/OtterSec vía subsidio Areta/Colosseum)
+
+### FASE E — TGE y lanzamiento (Día 0)
+- [ ] E1. Vesting equipo on-chain publicado ANTES del TGE
+- [ ] E2. Activar Guardian de Pausa 2-de-3 (T1-T2 de bloqueantes, ADR-022)
+- [ ] E3. Pool $LUKA/SOL en Meteora con $100K + LP lock permanente
+- [ ] E4. Lanzamiento coordinado: listing + vault funding + influencers simultáneos
+- [ ] E5. LUKASH Games semana 1: Spot the Whale, Meme Wars, The First Hunt
+- [ ] E6. Monitoreo: volumen diario, wallets activas, retención Discord
+
+### FASE F — Post-TGE (mes 1-6)
+- [ ] F1. Monitoreo del gate MM: si volumen <$500K/día por 5d → activar Kairon Labs o Gravity Team
+- [ ] F2. Utility bombs semanales: App beta (holders), marketplace, LUKAI preview
+- [ ] F3. Partnership avalanche: 1 anuncio/semana (Jupiter, Phantom, merchant)
+- [ ] F4. Campaña CEX listing (MEXC/Gate.io) cuando volumen sostenido
+- [ ] F5. Recopilación de métricas (Vault growth, volumen, holders) para ronda estratégica
+- [ ] F6. Desarrollo Jungle Arena / gaming (A8-A11 ya cerrados para esta fase)
+
+### FASE G — Ronda estratégica (mes 6-12)
+- [ ] G1. Pitch a entidades financieras con tracción demostrada (Vault creciendo, volumen real, 3-6 meses data)
+- [ ] G2. Target: fintechs LatAm, cooperativas de ahorro, remesadoras (inversión $1-2M por 5-8% KASH Sociedad)
+- [ ] G3. Integración Motor C con socios financieros
+- [ ] G4. Evaluación de doxx público del fundador según tracción y contexto de seguridad
+
+---
+
 ## 🚨 BLOQUEANTES PRE-TGE MAINNET (recordar en cada session-close)
 
 Estos NO son bloqueantes de desarrollo (devnet funciona sin ellos), pero **el TGE mainnet no puede ocurrir sin resolverlos**. El contrato tiene un candado estructural que rechaza el paso a Etapa 2 si el Tridente no está activado, así que Sebastián no puede olvidarlos por accidente — pero el trabajo de identificar y crear los wallets es humano y toma tiempo.
 
-- [ ] **T1. Identificar 2 firmantes adicionales del Tridente Multisig (3-de-3)** — hoy solo está Sebastián. Los 3 deben ser distintos y ninguno puede ser la authority. Idealmente 3 hardware wallets (Ledger). Publicar pubkeys en ADR.
-- [ ] **T2. Ejecutar `activate_tridente(pk1, pk2, pk3)`** post-deploy mainnet. **Instrucción one-way / irreversible.** Sin esto, el contrato bloquea el paso a Etapa 2.
+- [ ] **T1. Identificar 2 firmantes adicionales del Guardian de Pausa (2-de-3, ADR-022)** — hoy solo está Sebastián. Los 3 deben ser distintos y ninguno puede ser la authority. Idealmente hardware wallets (Ledger). Publicar pubkeys en ADR. Nota: ya no es 3-de-3, basta 2-de-3.
+- [ ] **T2. Ejecutar `activate_tridente(pk1, pk2, pk3)`** post-deploy mainnet → renombrar a `activate_guardian`. **Instrucción one-way / irreversible.** Sin esto, el contrato bloquea el paso a Etapa 2. Guardian solo puede pausar/vetar, no mover fondos. Sunset automático en Etapa 3.
 - [ ] **T3. Crear multisig O&M** (2-de-3 con Squads Protocol) para el 15% operativo de fees. Hoy la wallet es single-sig de Sebastián — antes del TGE debe ser multisig con firmantes documentados en ADR (fundador + dev senior + tercero de confianza).
 - [ ] **T4. LP Fundador con lock 365d on-chain** verificable antes del TGE.
 - [ ] **T5. Auditoría externa** completada vía subsidio (Colosseum / Areta / Superteam) — no bloqueante si se hace en paralelo pero no puede saltarse.

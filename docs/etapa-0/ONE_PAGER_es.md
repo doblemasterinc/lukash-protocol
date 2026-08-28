@@ -41,9 +41,9 @@ audiencia <45, trilingüe (ES/EN/PT), sin fronteras.
 
 ## Tracción / estado (Ago 2026)
 - ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + KASH Shield), 3 auditorías internas.
-- ✅ Smart contracts **Milestone 1 compilan** (núcleo económico: distribución, Vault, throttle, timelock, pausa). Deploy a devnet inminente.
+- ✅ Smart contracts **v10.2 desplegados en Solana devnet** (2066+ líneas Anchor/Rust: 4 motores + Vault + KASH Shield + Guardian de Pausa 2-de-3 + oráculos Pyth).
 - ✅ Marca, identidad visual (felino) y diseño de app (Jungle Arena) listos, trilingües.
-- ▶ Siguiente: token $LUKA en devnet, Milestone 2 (SPL/Jupiter/burn/staking/oráculos), auditoría externa vía ruta capital-cero.
+- ▶ Siguiente: auditoría externa pre-TGE, ADR-027 Totem Guard, App Etapa 2A.
 
 ## Modelo y financiación (no dilutiva primero)
 Ecosistema autofinanciado por fases ($500K / $2M / $5M); solo la Fase 1 requiere capital externo. Ruta de

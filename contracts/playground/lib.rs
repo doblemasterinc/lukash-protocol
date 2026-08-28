@@ -1,6 +1,8 @@
 // LUKASH Protocol - Milestone 2 Sprint 5B (version de un solo archivo para Solana Playground)
 // Pegar este archivo COMPLETO en src/lib.rs de un proyecto Anchor en beta.solpg.io y darle Build.
 // Cargo.toml requiere: anchor-lang = "0.30.1" Y anchor-spl = "0.30.1"
+// v10.2: ADR-022 Guardian de Pausa 2-de-3 (antes Tridente 3-de-3). Scope: solo pausa/veto.
+//   ADR-023 Capa 0 eliminada (Motor D fee mínimo 1.5%). ADR-027 Totem Guard placeholder.
 // v10.1: Pyth owner validation movida a runtime (gated por !DEVNET_MODE) — constraint de Anchor
 //   bloqueaba el fallback en devnet. has_one=authority en process_fee/refresh/swaps se mantiene.
 // v10: Security hardening — has_one=authority en process_fee/refresh/swaps, Pyth owner validation,
@@ -248,7 +250,7 @@ pub enum LukashError {
     TridenteSignersMustBeDistinct,
     #[msg("Un firmante del Tridente no puede ser la authority")]
     TridenteSignerCannotBeAuthority,
-    #[msg("Faltan firmas del Tridente (requeridas 3-de-3)")]
+    #[msg("Faltan firmas del Guardian de Pausa (requeridas 2-de-3, ADR-022)")]
     TridenteSignaturesIncomplete,
     #[msg("Etapa 2 requiere el Tridente activado")]
     TridenteRequiredForStage2,
@@ -952,9 +954,10 @@ pub mod lukash_protocol {
         Ok(())
     }
 
-    /// Activa el Tridente Multisig 3-de-3 (ONE-WAY, irreversible). Solo authority.
+    /// Activa el Guardian de Pausa 2-de-3 (ONE-WAY, irreversible). Solo authority. (ADR-022)
     /// Las 3 pubkeys deben ser distintas, no-default, y ninguna == authority.
-    /// Candado estructural: sin Tridente activado, el contrato bloquea el paso a Etapa 2.
+    /// Candado estructural: sin Guardian activado, el contrato bloquea el paso a Etapa 2.
+    /// Sunset en Etapa 3: la DAO asume control.
     pub fn activate_tridente(ctx: Context<AdminOnly>, pk1: Pubkey, pk2: Pubkey, pk3: Pubkey) -> Result<()> {
         let config = &mut ctx.accounts.config;
         require!(!config.tridente_activated, LukashError::TridenteAlreadyActivated);
@@ -975,7 +978,7 @@ pub mod lukash_protocol {
         Ok(())
     }
 
-    /// Cancela el Circuit Breaker del Vault antes de las 24h. Requiere Tridente 3-de-3.
+    /// Cancela el Circuit Breaker del Vault antes de las 24h. Requiere Guardian de Pausa 2-de-3 (ADR-022).
     pub fn cancel_circuit_breaker(ctx: Context<TridenteAction>) -> Result<()> {
         let config = &ctx.accounts.config;
         assert_tridente_signed(config, ctx.remaining_accounts)?;
@@ -992,7 +995,7 @@ pub mod lukash_protocol {
     }
 
     /// Recibe reembolso del seguro anti-exploit al Vault (solo entrada, nunca salida).
-    /// Requiere Tridente 3-de-3. Activo desde Etapa 2B. Max 5% del Vault. Cooldown 12 meses.
+    /// Requiere Guardian de Pausa 2-de-3 (ADR-022). Activo desde Etapa 2B. Max 5% del Vault. Cooldown 12 meses.
     pub fn receive_insurance_recovery(ctx: Context<TridenteAction>, amount_usdc: u64) -> Result<()> {
         require!(amount_usdc > 0, LukashError::ZeroAmount);
         let config = &ctx.accounts.config;
@@ -1024,6 +1027,14 @@ pub mod lukash_protocol {
         emit!(InsuranceRecoveryReceived { amount_usdc, cap_at_event: max_recovery, ts: now });
         Ok(())
     }
+
+    // ── ADR-027: Totem Guard (seguro paramétrico para cNFTs) ──────────────
+    // Placeholder — implementación completa requiere:
+    //   1. PDA "totem_guard_pool" para el pool interno
+    //   2. Instrucción collect_totem_premium (cobra prima al mintear/renovar Tótem)
+    //   3. Instrucción trigger_totem_payout (pago automático vía oráculo ante depeg >5%/24h)
+    //   4. Integración con capa externa (Nexus Mutual / InsurAce)
+    // Activo desde Etapa 2B. Pool financiado por 10% de primas externas + porción fees Motor D.
 
     /// Actualiza el régimen de mercado (módulo contra-cíclico LUKAI, 07-e).
     /// Firmante = authority (keeper LUKAI). Típicamente 1×/día.
@@ -1580,13 +1591,15 @@ fn pyth_price_to_usd6(price_raw: i64, expo: i32) -> Result<u64> {
     }
 }
 
-/// Verifica que las 3 firmas del Tridente estén presentes en la transacción (07-c).
+/// Verifica que al menos 2 de 3 firmas del Guardian de Pausa estén presentes (ADR-022).
+/// Scope: solo puede pausar operaciones y vetar propuestas (no ejecutar ni reconfigurar).
 fn assert_tridente_signed(cfg: &ProtocolConfig, remaining: &[AccountInfo]) -> Result<()> {
     require!(cfg.tridente_activated, LukashError::TridenteNotActivated);
     let s1 = remaining.iter().any(|a| a.key == &cfg.tridente_signer_1 && a.is_signer);
     let s2 = remaining.iter().any(|a| a.key == &cfg.tridente_signer_2 && a.is_signer);
     let s3 = remaining.iter().any(|a| a.key == &cfg.tridente_signer_3 && a.is_signer);
-    require!(s1 && s2 && s3, LukashError::TridenteSignaturesIncomplete);
+    let count = s1 as u8 + s2 as u8 + s3 as u8;
+    require!(count >= 2, LukashError::TridenteSignaturesIncomplete);
     Ok(())
 }
 
@@ -1696,7 +1709,7 @@ fn compute_fee_bps(stage: u8, motor: u8, layer: u8, currency: u8, is_wl: bool) -
         3 => {
             require!(stage >= 2, LukashError::MotorNotActiveInStage); // Motor D desde Etapa 2A
             match layer {
-                0 => Ok(0),                                          // Capa 0: exención total
+                0 => Ok(150),                                        // ADR-023: Capa 0 eliminada, redirige a Capa 1 (1.5%)
                 1 => Ok(150),                                        // Capa 1: DeFi interno premium
                 2 => Ok(if currency == 0 { 300 } else { 350 }),      // Capa 2: 3% $LUKA / 3.5% SOL-USDC
                 3 => Ok(150),                                        // Capa 3A: DeFi externo en $LUKA

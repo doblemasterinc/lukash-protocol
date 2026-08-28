@@ -1,7 +1,7 @@
 """
-LUKASH PROTOCOL v4.2 — Simulacion Monte Carlo FINAL (v4)
+LUKASH PROTOCOL v4.3 — Simulacion Monte Carlo (v4.3)
 =========================================================
-Ing. Sebastian Botero Pabon | Marzo 2026
+Ing. Sebastian Botero Pabon | Agosto 2026
 
 MODELO RIGUROSO:
   1. Vault en USD con apreciacion correcta (buckets USD * precio_relativo)
@@ -49,7 +49,7 @@ P = {
     # Vault
     "vault_ini":                    200_000,   # $200K real de Fase 1
     "cbtc_pct":  0.35, "sol_pct":   0.15, "lst_pct":  0.20,
-    "usdc_r_pct":0.25, "usdc_l_pct":0.05, "pyth_pct": 0.05,
+    "usdc_r_pct":0.25, "usdc_l_pct":0.05, "pyth_pct": 0.00,  # v4.3: oraculos son O&M, no reserva
 
     # Yields
     "yield_lst":   0.07, "yield_len": 0.06,
@@ -78,7 +78,8 @@ P = {
     "th_acel": 1.20, "th_cons": 0.80, "th_def": 0.50,
     "q_acel":  1.25, "q_norm":  1.00, "q_cons": 0.60, "q_def": 0.25,
     "cap_q":   0.01,   # cap 1% supply/dia
-    "cola_liq_dia": 0.10/7,
+    # ADR-016: cola drena en TODOS los modos (tasa/semana)
+    "cola_acel": 0.25/7, "cola_norm": 0.10/7, "cola_cons": 0.05/7, "cola_def": 0.02/7,
 
     # Modulo contra-ciclico
     "cc_bull": 0.40, "cc_neu": 0.75, "cc_bear": 0.70,
@@ -86,10 +87,10 @@ P = {
     # UCR
     "ucr": 0.20,
 
-    # Vesting: 55% del supply tiene cliff 6m + 3 anos lineal
-    "vest_cliff":  180,
-    "vest_dur":   1080,
-    "vest_supply": 0.55,
+    # Vesting: Equipo/Fundador 2% del supply, cliff 12m + lineal 48m (ADR-014)
+    "vest_cliff":  365,
+    "vest_dur":   1460,
+    "vest_supply": 0.02,
     "vest_vende":  {0: 0.12, 1: 0.22, 2: 0.40},  # por regimen
 
     # Prima de mercado del precio $LUKA
@@ -136,7 +137,7 @@ MKT = {
         "ret_mensual":  0.62,
     },
     "BASE": {
-        "desc": "3 KOLs con KASH Lock. 2 MMs desde dia 1. CAC $6. Flywheel moderado.",
+        "desc": "3 KOLs con KASH Lock. Sin MM D1 (ADR-019), contingente mes 2-3. CAC $6.",
         "app_dia":    120,
         "vol_tge":    800_000,
         "vol_pico":  12_000_000,    # 2M/dia en pico — calibrado con JTO/Jito 2024
@@ -149,7 +150,7 @@ MKT = {
         "ret_mensual":  0.72,
     },
     "AGRESIVO": {
-        "desc": "MMs desde D1. KOLs virales. Manadas activas. CAC $4. Flywheel pleno.",
+        "desc": "MM contingente mes 2-3. KOLs virales. Manadas activas. CAC $4. Flywheel pleno.",
         "app_dia":     60,
         "vol_tge":  3_000_000,
         "vol_pico": 60_000_000,    # 0M/dia en pico — comparable WIF primeros 12 meses
@@ -509,9 +510,10 @@ def simular(escenario):
             else:   # B2: recircula — presion compradora sin quema
                 pass   # presion de compra crea demanda en el mercado
 
-            # Cola diferida
-            if cola > 0 and modo_t in [0,1] and p_luka > 0 and supply > P["supply_objetivo"]:
-                liq = cola * P["cola_liq_dia"]
+            # Cola diferida — ADR-016: drena en TODOS los modos con tasa variable
+            if cola > 0 and p_luka > 0 and supply > P["supply_objetivo"]:
+                cola_rates = [P["cola_acel"], P["cola_norm"], P["cola_cons"], P["cola_def"]]
+                liq = cola * cola_rates[modo_t]
                 tok_c = liq / p_luka
                 supply -= min(tok_c, supply-P["supply_objetivo"])
                 cola   -= liq

@@ -325,3 +325,54 @@
 - **Paquete audit-readiness** (`contracts/AUDIT_READINESS.md`): modelo de amenazas, invariantes, matriz de acceso, herramientas gratis, y **rutas de auditoría capital-cero**: gratis (Sec3/Trident) → **subsidio Areta $1M** (Colosseum fast-track) → grants → boutique $5-20K → Immunefi.
 - **Regla de seguridad clave:** en mainnet NUNCA contratos del Vault sin auditar (custodian fondos = honeypot). Devnet sí, libre.
 - **Próxima sesión:** desplegar en DEVNET (programa + token $LUKA para verlo) → herramientas gratis → Milestone 2 → Etapa 0 (pitch deck) + Superteam/Colosseum.
+
+## 2026-08-28 (sesión 17) — Revisión estratégica: costos, inversión, MM/KOL, identidad
+
+- **Recompilación de pendientes:** 36 items en 5 categorías. Artifact publicado.
+- **Revisión BMC v4.2 completa:** 12 secciones analizadas punto por punto. Motores correctos y mejorados.
+  Hallazgo principal: cifra de espiral 44% (CONSERV) vs 0% (BASE/AGRESIVO) confirma que lanzamiento agresivo
+  es condición de supervivencia.
+- **ADR-018 — Redistribución presupuesto $500K:** de 50/25/15/10 → 35/20/30/10/5.
+  Marketing sube de $75K a $150K (incluye MM contingente $40-60K). Tech baja de $250K a $175K
+  (contratos ya 70% hechos). Liquidez $100K (pool Meteora con LP lock permanente).
+- **ADR-019 — Estrategia MM/KOL en 3 fases:**
+  - Fase 1 (TGE): sin MM, Ruta A community-only. KOLs hispanos educativos con $LUKA vesteado.
+  - Fase 2 (mes 2-3): MM contingente (Kairon Labs/Gravity Team) si volumen <$500K/día × 5d.
+  - Fase 3 (mes 4+): CEX listing. Regla confirmada: tokens vesteados = servicios, KASH Sociedad = solo equity.
+- **ADR-020 — Rondas escalonadas:** Seed ángeles $500K por 5-8% (~$6-10M val.) → Estratégica
+  fintech/cooperativas $1-2M por 5-8% (~$15-25M val.). Razón: blockchain primero,
+  entidades financieras después de demostrar tracción (6-12 meses). La revalorización entre
+  rondas es el incentivo de early-stage.
+- **ADR-021 — Identidad fundador:** pseudónimo conocido con exposición escalonada. Inversores ven
+  identidad completa (KYC). Comunidad ve alias + voz. LinkedIn no menciona LUKASH en etapas tempranas.
+  Doxx público se evalúa en mes 6-12.
+- **Plan de trabajo continuo** definido en `tasks/todo.md`: 7 fases (A decisiones → B inversión →
+  C pre-lanzamiento → D técnica → E TGE → F post-TGE → G ronda estratégica).
+- **Conversación compartida de claude.ai leída:** concepto sandbox/DeFi Land híbrido (juego + finanzas reales
+  en paralelo, Manadas duales, LUKAI dual personality). Referencia para diseño de gaming.
+- **Documento CONCEPTO_OBJETIVO_SOCIO leído:** evaluación franca como socio (8/10 concepto, 3/10 ejecución
+  alcance completo, 6/10 con foco radical). Confirma: volumen es riesgo existencial #1, foco en UN loop primero.
+- **Pendiente activo:** gaming/misiones, Tótems como instrumentos DeFi, seguro digital, Manadas, sandbox
+  híbrido → para consolidar en BMC v4.3.
+- **Artefacto actualizado:** plan de trabajo 7 fases (A-G) con 55+ items, decisiones marcadas como
+  completadas. URL: https://claude.ai/code/artifact/8b8b0623-e5fe-4f4d-bab9-d16497d0ac73
+- **BMC v4.3 redactado:** `docs/protocolo/LUKASH_BMC_v4_3.md` (851 líneas, 15 secciones).
+  Incorpora los 12 cambios v4.2→v4.3: rebrand, Aura 7 niveles, redistribución $500K, MM/KOL 3 fases,
+  rondas escalonadas, identidad pseudónima, Vault corregido, Token-2022, Equipo 2%, Tótems, KASH Shield,
+  lanzamiento faseado. Pendiente de revisión del fundador y ajuste post-definición de A8-A12.
+
+## 2026-08-28 — Consolidación ADRs 017-027 en toda la documentación
+- **Protocolo v4.3** actualizado con todos los ADRs 017-027: Guardian de Pausa 2-de-3 (ADR-022),
+  eliminación Capa 0 (ADR-023), Tótems con tiers Bronce/Plata/Oro + Avatar NFT (ADR-024),
+  Sellos de Manada (ADR-025), Totem Guard seguro paramétrico (ADR-027), cola drena todos modos (ADR-016),
+  TGE sin MM (ADR-019), presupuesto redistributed (ADR-018). Change log C12-C20 agregado.
+- **BMC v4.3** actualizado: eliminadas referencias MC v3.1 del header/footer, reemplazadas por
+  verificación devnet. Sección 10 renombrada "Validación Técnica" con tabla devnet. Tridente→Guardian
+  en toda la sección de recursos. Nota de reconciliación pendiente en proyecciones económicas.
+- **Presentación v4.3** limpiada: cero referencias a jaguar, Monte Carlo, $LKS, 113x. Slide tracción
+  reescrito con logros devnet. LUKAI responses actualizados.
+- **MC script v4.3**: parámetros actualizados (pyth_pct→0, vesting equipo 2%/cliff 12m/lineal 48m,
+  cola drena todos modos con tasas variables, escenarios sin MM D1).
+- **Contratos v10.2**: assert_tridente_signed → 2-de-3 (ADR-022), Capa 0 Motor D redirigida a
+  Capa 1 1.5% (ADR-023), placeholder Totem Guard (ADR-027). Header actualizado.
+- **ONE_PAGER_es.md**: "Deploy inminente" → "v10.2 desplegados en devnet".

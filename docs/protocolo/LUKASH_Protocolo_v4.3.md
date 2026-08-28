@@ -23,7 +23,16 @@
 | C8 | **Ticker** | "$Lukas"/"$LUKA" mezclados en material viejo | **$LUKA** canónico |
 | C9 | **Cifras Monte Carlo** | Atribuidas al modelo v4.2 | Etiquetadas como **modelo conservador v3.1** — reconciliación pendiente (ver `audits/AUDITORIA_COMPLEMENTARIA.md`) |
 | C10 | **Anti-Whale** | Fee por **% del supply**, sin distinguir compra/venta | Solo **ventas/transferencias** (no compras) + umbral por **% del pool de liquidez** (no supply, que era brutal al inicio y laxo después) + fix nombre exención (Titán ≥25,000). Exit Fee se mantiene en 5% para Génesis. |
-| C11 | **Seguro Anti-Exploit** | v4.2 lo redujo a *"Cobertura hasta 5%. Renovación anual obligatoria"* — perdió las 3 condiciones de v1.0/v4.1 | **Restaurado (ADR-015)**: 5% Vault · **máx 1 evento cada 12 meses** · **activo desde Etapa 2B** (opción B: condición on-chain, no calendario ambiguo "año 1") · DAO redefine en Etapa 4. Auditor(a) externa **desacoplado** — Halborn/OtterSec eran arrastres de v2.1, no decisión formal; a cotizar pre-TGE. Tridente 3-de-3 ratificado; **firmantes concretos pendientes**. |
+| C11 | **Seguro Anti-Exploit** | v4.2 lo redujo a *"Cobertura hasta 5%. Renovación anual obligatoria"* — perdió las 3 condiciones de v1.0/v4.1 | **Restaurado (ADR-015)**: 5% Vault · **máx 1 evento cada 12 meses** · **activo desde Etapa 2B** (opción B: condición on-chain, no calendario ambiguo "año 1") · DAO redefine en Etapa 4. Auditor(a) externa **desacoplado** — Halborn/OtterSec eran arrastres de v2.1, no decisión formal; a cotizar pre-TGE. |
+| C12 | **Rebrand completo (ADR-017)** | Terminología "jaguar" en seguridad, productos, narrativa | Eliminación total de la palabra. KASH Shield, KASH Lock, Tótems, LUKASH Pay/Chat/Games, LUKAI. Narrativa: Camino del Rugido, El Rugido de la Manada, Rugidores |
+| C13 | **Tridente → Guardian de Pausa (ADR-022)** | Tridente Multisig 3-de-3 con poderes amplios | **Guardian de Pausa 2-de-3.** Solo puede pausar y vetar (no mover fondos ni modificar parámetros). Sunset automático en Etapa 3 o por voto DAO |
+| C14 | **Capa 0 eliminada (ADR-023)** | Motor D Capa 0: staking puro, fee 0% | **Eliminada.** Staking solo vía Tótems (Capa 1, fee 1.5%). Cada depósito alimenta la Reserva desde la primera interacción |
+| C15 | **Tótems con tiers (ADR-024)** | cNFTs sin diferenciación visual | 3 tiers por tipo: Bronce/Plata/Oro por monto. Avatar NFT separado (identidad, uno por usuario, evoluciona con Aura) |
+| C16 | **Sellos de Manada (ADR-025)** | No existían | cNFT de membresía. 5 tipos: Vaca, Fondo, Negocio, Evento, Club. Motor D Capa 2. Líder requiere Aura ≥ Cazador |
+| C17 | **Totem Guard (ADR-027)** | No existía seguro individual | Seguro paramétrico opt-in. Dos capas: póliza externa (O&M) + Pool Totem Guard (micro-primas). Payout automático. La Reserva NO se toca |
+| C18 | **Presupuesto $500K (ADR-018)** | App 50% / Liquidez 25% / Marketing 15% / Legal 10% | Tech 35% / Marketing+MM 30% / Liquidez 20% / Legal 10% / Reserva 5% |
+| C19 | **Drenaje cola (ADR-016)** | Cola drena solo al normalizar (≤10%/sem) | Drenaje en TODOS los modos: ACEL 25%/sem · NORM 10% · CONS 5% · DEF 2% |
+| C20 | **MM/KOL (ADR-019)** | MMs desde TGE | TGE sin MM (community-only). MM contingente mes 2-3 si vol <$500K/día×5d. KOLs en $LUKA vesteado |
 
 ---
 
@@ -49,13 +58,12 @@ reserva creciente. El hype es el bootstrapping, no el producto. *(Narrativa comp
 
 | Capa | Servicio | Fee $LUKA | Fee SOL/USDC | Identidad / gate |
 | --- | --- | --- | --- | --- |
-| **0** | Staking $LUKA / Pools internos | **0%** | N/A | Base silenciosa. Exención absoluta e incondicional (no modificable por gobernanza) |
-| **1** | DeFi interno premium en $LUKA | 1.5% | — | Club privado. Gated por cNFT Tótem Universal (**Aura ≥ 500 = nivel Rastreador**). APY variable |
+| **1** | DeFi interno premium en $LUKA (Tótem Nativo + Universal) | 1.5% | — | Gated por cNFT Tótem Universal (**Aura ≥ 500 = nivel Rastreador**). APY variable. Todo depósito alimenta la Reserva |
 | **2** | Servicios cotidianos: Crowdfunding, Crowdlending, Fondos, Seguros, Eventos, Marketplaces, Jungle Arena, Bet & Win | **3%** | 3.5% | Corazón de la comunidad. Motor de adopción masiva |
 | **3A** | DeFi externo en $LUKA (Kamino, Marginfi, RWA) | 1.5% | swap previo sin cargo + 1.5% | Puente soberano. Rendimiento externo 100% al usuario |
 | **3B** | DeFi externo SOL/USDC | N/A | 2% | Puerta de entrada sin $LUKA. **Idéntico al Motor C en mecánica de distribución** (no en tasa: fee 2%) |
 
-Reglas: Capa 0 exención absoluta · diferencial 0.5% siempre a favor de $LUKA · en 3A/3B LUKAI hace el swap interno sin cobro adicional (routing contable).
+Reglas: diferencial 0.5% siempre a favor de $LUKA · en 3A/3B LUKAI hace el swap interno sin cobro adicional (routing contable). Capa 0 eliminada (ADR-023): staking solo vía Tótems.
 
 ---
 
@@ -150,7 +158,7 @@ Precio KASH. 100% Solana-nativo (sin bridge).
 | --- | --- | --- | --- |
 | **1 — Liquidez Inmediata** | USDC Reserva (25%) | ≈6 meses de gastos operativos. Primera respuesta | Nunca inmovilizado |
 | **2 — Trabajo Activo** | SOL (15%) + SOL/LST (20%) + USDC Lending (5%) = 40% | Rebalanceo gestionado por LUKAI según régimen | Rebalanceo gradual solo con nuevas entradas |
-| **3 — Reserva Profunda** | **cBTC (35%)** | Reserva de último recurso | Solo por Tridente Multisig (3 de 3) en emergencias |
+| **3 — Reserva Profunda** | **cBTC (35%)** | Reserva de último recurso | Solo por Guardian de Pausa (2 de 3, ADR-022) en emergencias. Sunset Etapa 3 |
 
 Suma: 25 + 40 + 35 = **100%**. (cBTC solo en Capa 3.)
 
@@ -211,13 +219,13 @@ Cada fee, en todos los motores y capas, se distribuye: **35% Vault/Asset Layer �
 | **A — El Cazador** | SOL | 4% / 2.5% | TGE | Captura capital especulativo del DEX → Vault |
 | **B — El Motor Interno** | $LUKA | 2.5% / 1.5% | **Etapa 2A** | App: quema (B0) o recircula (B2) |
 | **C — El de Escala** | USDC | 0.5% | Etapa 3 | Pagos masivos → presión de compra |
-| **D — El Alma** | multi | 0%→3.5% | Etapa 2A | Manadas, gaming, cNFTs, DeFi (4 capas) |
+| **D — El Alma** | multi | 1.5%→3.5% | Etapa 2A | Manadas, gaming, Tótems, DeFi (3 capas, Capa 0 eliminada ADR-023) |
 
 ### 6.1 Flujos atómicos (ejemplos)
 - **Motor A** (100 SOL, fee 4 SOL): 1.40 (35%) → activos KASH → Vault Core `[35% cBTC · 25% USDC · 15% SOL · 20% LST · 5% lending]` · 1.40 (35%) → compra $LUKA → BURN · 0.60 (15%) → O&M · 0.60 (15%) → compra $LUKA → Staking.
 - **Motor B:** 35% Asset Layer → Hard Assets (NUNCA quema, sin R_op) · 35% LP → **B0: burn directo a null / B2: recirculación al pool** · 15% staking · 15% O&M. *Inercia estructural en B2 (sin tocar Vault ni R_op): Motor A activo + KASH Exit Fee + Anti-Whale + cola diferida + arbitraje natural.*
 - **Motor C** (fee 0.5% USDC): 35% → Vault (buffer USDC) · 35% → compra $LUKA → LP · 15% O&M · 15% → $LUKA staking.
-- **Motor D:** decisión por capa (0 exento / 1 = 1.5% $LUKA gated / 2 = 3%-3.5% / 3A = 1.5% / 3B = 2%), luego 35/35/15/15.
+- **Motor D:** decisión por capa (1 = 1.5% $LUKA Tótems / 2 = 3%-3.5% Manadas-gaming / 3A = 1.5% / 3B = 2%), luego 35/35/15/15. Capa 0 eliminada (ADR-023).
 
 ---
 
@@ -232,7 +240,7 @@ Cada fee, en todos los motores y capas, se distribuye: **35% Vault/Asset Layer �
 | 0.5×–0.8× | CONSERVADOR | 60% | 40% |
 | P < 0.5× | DEFENSIVO | 25% | 75% |
 
-Cola on-chain pública; se ejecuta ≤10%/semana al normalizar. Modo DEFENSIVO = supervivencia (protege R_op).
+Cola on-chain pública; drena en **todos los modos** (ADR-016): ACEL 25%/sem · NORM 10% · CONS 5% · DEF 2%. Hard-stop ENZ: toda la maquinaria de quema se apaga definitivamente al llegar a 3.3B supply.
 
 **Etapa 3 (post-ENZ)** — lógica INVERTIDA (maximiza valor USD del Vault): BULL acumula USDC · NEUTRAL DCA proporcional · BEAR DCA agresivo de Hard Assets con el USDC acumulado.
 
@@ -246,14 +254,26 @@ Cola on-chain pública; se ejecuta ≤10%/semana al normalizar. Modo DEFENSIVO =
 Los cNFT **no son llaves de acceso**: son instrumentos de inversión (capital + rendimiento). Transferibles,
 auditables, con **disclaimer on-chain obligatorio** (no garantizan rendimiento ni protección de capital).
 
-| Tipo cNFT | Capa | Activo | Fee | Gate de Aura | Tótem (UI) |
+| Tipo cNFT | Capa | Activo | Fee | Gate de Aura | Tiers (ADR-024) |
 | --- | --- | --- | --- | --- | --- |
-| **Tótem Nativo $LUKA** | 0 | $LUKA | 0% | Ninguno (Cachorro) | Bronce |
-| **Tótem Universal** | 1 y 3A | $LUKA | 1.5% | **Aura ≥ 500 (Rastreador)** | Plata/Oro |
-| **Tótem Estándar SOL/USDC** | 3B | SOL/USDC | 2% | Ninguno | — |
+| **Tótem Nativo $LUKA** | 1 | $LUKA | 1.5% | Ninguno (gated por misión educativa) | Bronce 10K / Plata 50K / Oro 100K |
+| **Tótem Universal** | 1 y 3A | $LUKA | 1.5% | **Aura ≥ 500 (Rastreador)** | Bronce 50K / Plata 200K / Oro 500K |
+| **Tótem Estándar SOL/USDC** | 3B | SOL/USDC | 2% | Ninguno | Tiers por definir (Etapa 3) |
+
+> **Capa 0 ELIMINADA (ADR-023):** el staking puro a 0% ya no existe. Toda interacción con Tótems genera fees
+> (1.5% mínimo) que alimentan la Reserva desde el primer depósito. El rendimiento de los holders viene del
+> 15% Staking de todos los demás motores.
 
 Modos de rendimiento: **A — Compuesto** (reinvierte) · **B — Distribución periódica** (paga al holder).
 En Etapa 3, opción C: redimir Modo B y re-emitir Modo A pagando fee de cambio de modo.
+
+**Avatar NFT (ADR-024):** identidad del usuario, separada de los Tótems. Empieza off-chain (gratis), evoluciona
+con Aura. Se puede mintear como NFT completo (Metaplex) tras misión milestone. Uno por usuario, transferible,
+con metadata dinámica. Diferente de Tótem (instrumento financiero, cNFT, múltiples por usuario).
+
+**Sellos de Manada (ADR-025):** cNFT de membresía creado por líder de Manada (Aura ≥ Cazador). 5 tipos:
+Vaca (ahorro grupal), Fondo (crowdlending), Negocio (crowdfunding), Evento (ticket), Club (membresía).
+Fees Motor D Capa 2 (3%/$LUKA). LUKAI como árbitro de disputas.
 
 > **Nombres de marca (Tótems):** Fuego Eterno (cBTC), Espíritu (JitoSOL), Agua Viva (mSOL), USDC Sagrado,
 > Tótem Negro (premium) — capa de UI sobre los 3 tipos técnicos. Ver `brand/DESIGN_TOKENS.md`.
@@ -295,7 +315,8 @@ Umbral gate cNFT Tótem Universal (≥500) preservado de v4.2. Detalle de calibr
 | Oráculos redundantes | TWAP Pyth + Switchboard, umbral 2% |
 | Anti-MEV | Bundles privados Jito |
 | Seguro Anti-Exploit | **Cobertura hasta 5%** del valor total del Vault ante exploits. **Máximo 1 evento cada 12 meses.** **Activo desde Etapa 2B** (K ≥ K_min $25M, Motor B2 activado on-chain). Financiado por auditor(a) externa (Halborn / OtterSec / Sec3 / Zellic / Neodyme o similar — **a cotizar pre-TGE**, sin decisión formal actual). Desde **Etapa 4 (DAO)** la comunidad redefine estas reglas. **Restaurado ADR-015** (las condiciones estaban en v1.0/v4.1 y se perdieron al pasar a v4.2). |
-| Tridente Multisig | **3-de-3** para: activar Capa 3 (cBTC Reserva Profunda), cancelar Circuit Breaker LP, modificar K_min. **Firmantes concretos pendientes pre-TGE** (ADR-015). **Nace INACTIVO** (lógica construida y auditable pero `tridente_activated = false`); instrucción one-way `activate_tridente(pk1, pk2, pk3)` cuando estén los 3 firmantes. **Candado estructural**: el contrato rechaza el paso a Etapa 2 (App launch) si Tridente no está activo — imposible ir a mainnet sin activarlo. |
+| **Guardian de Pausa (ADR-022)** | **2-de-3** reemplaza al Tridente 3-de-3. Scope reducido: solo puede **pausar** operaciones y **vetar** propuestas (NO ejecutar, NO reconfigurar). Firmantes concretos pendientes pre-TGE. Nace INACTIVO; instrucción one-way `activate_guardian(pk1, pk2, pk3)`. Candado: contrato rechaza paso a Etapa 2 si Guardian no está activo. **Sunset en Etapa 3**: la DAO asume control, Guardian desactivado on-chain. |
+| **Totem Guard (ADR-027)** | Seguro paramétrico para cNFTs. **Capa externa**: póliza underwriter (Nexus Mutual / InsurAce). **Capa interna**: pool on-chain (10% de primas externas + porción fees Motor D). Pago automático vía oráculo ante depeg >5%/24h o exploit confirmado. Activo desde Etapa 2B. |
 | **KASH Exit Fee** | Dual: precio <0.7×EMA30 AND venta >0.3% supply/hora → 5%/3%/1% (Et.1/2/3). 100% al Vault Core |
 | **Anti-Whale** | **Solo VENTAS/transferencias** (no compras). Umbral por **% del pool de liquidez** (no del supply): 1-2% pool → 3% · 2-5% → 6% · >5% → 10%, **sobre el excedente**. 100% al Vault Core |
 | **Timelock 48h** | Obligatorio para cambiar K_min, fees, thresholds del Throttle, composición del Vault |
@@ -304,7 +325,7 @@ Umbral gate cNFT Tótem Universal (≥500) preservado de v4.2. Detalle de calibr
 - Swaps internos del Motor D
 - Staking activo
 - LP Comprometido en lock activo · **LP Fundador 365d**
-- **Market Makers registrados en el Tridente Multisig** (registro explícito on-chain, no auto-declarado)
+- **Market Makers registrados por el Guardian de Pausa** (registro explícito on-chain, no auto-declarado)
 - Nivel **Titán** de Aura (Aura ≥25,000, el pináculo; ADR-005/012)
 - **KOLs NO tienen exención**: el mecanismo que los alinea es distinto — reciben tokens **vesteados** (ADR-011) desde el bucket Marketing/CEX 8%, y el vesting on-chain les impide dumpear. El Anti-Whale sí les aplica si intentan vender por encima del umbral.
 
@@ -317,7 +338,7 @@ Umbral gate cNFT Tótem Universal (≥500) preservado de v4.2. Detalle de calibr
 | Etapa | Nombre | Condición | Motores | Capital Inversionistas |
 | --- | --- | --- | --- | --- |
 | 0 | Pre-lanzamiento | Auditoría completa. Vesting on-chain. 4 Frentes listos | — | Capital en KASH Sociedad bajo KASH Lock |
-| 1 | Génesis | TGE. LP en Meteora. MM desde D1 | A | LP Fundador 365d. KASH Shield activo |
+| 1 | Génesis | TGE. LP en Meteora. Community-only, sin MM (ADR-019). MM contingente mes 2-3 | A | LP Fundador 365d. KASH Shield activo |
 | 2A | App / B0 | App lanzada. K < $25M | A + B0 + D | Reserva KASH Shield. LP Comprometido disponible |
 | **2B** | Madurez / B2 | K ≥ $25M (Pyth) | A + B2 + D | **Libera Vault Sociedad: fees líquidos desde mes 13 (hito KASH Lock $30M Core o 12m)** |
 | 3 | Soberanía | K > $50M. Fiat activa | A + B2 + C + D | **Distribución a Sociedad ya activa (desde mes 13). Foco: Motor C y escala** |
@@ -332,6 +353,8 @@ Fase 1 **$500K** (Core & Awareness) · Fase 2 **$2M** (Product & Scale, 400-500K
 (Utilidad en economía real). Solo Fase 1 requiere capital externo; Fases 2-3 se co-financian con el Vault
 Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle componentes: v4.2 §15 / BMC §9.2.)*
 
+**Distribución presupuesto Fase 1 (ADR-018):** Tecnología 35% ($175K) · Marketing y comunidad 30% ($150K) · Liquidez 20% ($100K) · Legal y cumplimiento 10% ($50K) · Reserva operativa 5% ($25K).
+
 ---
 
 ## 13. Parámetros formales — Blueprint de smart contracts (definitivo)
@@ -345,11 +368,11 @@ Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle c
 | Fee Motor A Et.1 / Et.2 | 4.0% / 2.5% | WL 2.5% / 1.5% |
 | Fee Motor B (desde 2A) | 2.5% | WL 1.5% |
 | Fee Motor C (Et.3) | 0.5% | Solo USDC |
-| Fee Motor D | Capa0 0% · Capa1 1.5% · Capa2 3%/3.5% · Capa3A 1.5% · Capa3B 2% | Diferencial 0.5% pro-$LUKA |
+| Fee Motor D | Capa1 1.5% · Capa2 3%/3.5% · Capa3A 1.5% · Capa3B 2% (Capa0 eliminada ADR-023) | Diferencial 0.5% pro-$LUKA |
 | Distribución fees | 35% Vault / 35% LP-Quema / 15% O&M / 15% Staking | Atómica. Split de Fee Vault: 70% Core / 30% Sociedad |
 | **Vault** | cBTC 35 · SOL 15 · LST 20 · USDC reserva 25 · lending 5 = **100%** | Sin oráculos como reserva |
-| Throttle | ACEL 125% (P>1.2×) · NORM 100% · CONS 60%/cola40% · DEF 25%/cola75% | Vía LUKAI + Pyth. Cola ≤10%/sem |
-| Circuit Breaker LP | Delay 12h (>15%/4h) · 48h (>30%/24h) | Override Tridente |
+| Throttle | ACEL 125% (P>1.2×) · NORM 100% · CONS 60%/cola40% · DEF 25%/cola75%. Cola drena en TODOS los modos (ADR-016): ACEL 25%/sem · NORM 10% · CONS 5% · DEF 2% | Vía LUKAI + Pyth |
+| Circuit Breaker LP | Delay 12h (>15%/4h) · 48h (>30%/24h) | Override Guardian de Pausa (ADR-022) |
 | UCR | 20% de R_op → Recarga Forzada 15% yield/sem | |
 | Cap burn diario | 1% supply/día | Exceso al día siguiente |
 | KASH Exit Fee | precio<0.7×EMA30 AND venta>0.3% supply/h → 5/3/1% | 100% al Vault Core |
@@ -361,11 +384,14 @@ Sociedad. CAC: $5-9 (Et.1) → $3-5 (Et.2 viral) → $1 (orgánico). *(Detalle c
 ---
 
 ## 14. Riesgos (resumen) — ver `audits/` para el detalle
-- Espiral de muerte: ~1.4% transición B0→B2, <0.5% B2 consolidado *(cifras v3.1)*.
+- Espiral de muerte: ~1.4% transición B0→B2, <0.5% B2 consolidado *(cifras v3.1 — pendiente reconciliar con MC v4.3)*.
 - **Abiertos (heredados de auditorías v3, no cerrados por v4.x):** auditoría de contratos + seguro anti-exploit
   (bloqueante TGE), oráculo único Pyth sin fallback implementado, correlación Vault ~90%, 45% supply circulante
   en TGE sin vesting seed obligatorio, consistencia burn/staking en modo DEFENSIVO. Ver `AUDITORIA_COMPLEMENTARIA.md`.
-- **Provenance Monte Carlo (H10):** las cifras publicadas provienen del modelo conservador v3.1, no del código v4.2. Reconciliación pendiente.
+- **Provenance Monte Carlo (H10):** las cifras publicadas provienen del modelo v3.1. El MC debe actualizarse a
+  v4.3 (ADR-016 cola drena todos modos, ADR-022 Guardian, ADR-023 sin Capa 0, ADR-019 TGE sin MM).
+- **Guardian de Pausa (ADR-022):** quorum reducido (2-de-3) es más ágil pero el scope está limitado a
+  pausa/veto para compensar. Sunset en Etapa 3 (DAO).
 
 ---
 
@@ -376,10 +402,12 @@ agregado · usuarios activos mensuales · régimen de mercado LUKAI. *(Umbrales:
 ---
 
 ## Apéndice — Pendientes para implementación
-**Bloqueantes smart contract:** mercado secundario cNFT · frecuencia Modo B · reconciliación Monte Carlo (H10).
+**Bloqueantes smart contract:** mercado secundario cNFT · frecuencia Modo B · reconciliación Monte Carlo (H10) ·
+ADR-022 Guardian 2-de-3 (reemplazar Tridente en v10) · ADR-023 eliminar Capa 0 de Motor D · ADR-027 Pool Totem Guard.
 **Fase App:** mecánicas detalladas de Jungle Arena (→ `specs/01-aura-jungle-arena.md`, en diseño) · parámetros de
-Manadas · go-to-market local · yield sharing DeFi externo Capa 3 · recalibración de Aura post-datos reales.
+Manadas · Sellos de Manada (ADR-025) · Avatar NFT (ADR-024) · go-to-market local · yield sharing DeFi externo Capa 3 ·
+recalibración de Aura post-datos reales.
 
 ---
-*LUKASH Protocol v4.3 — Arquitectura Canónica de Implementación. Correcciones de auditoría 2026-08-19 aplicadas.
+*LUKASH Protocol v4.3 — Arquitectura Canónica de Implementación. ADRs 001-027 integrados, 2026-08-28.
 Ing. Sebastián Botero Pabón — Arquitecto del Protocolo.*

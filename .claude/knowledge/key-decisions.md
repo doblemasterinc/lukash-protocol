@@ -207,3 +207,185 @@ palabra, no la imagen. Cambios aplicados en contratos, specs, audits, brand, lan
 Archivos históricos (`extracted/historial/`, `docs/presentaciones/`, `docs/app/`) conservan la terminología
 original como registro. La única mención permitida de "jaguar" en docs activos es como referencia al
 motivo del cambio (ej: "la palabra jaguar fue eliminada porque...").
+
+## ADR-018: Redistribución del presupuesto $500K (2026-08-28) — Aprobado por Sebastián
+La distribución original (App 50% / Liquidez 25% / Marketing 15% / Legal 10%) subdimensionaba
+marketing dado que las simulaciones muestran 44% espiral de muerte con campaña débil vs 0% con
+moderada/agresiva. Nueva distribución:
+- **App/Tech 35% ($175K):** contratos ya 70% hechos, auditoría boutique $15-25K, frontend MVP, LUKAI v1.
+- **Liquidez inicial 20% ($100K):** pool $LUKA/SOL en Meteora con LP lock permanente.
+- **Marketing + MM contingente 30% ($150K):** KOLs hispanos (tokens vesteados, $0 cash), plataformas
+  orgánicas, community manager, ads, MM contingente $40-60K (activar solo si volumen <$500K/día por 5d),
+  CEX listing $30K.
+- **Legal 10% ($50K):** abogado cripto, entidad El Salvador, framing regulatorio.
+- **Reserva operativa 5% ($25K):** O&M fundador meses 1-6, emergencias.
+
+## ADR-019: Estrategia MM/KOL en 3 fases — separación servicios vs equity (2026-08-28) — Aprobado por Sebastián
+Confirma y extiende la regla de sesión 4: **tokens vesteados = pago por servicio (MM/KOLs).
+KASH Sociedad = solo para capital/largo plazo (inversores).** Nunca mezclar.
+- **Fase 1 (TGE, día 1-30):** Sin MM. Ruta A community-only con liquidez propia ($100K).
+  KOLs hispanos educativos pagados en $LUKA vesteado (cliff 6mo + 12mo linear) del pool
+  Marketing/CEX (8% supply). Prioridad: Hugo Botto, Catalina Castro, Daniel Muvdi, Criptolawyer.
+- **Fase 2 (mes 2-3):** MM contingente (Kairon Labs o Gravity Team). Modelo loan + call option
+  (1-3% supply como inventario). Gate de activación: volumen diario <$500K por 5 días consecutivos.
+  Compatible con fair launch (ADR-011).
+- **Fase 3 (mes 4+):** CEX listing (MEXC/Gate.io). Algunos listan gratis si volumen >$500K/día.
+
+## ADR-020: Rondas de inversión escalonadas + roadmap KASH Sociedad (2026-08-28) — Aprobado por Sebastián
+El KASH Sociedad (30% de los fees del protocolo) se distribuye en rondas con valoración creciente:
+- **Ronda Seed (pre-TGE):** ángeles cripto-nativos, $500K por 5-8%, valoración implícita ~$6-10M.
+- **Ronda Estratégica (mes 6-12, post-tracción):** entidades financieras LatAm (fintechs, cooperativas,
+  remesadoras), $1-2M por 5-8%, valoración implícita ~$15-25M.
+- **Distribución resultante:** ~17% fundador / 5-8% seed / 5-8% estratégica / ~6-13% reserva DAO/futuro.
+Razón del escalonamiento: (1) inversores ángeles invierten en visión y diseño, entidades financieras
+invierten en tracción demostrada; (2) la naturaleza blockchain exige legitimidad en el ecosistema cripto
+ANTES de buscar socios TradFi; (3) la revalorización entre rondas es el incentivo de early-stage para ángeles.
+
+## ADR-021: Identidad del fundador — pseudónimo conocido (2026-08-28) — Aprobado por Sebastián
+El fundador opera con exposición escalonada por niveles de confianza:
+- **Inversores/legal/auditoría:** identidad completa (KYC, contrato).
+- **Equipo/socios:** nombre real, comunicación directa.
+- **Comunidad pública:** alias consistente + voz (AMAs sin cámara), historial verificable del proyecto.
+- **Prensa/redes:** el proyecto y su narrativa, no la persona.
+Razones: seguridad personal en LatAm, flexibilidad regulatoria pre-framing legal, protección ante
+phishing/extorsión dirigida. Se re-evalúa el doxx público en mes 6-12 según tracción y contexto.
+LinkedIn/perfil profesional NO menciona LUKASH en etapas tempranas.
+
+## ADR-022: Tridente → Guardian de Pausa con sunset (2026-08-28) — Aprobado por Sebastián
+El Tridente Multisig se redefine como **Guardian de Pausa** con alcance ultra-limitado:
+- **Solo puede:** pausar el protocolo + vetar operaciones pendientes en timelock.
+- **No puede:** mover fondos, modificar parámetros, hacer upgrades.
+- **Firma:** 2-de-3 (antes 3-de-3). Tolera la pérdida de un firmante.
+- **Sunset automático:** se desactiva on-chain al llegar a Etapa 3 (K>$50M) o cuando el DAO lo vote.
+Razón del cambio: reducir superficie regulatoria (no controla fondos → debilita argumento Howey de
+"esfuerzos de otros"), menor dependencia operativa, y mantener la red de seguridad contra exploits
+zero-day que los mecanismos automáticos (CB, Exit Fee, Anti-Whale) no pueden detectar. El candado
+estructural que bloquea Etapa 2 sin Tridente activado se mantiene.
+
+## ADR-023: Eliminación de Capa 0 — staking solo a través de Tótems (2026-08-28) — Aprobado por Sebastián
+La Capa 0 del Motor D (staking puro, fee 0%, "exención absoluta e incondicional") se **elimina**. El staking
+deja de existir como producto independiente. La única forma de stakear $LUKA es depositando en un **Tótem
+Nativo** (Capa 1, fee 1.5%). Motor D queda con 3 capas: Capa 1 (1.5%), Capa 2 (3%/3.5%), Capas 3A/3B
+(1.5%/2%). Razones: (1) simplifica la UX — el usuario no necesita entender "staking", solo Tótems;
+(2) cada depósito alimenta la Reserva Sagrada (35/35/15/15 desde la primera interacción); (3) elimina el
+riesgo de que staking masivo a 0% deje al protocolo sin generación de fees en ese tramo. El rendimiento
+de los holders de Tótems sigue viniendo del 15% Staking de todos los demás motores.
+
+## ADR-024: Tótems con tiers visuales por monto + Avatar como identidad NFT (2026-08-28) — Aprobado por Sebastián
+**Tótems por tiers:** Cada categoría de Tótem (Nativo, Universal, Estándar) tiene 3 tiers visuales
+diferenciados por monto de depósito. Misma mecánica, mismo fee, mismo rendimiento proporcional — la
+diferencia es estética (color/aspecto) y de capital comprometido:
+- **Nativo:** Bronce (10K $LUKA) / Plata (50K) / Oro (100K). Fee 1.5%. Sin requisito de Aura.
+- **Universal:** Bronce (50K $LUKA) / Plata (200K) / Oro (500K). Fee 1.5%. Aura ≥500.
+- **Estándar:** Tiers y montos por definir en SOL/USDC. Fee 2%. Etapa 3.
+Montos de referencia, ajustables pre-TGE. El usuario elige su compromiso; el tier es aspiracional y
+coleccionable. Se puede depositar más LUKA después para subir de tier.
+
+**Avatar = identidad del usuario, separada de los Tótems:**
+- Al crear cuenta, el usuario recibe un **avatar in-app** (off-chain, sin costo). Evoluciona visualmente
+  con el Aura (Cachorro → ... → Titán). Representa al usuario en Duelos, Manadas y leaderboards.
+- Después de una misión milestone (por definir: Aura ≥500 o misión específica), el avatar puede
+  **mintearse como NFT completo** (Metaplex, no comprimido) pagando un monto en $LUKA (fee por definir).
+- El NFT Avatar es **identidad on-chain**: uno por usuario, único, transferible, con metadata dinámica
+  que refleja el Aura actual. Diferente de los Tótems (instrumentos financieros, cNFTs, múltiples por usuario).
+- Mercado secundario: un Avatar con historial de Shamán o Titán tiene valor intrínseco (reputación incluida).
+
+**Tótem Nativo gated por misión educativa:** El primer Tótem Nativo no se compra desde un menú — se
+desbloquea al completar las primeras misiones del Sendero del Aprendiz (LUKAI explica qué es un Tótem,
+cómo funciona, qué genera). Al final de la misión se ofrece la compra en 3 tiers (Bronce/Plata/Oro).
+
+## ADR-025: Sellos de Manada — cNFT custom para membresía y acceso (2026-08-28) — Aprobado por Sebastián
+Se crea una nueva categoría de cNFT: el **Sello de Manada**, creado por el líder de una Manada para
+representar y distribuir membresía/acceso. El nombre visible lo define el creador; el sistema lo
+llama "Sello" internamente. Requisito para crear: Aura ≥ Cazador (1,500+).
+
+**Tipos de Manada que el Sello habilita:**
+- **Vaca:** ahorro grupal para una meta (fin de año, vacaciones). El Sello = tu cuota.
+- **Fondo:** crowdlending entre miembros. El Sello = tu participación.
+- **Negocio:** crowdfunding. El Sello = tu stake en el proyecto.
+- **Evento:** ticket de acceso verificable on-chain, revendible.
+- **Club:** membresía abierta con acceso a marketplace interno, descuentos, votación.
+
+El líder configura: tipo, cupo máximo, aporte mínimo/máximo, duración, meta de capital, arte del Sello.
+Todos los fees pasan por Motor D Capa 2 (3% en $LUKA / 3.5% en SOL) → distribución 35/35/15/15.
+LUKAI actúa como árbitro de disputas (P2P entre miembros — el protocolo NO presta ni capta).
+Las Manadas son funcionalidad core desde el lanzamiento de la App/Web.
+
+## ADR-026: Educación financiera multi-track + gaming integrado (2026-08-28) — Aprobado por Sebastián
+LUKASH incluye un sistema completo de educación financiera gamificada con **múltiples tracks en paralelo**
+(no secuenciales). El usuario avanza simultáneamente en cada área según su interés:
+
+**4 tracks con niveles progresivos (fácil → experto):**
+- **Finanzas personales:** ahorro, presupuesto, deuda, fondo de emergencia, inversión, planificación fiscal.
+- **Finanzas del ciudadano:** bancos, tasas, inflación, impuestos, política monetaria, macroeconomía.
+- **Cripto y blockchain:** Bitcoin, wallets, exchanges, seguridad, DeFi, smart contracts, auditoría.
+- **LUKASH:** Reserva Sagrada, Tótems, Manadas, Motores, Capas, DAO.
+
+**Formato:** lecciones cortas (2-3 min), formato tipo TikTok (video + reto), generadas/personalizadas
+por LUKAI. Streaks por días consecutivos. Cada lección da XP al Tótem (habilidades) y Aura al usuario.
+LUKAI detecta el nivel del usuario en cada track y sugiere la próxima lección.
+
+**Gaming (Jungle Arena) integrado:**
+- **Duelo de Tótems:** tu criatura vs otra, stats basados en actividad real, apuesta en LUKA.
+- **Caza del Tesoro:** LUKAI esconde drops, pistas diarias, consume Energía.
+- **Conquista de Territorio:** Manadas reclaman zonas en un mapa con Stake de Batalla.
+- **Predicción Relámpago:** ¿sube o baja? 1 predicción diaria, streak.
+- **Misiones de LUKAI:** retos personalizados diarios (ahorra, invita, aprende, comparte).
+- **Retos virales / Proof of Roar:** contenido verificable sobre LUKASH → validado por LUKAI → Aura.
+- **Battle Pass mensual ("Temporada de Caza"):** track gratuito + premium, misiones estacionales.
+
+Toda la actividad de gaming opera en Motor D Capa 2 (3% $LUKA). La educación financiera ocurre como
+consecuencia del juego — el gameplay es lo primero, divertido para un joven de 13 años y para un
+adulto. Las lecciones no son quizzes aburridos sino retos interactivos y visuales.
+
+## ADR-027: Totem Guard — seguro digital con reaseguro externo (2026-08-28) — Aprobado por Sebastián
+Sistema de protección de activos digitales en dos capas con mecanismo de reaseguro:
+
+**(1) Capa 1 — Póliza externa de activos digitales (financiada por O&M):**
+- Un porcentaje del 15% O&M (por definir pre-TGE, estimado 5-10% del O&M) se destina a contratar
+  una **póliza real de activos digitales** con proveedor externo especializado (a cotizar: Evertas,
+  Coincover, Aon Digital, Nexus Mutual, u otro).
+- Cubre: **Vault KASH Core** contra exploits de smart contract, hacks, manipulación de oráculos.
+- Reemplaza la frase histórica "financiado por Halborn u OtterSec" (que ADR-015(3) ya aclaró no era
+  decisión formal) con un mecanismo real de financiación.
+- Activa desde que O&M genere ingresos suficientes (Etapa 2A en adelante).
+- Esta póliza actúa como **reaseguro** del producto interno Totem Guard.
+
+**(2) Capa 2 — Totem Guard (producto interno para usuarios):**
+- **Qué es:** seguro paramétrico opt-in que protege los Tótems del usuario contra eventos catastróficos.
+- **Activación:** toggle en la App sobre cada Tótem. Periodo de espera: 30 días (anti-gaming).
+- **Prima:** micro-prima periódica (mensual) en $LUKA, proporcional al valor del Tótem.
+  El pago de la prima es transacción Motor D Capa 1 (1.5% fee → distribución 35/35/15/15).
+  La prima neta va al **Pool Totem Guard** (PDA on-chain, auditable).
+- **Primas de referencia** (% mensual del valor del Tótem, moduladas por Aura):
+  Cachorro 0.5% · Rastreador 0.4% · Cazador 0.35% · Alfa 0.3% · Emperador+ 0.25%.
+  Montos ajustables pre-TGE y por gobernanza (Timelock 48h).
+- **Eventos cubiertos** (paramétricos — pago automático, sin claims ni votación):
+  (a) Exploit de smart contract confirmado (Guardian de Pausa activado por 2-de-3).
+  (b) Manipulación de oráculo confirmada (post-mortem verificado por LUKAI + Guardian).
+- **NO cubre:** caída normal de mercado, venta voluntaria, pérdida de wallet/claves, errores del usuario.
+- **Payout:** automático, proporcional al valor asegurado del Tótem al momento del evento.
+  Cobertura máxima: 80% del valor del Tótem. Máx 1 payout cada 12 meses.
+- **Mecanismo de reaseguro:** el Pool Totem Guard está respaldado por la póliza externa (Capa 1).
+  Si un payout excede el pool interno, la póliza externa cubre la diferencia (hasta el límite contratado).
+
+**Cascada ante exploit (concepto aprobado — detalle de cadena pendiente de diseñar):**
+1. Guardian de Pausa se activa (2-de-3) → se congela el protocolo.
+2. Post-mortem confirma exploit → se califica como evento cubierto.
+3. **Primera pérdida → Pool Totem Guard** paga a usuarios asegurados (proporcional a su Tótem).
+4. **Segunda pérdida → Póliza externa (O&M)** cubre el gap si el pool Totem Guard es insuficiente.
+5. **La Reserva Sagrada NO se toca.** El principio "solo crece" es inviolable.
+   El Seguro Anti-Exploit del Vault (ADR-015, 5%) queda como herramienta de última instancia
+   disponible solo para el DAO en Etapa 4 — NO como mecanismo automático pre-DAO.
+
+**Por qué este diseño:**
+- El usuario no financia la póliza externa — sale de O&M (el protocolo se autoasegura).
+- Totem Guard es opt-in — quien quiere protección extra la paga y sus primas alimentan el ecosistema.
+- Paramétrico = sin burocracia, sin claims, pago automático. Simple para un joven de 15 años.
+- Reaseguro cierra el círculo: pool interno no necesita ser gigante.
+- **La Reserva Sagrada nunca se usa para cubrir pérdidas** — las dos capas de seguro existen
+  precisamente para protegerla.
+- Diferenciador: ningún protocolo DeFi en Solana ofrece seguro embebido con reaseguro real.
+
+**PENDIENTE:** diseño detallado de la cadena de cascada (porcentajes, límites por capa, términos
+de la póliza externa, interacción con ADR-015 en contexto DAO Etapa 4).
