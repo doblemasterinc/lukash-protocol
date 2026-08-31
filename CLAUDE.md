@@ -1,8 +1,9 @@
 # CLAUDE.md — LUKASH Protocol
 
-> Ecosistema financiero descentralizado sobre Solana. La puerta de entrada de LatAm
+> Plataforma de inclusión financiera sobre Solana. La puerta de entrada de LatAm
 > a la infraestructura financiera on-chain. Tipo: Propio. Arquitecto: Sebastián Botero Pabón.
 > Tesis: "Las finanzas del futuro, disponibles hoy para toda Latinoamérica."
+> Posicionamiento (ADR-010/028): "Dueño de tu ascenso". Infraestructura monetaria, NO "DeFi protocol".
 
 ## Propósito
 $LUKA es un token deflacionario respaldado por una reserva creciente de activos duros
@@ -25,7 +26,7 @@ mundo institucional ya construye.
   - **Motor A** (El Cazador, SOL, fee 4%/2.5%WL): trading en DEX. Activo desde TGE.
   - **Motor B** (El Motor Interno, $LUKA, 2.5%/1.5%WL): App. B0=quema directa (K<$25M), B2=recirculación (K≥$25M).
   - **Motor C** (El de Escala, USDC, 0.5%): pagos masivos. Fase 3.
-  - **Motor D** (El Alma, multi, 4 capas 0%/1.5%/3-3.5%/1.5%/2%): Manadas, gaming, cNFTs, DeFi.
+  - **Motor D** (El Alma, multi, 4 capas 0%/1.5%/3-3.5%/1.5%/2%): Manadas, gaming, cNFTs, instrumentos financieros.
 - **Vault KASH Core**: cBTC, SOL, LST (JitoSOL/mSOL), USDC reserva, USDC lending, oráculos. K_min=$25M activa Motor B2.
 - **LUKAI**: orquestador de estados on-chain (v1.0, TGE) + interfaz IA conversacional (v2.0, Etapa 2A).
 - **Aura**: reputación financiera on-chain, no transferible. 7 niveles: Cachorro→Rastreador→Cazador→Alfa→Emperador→Shamán→Titán.
@@ -43,14 +44,14 @@ mundo institucional ya construye.
   - Narrativa: Camino del Rugido · El Rugido de la Manada · Rugidores (no "jaguares")
 - Las "misiones para ganar Aura" = las **Misiones de Caza** de Jungle Arena (PENDIENTE de diseño detallado).
 
-## Stack técnico (estándar DeFi Solana)
+## Stack técnico (Solana-nativo)
 - **Smart contracts**: Rust + Anchor. **Primer milestone: Motores A/B/D + Vault + distribución 35/35/15/15 + Throttle en devnet.**
 - **Frontend/SDK**: TypeScript.
 - **Off-chain cache**: Supabase PostgreSQL.
 - **Oráculos**: Pyth Network + Switchboard (redundancia, umbral desviación 2%).
 - **Infra Solana**: Meteora (LP), Jupiter (swaps/routing), Jito (bundles privados anti-MEV), Sanctum (paridad LST), Kamino/Marginfi (lending).
 
-## Reglas duras de implementación (seguridad DeFi — INNEGOCIABLES)
+## Reglas duras de implementación (seguridad smart contracts — INNEGOCIABLES)
 - SIEMPRE auditar access control antes de cualquier deploy.
 - NUNCA deploy en mainnet sin testnet/devnet funcional 2+ semanas.
 - SIEMPRE overflow checks en TODA operación aritmética (montos, fees, distribución).

@@ -390,6 +390,26 @@ Sistema de protección de activos digitales en dos capas con mecanismo de reaseg
 **PENDIENTE:** diseño detallado de la cadena de cascada (porcentajes, límites por capa, términos
 de la póliza externa, interacción con ADR-015 en contexto DAO Etapa 4).
 
+## ADR-029: Totem Guard → ASU + isotipo como base visual de Tótems + 120 misiones (2026-08-31) — Aprobado por Sebastián
+El producto de seguro interno "Totem Guard" pasa a llamarse **ASU** (decisión personal del fundador,
+nombre de marca). La mecánica no cambia (ADR-027). Cambios de naming:
+- **Totem Guard** → **ASU** en toda documentación activa, contratos y UI.
+- **Pool Totem Guard** → **Pool ASU**.
+- La cascada ante exploit: Pool ASU → Póliza externa (O&M) → Reserva NO se toca.
+
+**Isotipo V2 como base visual de Tótems:** el isotipo del proyecto (felino-bóveda-infinito
+ciber-bioluminiscente, `brand/logos/ISOTIPO V2.png`) se usa como modelo base para los Tótems,
+con variaciones de color, tamaño y efectos según categoría (Nativo/Universal/Estándar) y tier
+(Bronce/Plata/Oro). Esto unifica la identidad visual: el Tótem ES el isotipo de LUKASH, no un
+asset genérico. Los assets visuales se generarán con IA de imagen (Midjourney/Leonardo/Ideogram)
+usando el isotipo como prompt base.
+
+**Catálogo de 120 misiones de Aura** creado en `specs/08-catalogo-misiones-aura.md`:
+7 senderos (A. Aprendiz 15 / B. Escuela Financiera 40 / C. Rastro Diario 12 / D. Rugido 18 /
+E. Tótem 10 / F. Manada 12 / G. Estacionales 13). Organizados por nivel de usuario, etapa del
+protocolo y tipo (one-time/diaria/semanal/mensual/evento). ~45 misiones activas desde Etapa 1,
+~100 en Etapa 2A, 120 completas + rotativas mensuales.
+
 ## ADR-028: Narrativa central — Banco Central Optimizado (2026-08-31) — Aprobado por Sebastián
 $LUKA como moneda transaccional con reserva propia replica el modelo de banco central pero
 corrigiendo sus defectos fundamentales:
