@@ -376,3 +376,25 @@
 - **Contratos v10.2**: assert_tridente_signed → 2-de-3 (ADR-022), Capa 0 Motor D redirigida a
   Capa 1 1.5% (ADR-023), placeholder Totem Guard (ADR-027). Header actualizado.
 - **ONE_PAGER_es.md**: "Deploy inminente" → "v10.2 desplegados en devnet".
+
+## 2026-08-31 (sesión 20) — Mockup app v7 + pitch deck v4.3 + grants + investor pipeline
+
+- **Mockup interactivo LUKASH App v7** (artifact `430fa12c`): 6 pestañas funcionales.
+  Home con diseño del artifact original (anillo dorado SVG animado, balance centrado Cinzel 44px,
+  "Rugidor" + badge CAZADOR, 4 botones circulares, actividad reciente) + felino masculino de fondo.
+  Reserva Sagrada (composición Vault), Tótems (isotipo V2, 5 tótems con tiers), Arena (senderos +
+  misión activa), Manadas (raids + duelos), LUKAI (chat Shaman Digital). FAB flotante + 6 tabs.
+  Imágenes reales del concept art embebidas como base64 (~516KB total).
+- **Pitch deck v4.3** completado (12 slides): ADR-028 "Banco Central Optimizado", MC v4.3,
+  KASH Shield, roadmap, ask $500K. HTML + PDF en `docs/`.
+- **Grant applications** redactadas (5): Superteam, Finternet, Solana Foundation, Colosseum,
+  Alliance DAO. En `docs/etapa-0/GRANT_APPLICATIONS.md`.
+- **Investor pipeline** de 36 contactos creado: 6 ángeles tier 1 (Santiago Roel Santos prioridad),
+  6 aceleradoras, 12 fondos, 6 grants, 6 redes.
+- **Angel outreach strategy** en `docs/etapa-0/ANGEL_OUTREACH.md`.
+- **Catálogo de misiones Aura** en `specs/08-catalogo-misiones-aura.md`.
+- **Iteraciones de diseño del mockup:** v3 (básico) → v4 (drawers, rechazado por superpuesto) →
+  v5 (scroll-based) → v6 (tabs nuevas) → v7 (Home original + tabs nuevas fusionadas).
+  Sebastián: "está bien, no es exactamente como quiero pero déjalo así."
+- **Próxima sesión:** (1) buscar inversores activamente (outreach real con pipeline + materiales),
+  (2) convertir mockup en prototipo funcional con misiones de Aura interactivas.

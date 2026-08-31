@@ -82,5 +82,11 @@ En JavaScript del navegador, `top` es una propiedad reservada de `window` (refer
 ## 2026-08-26 (sesión 16) — Fair launch y levantar capital son ejes independientes
 Fair launch = cómo se DISTRIBUYE el token (≥40% público, sin pre-mine concentrado). Levantar capital = cómo se FINANCIA la operación del negocio. Vender un % del Vault Sociedad (fee stream del fundador) a inversores es equivalente a vender equity — no toca la distribución del token ni viola el fair launch. Es un error mental común confundir "fair launch" con "no buscar inversión". Capital → credibilidad → volumen → motor #1 del protocolo.
 
+## 2026-08-31 (sesión 20) — Artifact CSP bloquea imágenes externas; embeber como base64 en CSS vars o img src
+Para mockups con imágenes reales en artifacts de Claude, hay que comprimir las imágenes (JPEG quality ~42, max 750px) y codificarlas como base64 inline (data URIs en CSS custom properties o `<img src="data:...">`). Google Fonts es la única excepción al CSP. Un build script Python que lee .b64 y genera el HTML mantiene el archivo manejable (~500KB con 6 imágenes).
+
+## 2026-08-31 (sesión 20) — ENAMETOOLONG: no pasar HTML gigante como argumento inline de Python
+Al intentar generar un HTML de ~500KB pasando todo como string literal dentro de `python -c "..."` en Bash, el OS rechaza el comando por exceder el límite de longitud de argumentos. Fix: escribir el script Python a un archivo primero, luego ejecutarlo con `python script.py`. Aplica a cualquier generación de archivos grandes.
+
 ## 2026-08-22 (sesión 8) — Cada motor tiene una ventana temporal: no codificar branches para etapas imposibles
 Motor C (motor=2) estaba en el branch de quema junto con Motor A. Pero Motor C solo existe en Etapa 3 (post-ENZ, supply fijo 3.3B), donde toda quema ya se detuvo. El guard ENZ siempre lo captura antes. Lección: al implementar lógica condicional por motor, verificar en QUÉ ETAPA opera cada motor — si un motor solo existe cuando una condición ya está activa (ej. ENZ), incluirlo en el branch alternativo es dead code que confunde el modelo mental. Patrón: Motor A (Etapas 1-3, quema hasta ENZ) · Motor B (Etapa 2+, B0 quema/B2 recircula) · Motor C (Etapa 3 only, post-ENZ, inyección LP) · Motor D (gradual, throttle).
