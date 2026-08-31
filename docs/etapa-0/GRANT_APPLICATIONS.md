@@ -19,11 +19,11 @@
 LUKASH Protocol
 
 **One-liner:**
-Deflationary DeFi protocol on Solana bringing institutional-grade financial infrastructure to 260M underserved Latin Americans.
+Optimized monetary infrastructure on Solana — financial inclusion for 260M underserved Latin Americans.
 
 **Detailed Description:**
 
-LUKASH is a Solana-native DeFi protocol built around $LUKA, a deflationary token backed by the Vault KASH Core — an ever-growing reserve of hard assets (cBTC, SOL, LST, USDC) that is 100% on-chain and auditable in real-time.
+LUKASH is a Solana-native financial platform built around $LUKA, a deflationary transactional currency backed by the Vault KASH Core — an ever-growing reserve of hard assets (cBTC, SOL, LST, USDC) that is 100% on-chain and auditable in real-time.
 
 **The Core Innovation — An Optimized Central Bank:**
 Traditional central banks emit currency against sovereign debt, creating structurally inflationary systems. LUKASH inverts this: the reserve is built by real transactions (35% of every fee flows to the Vault), and the currency is deflationary — supply decreases from 10B to a fixed floor of 3.3B. The result is a transactional currency with a verifiable, growing price floor (P_KASH = Vault / Supply), auditable 24/7 on-chain.
@@ -87,9 +87,9 @@ The Vault KASH Core functions as a transparent, on-chain reserve that anyone can
 
 ### Application Text:
 
-**Project Title:** LUKASH Protocol — DeFi Financial Inclusion for Latin America
+**Project Title:** LUKASH Protocol — Financial Inclusion Infrastructure for Latin America
 
-**Category:** DeFi / Financial Inclusion
+**Category:** Financial Inclusion / Payments
 
 **Abstract:**
 LUKASH is a Solana-native protocol that creates a deflationary transactional currency ($LUKA) backed by a growing hard-asset reserve (Vault KASH Core). Every transaction feeds the vault, burns supply, and rewards participants through an atomic 35/35/15/15 distribution. Smart contracts v10.2 are deployed on devnet with full KASH Shield security (circuit breakers, anti-whale, exit fee, Token-2022 transfer hook, 2-of-3 guardian multisig, Pyth + Switchboard oracle redundancy). Monte Carlo v4.3 simulations (200 iterations × 3 scenarios × 5 years) show 0.0% ruin risk and vault growth of $90M-$1.9B depending on adoption scenario.
@@ -132,7 +132,7 @@ LUKASH is building an "optimized central bank" on Solana for Latin America. Unli
 
 Smart contracts are deployed on devnet (v10.2, ~2,100 lines). Monte Carlo simulations show $90M-$1.9B vault growth at 5 years with 0.0% ruin risk. The protocol includes production-grade security (KASH Shield: 6 layers including circuit breakers, anti-whale, Pyth oracles, and Token-2022 transfer hook).
 
-We're seeking the Colosseum accelerator to fund the external audit, TGE, and initial community growth. The protocol is designed for LatAm's 260M underserved population — the largest untapped DeFi market on Earth.
+We're seeking the Colosseum accelerator to fund the external audit, TGE, and initial community growth. The platform is designed for LatAm's 260M underserved population — the largest untapped financial inclusion market on Earth.
 
 ---
 
@@ -146,13 +146,13 @@ We're seeking the Colosseum accelerator to fund the external audit, TGE, and ini
 ### Short Application:
 
 **What are you building?**
-LUKASH — a deflationary DeFi protocol on Solana that functions as an "optimized central bank" for Latin America. Every transaction builds a growing hard-asset reserve (Vault KASH Core) and burns supply, creating a verifiable price floor. The protocol targets 260M financially underserved Latin Americans with an AI-assisted app (LUKAI) that abstracts blockchain complexity.
+LUKASH — a Solana-native financial platform where every transaction builds a growing hard-asset reserve (Vault KASH Core) and burns supply, creating a verifiable price floor. Think of it as an optimized central bank: the reserve grows from real transactions (not debt), and the currency deflates to a fixed floor instead of inflating. The platform targets 260M financially underserved Latin Americans with an AI-assisted app (LUKAI) that abstracts blockchain complexity.
 
 **What have you built so far?**
 - Complete protocol design (v4.3, 28 architectural decisions)
 - Smart contracts v10.2 on Solana devnet (~2,100 lines Anchor/Rust)
 - 6 Monte Carlo simulations validating economic model (0.0% ruin risk)
-- CI pipeline with DeFi-specific linting and vulnerability scanning
+- CI pipeline with Solana-specific linting and vulnerability scanning
 - Full brand and UI design system (3 languages)
 
 **What's your unfair advantage?**
