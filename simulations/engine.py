@@ -1,5 +1,5 @@
 """
-LUKASH — Motor de simulación FIEL AL CONTRATO (Milestone 1, lib.rs v4.3).
+LUKASH — Motor de simulación FIEL AL CONTRATO (lib.rs v10.2, Protocolo v4.3).
 
 Este módulo replica, línea por línea, la aritmética entera del smart contract
 `contracts/playground/lib.rs`. Todos los montos USD se manejan en enteros de
@@ -54,7 +54,10 @@ BURN_DEF_BPS = 2_500      # 25%
 
 TIMELOCK_SECONDS = 48 * 60 * 60
 WEEK_SECONDS = 7 * 24 * 60 * 60
-QUEUE_DRAIN_BPS = 1_000  # 10% de la cola por semana
+QUEUE_DRAIN_ACCEL_BPS = 2_500  # 25%/sem — euforia (ADR-016)
+QUEUE_DRAIN_NORMAL_BPS = 1_000  # 10%/sem — estable
+QUEUE_DRAIN_CONS_BPS = 500      #  5%/sem — bajista
+QUEUE_DRAIN_DEF_BPS = 200       #  2%/sem — depresión
 
 # Modos del Motor B
 MOTOR_B_B0 = 0
@@ -93,7 +96,7 @@ def compute_fee_bps(stage: int, motor: int, layer: int, currency: int, is_wl: bo
         if stage < 2:
             raise ValueError("MotorNotActiveInStage: D requiere Etapa>=2A")
         if layer == 0:
-            return 0
+            return 150  # ADR-023: Capa 0 eliminada → fee mínimo 1.5% (Tótem Nativo)
         elif layer == 1:
             return 150
         elif layer == 2:
@@ -306,18 +309,23 @@ def switch_motor_b(st: ProtocolState, now_ts: int) -> bool:
 
 def execute_deferred_burn(st: ProtocolState, now_ts: int) -> int:
     """
-    Drena <=10%/semana de la cola cuando el precio se normalizó. Espejo de lib.rs.
+    Drena la cola según modo Throttle (ADR-016: TODOS los modos drenan).
+    ACEL 25% · NORMAL 10% · CONS 5% · DEF 2% por semana. Espejo de lib.rs v10.2.
     Devuelve el monto drenado (0 si no se cumplen condiciones).
     """
     if st.paused:
         return 0
-    if st.throttle_mode not in (THROTTLE_NORMAL, THROTTLE_ACCELERATED):
-        return 0  # ThrottleNotNormalized
     if st.deferred_burn_queue <= 0:
-        return 0  # EmptyQueue
+        return 0
     if (now_ts - st.last_queue_exec_ts) < WEEK_SECONDS:
-        return 0  # QueueCooldown
-    drain = max(1, mul_bps(st.deferred_burn_queue, QUEUE_DRAIN_BPS))
+        return 0
+    drain_bps = {
+        THROTTLE_ACCELERATED: QUEUE_DRAIN_ACCEL_BPS,
+        THROTTLE_NORMAL: QUEUE_DRAIN_NORMAL_BPS,
+        THROTTLE_CONSERVATIVE: QUEUE_DRAIN_CONS_BPS,
+        THROTTLE_DEFENSIVE: QUEUE_DRAIN_DEF_BPS,
+    }.get(st.throttle_mode, QUEUE_DRAIN_DEF_BPS)
+    drain = max(1, mul_bps(st.deferred_burn_queue, drain_bps))
     drain = min(drain, st.deferred_burn_queue)
     st.deferred_burn_queue -= drain
     st.burned_total += drain

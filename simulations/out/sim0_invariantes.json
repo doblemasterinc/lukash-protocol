@@ -5,9 +5,9 @@
       "escenario": "CONSERVADOR",
       "dist_comp_100pct": true,
       "simetria_OM_STK": true,
-      "sym_err": 5.787673630638414e-10,
+      "sym_err": 5.788275170653584e-10,
       "conservacion_LP_35pct": true,
-      "cons_err": 8.204192904403521e-11,
+      "cons_err": 8.21990396081909e-11,
       "supply_piso_3.3B_techo_10B": true,
       "precio>=P_KASH (muro)": true
     },
@@ -15,9 +15,9 @@
       "escenario": "BASE",
       "dist_comp_100pct": true,
       "simetria_OM_STK": true,
-      "sym_err": 1.5698787819153783e-10,
+      "sym_err": 1.570547102533157e-10,
       "conservacion_LP_35pct": true,
-      "cons_err": 2.260395123355452e-11,
+      "cons_err": 2.2618238444040943e-11,
       "supply_piso_3.3B_techo_10B": true,
       "precio>=P_KASH (muro)": true
     },
@@ -25,9 +25,9 @@
       "escenario": "AGRESIVO",
       "dist_comp_100pct": true,
       "simetria_OM_STK": true,
-      "sym_err": 3.431111751339187e-11,
+      "sym_err": 3.433742039961155e-11,
       "conservacion_LP_35pct": true,
-      "cons_err": 4.9126679775327345e-12,
+      "cons_err": 4.913155529496673e-12,
       "supply_piso_3.3B_techo_10B": true,
       "precio>=P_KASH (muro)": true
     }

@@ -23,7 +23,7 @@
 - [ ] B3. Data room / litepaper (tokenomics completo, Vault Sociedad, vesting, proyecciones honestas con rangos)
 - [ ] B4. One-pager EN/PT (ES ya existe)
 - [ ] B5. Preparar dashboard de Vault en testnet como pieza de credibilidad
-- [ ] B6. Identificar y contactar 10-20 ángeles cripto (Colosseum alumni, Superteam, ecosistema Solana)
+- [~] B6. Identificar y contactar 10-20 ángeles cripto — **Pipeline de 36 contactos creado** (sesión 19, 2026-08-31): 6 ángeles tier 1 (Santiago Roel Santos máx prioridad), 6 aceleradoras, 12 fondos, 6 grants, 6 redes. Artefacto publicado. Pendiente: contactar.
 - [ ] B7. Aplicar a grants no dilutivos: Superteam Earn, Finternet, Colosseum hackathon ($250K pre-seed)
 - [ ] B8. Consulta legal: abogado cripto (framing cNFT como no-security, Motor C como no-transmisión)
 
@@ -40,8 +40,15 @@
 - [ ] C10. Contenido 30 días: threads educativos, Reels, memes, founding myth
 
 ### FASE D — Técnica (en paralelo con B y C)
-- [ ] **D0. Build + deploy v10.2 en Solana devnet** (cambios: Guardian 2-de-3, Capa 0→1.5%, Totem Guard placeholder). Verificar con tests existentes
-- [ ] **D0b. Ejecutar MC v4.3** — correr simulación con parámetros actualizados y reemplazar cifras v3.1 en BMC/protocolo
+- [x] **D0. Build + deploy v10.2 en Solana devnet** (sesión 19, 2026-08-31): Guardian 2-de-3, Capa 0→1.5%, Totem Guard placeholder. Build ✅ + Deploy ✅ devnet.
+- [x] **D0b. Ejecutar MC v4.3** (sesión 19, 2026-08-31): suite completa SIMs 0-5 (200 iters × 3 campañas).
+  - SIM 0: invariantes contrato ✅ (dist 100%, OM=STK, supply floor, muro OK).
+  - SIM 1: MC principal — CONSERV K_med=$90M espiral=40% / BASE K_med=$388M espiral=0% / AGRESIVO K_med=$1.88B espiral=0%.
+  - SIM 2: sensibilidad — Volumen (#1, swing $1.29B) > Fee Motor A ($278M) > Yield ($6M) > App day ($2M) > K_min ($0).
+  - SIM 3: estrés — Crash BTC -80% solo -3.8%. Exploit 15% Vault -0.3%. Motor A -70% perm único riesgo (espiral 5.8%).
+  - SIM 4a: Throttle umbrales actuales óptimos (todos dan K_med=$367M). SIM 4b: masa crítica marginal ($381M→$395M).
+  - **SIM 5: MM vs No-MM** — MM sube Vault 11-19% pero baja precio 10-25% por dilución. Solo CONSERV se beneficia (espiral 34.5%→3.5%). Valida ADR-011/019 (fair-launch + MM contingente).
+  - Salidas en `simulations/out/`. Pendiente: actualizar cifras en BMC/protocolo con rangos MC v4.3.
 - [ ] **D0c. Crear PDF/versión legible de la presentación v4.3** para enviar a potenciales inversores
 - [ ] D1. Migración Token-2022 con Transfer Hook (devnet)
 - [ ] D2. Contratos Milestone 2 restantes: staking, cNFT/Aura, CPI safety

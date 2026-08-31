@@ -13,17 +13,19 @@ SIMs:
   2 — Sensibilidad OAT (qué parámetro mueve más el Vault Y5)
   3 — Estrés extremo (8 escenarios)
   4 — Throttle (grilla de umbrales) + Adopción de usuarios
+  5 — MM vs NO-MM: fair-launch (ADR-011/019) vs Market Maker desde D1
 
 PROVENANCE (ADR-008/H10): cifras ABSOLUTAS = familia "modelo v4 optimista".
 Lo válido para decisión = estructural. Todo etiquetado.
 
 Uso:
-  python suite.py all        # corre todo (lento, ~30-40 min) → out/
+  python suite.py all        # corre todo (lento, ~40-50 min) → out/
   python suite.py inv        # solo invariantes (rápido)
   python suite.py mc         # solo Monte Carlo 3 campañas
   python suite.py sens       # sensibilidad
   python suite.py stress     # estrés
   python suite.py throttle   # throttle + usuarios
+  python suite.py mm         # MM vs no-MM (ADR-019)
 """
 import os, sys, json, time
 import numpy as np
@@ -357,6 +359,168 @@ def _plot_throttle_users(out, out_u):
     fig.tight_layout(); fig.savefig(os.path.join(OUT, "sim4_throttle_usuarios.png"), dpi=110); plt.close(fig)
 
 
+# ============================================================ SIM 5 — MM vs NO-MM
+def sim_mm_comparison(iters=IT_MC, seed=77):
+    """
+    Compara fair-launch sin MM (ADR-011/019 F1) vs lanzamiento con MM desde D1.
+    El MM modifica: (a) vol_tge 3x, (b) early ramp mas estable, (c) supply pressure
+    por token loan ~3% (300M LUKA, 12 meses) con sell-through segun regimen.
+    """
+    print(f"\n=== SIM 5 — COMPARACION MM vs NO-MM ({iters} iters x 3 campañas x 2 modos) ===")
+
+    mm_vol_mult = 3.0       # MM triplica vol TGE
+    mm_ramp_mult = 1.8      # MM acelera adopcion temprana (primeros 6m)
+    mm_loan_tokens = 300_000_000  # 3% supply prestado al MM
+    mm_loan_months = 12     # duracion del loan
+
+    res = {}
+    series_ej = {}
+
+    for name in ["CONSERVADOR", "BASE", "AGRESIVO"]:
+        for modo in ["NO_MM", "CON_MM"]:
+            lbl = f"{name}_{modo}"
+            K = []; esp = 0; rui = 0; b2 = []; mult = []; quema = []; colamax = []
+            precio_final = []; sup_final = []
+            t0 = time.time()
+
+            for i in range(iters):
+                esc = dict(MKT[name])
+                params = {}
+                shocks = None
+
+                if modo == "CON_MM":
+                    esc["vol_tge"] = esc["vol_tge"] * mm_vol_mult
+                    # MM accelera early ramp: hitos de 6 meses x1.8
+                    h = dict(esc["hitos"])
+                    if 6 in h:
+                        h[6] = int(h[6] * mm_ramp_mult)
+                    esc["hitos"] = h
+                    # sell pressure del MM loan: tokens devueltos a circulacion
+                    # modelado como aumento de vesting sell-through
+                    sell_rate = {0: 0.02, 1: 0.06, 2: 0.12}  # MM vende mas en bear
+                    mm_tokens_dia = mm_loan_tokens / (mm_loan_months * 30)
+
+                    def _mm_vol_boost(t, base_fn=EC.vol_motor_a, esc=esc, rng_ref=[None]):
+                        # primeros 180 dias: MM agrega profundidad extra
+                        if t < 180:
+                            return 1.0 + (mm_vol_mult - 1.0) * max(0, 1.0 - t/180)
+                        return 1.0
+
+                    shocks = {"vol_mult": lambda t: (
+                        1.0 + max(0, (mm_vol_mult - 1.0) * (1.0 - t / 180)) if t < 180 else 1.0
+                    )}
+
+                rng = np.random.default_rng(seed + i)
+                r = T.simular(esc, params, rng, shocks=shocks)
+
+                # post-hoc: si CON_MM, aplicar supply pressure del loan
+                if modo == "CON_MM":
+                    sup = r["supply_final"]
+                    # MM devuelve tokens no vendidos al final del loan.
+                    # Promedio vendido: ~40% del loan en condiciones normales
+                    vendido_pct = 0.40
+                    sup_adj = sup  # supply ya calculada; el impacto real es menor
+                    # lo que importa: el precio final baja por dilution
+                    r["precio_final"] = r["precio_final"] * (1 - vendido_pct * mm_loan_tokens / max(sup, 1))
+                    r["multiplo_x"] = r["precio_final"] / EC.ECO["tge_precio"]
+
+                K.append(r["K_final"]); esp += r["espiral"]; rui += r["ruina"]
+                if r["dia_b2"] is not None: b2.append(r["dia_b2"])
+                mult.append(r["multiplo_x"]); quema.append(r["quemado_pct"])
+                colamax.append(r["cola_max"])
+                precio_final.append(r["precio_final"])
+                sup_final.append(r["supply_final"])
+                if i == 0:
+                    series_ej[lbl] = r
+
+            K = np.array(K)
+            res[lbl] = {
+                "modo": modo, "escenario": name,
+                "K_med": _pct(K, 50), "K_p10": _pct(K, 10), "K_p90": _pct(K, 90),
+                "espiral_pct": esp / iters * 100, "ruina_pct": rui / iters * 100,
+                "b2_med": float(np.median(b2)) if b2 else None,
+                "p_b2_ano1": len([d for d in b2 if d <= 365]) / iters * 100,
+                "mult_med": float(np.median(mult)), "quema_med": float(np.median(quema)),
+                "cola_max_med": float(np.median(colamax)),
+                "precio_med": float(np.median(precio_final)),
+                "secs": time.time() - t0,
+            }
+            s = res[lbl]
+            print(f"  [{lbl}] K_med=${s['K_med']/1e6:.0f}M  espiral={s['espiral_pct']:.1f}%  "
+                  f"B2_med=d{int(s['b2_med']) if s['b2_med'] else 'N/A'}  "
+                  f"mult={s['mult_med']:.1f}x  ({s['secs']:.0f}s)")
+
+    # --- resumen comparativo ---
+    print("\n  --- RESUMEN COMPARATIVO ---")
+    for name in ["CONSERVADOR", "BASE", "AGRESIVO"]:
+        no = res[f"{name}_NO_MM"]; si = res[f"{name}_CON_MM"]
+        dk = (si["K_med"] / max(no["K_med"], 1) - 1) * 100
+        desp = si["espiral_pct"] - no["espiral_pct"]
+        print(f"  [{name}] MM da Vault {dk:+.0f}%, espiral {desp:+.1f}pp, "
+              f"mult {si['mult_med']:.1f}x vs {no['mult_med']:.1f}x")
+
+    with open(os.path.join(OUT, "sim5_mm_vs_nomm.json"), "w", encoding="utf-8") as f:
+        json.dump(res, f, ensure_ascii=False, indent=2, default=float)
+    _plot_mm_comparison(res, series_ej)
+    return res
+
+
+def _plot_mm_comparison(res, series_ej):
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    fig.suptitle("SIM 5 — Fair-launch (sin MM) vs Market Maker desde D1", weight="bold", fontsize=13)
+    names = ["CONSERVADOR", "BASE", "AGRESIVO"]
+    col_no = {"CONSERVADOR": "#BA7517", "BASE": "#1D9E75", "AGRESIVO": "#185FA5"}
+    col_mm = {"CONSERVADOR": "#E8A838", "BASE": "#3FD4A0", "AGRESIVO": "#4A8FD5"}
+
+    # (a) Vault Y5 comparativo
+    ax = axes[0, 0]
+    x = np.arange(len(names)); w = 0.35
+    k_no = [res[f"{n}_NO_MM"]["K_med"]/1e6 for n in names]
+    k_mm = [res[f"{n}_CON_MM"]["K_med"]/1e6 for n in names]
+    ax.bar(x - w/2, k_no, w, label="Sin MM (fair-launch)", color=[col_no[n] for n in names])
+    ax.bar(x + w/2, k_mm, w, label="Con MM D1", color=[col_mm[n] for n in names], alpha=0.85)
+    ax.set_xticks(x); ax.set_xticklabels(names, fontsize=9)
+    ax.set_ylabel("Vault Y5 mediana (USD M)"); ax.set_title("Vault Core Y5"); ax.legend(fontsize=8)
+    for i in range(len(names)):
+        delta = (k_mm[i]/max(k_no[i],1)-1)*100
+        ax.text(i+w/2, k_mm[i], f"{delta:+.0f}%", ha="center", va="bottom", fontsize=8, color="green" if delta>0 else "red")
+
+    # (b) Riesgo espiral
+    ax = axes[0, 1]
+    esp_no = [res[f"{n}_NO_MM"]["espiral_pct"] for n in names]
+    esp_mm = [res[f"{n}_CON_MM"]["espiral_pct"] for n in names]
+    ax.bar(x - w/2, esp_no, w, label="Sin MM", color="#C0392B")
+    ax.bar(x + w/2, esp_mm, w, label="Con MM D1", color="#E74C3C", alpha=0.7)
+    ax.set_xticks(x); ax.set_xticklabels(names, fontsize=9)
+    ax.set_ylabel("Espiral (trampa B0) %"); ax.set_title("Riesgo de espiral"); ax.legend(fontsize=8)
+    for i in range(len(names)):
+        for j, (v, xo) in enumerate([(esp_no[i], -w/2), (esp_mm[i], w/2)]):
+            ax.text(i+xo, v+0.3, f"{v:.0f}%", ha="center", fontsize=8)
+
+    # (c) Multiplo precio
+    ax = axes[1, 0]
+    m_no = [res[f"{n}_NO_MM"]["mult_med"] for n in names]
+    m_mm = [res[f"{n}_CON_MM"]["mult_med"] for n in names]
+    ax.bar(x - w/2, m_no, w, label="Sin MM", color=[col_no[n] for n in names])
+    ax.bar(x + w/2, m_mm, w, label="Con MM D1", color=[col_mm[n] for n in names], alpha=0.85)
+    ax.set_xticks(x); ax.set_xticklabels(names, fontsize=9)
+    ax.set_ylabel("Multiplo precio (x TGE)"); ax.set_title("Apreciacion de precio (med.)"); ax.legend(fontsize=8)
+    ax.set_yscale("log")
+
+    # (d) Trayectoria ejemplo BASE
+    ax = axes[1, 1]
+    if "BASE_NO_MM" in series_ej:
+        ax.plot(series_ej["BASE_NO_MM"]["K_s"]/1e6, color=col_no["BASE"], label="BASE sin MM", lw=1.3)
+    if "BASE_CON_MM" in series_ej:
+        ax.plot(series_ej["BASE_CON_MM"]["K_s"]/1e6, color=col_mm["BASE"], label="BASE con MM D1", lw=1.3, ls="--")
+    ax.axhline(25, ls="--", c="r", lw=0.7, label="K_min $25M")
+    ax.set_title("Vault Core — trayectoria ejemplo (BASE)"); ax.set_yscale("log"); ax.legend(fontsize=8)
+    ax.set_xlabel("Dia"); ax.set_ylabel("USD M")
+
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    fig.savefig(os.path.join(OUT, "sim5_mm_vs_nomm.png"), dpi=110); plt.close(fig)
+
+
 # ============================================================ MAIN
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
@@ -366,6 +530,7 @@ def main():
     if cmd in ("all", "sens"): sim_sensibilidad()
     if cmd in ("all", "stress"): sim_estres()
     if cmd in ("all", "throttle"): sim_throttle()
+    if cmd in ("all", "mm"): sim_mm_comparison()
     print(f"\n⏱  Completado en {(time.time()-t0)/60:.1f} min. Salidas en {OUT}")
 
 

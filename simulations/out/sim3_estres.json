@@ -1,49 +1,49 @@
 {
   "BASE (sin estrés)": {
-    "K_med": 383590918.2006221,
+    "K_med": 383335191.97062325,
     "delta_vs_base_pct": 0.0,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   },
   "Crash BTC -50%": {
-    "K_med": 381095677.1528051,
-    "delta_vs_base_pct": -0.6504953400674474,
+    "K_med": 380843834.2354307,
+    "delta_vs_base_pct": -0.6499162579843287,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   },
   "Crash BTC -80%": {
-    "K_med": 369079156.4045687,
-    "delta_vs_base_pct": -3.783134872985605,
+    "K_med": 368820303.17199904,
+    "delta_vs_base_pct": -3.786474370904236,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   },
   "Motor A a 0% (6m)": {
-    "K_med": 370039872.97210276,
-    "delta_vs_base_pct": -3.5326814545259877,
+    "K_med": 369776993.2494431,
+    "delta_vs_base_pct": -3.5369042564240116,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   },
   "Motor A -70% perm": {
-    "K_med": 121335133.07717037,
-    "delta_vs_base_pct": -68.36861163284611,
-    "espiral_pct": 5.0,
+    "K_med": 121076443.87833056,
+    "delta_vs_base_pct": -68.41499387105341,
+    "espiral_pct": 5.833333333333333,
     "ruina_pct": 0.0
   },
   "Retiro LP 40%": {
-    "K_med": 380566468.9583417,
-    "delta_vs_base_pct": -0.788456946913052,
+    "K_med": 380310459.4718234,
+    "delta_vs_base_pct": -0.7890568260249031,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   },
   "Exploit 5% Vault": {
-    "K_med": 383231349.64002895,
-    "delta_vs_base_pct": -0.09373750616407106,
+    "K_med": 382988525.4355626,
+    "delta_vs_base_pct": -0.0904343097951732,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   },
   "Exploit 15% Vault": {
-    "K_med": 382510118.3007383,
-    "delta_vs_base_pct": -0.2817584694011277,
+    "K_med": 382292769.9691572,
+    "delta_vs_base_pct": -0.2719348557869705,
     "espiral_pct": 0.0,
     "ruina_pct": 0.0
   }

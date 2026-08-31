@@ -28,7 +28,7 @@ ECO = {
     "supply_objetivo": 3_300_000_000,
     "circulante_ini": 9_000_000_000,   # 1B en vesting/reserva fuera de circulación al inicio
 
-    "vault_ini": 200_000,              # $200K reales de Fase 1
+    "vault_ini": 100_000,              # $100K pool liquidez (ADR-018: 20% de $500K)
     "yield_apy": 0.07,                 # blended sobre LST+lending
 
     # Prima de mercado (precio = P_KASH × prima)

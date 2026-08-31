@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LUKASH Investor Pipeline</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root {
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --surface-alt: #f3f1ed;
+  --border: #e2dfd8;
+  --text: #1a1815;
+  --text-muted: #6b6560;
+  --text-subtle: #9a948c;
+  --accent: #0d6e4f;
+  --accent-light: #e8f5ef;
+  --accent-dark: #094d37;
+  --warning: #b8860b;
+  --warning-light: #fdf6e3;
+  --critical: #a63d40;
+  --critical-light: #fdf0f0;
+  --tag-grant: #2d6a4f;
+  --tag-accel: #1b4965;
+  --tag-angel: #7b2d8e;
+  --tag-fund: #b8860b;
+  --tag-mm: #555;
+  --tag-net: #4a6741;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+.header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: 2.5rem;
+}
+.header-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.header-sub {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  max-width: 640px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+}
+.stat-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.15rem;
+}
+
+.strategy {
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.strategy-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.strategy ol {
+  padding-left: 1.25rem;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+.strategy li { margin-bottom: 0.25rem; }
+.strategy em { color: var(--text-muted); font-style: normal; font-size: 0.82rem; }
+
+.section { margin-bottom: 2.5rem; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+.section-head h2 { font-size: 1.1rem; font-weight: 700; }
+.section-head .count {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+}
+
+.tag {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+.tag-grant { background: var(--tag-grant); color: #fff; }
+.tag-accel { background: var(--tag-accel); color: #fff; }
+.tag-angel { background: var(--tag-angel); color: #fff; }
+.tag-fund { background: var(--tag-fund); color: #fff; }
+.tag-mm { background: var(--tag-mm); color: #fff; }
+.tag-net { background: var(--tag-net); color: #fff; }
+
+.entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.entry-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+.entry-name { font-weight: 700; font-size: 1rem; }
+.entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.82rem;
+}
+.entry-meta dt {
+  color: var(--text-subtle);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.entry-meta dd { color: var(--text); }
+.meta-pair { display: flex; flex-direction: column; gap: 0.1rem; }
+.entry-why {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.entry-contact {
+  margin-top: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  word-break: break-all;
+}
+.entry-contact a { color: var(--accent); text-decoration: none; }
+
+.priority {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+.priority-high { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent); }
+.priority-med { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning); }
+
+.precedent-box {
+  background: var(--warning-light);
+  border-left: 3px solid var(--warning);
+  border-radius: 0 6px 6px 0;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.precedent-box strong { color: var(--warning); }
+
+.footnotes {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.footnotes h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-subtle);
+  margin-bottom: 0.75rem;
+}
+.footnotes ul { padding-left: 1.25rem; }
+.footnotes li { margin-bottom: 0.25rem; }
+.footnotes a { color: var(--accent); text-decoration: none; }
+
+@media print {
+  body { background: #fff; }
+  .page { padding: 0; max-width: 100%; }
+  .entry { break-inside: avoid; border: 1px solid #ccc; }
+  .section { break-inside: avoid; }
+  .section-head { break-after: avoid; }
+  .header { padding: 1rem 0; }
+  .stats-row { gap: 0.5rem; }
+  .stat-card { border: 1px solid #ccc; }
+  .strategy { break-inside: avoid; }
+  .precedent-box { break-inside: avoid; }
+  .footnotes { break-before: auto; }
+  a { color: var(--accent) !important; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.6rem; color: #999; word-break: break-all; }
+  .entry-contact a[href]::after { content: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+  <div class="header-eyebrow">LUKASH Protocol &mdash; Fundraising Pipeline</div>
+  <h1>Pipeline de inversores: Seed Round + Grants</h1>
+  <p class="header-sub">Pipeline para ronda Seed ($500K, 5-8% equity, SAFE + token warrant) y fuentes no dilutivas. Prioridad: grants/hackathons primero, &aacute;ngeles solo si hace falta. Per ADR-011/019/020. Ago 2026.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="stat-value">$500K</div><div class="stat-label">Seed target</div></div>
+  <div class="stat-card"><div class="stat-value">5-8%</div><div class="stat-label">Equity ofrecido</div></div>
+  <div class="stat-card"><div class="stat-value">~$6-10M</div><div class="stat-label">Valoraci&oacute;n impl&iacute;cita</div></div>
+  <div class="stat-card"><div class="stat-value">SAFE</div><div class="stat-label">+ token warrant</div></div>
+</div>
+
+<div class="strategy">
+  <div class="strategy-title">Orden recomendado (ADR-011: no-dilutivo primero)</div>
+  <ol>
+    <li><strong>Superteam + Finternet Instagrants + Solana Foundation Grants</strong> <em>&mdash; $0 diluci&oacute;n, validaci&oacute;n ecosistema</em></li>
+    <li><strong>Colosseum Hackathon</strong> (sep 2026) <em>&mdash; $250K pre-seed + Demo Day ante VCs top</em></li>
+    <li><strong>Aceleradoras: Alliance DAO / Outlier LatAm / Bitso The Push / a16z CSX</strong> <em>&mdash; cheque + mentor&iacute;a + red</em></li>
+    <li><strong>&Aacute;ngeles: Santiago Roel Santos + Solana angels</strong> <em>&mdash; checks $10-100K, warm intros</em></li>
+    <li><strong>Fondos: Robot Ventures / CMS / Ripio / RockawayX</strong> <em>&mdash; solo si 1-4 no cubren runway</em></li>
+  </ol>
+</div>
+
+<div class="precedent-box">
+  <strong>Precedente colombiano:</strong> El Dorado (Bogot&aacute;, P2P crypto) levant&oacute; $3M seed de Coinbase Ventures + Multicoin Capital, luego $9M Series A de Paradigm. Prueba de que VCs top-tier invierten en fundadores colombianos en el espacio Solana/crypto.
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Tier 1 &mdash; &Aacute;ngeles Solana / DeFi / LatAm</h2>
+    <span class="count">6 contactos verificados</span>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Santiago Roel Santos</span>
+      <span class="tag tag-angel">&Aacute;ngel</span>
+      <span class="priority priority-high">M&aacute;xima prioridad</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Org</dt><dd>Inversion Capital (fundador) / ex-ParaFi Capital</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>150+ startups crypto</dd></div>
+      <div class="meta-pair"><dt>Foco</dt><dd>DeFi, stablecoins, crypto &times; LatAm</dd></div>
+    </div>
+    <div class="entry-why"><strong>El &aacute;ngel m&aacute;s alineado con LUKASH.</strong> Mexicano, entr&oacute; a Bitcoin en 2013 por disrumpir remesas. Fund&oacute; Inversion Capital ($26.5M) para integrar blockchain en negocios LatAm. Ex-partner de ParaFi Capital ($2B AUM DeFi). Dio charla &ldquo;How Crypto Will Actually Win in Latin America&rdquo;. Portfolio: NEAR, LayerZero, Blur, MegaETH. Tesis id&eacute;ntica a LUKASH.</div>
+    <div class="entry-contact">X: @santiagoroel &middot; inversioncap.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Anatoly Yakovenko</span>
+      <span class="tag tag-angel">&Aacute;ngel</span>
+      <span class="priority priority-med">V&iacute;a Colosseum</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Org</dt><dd>Co-fundador, Solana Labs</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>49+ inversiones (Jito, Solayer, Drift, Helius)</dd></div>
+    </div>
+    <div class="entry-why">El &aacute;ngel de mayor se&ntilde;al para cualquier proyecto Solana. Activo en DeFi. Mentor en Colosseum &mdash; la ruta m&aacute;s natural es ganar el hackathon.</div>
+    <div class="entry-contact">X: @aaboronkov (toly)</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Mert Mumtaz</span>
+      <span class="tag tag-angel">&Aacute;ngel</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Org</dt><dd>CEO, Helius (infra Solana)</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>20+ (Monad, Berachain, Zeta Markets, Squads)</dd></div>
+    </div>
+    <div class="entry-why">Infra Solana l&iacute;der. Co-invierte frecuentemente con Anatoly y Robot Ventures. Helius relevante para orquestaci&oacute;n on-chain de LUKAI.</div>
+    <div class="entry-contact">X: @0xMert_</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Raj Gokal</span>
+      <span class="tag tag-angel">&Aacute;ngel</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Org</dt><dd>Co-fundador &amp; COO, Solana Labs</dd></div>
+      <div class="meta-pair"><dt>Foco</dt><dd>Business strategy, partnerships, community</dd></div>
+    </div>
+    <div class="entry-why">Mentor Colosseum. Foco en partnerships y expansi&oacute;n &mdash; alineado con estrategia LatAm de LUKASH.</div>
+    <div class="entry-contact">X: @rajgokal</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Luca Netz</span>
+      <span class="tag tag-angel">&Aacute;ngel</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Portfolio</dt><dd>20+ inversiones Solana/DeFi</dd></div>
+    </div>
+    <div class="entry-why">&Aacute;ngel activo en ecosistema Solana. Co-invierte con Solana Ventures, Dragonfly, a16z. Reciente: Myriad seed, Nitrility $5.5M seed (mar 2026).</div>
+    <div class="entry-contact">X: @LucaNetz</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Daniel Vogel</span>
+      <span class="tag tag-angel">&Aacute;ngel / Estrat&eacute;gico</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Org</dt><dd>CEO, Bitso ($2.2B valuation)</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>7+ startups, bridge/payments</dd></div>
+    </div>
+    <div class="entry-why">CEO del exchange crypto m&aacute;s grande de LatAm. &Aacute;ngel en payments/bridges. V&iacute;a Bitso &ldquo;The Push&rdquo; o intro directa. Valor estrat&eacute;gico: integraci&oacute;n en ecosistema Bitso.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Tier 2 &mdash; Aceleradoras con cheque</h2>
+    <span class="count">6 programas</span>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Colosseum</span>
+      <span class="tag tag-accel">Aceleradora</span>
+      <span class="priority priority-high">Prioridad alta</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Cheque</dt><dd>$250K pre-seed</dd></div>
+      <div class="meta-pair"><dt>Fondo</dt><dd>$60M Fund I (2026)</dd></div>
+      <div class="meta-pair"><dt>Aceptaci&oacute;n</dt><dd>0.7%</dd></div>
+      <div class="meta-pair"><dt>Pr&oacute;ximo</dt><dd>Hackathon sep-nov 2026</dd></div>
+    </div>
+    <div class="entry-why">Aceleradora + hackathons oficiales de Solana. Invierte EXCLUSIVAMENTE en ganadores de hackathons. 8 semanas. Mentores: Anatoly Yakovenko, Raj Gokal, Armani Ferrante. Demo Day ante VCs top. <strong>Ruta de mayor impacto con $0.</strong></div>
+    <div class="entry-contact">colosseum.com/hackathon &middot; colosseum.com/accelerator</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Alliance DAO</span>
+      <span class="tag tag-accel">Aceleradora</span>
+      <span class="priority priority-high">Prioridad alta</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Cheque</dt><dd>$500K SAFE @ $5M post-money</dd></div>
+      <div class="meta-pair"><dt>Token</dt><dd>Side letter 1:1.5</dd></div>
+      <div class="meta-pair"><dt>Aceptaci&oacute;n</dt><dd>~5%</dd></div>
+      <div class="meta-pair"><dt>Pr&oacute;ximo</dt><dd>ALL18 sep 7, 2026</dd></div>
+    </div>
+    <div class="entry-why">La m&aacute;s reconocida para founders crypto. 3 cohorts/a&ntilde;o, 12 semanas. Mediana de graduados levanta $3.5M a $25M post-money. <strong>$500K cubre el target completo.</strong></div>
+    <div class="entry-contact">alliance.xyz</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Bitso &ldquo;The Push&rdquo;</span>
+      <span class="tag tag-accel">Aceleradora</span>
+      <span class="priority priority-high">Prioridad alta</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Cheque</dt><dd>Hasta $250K + $50K cr&eacute;ditos Bitso</dd></div>
+      <div class="meta-pair"><dt>Foco</dt><dd>Stablecoins + fintech LatAm</dd></div>
+      <div class="meta-pair"><dt>Edici&oacute;n</dt><dd>2da edici&oacute;n 2026</dd></div>
+    </div>
+    <div class="entry-why"><strong>MUY alineado.</strong> Bitso = exchange crypto m&aacute;s grande de LatAm. Motor C (USDC payments) + Vault USDC encajan perfecto. 300+ aplicaciones, 9 seleccionados en 1ra edici&oacute;n.</div>
+    <div class="entry-contact">business.bitso.com/the-push-by-bitso-business</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Outlier Ventures &mdash; LatAm Base Camp</span>
+      <span class="tag tag-accel">Aceleradora</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Cheque</dt><dd>Hasta $200K</dd></div>
+      <div class="meta-pair"><dt>Partner</dt><dd>Morgan Creek Digital</dd></div>
+      <div class="meta-pair"><dt>Tracks</dt><dd>DeFi, RWA, DePIN, consumer fintech LatAm</dd></div>
+    </div>
+    <div class="entry-why">Track <strong>espec&iacute;fico LatAm</strong> con Morgan Creek Digital. Fuerte en dise&ntilde;o de token y estructura legal. 12 sem remoto. Soporte ES/PT.</div>
+    <div class="entry-contact">outlierventures.io/base-camp/latam-en</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">a16z CSX</span>
+      <span class="tag tag-accel">Aceleradora</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Cheque</dt><dd>$500K por 7% equity</dd></div>
+      <div class="meta-pair"><dt>Duraci&oacute;n</dt><dd>9 semanas in-person SF</dd></div>
+      <div class="meta-pair"><dt>Aceptaci&oacute;n</dt><dd>~3%</dd></div>
+    </div>
+    <div class="entry-why">Brand m&aacute;s fuerte del ecosistema crypto. Proyectos CSX han levantado $1B+ en follow-on. El 7% equity es alto pero la red lo compensa.</div>
+    <div class="entry-contact">a16zcrypto.com/accelerator</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Crecimiento</span>
+      <span class="tag tag-accel">Aceleradora LatAm</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Base</dt><dd>Argentina</dd></div>
+      <div class="meta-pair"><dt>Alumni</dt><dd>280+ fundadores</dd></div>
+    </div>
+    <div class="entry-why">Fondo early-stage + ecosystem builder crypto en Argentina. Primer Ethereum Community Hub oficial en LatAm (pero fondo crypto-agnostic). Intros c&aacute;lidas al ecosistema argentino.</div>
+    <div class="entry-contact">crecimiento.build</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Tier 3 &mdash; Fondos Solana / DeFi (checks seed)</h2>
+    <span class="count">12 fondos</span>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Robot Ventures</span>
+      <span class="tag tag-fund">Fondo</span>
+      <span class="priority priority-high">Alta afinidad</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Fundadores</dt><dd>Robert Leshner (Compound) + Tarun Chitra (Gauntlet)</dd></div>
+      <div class="meta-pair"><dt>Fund IV</dt><dd>$75M</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>192+ (Jito, Lido, Morpho, Polymarket)</dd></div>
+    </div>
+    <div class="entry-why"><strong>Especialista pre-seed DeFi.</strong> Tarun trae rigor cuantitativo (Monte Carlo, stress-testing) &mdash; validar&iacute;a el mecanismo del Vault y Throttle. LUKASH usa Jito (portfolio overlap).</div>
+    <div class="entry-contact">robvc.com &middot; X: @robotventures</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">CMS Holdings</span>
+      <span class="tag tag-fund">Fondo</span>
+      <span class="priority priority-high">Check size ideal</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Check</dt><dd>$500K &ndash; $10M</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>179 proyectos</dd></div>
+      <div class="meta-pair"><dt>Base</dt><dd>New York</dd></div>
+    </div>
+    <div class="entry-why">Rango de check cubre el target exacto. Tesis: infra y DeFi como fundamento econ&oacute;mico de blockchain. Activo en lending, staking, stablecoins.</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Ripio Ventures</span>
+      <span class="tag tag-fund">Fondo LatAm</span>
+      <span class="priority priority-high">LatAm nativo</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Check</dt><dd>$100K &ndash; $5M</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>zkSync, Num Finance, Securitize</dd></div>
+      <div class="meta-pair"><dt>Base</dt><dd>Buenos Aires (opera en Colombia)</dd></div>
+    </div>
+    <div class="entry-why">VC crypto-nativo m&aacute;s prominente de LatAm. Opera en Argentina, Brasil, Colombia, M&eacute;xico. Tambi&eacute;n LAceleradora: hasta $50K para startups Web3.</div>
+    <div class="entry-contact">Managing Partner: Andres Fleischer &middot; X: @andresWeb3VC</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">RockawayX</span>
+      <span class="tag tag-fund">Fondo</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Fund II</dt><dd>$125M (75% Solana)</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>Kamino, Squads, Fragmetric, Switchboard</dd></div>
+    </div>
+    <div class="entry-why">Early backer de Solana. Fund II $125M con 75% para Solana y 2/3 a seed. Kamino Finance = tesis hermana a LUKASH Vault.</div>
+    <div class="entry-contact">rockawayx.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">6th Man Ventures (6MV)</span>
+      <span class="tag tag-fund">Fondo</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Fund II</dt><dd>$145M (~50% Solana)</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>Pump.fun, Magic Eden, io.net, Helius, Jito</dd></div>
+    </div>
+    <div class="entry-why">Mayor concentraci&oacute;n Solana de cualquier VC major. ~1 deal/mes. Tesis: application layer como fuente de valor.</div>
+    <div class="entry-contact">6thman.ventures &middot; Fundador: Mike Dudas</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Nascent</span>
+      <span class="tag tag-fund">Fondo</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Check</dt><dd>$250K &ndash; $1M</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>90+ DeFi/crypto</dd></div>
+    </div>
+    <div class="entry-why">Check size encaja. DeFi/infra pre-seed a Series A.</div>
+    <div class="entry-contact">nascent.xyz &middot; hello@nascent.xyz</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Borderless Capital</span>
+      <span class="tag tag-fund">Fondo</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Base</dt><dd>Miami</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>250+ empresas, Neomoon (stablecoin LatAm)</dd></div>
+    </div>
+    <div class="entry-why">Misi&oacute;n &ldquo;borderless&rdquo; = inclusi&oacute;n financiera sin fronteras. Lider&oacute; seed de Neomoon. Co-invierte con Solana Foundation y Jump Crypto.</div>
+    <div class="entry-contact">borderlesscapital.io</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Verda Ventures</span>
+      <span class="tag tag-fund">Fondo</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Check</dt><dd>$100K &ndash; $2M</dd></div>
+      <div class="meta-pair"><dt>Foco</dt><dd>Blockchain para mercados emergentes</dd></div>
+    </div>
+    <div class="entry-why">Invirtieron en El Dorado (Colombia, P2P crypto). Foco: pagos, remesas, identidad, banking con stablecoins.</div>
+    <div class="entry-contact">verda.ventures &middot; X: @VerdaVentures</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Kaszek Ventures</span>
+      <span class="tag tag-fund">Fondo LatAm</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>AUM</dt><dd>$1B+</dd></div>
+      <div class="meta-pair"><dt>Fundadores</dt><dd>Hernan Kazah &amp; Nicolas Szekasy (MercadoLibre)</dd></div>
+      <div class="meta-pair"><dt>DeFi</dt><dd>Exactly ($3M lead), Bitso ($62M), Minka (Colombia)</dd></div>
+    </div>
+    <div class="entry-why">El VC m&aacute;s prestigioso de LatAm. Un check Kaszek ser&iacute;a la se&ntilde;al m&aacute;s fuerte posible para LUKASH en LatAm. Aspiracional pero viable.</div>
+    <div class="entry-contact">kaszek.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">ParaFi Capital</span>
+      <span class="tag tag-fund">Fondo DeFi</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>AUM</dt><dd>$2B+</dd></div>
+      <div class="meta-pair"><dt>Solana</dt><dd>$35M en Jupiter</dd></div>
+    </div>
+    <div class="entry-why">Inversor DeFi activo en Solana. Santiago Roel Santos fue partner &mdash; path de warm intro.</div>
+    <div class="entry-contact">parafi.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">QED Investors (Fontes Fund)</span>
+      <span class="tag tag-fund">Fondo Fintech</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Fondo Fontes</dt><dd>$12M seed/pre-seed LatAm fintech</dd></div>
+      <div class="meta-pair"><dt>Portfolio</dt><dd>Bitso, Felix Pago (remesas $75M)</dd></div>
+    </div>
+    <div class="entry-why">Fondo Fontes dise&ntilde;ado exactamente para seed fintech LatAm. Activamente buscando deals en 2026.</div>
+    <div class="entry-contact">qedinvestors.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Coinbase Ventures</span>
+      <span class="tag tag-fund">Fondo Corporate</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Check</dt><dd>$500K &ndash; $10M+</dd></div>
+      <div class="meta-pair"><dt>DeFi</dt><dd>30% del portfolio</dd></div>
+      <div class="meta-pair"><dt>2026</dt><dd>30 deals en H1</dd></div>
+    </div>
+    <div class="entry-why">Ya invirtieron en El Dorado (colombiano). Foco 2026: DeFi, RWAs, stablecoins, on-chain AI.</div>
+    <div class="entry-contact">coinbase.com/ventures</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Tier 4 &mdash; Grants no dilutivos</h2>
+    <span class="count">6 programas</span>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Finternet Instagrants</span>
+      <span class="tag tag-grant">Grant</span>
+      <span class="priority priority-high">Aplicar ya</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Pool</dt><dd>Hasta $1M total</dd></div>
+      <div class="meta-pair"><dt>Respuesta</dt><dd>48h</dd></div>
+    </div>
+    <div class="entry-why">Track de inclusi&oacute;n financiera de Solana Foundation &times; Finternet. MUY alineado con tesis de $LUKA. Aplicaci&oacute;n &lt;15 min. Sin diluci&oacute;n.</div>
+    <div class="entry-contact">earn.superteam.fun/grants/finternet-grants</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Solana Foundation Grants</span>
+      <span class="tag tag-grant">Grant</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Monto</dt><dd>$5K&ndash;$250K (milestone-based)</dd></div>
+      <div class="meta-pair"><dt>STRIDE</dt><dd>Programa de auditor&iacute;a DeFi</dd></div>
+    </div>
+    <div class="entry-why">Milestone-based, convertible grant. STRIDE ofrece auditor&iacute;a de seguridad para protocolos DeFi &mdash; cubre requisito pre-TGE.</div>
+    <div class="entry-contact">solana.org/grants-funding</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Superteam Instagrants</span>
+      <span class="tag tag-grant">Grant</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Monto</dt><dd>Hasta $10K</dd></div>
+      <div class="meta-pair"><dt>LatAm</dt><dd>Superteam Brasil, Argentina activos</dd></div>
+    </div>
+    <div class="entry-why">Equity-free. Ideal para bootstrapping + acceso al &ldquo;Solana Angels&rdquo; chat. $1.7M+ distribuido.</div>
+    <div class="entry-contact">earn.superteam.fun/grants</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Meteora Capital Markets Fund</span>
+      <span class="tag tag-grant">Grant</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Pool</dt><dd>$1M</dd></div>
+      <div class="meta-pair"><dt>Foco</dt><dd>Teams usando stack Meteora</dd></div>
+    </div>
+    <div class="entry-why">LUKASH usa Meteora para LP (per stack t&eacute;cnico). Alineaci&oacute;n directa. Non-dilutivo.</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Metaplex DAO Grants</span>
+      <span class="tag tag-grant">Grant</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Foco</dt><dd>Desarrollo sobre Metaplex Protocol</dd></div>
+    </div>
+    <div class="entry-why">Relevante para componentes cNFT/T&oacute;tem de LUKASH (Bubblegum v2 compressed NFTs).</div>
+    <div class="entry-contact">metaplex.com/grants</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Areta Security Subsidy</span>
+      <span class="tag tag-grant">Grant</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Monto</dt><dd>Hasta $1M en auditor&iacute;a</dd></div>
+      <div class="meta-pair"><dt>V&iacute;a</dt><dd>Colosseum fast-track</dd></div>
+    </div>
+    <div class="entry-why">Subsidio de auditor&iacute;a de seguridad. Cubre requisito pre-TGE sin gasto directo.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Tier 5 &mdash; Redes de &aacute;ngeles y directorios</h2>
+    <span class="count">6 recursos</span>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Angel Ventures</span>
+      <span class="tag tag-net">Red</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Miembros</dt><dd>440+ &aacute;ngeles</dd></div>
+      <div class="meta-pair"><dt>Pa&iacute;ses</dt><dd>M&eacute;xico, Colombia, Per&uacute;, Chile</dd></div>
+    </div>
+    <div class="entry-why">La red de &aacute;ngeles profesional m&aacute;s grande de LatAm. Presencia directa en Colombia.</div>
+    <div class="entry-contact">angelventures.vc</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">NFX Signal &mdash; Top 94 Web3 Seed LatAm</span>
+      <span class="tag tag-net">Directorio</span>
+    </div>
+    <div class="entry-why">Lista votada por comunidad de startups. Incluye Propel VP, Lightspeed, Afore Capital. Tiene lista Pre-Seed separada (52 inversores).</div>
+    <div class="entry-contact">signal.nfx.com/investor-lists/top-web3-crypto-seed-latam-latin-america-investors</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Shizune &mdash; Top 50 Crypto Angels LatAm</span>
+      <span class="tag tag-net">Directorio</span>
+    </div>
+    <div class="entry-why">Base de datos actualizada mensualmente. 50 &aacute;ngeles crypto + 50 fintech + 50 blockchain en LatAm.</div>
+    <div class="entry-contact">shizune.co/investors/cryptocurrency-angel-investors-latam</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Solana Latam DAO + Superteam LatAm</span>
+      <span class="tag tag-net">Comunidad</span>
+    </div>
+    <div class="entry-why">Gateway a la comunidad Solana LatAm. &ldquo;Solana Angels&rdquo; chat en Discord. Cap&iacute;tulos: Brasil, Argentina. Conectan a 90+ VCs.</div>
+    <div class="entry-contact">superteam.fun &middot; X: @superteam, @SuperteamAR, @SuperteamBR</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">AngelList Crypto SPVs</span>
+      <span class="tag tag-net">Infraestructura</span>
+    </div>
+    <div class="entry-why">AngelList + CoinList partnership para crypto SPVs y Roll-Up Vehicles. Fondeo en stablecoins. $0 fee.</div>
+    <div class="entry-contact">venture.angellist.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">crypto-fundraising.info</span>
+      <span class="tag tag-net">Radar</span>
+    </div>
+    <div class="entry-why">Radar de deals crypto. Perfiles de fondos, rondas recientes, portfolios.</div>
+    <div class="entry-contact">crypto-fundraising.info</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Market Makers contingentes (ADR-019 Fase 2)</h2>
+    <span class="count">Solo si vol &lt;$500K/d por 5 d&iacute;as</span>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Kairon Labs</span>
+      <span class="tag tag-mm">MM</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Modelo</dt><dd>Loan + call option</dd></div>
+      <div class="meta-pair"><dt>Exchanges</dt><dd>100+ CEX/DEX, experiencia Solana/Raydium</dd></div>
+    </div>
+    <div class="entry-contact">kaironlabs.com</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-name">Gravity Team</span>
+      <span class="tag tag-mm">MM</span>
+    </div>
+    <div class="entry-meta">
+      <div class="meta-pair"><dt>Volumen</dt><dd>$400B+ acumulado, ~1% spot global</dd></div>
+      <div class="meta-pair"><dt>Estilo</dt><dd>Boutique, high-touch, selectivo</dd></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h2>Eventos clave 2026</h2>
+    <span class="count">Canales de intro c&aacute;lida</span>
+  </div>
+  <div class="entry">
+    <div class="entry-why">
+      <strong>La mejor intro es c&aacute;lida</strong> &mdash; ganada construyendo en p&uacute;blico:
+      <br>&bull; <strong>Solana Breakpoint 2026</strong> &mdash; Nov 15-17, Olympia London. 6,000+ asistentes.
+      <br>&bull; <strong>Colosseum Hackathon</strong> &mdash; Sep-Nov 2026. Gateway a $250K + Demo Day.
+      <br>&bull; <strong>ETH Bogot&aacute;</strong> &mdash; Comunidad colombiana, networking directo.
+      <br>&bull; <strong>LABITCONF</strong> &mdash; La conferencia crypto m&aacute;s importante de LatAm.
+      <br>&bull; <strong>ETH Latam / ETH S&atilde;o Paulo / ETH Mexico</strong> &mdash; Pan-regional.
+      <br>&bull; <strong>Blockchain Summit Latam</strong> &mdash; Enfoque institucional + fintech.
+    </div>
+  </div>
+</div>
+
+<div class="footnotes">
+  <h3>Red flags de inversor predatorio</h3>
+  <ul>
+    <li>Pide % de supply desproporcionado (&gt;1:1 con equity), descuentos &gt;30%, control de junta/veto en pre-seed</li>
+    <li>Anti-diluci&oacute;n full-ratchet, tokens l&iacute;quidos sin cliff</li>
+    <li>No entregar &gt;10-20% equity total sumando toda la ronda pre-seed</li>
+    <li>Vesting justo: 4 a&ntilde;os + 1 a&ntilde;o cliff, lineal, atado a TGE/mainnet</li>
+    <li>Data room listo ANTES de la 1ra reuni&oacute;n</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>
