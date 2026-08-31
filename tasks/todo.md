@@ -19,12 +19,12 @@
 
 ### FASE B — Preparación inversión (pre-ronda seed)
 - [ ] B1. Estructura legal: entidad en El Salvador o equivalente, framing regulatorio cNFT/Motor C
-- [ ] B2. Pitch deck para ángeles cripto-nativos (incluye: tesis, Vault, simulaciones, team, ask $500K por 5-8%)
+- [x] B2. Pitch deck para ángeles cripto-nativos — **Completado** (sesión 20, 2026-08-31): 12 slides con ADR-028 (Banco Central Optimizado), MC v4.3, KASH Shield, roadmap, ask. HTML+PDF en `docs/LUKASH_Pitch_Deck_v4_3.*`
 - [ ] B3. Data room / litepaper (tokenomics completo, Vault Sociedad, vesting, proyecciones honestas con rangos)
 - [ ] B4. One-pager EN/PT (ES ya existe)
 - [ ] B5. Preparar dashboard de Vault en testnet como pieza de credibilidad
 - [~] B6. Identificar y contactar 10-20 ángeles cripto — **Pipeline de 36 contactos creado** (sesión 19, 2026-08-31): 6 ángeles tier 1 (Santiago Roel Santos máx prioridad), 6 aceleradoras, 12 fondos, 6 grants, 6 redes. Artefacto publicado. Pendiente: contactar.
-- [ ] B7. Aplicar a grants no dilutivos: Superteam Earn, Finternet, Colosseum hackathon ($250K pre-seed)
+- [x] B7. Preparar aplicaciones a grants — **Textos listos** (sesión 20, 2026-08-31): 5 aplicaciones redactadas en `docs/etapa-0/GRANT_APPLICATIONS.md` (Superteam Instagrants, Finternet x Solana, Solana Foundation, Colosseum, Alliance DAO). Finternet cerrado al 31/08, monitorear reapertura. Superteam listo para enviar inmediatamente.
 - [ ] B8. Consulta legal: abogado cripto (framing cNFT como no-security, Motor C como no-transmisión)
 
 ### FASE C — Pre-lanzamiento (F0 comunidad, 8-12 semanas pre-TGE)
@@ -49,7 +49,7 @@
   - SIM 4a: Throttle umbrales actuales óptimos (todos dan K_med=$367M). SIM 4b: masa crítica marginal ($381M→$395M).
   - **SIM 5: MM vs No-MM** — MM sube Vault 11-19% pero baja precio 10-25% por dilución. Solo CONSERV se beneficia (espiral 34.5%→3.5%). Valida ADR-011/019 (fair-launch + MM contingente).
   - Salidas en `simulations/out/`. Pendiente: actualizar cifras en BMC/protocolo con rangos MC v4.3.
-- [ ] **D0c. Crear PDF/versión legible de la presentación v4.3** para enviar a potenciales inversores
+- [x] **D0c. Crear PDF/versión legible de la presentación v4.3** — **Completado** (sesión 20, 2026-08-31): combinado con B2 en pitch deck 12 slides. PDF 667KB en `docs/LUKASH_Pitch_Deck_v4_3.pdf`
 - [ ] D1. Migración Token-2022 con Transfer Hook (devnet)
 - [ ] D2. Contratos Milestone 2 restantes: staking, cNFT/Aura, CPI safety
 - [ ] D3. Auditoría estática + Soteria CI (ya configurado) — mantener limpio

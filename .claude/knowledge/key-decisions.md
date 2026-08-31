@@ -389,3 +389,25 @@ Sistema de protección de activos digitales en dos capas con mecanismo de reaseg
 
 **PENDIENTE:** diseño detallado de la cadena de cascada (porcentajes, límites por capa, términos
 de la póliza externa, interacción con ADR-015 en contexto DAO Etapa 4).
+
+## ADR-028: Narrativa central — Banco Central Optimizado (2026-08-31) — Aprobado por Sebastián
+$LUKA como moneda transaccional con reserva propia replica el modelo de banco central pero
+corrigiendo sus defectos fundamentales:
+
+| Dimensión | Banco Central tradicional | LUKASH Protocol |
+|---|---|---|
+| **Emisión** | Moneda emitida contra deuda soberana | Supply fijo (10B), deflacionario hasta piso 3.3B |
+| **Reserva** | Construida por deuda y política monetaria | Construida por transacciones reales (35% fees → Vault) |
+| **Tendencia** | Inflacionaria por diseño (2-10%/año, peor en LatAm) | Deflacionaria: quema reduce supply, Vault crece |
+| **Piso de precio** | No existe (la moneda puede devaluarse sin límite) | P_KASH = Vault / supply (piso auditable on-chain) |
+| **Transparencia** | Opaca (decisiones de comité cerrado) | Smart contract auditable, Vault verificable 24/7 |
+| **Gobernanza** | Centralizada en institución gubernamental | Guardian 2-de-3 → DAO (Etapa 4) |
+
+**Implicación para inversores:** LUKASH no es "otro token DeFi" — es la versión optimizada de
+la política monetaria, democratizada para 650M de latinoamericanos que viven la devaluación
+como experiencia cotidiana. El mismo concepto (reserva respalda moneda), sin la deuda, sin la
+inflación, con transparencia total. Es infraestructura financiera, no especulación.
+
+**Uso en pitch:** esta narrativa debe ser el segundo slide del pitch deck (después del problema)
+y el primer párrafo del litepaper. No presentar LUKASH como "crypto project" sino como
+"optimized monetary infrastructure".

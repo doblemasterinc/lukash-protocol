@@ -15,12 +15,16 @@ Más de 200M de latinoamericanos están fuera de la infraestructura financiera q
 usa (RWA, blockchain, rendimiento sobre activos duros). No es falta de dinero: es falta de **acceso, confianza
 y transparencia**. Los productos que existen son opacos, caros o hablan un idioma que nadie de <45 entiende.
 
-## La solución
+## La solución — Un Banco Central Optimizado (ADR-028)
 **$LUKA**, un token deflacionario sobre Solana respaldado por el **Vault KASH Core**: una reserva creciente de
 activos duros (BTC, SOL, LST, USDC), 100% on-chain y **auditable en vivo**. Cada transacción del ecosistema
-alimenta el Vault, quema supply y recompensa a quien participa. No es un banco alternativo: es **acceso
-democratizado a la misma infraestructura** que las instituciones ya construyen — con una capa de identidad y
-progreso que la gente de verdad quiere usar.
+alimenta el Vault, quema supply y recompensa a quien participa.
+
+A diferencia de los bancos centrales tradicionales que emiten moneda contra deuda soberana (inflacionaria por
+diseño), LUKASH construye su reserva con transacciones reales y deflaciona el supply hasta un piso fijo (3.3B).
+El resultado: una moneda transaccional con piso de precio verificable (P_KASH = Vault / Supply), auditable 24/7.
+No es un banco alternativo: es **acceso democratizado a la misma infraestructura** que las instituciones ya
+construyen — con una capa de identidad y progreso que la gente de verdad quiere usar.
 
 ## Cómo funciona (el átomo)
 1. **Motor de fees universal** — cada operación distribuye 35/35/15/15 → Vault / Quema-LP / O&M / Staking. Atómico, on-chain.
@@ -40,10 +44,12 @@ Pyth) para construir sin reinventar. Momento cultural: identidad, gaming financi
 audiencia <45, trilingüe (ES/EN/PT), sin fronteras.
 
 ## Tracción / estado (Ago 2026)
-- ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + KASH Shield), 3 auditorías internas.
-- ✅ Smart contracts **v10.2 desplegados en Solana devnet** (2066+ líneas Anchor/Rust: 4 motores + Vault + KASH Shield + Guardian de Pausa 2-de-3 + oráculos Pyth).
+- ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + KASH Shield), 28 ADRs, 3 auditorías internas.
+- ✅ Smart contracts **v10.2 desplegados en Solana devnet** (~2,100 líneas Anchor/Rust: 4 motores + Vault + KASH Shield + Guardian de Pausa 2-de-3 + oráculos Pyth).
+- ✅ **Monte Carlo v4.3** completo: 200 iteraciones × 3 campañas × 5 años. 0.0% riesgo de ruina. Vault mediana $90M (conservador) a $1.9B (agresivo).
 - ✅ Marca, identidad visual (felino) y diseño de app (Jungle Arena) listos, trilingües.
-- ▶ Siguiente: auditoría externa pre-TGE, ADR-027 Totem Guard, App Etapa 2A.
+- ✅ Pitch deck v4.3 con narrativa ADR-028 (Banco Central Optimizado).
+- ▶ Siguiente: auditoría externa pre-TGE, App Etapa 2A.
 
 ## Modelo y financiación (no dilutiva primero)
 Ecosistema autofinanciado por fases ($500K / $2M / $5M); solo la Fase 1 requiere capital externo. Ruta de

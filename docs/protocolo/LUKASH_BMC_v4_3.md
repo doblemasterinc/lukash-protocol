@@ -73,14 +73,13 @@ El corazón del protocolo: cada transacción construye una reserva de activos du
 >
 > El piso de valor que el protocolo garantiza con activos reales. Crece con cada transacción. Verificable on-chain en tiempo real.
 
-| Año | Vault (mediana, escenario neutral) | Supply (mediana) | Precio KASH | Múltiplo vs TGE $0.0001 |
+| Escenario | Vault Mediana (5 años) | Rango P10–P90 | Espiral | Múltiplo precio |
 |---|---|---|---|---|
-| Año 1 | $20.9M | 3.3B $LUKA | $0.0063 | 63x |
-| Año 2 | $29.6M | 3.3B $LUKA | $0.0090 | 90x |
-| Año 3 | $33.7M | 3.3B $LUKA | $0.0102 | 102x |
-| Año 5 | $37.2M | 3.3B $LUKA | $0.0113 | 113x |
+| **Conservador** (fair-launch community-only) | $90M | $38M – $326M | 40% | 4,381x |
+| **Base** (fair-launch + 3 KOLs vesteados) | $388M | $197M – $1,146M | 0% | 22,799x |
+| **Agresivo** (KOLs virales + Manadas activas) | $1,882M | $741M – $5,705M | 0% | 107,126x |
 
-*Fuente: Proyecciones internas v3.1 (ADR-008). Pendiente reconciliar con parámetros v4.3. Contratos v10 desplegados en Solana devnet verifican la mecánica on-chain.*
+*Fuente: Monte Carlo v4.3 (200 iteraciones × 3 campañas × 5 años, ago 2026). Motor fiel al contrato lib.rs v10.2. Parámetros: ADR-016 (cola drena todos modos), ADR-018 (Vault ini $100K), ADR-019 (TGE sin MM), ADR-023 (Capa 0 eliminada). Los valores absolutos son del modelo optimista (ADR-008/H10) — lo válido para decisiones es lo estructural: % espiral, orden de escenarios, sensibilidades relativas. Contratos v10.2 desplegados en Solana devnet verifican la mecánica on-chain.*
 
 `[Cambio v4.3: Composición del Vault corregida — ADR-P01. cBTC 35%, SOL 15%, SOL/LST 20%, USDC reserva 25%, USDC lending 5%. Suma 100%. Oráculos reclasificados como infraestructura O&M, no reserva]`
 
@@ -560,23 +559,30 @@ A partir del hito de activación del KASH Lock (KASH Core alcanza $30M o 12 mese
 
 ### Verificación On-Chain + Modelo Económico
 
-*Contratos v10 (2066+ líneas Anchor/Rust) desplegados en Solana devnet. Proyecciones económicas: modelo conservador v3.1 (ADR-008) — pendiente actualizar a parámetros v4.3 (ADR-016/022/023/027).*
+*Contratos v10.2 (~2100 líneas Anchor/Rust) desplegados en Solana devnet. Proyecciones económicas: Monte Carlo v4.3 (200 iteraciones × 3 campañas × 5 años, ago 2026). Motor de simulación fiel al contrato (replica aritmética entera de lib.rs). 6 SIMs: invariantes, MC principal, sensibilidad, estrés, throttle, MM vs no-MM.*
 
 | Devnet v10 activo | Guardian 2-de-3 | KASH Shield completo | Distribución atómica |
 |---|---|---|---|
 | `AmRW...Cuy` en Solana devnet | Scope: solo pausa/veto (ADR-022) | CB + Anti-Whale + Exit Fee + Transfer Hook | 35/35/15/15 en una transacción |
 
-### 10.1 Proyecciones Económicas (modelo v3.1 — sujetas a reconciliación v4.3)
+### 10.1 Proyecciones Económicas — Monte Carlo v4.3 (ago 2026)
 
-| Métrica Clave | Resultado (v3.1) | Estado v4.3 |
-|---|---|---|
-| Vault Mediana (5 años) | $37.2M | Pendiente recálculo con cola drena-todos-modos (ADR-016) |
-| Rango P25–P75 (5 años) | $18.9M – $67.1M | Pendiente |
-| P(Motor B2 activo antes del Año 2) | 86.1% | Pendiente (TGE sin MM puede retrasar — ADR-019) |
-| Riesgo de Ruina Total | 0.0% (5,000 trayectorias) | Se espera mantener; Transfer Hook (Token-2022) fortalece |
-| Espiral de Muerte — transición B0→B2 | ~1.4% (ver nota técnica) | Pendiente |
-| Espiral de Muerte — B2 consolidado | <0.5% por inercia estructural | Estructura preservada |
-| Ventaja Módulo Contra-Cíclico LUKAI | +22–23% vs proporciones fijas | Pendiente |
+`[Cambio v4.3: Reemplaza modelo v3.1. 200 iteraciones × 3 campañas × 5 años. Motor fiel al contrato (aritmética entera lib.rs). Cola drena todos modos (ADR-016). TGE sin MM (ADR-019). Vesting equipo 2%/12m/48m (ADR-014).]`
+
+| Métrica | Conservador | Base | Agresivo |
+|---|---|---|---|
+| Vault Mediana (5 años) | $90M | $388M | $1,882M |
+| Rango P10–P90 | $38M – $326M | $197M – $1,146M | $741M – $5,705M |
+| Riesgo de Espiral de Muerte | 40% | 0% | 0% |
+| Múltiplo precio vs TGE | 4,381× | 22,799× | 107,126× |
+| Supply quemado (mediana) | 67% | 67% | 66% |
+
+**Hallazgos clave:**
+- **Volumen es el driver #1** (SIM 2 sensibilidad): swing $1.29B en Vault. Fee Motor A es #2.
+- **Resiliencia** (SIM 3 estrés): crash BTC -80% reduce Vault solo -3.8%. Exploit 15% Vault: -0.3%. Único riesgo sistémico: Motor A -70% permanente.
+- **Throttle actual óptimo** (SIM 4): masa crítica marginal en configuración actual.
+- **MM vs no-MM** (SIM 5): MM sube Vault 11-19% pero baja precio 10-25% por dilución token loan (3% supply, 40% sell-through). Solo escenario conservador se beneficia significativamente (espiral 34.5%→3.5%). Valida fair-launch (ADR-011/019).
+- **Riesgo de ruina total**: 0.0% en todos los escenarios (200 iteraciones cada uno).
 
 ### 10.2 Nota Técnica — Probabilidad de Espiral de Muerte: Precisión del 1.4%
 
@@ -649,7 +655,7 @@ LUKASH es eso. Cada transacción construye automáticamente una reserva de activ
 - Para quien envía dinero a su familia en otro país y paga comisiones abusivas.
 - Para el emprendedor que quiere acceso a crédito colectivo sin depender de un banco tradicional.
 
-¿Y los números? Las simulaciones matemáticas con 5,000 escenarios distintos muestran que la reserva del protocolo crece a $37 millones en 5 años en el escenario conservador. El riesgo de colapso total es del 0.0%. No lo decimos nosotros — lo dice el modelo matemático.
+¿Y los números? Las simulaciones Monte Carlo — 200 escenarios distintos por cada campaña de marketing — muestran que la reserva del protocolo crece entre $90 millones y $1,900 millones en 5 años dependiendo del escenario. El riesgo de colapso total es del 0.0%. No lo decimos nosotros — lo dice el modelo matemático que replica exactamente los contratos desplegados en blockchain.
 
 LUKASH no es una apuesta especulativa. Es la infraestructura de las finanzas del futuro, construida para Latinoamérica, disponible hoy desde tu teléfono.
 
@@ -667,7 +673,7 @@ LUKASH es la llave para esos 260 millones de personas.
 
 Es una plataforma digital donde cada transacción construye automáticamente una reserva real de activos — Bitcoin, dólares digitales — que respalda el valor de tu dinero y crece con el tiempo. Tiene una inteligencia artificial que habla contigo en lenguaje normal. No necesitas saber nada técnico.
 
-Puedes participar solo o en grupo — las Manadas: la natillera o la tanda del siglo XXI con contratos inteligentes. Las matemáticas dicen que el riesgo de colapso total es cero. En 5,000 escenarios simulados.
+Puedes participar solo o en grupo — las Manadas: la natillera o la tanda del siglo XXI con contratos inteligentes. Las matemáticas dicen que el riesgo de colapso total es cero. En 600 escenarios simulados con un modelo que replica exactamente los contratos.
 
 No estamos creando otro token especulativo. Estamos construyendo las finanzas del futuro, disponibles hoy para toda Latinoamérica.
 

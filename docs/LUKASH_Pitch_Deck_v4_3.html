@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUKASH — Pitch Deck v4.3</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
+<style>
+:root {
+  --oro: #C9A84C;
+  --oro-light: #E8C96A;
+  --oro-dark: #9A7030;
+  --ambar: #E8940A;
+  --ambar-light: #F4B340;
+  --verde: #3DAA6B;
+  --verde-light: #5FCA8E;
+  --verde-dark: #1E6640;
+  --obsidiana: #0A0A0C;
+  --carbon: #0F0F12;
+  --carbon-light: #1A1A1E;
+  --gris: #2C2C30;
+  --gris-light: #555560;
+  --gris-ll: #888898;
+  --marfil: #F0EAD6;
+  --marfil-dark: #C8C0A8;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--obsidiana);
+  color: var(--marfil);
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.slide {
+  width: 100%;
+  max-width: 960px;
+  min-height: 540px;
+  margin: 0 auto;
+  padding: 48px 56px;
+  background: linear-gradient(170deg, var(--carbon) 0%, var(--obsidiana) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.18);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide + .slide { margin-top: 24px; }
+
+.slide::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--oro), var(--ambar), transparent);
+  opacity: 0.6;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--gris-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stamp {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  color: var(--oro-dark);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+h1 {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 36px;
+  color: var(--oro);
+  line-height: 1.15;
+  text-wrap: balance;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--oro-light);
+  line-height: 1.2;
+  text-wrap: balance;
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+}
+
+h3 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ambar-light);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--ambar);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--marfil-dark);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.big-stat {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--oro);
+}
+
+.stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--gris-ll);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  background: rgba(201, 168, 76, 0.04);
+  border: 1px solid rgba(201, 168, 76, 0.12);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.card-accent {
+  border-color: rgba(232, 148, 10, 0.3);
+  background: rgba(232, 148, 10, 0.04);
+}
+
+.card-green {
+  border-color: rgba(61, 170, 107, 0.25);
+  background: rgba(61, 170, 107, 0.04);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+th {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--gris-ll);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--gris);
+}
+
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(44, 44, 48, 0.5);
+  color: var(--marfil);
+}
+
+tr:last-child td { border-bottom: none; }
+
+.highlight { color: var(--oro-light); font-weight: 600; }
+.green { color: var(--verde-light); }
+.amber { color: var(--ambar-light); }
+.dim { color: var(--gris-ll); }
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  background: var(--oro);
+  border-radius: 50%;
+}
+
+.versus-table {
+  width: 100%;
+  font-size: 12.5px;
+}
+
+.versus-table th {
+  font-size: 8px;
+  padding: 6px 10px;
+}
+
+.versus-table td {
+  padding: 7px 10px;
+  font-size: 12.5px;
+}
+
+.versus-table td:first-child {
+  color: var(--gris-ll);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.versus-table td:nth-child(2) {
+  color: var(--gris-ll);
+  opacity: 0.7;
+}
+
+.versus-table td:nth-child(3) {
+  color: var(--verde-light);
+  font-weight: 500;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.flow-num {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--oro-dark);
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.flow-text {
+  flex: 1;
+}
+
+.flow-text strong {
+  color: var(--oro-light);
+}
+
+.pill {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid;
+}
+
+.pill-green {
+  color: var(--verde-light);
+  border-color: rgba(61, 170, 107, 0.4);
+  background: rgba(61, 170, 107, 0.08);
+}
+
+.pill-amber {
+  color: var(--ambar-light);
+  border-color: rgba(232, 148, 10, 0.4);
+  background: rgba(232, 148, 10, 0.08);
+}
+
+.pill-gold {
+  color: var(--oro-light);
+  border-color: rgba(201, 168, 76, 0.4);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.disclaimer {
+  font-size: 9px;
+  color: var(--gris-light);
+  line-height: 1.4;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+@media print {
+  body { background: #000; }
+  .slide {
+    page-break-after: always;
+    page-break-inside: avoid;
+    min-height: 95vh;
+    margin: 0 auto;
+    border: none;
+    border-radius: 0;
+  }
+  .slide + .slide { margin-top: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: COVER -->
+<div class="slide" style="justify-content: center; align-items: center; text-align: center; min-height: 540px;">
+  <div class="eyebrow">Solana &middot; DeFi &middot; Inclusión Financiera LatAm</div>
+  <h1 style="font-size: 48px; margin-bottom: 8px;">LUKASH</h1>
+  <p class="subtitle" style="font-size: 22px; max-width: 600px;">Las finanzas del futuro, disponibles hoy<br>para toda Latinoamérica.</p>
+  <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+    <span class="pill pill-green">Devnet activo</span>
+    <span class="pill pill-gold">MC v4.3 validado</span>
+    <span class="pill pill-amber">Protocolo v4.3</span>
+  </div>
+  <p style="margin-top: 40px; font-size: 12px; color: var(--gris-ll);">Sebastián Botero Pabón &middot; Ago 2026 &middot; Seed / Grant</p>
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">01 / 12</span>
+</div>
+
+<!-- SLIDE 2: EL PROBLEMA -->
+<div class="slide">
+  <div class="eyebrow">El problema</div>
+  <h2>260M de latinoamericanos con cuenta digital.<br>Solo 30% accede a instrumentos reales.</h2>
+
+  <div class="grid-2" style="margin-top: 20px;">
+    <div>
+      <ul>
+        <li>7 de cada 10 adultos LatAm ya tienen cuenta digital (Banco Mundial 2025)</li>
+        <li>Solo 3 de 10 acceden a instrumentos financieros que generan riqueza</li>
+        <li>Remesas: $150B/año con comisiones de 5-8%</li>
+        <li>Inflación promedio LatAm: 6-50% anual destruye ahorros</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Mientras tanto</h3>
+      <p style="margin-bottom: 12px;">Las instituciones ya migraron a blockchain:</p>
+      <div style="margin-bottom: 8px;"><span class="big-stat" style="font-size: 20px;">$24B</span><br><span class="stat-label">Activos tokenizados on-chain (2025)</span></div>
+      <div style="margin-bottom: 8px;"><span class="big-stat" style="font-size: 20px;">$16T</span><br><span class="stat-label">Proyección BCG 2030</span></div>
+      <div><span class="big-stat" style="font-size: 20px;">$2.9B</span><br><span class="stat-label">Solo BlackRock on-chain</span></div>
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">02 / 12</span>
+</div>
+
+<!-- SLIDE 3: BANCO CENTRAL OPTIMIZADO (ADR-028) -->
+<div class="slide">
+  <div class="eyebrow">La tesis &mdash; ADR-028</div>
+  <h2>Un Banco Central Optimizado</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">$LUKA replica el modelo de banco central pero corrige sus defectos fundamentales.</p>
+
+  <div style="overflow-x: auto;">
+    <table class="versus-table">
+      <thead>
+        <tr>
+          <th style="width: 22%;">Dimensión</th>
+          <th style="width: 39%;">Banco Central Tradicional</th>
+          <th style="width: 39%;">LUKASH Protocol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Emisión</td><td>Moneda emitida contra deuda soberana</td><td>Supply fijo 10B, deflacionario hasta piso 3.3B</td></tr>
+        <tr><td>Reserva</td><td>Construida por deuda y política monetaria</td><td>Construida por transacciones reales (35% fees → Vault)</td></tr>
+        <tr><td>Tendencia</td><td>Inflacionaria por diseño</td><td>Deflacionaria: quema reduce supply, Vault crece</td></tr>
+        <tr><td>Piso de precio</td><td>No existe (confianza &amp; fuerza)</td><td>P_KASH = Vault / Supply (auditable on-chain 24/7)</td></tr>
+        <tr><td>Transparencia</td><td>Opaca, reportes trimestrales</td><td>Smart contract verificable en tiempo real</td></tr>
+        <tr><td>Gobernanza</td><td>Junta directiva centralizada</td><td>Guardian 2-de-3 → DAO (Etapa 4)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top: 16px; font-size: 13px; color: var(--marfil-dark);">Cada transacción fortalece la reserva y reduce el supply. La moneda se <span class="highlight">vuelve más valiosa</span> cuanto más se usa — el opuesto exacto de la emisión monetaria tradicional.</p>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">03 / 12</span>
+</div>
+
+<!-- SLIDE 4: CÓMO FUNCIONA -->
+<div class="slide">
+  <div class="eyebrow">Arquitectura</div>
+  <h2>4 Motores, 1 regla universal</h2>
+  <p class="subtitle" style="margin-bottom: 20px;">Cada fee se distribuye atómicamente: <span class="highlight">35% Vault / 35% Quema-LP / 15% O&M / 15% Staking</span></p>
+
+  <div class="grid-4">
+    <div class="card card-accent">
+      <h3 style="font-size: 11px;">Motor A</h3>
+      <p style="font-size: 12px; color: var(--ambar-light); font-weight: 600; margin-bottom: 4px;">El Cazador</p>
+      <p style="font-size: 11px; color: var(--gris-ll);">Trading SOL en DEX. Fee 4% / 2.5% WL. Activo desde TGE.</p>
+    </div>
+    <div class="card card-accent">
+      <h3 style="font-size: 11px;">Motor B</h3>
+      <p style="font-size: 12px; color: var(--ambar-light); font-weight: 600; margin-bottom: 4px;">El Motor Interno</p>
+      <p style="font-size: 11px; color: var(--gris-ll);">App $LUKA. Fee 2.5% / 1.5% WL. B0=quema → B2=recirculación.</p>
+    </div>
+    <div class="card card-accent">
+      <h3 style="font-size: 11px;">Motor C</h3>
+      <p style="font-size: 12px; color: var(--ambar-light); font-weight: 600; margin-bottom: 4px;">El de Escala</p>
+      <p style="font-size: 11px; color: var(--gris-ll);">Pagos masivos USDC. Fee 0.5%. Fase 3.</p>
+    </div>
+    <div class="card card-accent">
+      <h3 style="font-size: 11px;">Motor D</h3>
+      <p style="font-size: 12px; color: var(--ambar-light); font-weight: 600; margin-bottom: 4px;">El Alma</p>
+      <p style="font-size: 11px; color: var(--gris-ll);">Manadas, gaming, cNFTs, DeFi. 4 capas, fees 0-3.5%.</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-text"><strong>Vault KASH Core</strong> — reserva dura (cBTC, SOL, LST, USDC). Nunca liquidable. Crece con cada transacción.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-text"><strong>Deflación con Throttle</strong> — supply 10B → 3.3B. El throttle dual modula velocidad de quema según salud del mercado.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-text"><strong>Aura</strong> — reputación on-chain. 7 niveles: Cachorro → Titán. Tu historial financiero, tuyo para siempre.</div>
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">04 / 12</span>
+</div>
+
+<!-- SLIDE 5: KASH SHIELD -->
+<div class="slide">
+  <div class="eyebrow">Seguridad</div>
+  <h2>KASH Shield — Seguridad DeFi Institucional</h2>
+
+  <div class="grid-3" style="margin-top: 8px;">
+    <div class="card card-green">
+      <h3 style="font-size: 10px; color: var(--verde-light);">Guardian de Pausa</h3>
+      <p style="font-size: 12px;">Multisig 2-de-3. Solo puede pausar/vetar. Sunset en Etapa 3. No puede mover fondos.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="font-size: 10px; color: var(--verde-light);">Circuit Breakers</h3>
+      <p style="font-size: 12px;">Cap quema 1%/día. Pausa automática ante anomalías. Cola diferida drena 10%/semana.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="font-size: 10px; color: var(--verde-light);">Anti-Whale + Exit Fee</h3>
+      <p style="font-size: 12px;">Ventas >0.5% supply penalizadas. Exit Fee 5/3/1% → 100% al Vault. El pánico fortalece la reserva.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="font-size: 10px; color: var(--verde-light);">Transfer Hook Capa 1</h3>
+      <p style="font-size: 12px;">Token-2022. Cada transferencia pasa por el contrato. Anti-dump on-chain.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="font-size: 10px; color: var(--verde-light);">Oráculos Redundantes</h3>
+      <p style="font-size: 12px;">Pyth Network + Switchboard. Umbral desviación 2%. Swaps a precio de oráculo.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="font-size: 10px; color: var(--verde-light);">Timelock 48h</h3>
+      <p style="font-size: 12px;">Cambios en parámetros críticos (K_min, fees, thresholds) requieren 48h de anuncio.</p>
+    </div>
+  </div>
+
+  <p style="margin-top: 16px; font-size: 13px; color: var(--marfil-dark);">Auditado internamente (13 hallazgos: 7 corregidos en v10). Auditoría externa Halborn/OtterSec es requisito pre-TGE.</p>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">05 / 12</span>
+</div>
+
+<!-- SLIDE 6: MONTE CARLO -->
+<div class="slide">
+  <div class="eyebrow">Validación cuantitativa &mdash; MC v4.3 (Ago 2026)</div>
+  <h2>Monte Carlo: 200 iteraciones &times; 3 campañas &times; 5 años</h2>
+  <p style="font-size: 12px; color: var(--gris-ll); margin-bottom: 16px;">Motor de simulación fiel al contrato (replica aritmética entera de lib.rs). 6 SIMs ejecutadas.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Métrica</th>
+        <th>Conservador</th>
+        <th>Base</th>
+        <th>Agresivo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Vault Mediana (5 años)</td>
+        <td class="highlight">$90M</td>
+        <td class="highlight">$388M</td>
+        <td class="highlight">$1,882M</td>
+      </tr>
+      <tr>
+        <td>Rango P10–P90</td>
+        <td>$38M – $326M</td>
+        <td>$197M – $1,146M</td>
+        <td>$741M – $5,705M</td>
+      </tr>
+      <tr>
+        <td>Espiral de Muerte</td>
+        <td class="amber">40%</td>
+        <td class="green">0%</td>
+        <td class="green">0%</td>
+      </tr>
+      <tr>
+        <td>Múltiplo precio vs TGE</td>
+        <td>4,381&times;</td>
+        <td>22,799&times;</td>
+        <td>107,126&times;</td>
+      </tr>
+      <tr>
+        <td>Supply quemado</td>
+        <td>67%</td>
+        <td>67%</td>
+        <td>66%</td>
+      </tr>
+      <tr>
+        <td style="color: var(--verde-light); font-weight: 600;">Riesgo de Ruina Total</td>
+        <td class="green" style="font-weight: 700;">0.0%</td>
+        <td class="green" style="font-weight: 700;">0.0%</td>
+        <td class="green" style="font-weight: 700;">0.0%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="grid-2" style="margin-top: 16px; gap: 12px;">
+    <div style="font-size: 12px; color: var(--marfil-dark);">
+      <strong class="highlight">Volumen = driver #1</strong> (swing $1.29B en Vault).<br>
+      Crash BTC -80% reduce Vault solo -3.8%.
+    </div>
+    <div style="font-size: 12px; color: var(--marfil-dark);">
+      <strong class="highlight">MM no requerido</strong> — sube Vault 11-19% pero baja precio 10-25% por dilución. Fair-launch validado (ADR-019).
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">06 / 12</span>
+</div>
+
+<!-- SLIDE 7: PRODUCTO -->
+<div class="slide">
+  <div class="eyebrow">Producto</div>
+  <h2>Un ecosistema que la gente quiere usar</h2>
+
+  <div class="grid-2" style="gap: 20px;">
+    <div>
+      <h3>LUKAI</h3>
+      <p style="font-size: 13px; margin-bottom: 16px;">IA conversacional que habla español, gestiona todo por ti. No necesitas saber blockchain. v1.0 orquestador on-chain (TGE), v2.0 interfaz conversacional (Etapa 2A).</p>
+
+      <h3>Manadas</h3>
+      <p style="font-size: 13px; margin-bottom: 16px;">La natillera/tanda del siglo XXI. Ahorro colectivo con contratos inteligentes. Sellos de Manada cNFT para membresía (crowdfunding, clubs, eventos).</p>
+
+      <h3>Jungle Arena</h3>
+      <p style="font-size: 13px;">Gaming financiero: Misiones de Caza, Duelos de Tótems, Predicciones Relámpago. Educación financiera gamificada en 4 tracks paralelos.</p>
+    </div>
+    <div>
+      <h3>Tótems cNFT</h3>
+      <p style="font-size: 13px; margin-bottom: 16px;">Instrumentos financieros tokenizados (NO llaves de acceso). 3 tipos: Nativo (staking 1.5%), Universal (premium), Estándar. Tiers Bronce/Plata/Oro. Totem Guard: seguro paramétrico.</p>
+
+      <h3>Aura — &ldquo;Farmea tu Aura&rdquo;</h3>
+      <p style="font-size: 13px; margin-bottom: 16px;">Reputación financiera on-chain. 7 niveles: Cachorro → Titán. No transferible. Tu historial financiero digital. El loop de engagement que convierte la app financiera en algo que quieres abrir cada día.</p>
+
+      <h3>Avatar NFT</h3>
+      <p style="font-size: 13px;">Identidad visual única. Empieza off-chain, se mintea como NFT tras misión milestone. Wearables desbloqueados por Aura.</p>
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">07 / 12</span>
+</div>
+
+<!-- SLIDE 8: TRACCIÓN -->
+<div class="slide">
+  <div class="eyebrow">Tracción / Estado &mdash; Agosto 2026</div>
+  <h2>Todo construido, validado, desplegado</h2>
+
+  <div class="grid-2" style="gap: 24px;">
+    <div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--verde);">&check;</div>
+        <div class="flow-text"><strong>Protocolo v4.3</strong> cerrado. 28 ADRs. 3 auditorías internas.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--verde);">&check;</div>
+        <div class="flow-text"><strong>Smart contracts v10.2</strong> en Solana devnet. ~2,100 líneas Anchor/Rust. 4 motores + Vault + KASH Shield + Guardian 2-de-3 + Pyth.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--verde);">&check;</div>
+        <div class="flow-text"><strong>Monte Carlo v4.3</strong> — 6 SIMs completas. Motor fiel al contrato. 0.0% riesgo de ruina.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--verde);">&check;</div>
+        <div class="flow-text"><strong>Marca e identidad</strong> — diseño visual, UI Kit, 3 idiomas (ES/EN/PT).</div>
+      </div>
+    </div>
+    <div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--verde);">&check;</div>
+        <div class="flow-text"><strong>CI Pipeline</strong> — GitHub Actions: Clippy DeFi + Soteria (25+ vulns) + Anchor build/test.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--ambar);">&FilledSmallSquare;</div>
+        <div class="flow-text"><strong>App Etapa 2A</strong> — diseño completo, implementación siguiente.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--ambar);">&FilledSmallSquare;</div>
+        <div class="flow-text"><strong>Auditoría externa</strong> pre-TGE — Halborn/OtterSec/Areta.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="color: var(--ambar);">&FilledSmallSquare;</div>
+        <div class="flow-text"><strong>Landing + waitlist</strong> — Vercel, próximo sprint.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+    <span class="pill pill-gold" style="font-size: 8px;">Program ID: AmRW...Cuy</span>
+    <span class="pill pill-gold" style="font-size: 8px;">Token: 2Dat...Luvr</span>
+    <span class="pill pill-gold" style="font-size: 8px;">SPL Token-2022 &middot; 6 dec &middot; 10B supply</span>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">08 / 12</span>
+</div>
+
+<!-- SLIDE 9: MERCADO -->
+<div class="slide">
+  <div class="eyebrow">Oportunidad de mercado</div>
+  <h2>LatAm: la frontera DeFi más grande del mundo</h2>
+
+  <div class="grid-3" style="margin-bottom: 20px;">
+    <div class="card" style="text-align: center;">
+      <div class="big-stat">660M</div>
+      <div class="stat-label">Población LatAm</div>
+    </div>
+    <div class="card" style="text-align: center;">
+      <div class="big-stat">260M</div>
+      <div class="stat-label">Excluidos financieramente</div>
+    </div>
+    <div class="card" style="text-align: center;">
+      <div class="big-stat">$150B</div>
+      <div class="stat-label">Remesas/año (5-8% comisión)</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap: 20px;">
+    <div>
+      <h3>Por qué ahora</h3>
+      <ul style="font-size: 13px;">
+        <li>Adopción cripto LatAm top 3 mundial (Chainalysis 2025)</li>
+        <li>Solana: fees mínimos hacen viable micro-uso masivo</li>
+        <li>RWA + tokenización = momento institucional</li>
+        <li>Generación <45 trilingüe, mobile-first, sin fronteras</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Por qué Solana</h3>
+      <ul style="font-size: 13px;">
+        <li>Fees < $0.01 → micro-transacciones viables</li>
+        <li>400ms finality → UX como app tradicional</li>
+        <li>Ecosistema maduro: Meteora, Jupiter, Jito, Pyth, Sanctum</li>
+        <li>Token-2022: Transfer Hook nativo para compliance</li>
+      </ul>
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">09 / 12</span>
+</div>
+
+<!-- SLIDE 10: MODELO DE NEGOCIO -->
+<div class="slide">
+  <div class="eyebrow">Modelo de negocio</div>
+  <h2>Autofinanciado por fases, no dilutivo primero</h2>
+
+  <div class="grid-2" style="gap: 24px;">
+    <div>
+      <h3>Revenue del protocolo</h3>
+      <p style="font-size: 13px; margin-bottom: 12px;">15% de cada fee = O&M. A escala (escenario Base, $388M Vault) esto genera revenue sostenible del protocolo sin depender de capital externo post-Fase 1.</p>
+
+      <h3>Distribución del capital ($500K Fase 1)</h3>
+      <table style="font-size: 12px;">
+        <tr><td>Tech (contratos + app + infra)</td><td class="highlight" style="text-align: right;">35%</td></tr>
+        <tr><td>Liquidez inicial (LP lockeado)</td><td class="highlight" style="text-align: right;">20%</td></tr>
+        <tr><td>Marketing + MM contingente</td><td class="highlight" style="text-align: right;">30%</td></tr>
+        <tr><td>Legal + compliance</td><td class="highlight" style="text-align: right;">10%</td></tr>
+        <tr><td>Reserva operativa</td><td class="highlight" style="text-align: right;">5%</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Ruta de capital</h3>
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-text"><strong>Grants no dilutivos</strong> — Solana Foundation, Finternet, Superteam, Meteora.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-text"><strong>Colosseum / Alliance DAO</strong> — pre-seed, aceleración.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-text"><strong>Seed ángeles LatAm</strong> — $500K / 5-8%. SAFE + token warrant.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-text"><strong>Estratégica</strong> — fintech $1-2M / 5-8%. Post-TGE + tracción.</div>
+      </div>
+
+      <h3 style="margin-top: 12px;">Tokenomics KASH Sociedad</h3>
+      <p style="font-size: 12px; color: var(--gris-ll);">~17% fundador · 5-8% seed · 5-8% estratégica · reserva. Vesting equipo: 2% (200M), cliff 12m + lineal 48m, publicado on-chain antes del TGE.</p>
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">10 / 12</span>
+</div>
+
+<!-- SLIDE 11: ROADMAP -->
+<div class="slide">
+  <div class="eyebrow">Roadmap</div>
+  <h2>De devnet a soberanía</h2>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="flex-shrink: 0; width: 90px; text-align: right;">
+        <span class="pill pill-green" style="font-size: 8px;">Completado</span>
+      </div>
+      <div>
+        <strong class="highlight">Etapa 0 — Pre-lanzamiento</strong>
+        <p style="font-size: 12px; color: var(--gris-ll);">Protocolo v4.3 · Contratos v10.2 devnet · MC v4.3 · CI Pipeline · Marca</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="flex-shrink: 0; width: 90px; text-align: right;">
+        <span class="pill pill-amber" style="font-size: 8px;">Q4 2026</span>
+      </div>
+      <div>
+        <strong class="highlight">Etapa 1 — Génesis</strong>
+        <p style="font-size: 12px; color: var(--gris-ll);">Auditoría externa · TGE fair-launch · Motor A activo · LP lockeado · Guardian activado</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="flex-shrink: 0; width: 90px; text-align: right;">
+        <span class="pill pill-gold" style="font-size: 8px;">2027 H1</span>
+      </div>
+      <div>
+        <strong class="highlight">Etapa 2A — App + B0</strong>
+        <p style="font-size: 12px; color: var(--gris-ll);">LUKAI v2.0 · Jungle Arena · Manadas · Tótems · Motor B0 (quema directa) · Aura</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="flex-shrink: 0; width: 90px; text-align: right;">
+        <span class="pill pill-gold" style="font-size: 8px;">2027 H2</span>
+      </div>
+      <div>
+        <strong class="highlight">Etapa 2B — Madurez + B2</strong>
+        <p style="font-size: 12px; color: var(--gris-ll);">K_min $25M alcanzado · Motor B2 (recirculación) · KASH Lock · DeFi Capa 1 completa</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="flex-shrink: 0; width: 90px; text-align: right;">
+        <span class="pill pill-gold" style="font-size: 8px;">2028+</span>
+      </div>
+      <div>
+        <strong class="highlight">Etapa 3 — Soberanía</strong>
+        <p style="font-size: 12px; color: var(--gris-ll);">Motor C (pagos masivos) · ENZ (equilibrio deflación) · RWA Capa 3 · Redención DAO opcional</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="flex-shrink: 0; width: 90px; text-align: right;">
+        <span class="pill pill-gold" style="font-size: 8px;">2029+</span>
+      </div>
+      <div>
+        <strong class="highlight">Etapa 4 — DAO</strong>
+        <p style="font-size: 12px; color: var(--gris-ll);">Gobernanza descentralizada completa · Guardian sunset · Autonomía del protocolo</p>
+      </div>
+    </div>
+  </div>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">11 / 12</span>
+</div>
+
+<!-- SLIDE 12: THE ASK + CONTACTO -->
+<div class="slide" style="justify-content: center;">
+  <div class="eyebrow">El ask</div>
+  <h2>Grant / Pre-seed para Milestone 2</h2>
+
+  <div class="grid-2" style="gap: 24px; margin-bottom: 24px;">
+    <div class="card card-accent" style="text-align: center;">
+      <div class="big-stat">$500K</div>
+      <div class="stat-label" style="margin-bottom: 12px;">Fase 1 — Seed</div>
+      <p style="font-size: 12px; color: var(--marfil-dark);">Auditoría externa + TGE + App Etapa 2A + comunidad génesis + 6 meses runway</p>
+    </div>
+    <div class="card" style="text-align: center;">
+      <div class="big-stat" style="color: var(--gris-ll);">$2M</div>
+      <div class="stat-label" style="margin-bottom: 12px;">Fase 2 — Estratégica (post-TGE)</div>
+      <p style="font-size: 12px; color: var(--marfil-dark);">Escala regional + Motor C + RWA Capa 3 + equipo de 8-12</p>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-bottom: 20px;">
+    <p style="font-size: 15px; color: var(--marfil);">Todo lo construido es open, auditable y verificable on-chain.</p>
+    <p style="font-size: 15px; color: var(--oro-light); font-weight: 500;">Las finanzas del futuro, disponibles hoy.</p>
+  </div>
+
+  <div style="text-align: center; padding-top: 16px; border-top: 1px solid var(--gris);">
+    <p style="font-size: 14px; margin-bottom: 4px;"><strong class="highlight">Sebastián Botero Pabón</strong></p>
+    <p style="font-size: 12px; color: var(--gris-ll);">doblemaster.inc@gmail.com &middot; github.com/doblemasterinc/lukash-protocol</p>
+  </div>
+
+  <p class="disclaimer">$LUKA es un token de utilidad del ecosistema. La reserva respalda el sistema; no constituye una promesa de rendimiento ni un valor negociable. Nada aquí es asesoría financiera. Datos de simulación Monte Carlo v4.3, agosto 2026.</p>
+
+  <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
+  <span class="slide-number">12 / 12</span>
+</div>
+
+</body>
+</html>
