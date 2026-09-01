@@ -420,3 +420,28 @@
 - **Próxima sesión:** (1) buscar inversores activamente (outreach real con pipeline + materiales),
   (2) convertir mockup en prototipo funcional con misiones de Aura interactivas,
   (3) regenerar feature-app.jpg sin "JAGUAR Pay" (ADR-017).
+
+## 2026-08-31 (sesión 22) — Prototipo app v2: diseño visual completo con concept art
+
+- **Prototipo app v2 construido** (`prototype/lukash-app-v2.html`): rediseño visual completo del mockup
+  con concept art real de fondo, glassmorphism, y assets de marca originales.
+- **6 pestañas funcionales:** Inicio (balance + Reserva + Aura), Manadas (templo selva), Arena (46 misiones
+  en 6 senderos A-F interactivos), Tótems (3 tiers Bronce/Plata/Oro con ISOTIPO V2), Enviar (contactos
+  con caras de jaguar recortadas), Reserva (composición del Vault).
+- **Assets de marca integrados:**
+  - Isotipo oficial (`lukash protocol isotipo.png`) como corazón de la marca: status bar, fondos de Arena/Enviar
+  - Palabra "LUKASH" estilizada (`LUKASH palabra.png`) como wordmark en el header sobre el teléfono
+  - ISOTIPO V2 (felino neón con circuitos) exclusivo para Tótems
+  - Logotipo completo en splash screen (5s de carga animada)
+  - LUKAI (pantera realista) en FAB button con crop circular
+  - Personajes jaguar masculino/femenino como avatares de contactos en Enviar
+- **Fondos con concept art:** feature-saldo.jpg (Inicio), arena.png (Manadas), isotipo (Arena/Enviar),
+  cnft.png (Tótems), feature-reserva.jpg (Reserva). Overlay gradiente oscuro para legibilidad.
+- **Tab bar con SVG icons:** cada pestaña con icono único e inline SVG + color propio al activarse
+  (verde/ámbar/púrpura/oro/cyan/oro). Reemplaza emojis anteriores.
+- **JS preservado del mockup v7:** 46 misiones, 6 senderos, 7 niveles Aura, localStorage, canvas embers.
+- **Decisiones de diseño:** wordmark `LUKASH palabra.png` a 24px height para equilibrio con isotipo;
+  contactos con caras de personajes recortadas via `object-fit:cover` + `object-position`.
+- **Servidor de desarrollo** en puerto 8092 (Python HTTP server, `.claude/launch.json`).
+- **Próxima sesión:** (1) buscar inversores activamente con outreach real, (2) hacer prototipo
+  clickeable/interactivo con más flujos, (3) regenerar feature-app.jpg sin "JAGUAR Pay" (ADR-017).

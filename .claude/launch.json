@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8091", "-d", "landing"],
       "port": 8091
+    },
+    {
+      "name": "prototype",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8092"],
+      "port": 8092
     }
   ]
 }

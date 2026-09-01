@@ -1,0 +1,723 @@
+<meta charset="UTF-8">
+<title>LUKASH · Prototipo v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+
+<style>
+  :root{
+    --obsidiana:#060808;--carbon:#0a0f0d;--carbon-2:#0f1612;
+    --linea:rgba(0,255,136,.14);
+    --oro:#C9A84C;--oro-claro:#E8C96A;--ambar:#E8940A;
+    --verde:#00FF88;--verde-claro:#33FFAA;--verde-deep:#00CC6A;
+    --marfil:#E0F0E8;--marfil-tenue:#7a9988;
+    --purpura:#9B59B6;--purpura-claro:#BB7FCF;
+    --neon:#00FF88;--neon-glow:rgba(0,255,136,.55);--neon-soft:rgba(0,255,136,.22);--neon-faint:rgba(0,255,136,.07);
+    --neon-oro:rgba(201,168,76,.5);--neon-oro-strong:rgba(232,201,106,.7);
+    --neon-ambar:rgba(232,148,10,.45);
+    --cyan:#00E5FF;--neon-cyan:rgba(0,229,255,.35);
+    --display:'Cinzel',Georgia,serif;--mono:'Space Mono',ui-monospace,monospace;--sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--sans);color:var(--marfil);background:var(--obsidiana);min-height:100%;
+    display:flex;flex-direction:column;align-items:center;padding:10px 16px 20px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #embers{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .bgwash{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%,rgba(0,255,136,.1),transparent 60%),
+      radial-gradient(820px 560px at 88% 112%,rgba(201,168,76,.08),transparent 55%),
+      radial-gradient(680px 480px at 8% 88%,rgba(0,255,136,.06),transparent 55%);
+    animation:washpan 14s ease-in-out infinite alternate}
+  @keyframes washpan{from{transform:translate3d(-1.5%,0,0) scale(1.02)}to{transform:translate3d(1.5%,1%,0) scale(1.05)}}
+
+  #splash{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 38%,rgba(0,255,136,.04),transparent 40%),radial-gradient(circle at 50% 45%,#0a0f0d,#050504 70%);display:grid;place-items:center;transition:opacity .8s ease,visibility .8s}
+  #splash.gone{opacity:0;visibility:hidden}
+  .sp-wrap{text-align:center;animation:spin-up 1.1s cubic-bezier(.2,.8,.2,1)}
+  @keyframes spin-up{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+  .sp-iso{width:260px;max-height:160px;object-fit:contain;animation:pulse-logo 3s ease-in-out infinite}
+  @keyframes pulse-logo{0%,100%{filter:drop-shadow(0 0 20px rgba(0,255,136,.4)) drop-shadow(0 0 40px rgba(201,168,76,.2));transform:scale(1)}50%{filter:drop-shadow(0 0 40px rgba(0,255,136,.7)) drop-shadow(0 0 80px rgba(201,168,76,.4));transform:scale(1.05)}}
+  .sp-word{font-family:var(--display);font-weight:800;letter-spacing:.3em;font-size:30px;margin:18px 0 6px;margin-left:.3em;text-shadow:0 0 30px rgba(0,255,136,.2),0 0 60px rgba(201,168,76,.15)}
+  .sp-word b{color:var(--oro);text-shadow:0 0 20px var(--neon-oro-strong),0 0 40px rgba(0,255,136,.2)}
+  .sp-tag{font-family:var(--display);letter-spacing:.16em;font-size:12px;color:var(--verde-claro);text-transform:uppercase;text-shadow:0 0 10px rgba(0,255,136,.3)}
+  .sp-bar{width:150px;height:3px;margin:22px auto 0;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+  .sp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--oro));box-shadow:0 0 8px var(--neon-glow);animation:load 1.7s ease forwards .2s}
+  @keyframes load{to{width:100%}}
+
+  .pitch{position:relative;z-index:1;text-align:center;max-width:440px;margin-bottom:8px}
+  .pitch-head{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:2px}
+  .pitch-iso{width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(0,255,136,.5))}
+  .langs{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+  .langs button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:6px 12px;border-radius:999px;border:1px solid var(--linea);background:transparent;color:var(--marfil-tenue);cursor:pointer;transition:.2s}
+  .langs button.on{color:var(--obsidiana);background:linear-gradient(135deg,var(--verde-claro),var(--verde));border-color:transparent;font-weight:700;box-shadow:0 0 12px var(--neon-glow)}
+  .wordmark{font-family:var(--display);font-weight:800;letter-spacing:.28em;font-size:25px;margin-left:.28em;text-shadow:0 0 24px rgba(0,255,136,.15),0 0 50px rgba(201,168,76,.1)}
+  .wordmark b{color:var(--oro);text-shadow:0 0 16px var(--neon-oro-strong),0 0 36px rgba(0,255,136,.15)}
+  .wordmark-img{height:24px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(0,255,136,.15))}
+  .tag{font-family:var(--display);font-weight:500;letter-spacing:.14em;font-size:12px;color:var(--verde-claro);margin-top:8px;text-transform:uppercase;text-shadow:0 0 10px rgba(0,255,136,.3)}
+  .sub{font-size:12.5px;color:var(--marfil-tenue);margin-top:9px;line-height:1.5}
+  .badge{display:inline-flex;align-items:center;gap:7px;margin-top:13px;padding:6px 13px;border:1px solid rgba(0,255,136,.25);border-radius:999px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--verde);background:rgba(0,255,136,.05);box-shadow:0 0 12px rgba(0,255,136,.1);text-shadow:0 0 8px rgba(0,255,136,.4)}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--verde);box-shadow:0 0 8px var(--neon-glow),0 0 16px rgba(0,255,136,.3);animation:p 2s infinite}
+
+  .phone{position:relative;z-index:1;width:min(392px,96vw);height:812px;max-height:calc(100vh - 30px);border-radius:44px;
+    background:linear-gradient(180deg,#0a0f0d,#060808);border:2px solid rgba(0,255,136,.3);
+    box-shadow:0 0 0 6px rgba(6,8,8,.95),0 30px 80px rgba(0,0,0,.7),0 0 40px rgba(0,255,136,.2),0 0 80px rgba(0,255,136,.1),inset 0 0 30px rgba(0,255,136,.02);overflow:hidden;display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:26px;background:#060808;border-radius:0 0 16px 16px;z-index:40}
+  .status{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-family:var(--mono);font-size:11px;color:var(--marfil-tenue);flex-shrink:0;position:relative;z-index:2}
+  .viewport{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+  .viewport::-webkit-scrollbar{display:none}
+
+  .screen{display:none;padding:6px 18px 26px;min-height:100%;background-size:auto,cover;background-position:center,center top;background-repeat:no-repeat,no-repeat}
+  .screen.on{display:block}
+
+  #s-inicio{background-image:linear-gradient(180deg,rgba(6,8,8,.5) 0%,rgba(6,8,8,.72) 35%,rgba(6,8,8,.9) 60%,rgba(6,8,8,.97) 100%),url("../landing/feature-saldo.jpg")}
+  #s-manadas{background-image:linear-gradient(180deg,rgba(6,8,8,.45) 0%,rgba(6,8,8,.7) 30%,rgba(6,8,8,.9) 55%,rgba(6,8,8,.97) 100%),url("../brand/conceptos-ui/arena.png")}
+  #s-arena{background-image:linear-gradient(180deg,rgba(6,8,8,.4) 0%,rgba(6,8,8,.68) 30%,rgba(6,8,8,.88) 55%,rgba(6,8,8,.97) 100%),url("../brand/logos/lukash protocol isotipo.png")}
+  #s-totems{background-image:linear-gradient(180deg,rgba(6,8,8,.4) 0%,rgba(6,8,8,.65) 28%,rgba(6,8,8,.88) 52%,rgba(6,8,8,.97) 100%),url("../brand/conceptos-ui/cnft.png")}
+  #s-enviar{background-image:linear-gradient(180deg,rgba(6,8,8,.4) 0%,rgba(6,8,8,.68) 30%,rgba(6,8,8,.88) 55%,rgba(6,8,8,.97) 100%),url("../brand/logos/lukash protocol isotipo.png")}
+  #s-reserva{background-image:linear-gradient(180deg,rgba(6,8,8,.35) 0%,rgba(6,8,8,.6) 30%,rgba(6,8,8,.85) 55%,rgba(6,8,8,.97) 100%),url("../landing/feature-reserva.jpg")}
+
+  .screen.on .card,.screen.on .mission,.screen.on .metric,.screen.on .path,.screen.on .section-h,.screen.on .eyebrow,.screen.on .seal,.screen.on .trail-tabs{animation:rise .5s both cubic-bezier(.2,.7,.3,1)}
+  .screen.on>*:nth-child(2){animation-delay:.03s}.screen.on>*:nth-child(3){animation-delay:.08s}.screen.on>*:nth-child(4){animation-delay:.13s}.screen.on>*:nth-child(5){animation-delay:.18s}.screen.on>*:nth-child(6){animation-delay:.23s}.screen.on>*:nth-child(7){animation-delay:.28s}.screen.on>*:nth-child(8){animation-delay:.33s}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(0,255,136,.5)}70%{box-shadow:0 0 0 8px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+
+  .top{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 16px;position:relative;z-index:1}
+  .hi{font-size:13px;color:var(--marfil-tenue)}
+  .hi b{display:block;font-family:var(--display);font-weight:600;font-size:19px;color:var(--marfil);text-shadow:0 0 12px rgba(240,234,214,.15)}
+  .lvl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--obsidiana);background:linear-gradient(135deg,var(--oro-claro),var(--oro));padding:6px 11px;border-radius:999px;font-weight:700;box-shadow:0 0 16px var(--neon-oro),0 0 32px rgba(201,168,76,.15)}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--verde);margin-bottom:9px;text-shadow:0 0 10px rgba(0,255,136,.4)}
+
+  .card{background:rgba(10,15,13,.55);border:1px solid var(--linea);border-radius:22px;padding:18px;margin-bottom:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.03)}
+  .glow{position:relative;overflow:hidden}
+  .glow::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 22% 0%,rgba(0,255,136,.12),transparent 55%);pointer-events:none;animation:sheen 6s ease-in-out infinite}
+  @keyframes sheen{0%,100%{opacity:.6}50%{opacity:1}}
+  .balance-label{font-size:12px;color:var(--marfil-tenue)}
+  .balance{font-family:var(--mono);font-weight:700;font-size:37px;margin:6px 0 2px;position:relative;z-index:1;text-shadow:0 0 20px rgba(240,234,214,.2)}
+  .balance small{font-family:var(--display);font-size:15px;color:var(--oro);margin-left:6px;text-shadow:0 0 12px var(--neon-oro)}
+  .usd{font-family:var(--mono);font-size:13px;color:var(--marfil-tenue);position:relative;z-index:1}
+  .motorline{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;color:var(--verde-claro);position:relative;z-index:1;text-shadow:0 0 8px rgba(0,255,136,.3)}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--verde);box-shadow:0 0 6px var(--neon-glow),0 0 14px rgba(0,255,136,.3);animation:p 2s infinite}
+
+  .reserva .rtop{display:flex;justify-content:space-between;align-items:baseline}
+  .reserva .rname{font-family:var(--display);font-size:14px;letter-spacing:.05em}
+  .reserva .rval{font-family:var(--mono);font-weight:700;font-size:22px;color:var(--verde-claro);text-shadow:0 0 14px rgba(0,255,136,.5),0 0 28px rgba(0,255,136,.2)}
+  .bar{height:9px;border-radius:999px;background:rgba(255,255,255,.06);margin:14px 0 8px;overflow:hidden}
+  .bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--verde),var(--oro));box-shadow:0 0 14px var(--neon-glow),0 0 28px rgba(0,255,136,.2);width:0;transition:width 1.3s cubic-bezier(.2,.7,.3,1)}
+  .bar-meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--marfil-tenue)}
+
+  .aura{display:flex;align-items:center;gap:16px}
+  .ring{--pct:0;width:76px;height:76px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:conic-gradient(var(--verde) calc(var(--pct)*1%),rgba(255,255,255,.07) 0);position:relative;box-shadow:0 0 22px rgba(0,255,136,.35),0 0 44px rgba(0,255,136,.15)}
+  .ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#0a0f0d;box-shadow:inset 0 0 12px rgba(0,255,136,.06)}
+  .ring b{position:relative;font-family:var(--mono);font-weight:700;font-size:17px;color:var(--verde-claro);text-shadow:0 0 14px rgba(0,255,136,.6)}
+  .aura-info .a-l{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--marfil-tenue)}
+  .aura-info .a-n{font-family:var(--display);font-size:18px;margin:2px 0}
+  .aura-info .a-s{font-size:12px;color:var(--verde)}
+
+  .qa{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 18px}
+  .qa button{font-family:var(--sans);cursor:pointer;border:1px solid var(--linea);background:rgba(10,15,13,.45);color:var(--marfil);border-radius:16px;padding:13px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:12px;transition:.2s;position:relative;overflow:hidden;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .qa button:hover{border-color:var(--verde);background:rgba(0,255,136,.08);transform:translateY(-3px);box-shadow:0 0 16px rgba(0,255,136,.2)}
+  .qa .ico{font-size:17px}
+
+  .row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .row:last-child{border-bottom:0}
+  .av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:16px;flex-shrink:0;background:rgba(0,255,136,.06);border:1px solid var(--linea)}
+  .row .txt{flex:1;min-width:0}
+  .row .txt b{font-size:13.5px;font-weight:500;display:block}
+  .row .txt span{font-size:11px;color:var(--marfil-tenue)}
+  .amt{font-family:var(--mono);font-size:13px;font-weight:700;text-align:right}
+  .amt.pos{color:var(--verde-claro);text-shadow:0 0 8px rgba(0,255,136,.3)} .amt.neg{color:var(--marfil)}
+  .amt small{display:block;font-weight:400;font-size:9.5px;color:var(--marfil-tenue)}
+  .section-h{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--marfil-tenue);margin:20px 2px 8px}
+
+  .manada .mtop{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .stack{display:flex}
+  .stack .av{width:34px;height:34px;border-radius:50%;margin-left:-10px;font-size:15px}
+  .stack .av:first-child{margin-left:0}
+  .manada .mname{font-family:var(--display);font-size:15px}
+  .manada .mtype{font-size:11px;color:var(--marfil-tenue)}
+  .mgoal{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-bottom:4px}
+  .mgoal .g{color:var(--verde-claro);text-shadow:0 0 8px rgba(0,255,136,.3)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{font-family:var(--mono);font-size:10px;padding:5px 9px;border-radius:999px;border:1px solid var(--linea);color:var(--marfil-tenue)}
+  .chip.on{color:var(--verde-claro);border-color:rgba(0,255,136,.35);text-shadow:0 0 8px rgba(0,255,136,.4);box-shadow:0 0 8px rgba(0,255,136,.1)}
+
+  .path{display:flex;justify-content:space-between;align-items:flex-start;margin:2px 0 18px;position:relative}
+  .path::before{content:"";position:absolute;left:7%;right:7%;top:15px;height:2px;background:linear-gradient(90deg,var(--verde) var(--progress,45%),rgba(255,255,255,.08) var(--progress,45%));box-shadow:0 0 8px rgba(0,255,136,.4)}
+  .step{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1;width:14%}
+  .step .d{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:rgba(10,15,13,.7);border:2px solid rgba(255,255,255,.1);backdrop-filter:blur(4px)}
+  .step.done .d{border-color:var(--verde);background:rgba(0,255,136,.12);box-shadow:0 0 14px rgba(0,255,136,.35)}
+  .step.now .d{border-color:var(--verde-claro);background:linear-gradient(135deg,var(--verde),var(--verde-deep));color:var(--obsidiana);animation:pop 2.4s ease-in-out infinite;box-shadow:0 0 18px rgba(0,255,136,.5),0 0 36px rgba(0,255,136,.2)}
+  @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .step span{font-size:8px;color:var(--marfil-tenue);text-align:center}
+  .step.now span{color:var(--verde-claro)}
+
+  .trail-tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none}
+  .trail-tabs::-webkit-scrollbar{display:none}
+  .trail-tab{font-family:var(--mono);font-size:9px;letter-spacing:.08em;padding:7px 12px;border-radius:999px;border:1px solid var(--linea);background:rgba(10,15,13,.4);color:var(--marfil-tenue);cursor:pointer;transition:.2s;white-space:nowrap;flex-shrink:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .trail-tab.on{color:var(--obsidiana);background:linear-gradient(135deg,var(--verde-claro),var(--verde));border-color:transparent;font-weight:700;box-shadow:0 0 14px rgba(0,255,136,.3)}
+  .trail-tab .count{opacity:.6;margin-left:4px}
+
+  .mission{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--linea);border-radius:16px;margin-bottom:11px;background:rgba(10,15,13,.45);transition:.2s;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .mission:not(.locked):hover{border-color:var(--verde);transform:translateX(3px);box-shadow:0 0 16px rgba(0,255,136,.15)}
+  .mission .mi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex-shrink:0;background:rgba(0,255,136,.06);border:1px solid var(--linea)}
+  .mission .md{flex:1;min-width:0}
+  .mission .md b{font-size:13px;font-weight:600;display:block}
+  .mission .md span{font-size:11px;color:var(--marfil-tenue);display:block;margin-top:2px}
+  .mission .md .trail-badge{font-family:var(--mono);font-size:8px;letter-spacing:.08em;padding:2px 6px;border-radius:999px;display:inline-block;margin-top:4px}
+  .aura-pts{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--verde-claro);white-space:nowrap;text-shadow:0 0 10px rgba(0,255,136,.4)}
+  .mission.locked{opacity:.4;cursor:default}
+  .mission.done{border-color:rgba(0,255,136,.3);box-shadow:0 0 12px rgba(0,255,136,.1)}
+  .mission.done .aura-pts{color:var(--verde-claro);text-shadow:0 0 10px rgba(0,255,136,.5)}
+  .mission.done .mi{background:rgba(0,255,136,.1);box-shadow:0 0 12px rgba(0,255,136,.15)}
+
+  .seal{text-align:center;border:1px solid rgba(0,255,136,.25);border-radius:18px;padding:16px;background:rgba(10,15,13,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);margin-bottom:14px;box-shadow:0 0 20px rgba(0,255,136,.08)}
+  .seal .s1{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--verde-claro);text-shadow:0 0 10px rgba(0,255,136,.4)}
+  .seal .s2{font-family:var(--display);font-weight:700;font-size:25px;margin:4px 0;letter-spacing:.04em;text-shadow:0 0 16px rgba(240,234,214,.15)}
+  .seal .s3{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--marfil-tenue)}
+  .metric3{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+  .metric{border:1px solid var(--linea);border-radius:16px;padding:14px;background:rgba(10,15,13,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 0 12px rgba(0,0,0,.2)}
+  .metric .m-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--marfil-tenue)}
+  .metric .m-v{font-family:var(--mono);font-weight:700;font-size:20px;margin-top:5px}
+  .fire .m-v{color:var(--ambar);text-shadow:0 0 14px var(--neon-ambar)} .vault .m-v{color:var(--oro-claro);text-shadow:0 0 14px var(--neon-oro)} .cola .m-v{color:var(--verde-claro);text-shadow:0 0 14px rgba(0,255,136,.4)} .cal .m-v{color:var(--marfil)}
+  .flame{display:inline-block;animation:flick 1.5s ease-in-out infinite}
+  @keyframes flick{0%,100%{opacity:1;transform:scale(1) rotate(-2deg)}50%{opacity:.72;transform:scale(1.15) rotate(3deg)}}
+  .compo{margin-top:6px}
+  .compo .crow{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12px}
+  .compo .cbar{flex:1;height:7px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+  .compo .cbar i{display:block;height:100%;border-radius:999px;width:0;transition:width 1.1s cubic-bezier(.2,.7,.3,1)}
+  .compo .cp{font-family:var(--mono);font-size:11px;color:var(--marfil-tenue);width:34px;text-align:right}
+  .compo .cn{width:96px}
+
+  .cta{width:100%;font-family:var(--display);font-weight:600;letter-spacing:.06em;font-size:15px;cursor:pointer;border:none;border-radius:16px;padding:15px;color:var(--obsidiana);background:linear-gradient(135deg,var(--verde-claro),var(--verde));box-shadow:0 8px 24px rgba(0,255,136,.25),0 0 40px rgba(0,255,136,.1);transition:.2s;position:relative;overflow:hidden}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,255,136,.35),0 0 50px rgba(0,255,136,.15)}
+  .cta.ghost{background:transparent;border:1px solid rgba(0,255,136,.4);color:var(--verde);box-shadow:0 0 14px rgba(0,255,136,.1);text-shadow:0 0 10px rgba(0,255,136,.3)}
+  .cta.ghost:hover{box-shadow:0 0 24px rgba(0,255,136,.2),0 0 40px rgba(0,255,136,.08)}
+
+  .tabbar{flex-shrink:0;display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid rgba(0,255,136,.15);background:rgba(6,8,8,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+  .tab{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--marfil-tenue);font-family:var(--sans);font-size:9.5px;padding:4px 0;transition:.2s}
+  .tab .ti{display:flex;align-items:center;justify-content:center;opacity:.7;transition:.2s}
+  .tab .ti svg{width:20px;height:20px}
+  .tab.on{color:var(--verde);text-shadow:0 0 8px rgba(0,255,136,.5)}
+  .tab.on .ti{opacity:1;transform:translateY(-2px) scale(1.08);filter:drop-shadow(0 0 8px rgba(0,255,136,.4))}
+  .tab.on[data-t="manadas"]{color:var(--ambar);text-shadow:0 0 8px var(--neon-ambar)}.tab.on[data-t="manadas"] .ti{filter:drop-shadow(0 0 8px rgba(232,148,10,.5))}
+  .tab.on[data-t="arena"]{color:var(--purpura-claro);text-shadow:0 0 8px rgba(155,89,182,.4)}.tab.on[data-t="arena"] .ti{filter:drop-shadow(0 0 8px rgba(155,89,182,.5))}
+  .tab.on[data-t="totems"]{color:var(--oro-claro);text-shadow:0 0 8px var(--neon-oro-strong)}.tab.on[data-t="totems"] .ti{filter:drop-shadow(0 0 8px rgba(232,201,106,.5))}
+  .tab.on[data-t="enviar"]{color:var(--cyan);text-shadow:0 0 8px var(--neon-cyan)}.tab.on[data-t="enviar"] .ti{filter:drop-shadow(0 0 8px rgba(0,229,255,.5))}
+  .tab.on[data-t="reserva"]{color:var(--oro);text-shadow:0 0 8px var(--neon-oro)}.tab.on[data-t="reserva"] .ti{filter:drop-shadow(0 0 8px rgba(201,168,76,.5))}
+
+  .fab{position:absolute;right:16px;bottom:90px;width:54px;height:54px;border-radius:50%;z-index:30;cursor:pointer;border:1px solid rgba(0,255,136,.4);background:radial-gradient(circle at 35% 30%,#0f1612,#060808);display:grid;place-items:center;box-shadow:0 0 24px rgba(0,255,136,.25),0 0 48px rgba(0,255,136,.1);animation:breathe 3.5s ease-in-out infinite;overflow:hidden}
+  .fab img{width:100%;height:100%;object-fit:cover;object-position:center 38%;border-radius:50%;filter:drop-shadow(0 0 4px rgba(201,168,76,.5))}
+  @keyframes breathe{0%,100%{box-shadow:0 0 20px rgba(0,255,136,.2),0 0 40px rgba(0,255,136,.08)}50%{box-shadow:0 0 36px rgba(0,255,136,.35),0 0 60px rgba(0,255,136,.15)}}
+
+  .foot{position:relative;z-index:1;margin-top:8px;font-family:var(--mono);font-size:9px;color:rgba(122,153,136,.5);letter-spacing:.08em;text-align:center;max-width:420px;line-height:1.5}
+
+  .modal-overlay{display:none;position:absolute;inset:0;z-index:50;background:rgba(5,5,4,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .modal-overlay.on{display:flex;align-items:flex-end;justify-content:center}
+  .modal{width:100%;max-height:70%;overflow-y:auto;background:linear-gradient(180deg,rgba(15,22,18,.95),rgba(6,8,8,.98));border-top:2px solid var(--verde);border-radius:22px 22px 0 0;padding:24px 20px 30px;animation:slideUp .35s cubic-bezier(.2,.8,.3,1);box-shadow:0 -10px 40px rgba(0,255,136,.1)}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+  .modal .m-icon{font-size:40px;text-align:center;margin-bottom:12px}
+  .modal .m-title{font-family:var(--display);font-size:20px;text-align:center;margin-bottom:4px;text-shadow:0 0 16px rgba(240,234,214,.15)}
+  .modal .m-trail{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-align:center;color:var(--verde);margin-bottom:14px;text-transform:uppercase;text-shadow:0 0 10px rgba(0,255,136,.4)}
+  .modal .m-desc{font-size:13px;color:var(--marfil-tenue);line-height:1.6;margin-bottom:18px}
+  .modal .m-reward{text-align:center;font-family:var(--mono);font-size:24px;font-weight:700;color:var(--verde-claro);margin-bottom:18px;text-shadow:0 0 18px rgba(0,255,136,.5),0 0 36px rgba(0,255,136,.2)}
+  .modal .m-req{font-size:11px;color:var(--marfil-tenue);margin-bottom:16px;padding:10px;border:1px solid var(--linea);border-radius:12px;background:rgba(10,15,13,.5)}
+  .modal .m-req b{color:var(--marfil)}
+
+  .aura-bump{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;font-family:var(--display);font-weight:800;font-size:48px;color:var(--verde-claro);text-shadow:0 0 40px rgba(0,255,136,.6),0 0 80px rgba(0,255,136,.3),0 0 120px rgba(0,255,136,.15);pointer-events:none;animation:auraBump 1.5s ease-out forwards}
+  @keyframes auraBump{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}40%{transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(1)}}
+
+  .progress-mini{display:flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--marfil-tenue)}
+  .progress-mini .pbar{flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+  .progress-mini .pbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--verde),var(--oro));box-shadow:0 0 8px rgba(0,255,136,.3);transition:width .8s}
+
+  .ripple{position:absolute;border-radius:50%;transform:translate(-50%,-50%);background:rgba(0,255,136,.25);pointer-events:none;animation:rip .6s ease-out forwards}
+  @keyframes rip{from{width:0;height:0;opacity:.5}to{width:220px;height:220px;opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (max-width:440px){.phone{border-radius:0;border:none;box-shadow:none;height:auto;max-height:none;min-height:86vh}.notch{display:none}body{padding-top:14px}}
+</style>
+
+<div class="bgwash"></div>
+<canvas id="embers"></canvas>
+
+<div id="splash">
+  <div class="sp-wrap">
+    <img src="../brand/logos/LUKASH Protocol logotipo_clean.png" class="sp-iso" alt="LUKASH Protocol">
+    <div class="sp-tag">Dueño de tu ascenso</div>
+    <div class="sp-bar"><i></i></div>
+  </div>
+</div>
+
+<div class="pitch">
+  <div class="pitch-head">
+    <img src="../brand/logos/lukash protocol isotipo.png" class="pitch-iso" alt="">
+    <img src="../brand/logos/LUKASH palabra.png" class="wordmark-img" alt="LUKASH">
+  </div>
+</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="status"><span>9:41</span><span style="display:flex;align-items:center;gap:6px"><img src="../brand/logos/lukash protocol isotipo.png" style="width:14px;height:14px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(0,255,136,.5))" alt=""> 5G &nbsp; 100%</span></div>
+  <div class="viewport">
+
+    <section class="screen on" id="s-inicio">
+      <div class="top"><div class="hi">Hola,<b>Sebastián</b></div><div class="lvl" id="homeLvl">Cachorro</div></div>
+      <div class="card glow">
+        <div class="balance-label">Tu balance</div>
+        <div class="balance">12.450<small>$LUKA</small></div>
+        <div class="usd">≈ $248,90 USD</div>
+        <div class="motorline"><span class="pulse"></span> Motor A activo · cada movimiento alimenta la Reserva</div>
+      </div>
+      <div class="card reserva">
+        <div class="rtop"><span class="rname">La Reserva Sagrada</span><span class="rval" id="vaultTop">$18,75M</span></div>
+        <div class="bar"><i data-w="75"></i></div>
+        <div class="bar-meta"><span>Reserva del ecosistema</span><span>75% del hito · $25M</span></div>
+      </div>
+      <div class="card aura" id="homeAura">
+        <div class="ring" id="homeRing"><b id="homeRingVal">0</b></div>
+        <div class="aura-info">
+          <div class="a-l">Tu Aura</div>
+          <div class="a-n" id="homeAuraText">0 · Cachorro</div>
+          <div class="a-s" id="homeAuraNext">500 para llegar a Rastreador →</div>
+        </div>
+      </div>
+      <div class="qa">
+        <button onclick="go('enviar')"><span class="ico">↑</span><span>Enviar</span></button>
+        <button onclick="toast('Comparte tu código de felino')"><span class="ico">↓</span><span>Recibir</span></button>
+        <button onclick="go('manadas')"><span class="ico">🐾</span><span>Vaquita</span></button>
+      </div>
+      <div class="section-h">Movimientos recientes</div>
+      <div class="card" style="padding:6px 16px">
+        <div class="row"><div class="av">🐾</div><div class="txt"><b>Vaquita Familia González</b><span>Aporte mensual · hoy</span></div><div class="amt neg">−200,00<small>$LUKA</small></div></div>
+        <div class="row"><div class="av">🔥</div><div class="txt"><b>Quema del protocolo</b><span>Parte de tu fee · hoy</span></div><div class="amt neg">−1,20<small>a La Bóveda</small></div></div>
+        <div class="row"><div class="av">⚡</div><div class="txt"><b>Recompensa de staking</b><span>Ayer</span></div><div class="amt pos">+34,50<small>$LUKA</small></div></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s-manadas">
+      <div class="top"><div class="hi"><b>Tus Manadas</b></div><div class="lvl">3 activas</div></div>
+      <div class="eyebrow">La vaquita del siglo XXI · ahorro en manada</div>
+      <div class="card manada">
+        <div class="mtop"><div class="stack"><div class="av">🐾</div><div class="av">🦊</div><div class="av">🐯</div><div class="av">🦁</div></div>
+          <div><div class="mname">Familia González</div><div class="mtype">Vaquita de ahorro · 5 miembros</div></div></div>
+        <div class="mgoal"><span>$2.340 / $5.000</span><span class="g">+$340 este mes</span></div>
+        <div class="bar"><i data-w="47"></i></div>
+        <div class="chips"><span class="chip on">✓ Al día</span><span class="chip">Cierra en 3 meses</span><span class="chip on">+15 Aura / aporte</span></div>
+      </div>
+      <div class="card manada">
+        <div class="mtop"><div class="stack"><div class="av">🐺</div><div class="av">🦝</div><div class="av">🐾</div></div>
+          <div><div class="mname">Amigos del Barrio</div><div class="mtype">Inversión colectiva · 12 miembros</div></div></div>
+        <div class="mgoal"><span>Rendimiento del mes</span><span class="g">+8,4%</span></div>
+        <div class="bar"><i data-w="70"></i></div>
+        <div class="chips"><span class="chip">cNFT compartido</span><span class="chip on">Tótem Elite</span></div>
+      </div>
+      <button class="cta ghost" onclick="toast('Crea tu manada e invita felinos')">＋ Crear Manada</button>
+    </section>
+
+    <section class="screen" id="s-arena">
+      <div class="top"><div class="hi"><b>Jungle Arena</b></div><div class="lvl" id="arenaLvl">Aura 0</div></div>
+      <div class="eyebrow">El camino del rugido</div>
+      <div class="path" id="auraPath">
+        <div class="step" data-lvl="0"><div class="d">🐾</div><span>Cachorro</span></div>
+        <div class="step" data-lvl="1"><div class="d">👣</div><span>Rastreador</span></div>
+        <div class="step" data-lvl="2"><div class="d">🏹</div><span>Cazador</span></div>
+        <div class="step" data-lvl="3"><div class="d">🌙</div><span>Alfa</span></div>
+        <div class="step" data-lvl="4"><div class="d">👑</div><span>Emperador</span></div>
+        <div class="step" data-lvl="5"><div class="d">🔮</div><span>Shamán</span></div>
+        <div class="step" data-lvl="6"><div class="d">⚡</div><span>Titán</span></div>
+      </div>
+      <div class="trail-tabs" id="trailTabs"></div>
+      <div class="progress-mini" id="trailProgress">
+        <span id="trailDone">0</span>/<span id="trailTotal">0</span>
+        <div class="pbar"><i id="trailBar" style="width:0"></i></div>
+        <span id="trailPct">0%</span>
+      </div>
+      <div id="missionList"></div>
+    </section>
+
+    <section class="screen" id="s-totems">
+      <div class="top"><div class="hi"><b>Tus Tótems</b></div><div class="lvl">cNFTs</div></div>
+      <div class="eyebrow">Instrumentos financieros on-chain</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+        <div class="card" style="text-align:center;padding:14px 8px">
+          <img src="../brand/logos/ISOTIPO V2.png" style="width:52px;height:52px;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:8px;filter:sepia(.4) hue-rotate(-15deg) brightness(.7)">
+          <div style="font-family:var(--display);font-size:12px;margin-bottom:2px">Bronce</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ambar)">10K $LUKA</div>
+        </div>
+        <div class="card" style="text-align:center;padding:14px 8px">
+          <img src="../brand/logos/ISOTIPO V2.png" style="width:52px;height:52px;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:8px;filter:brightness(1.3) saturate(.6)">
+          <div style="font-family:var(--display);font-size:12px;margin-bottom:2px">Plata</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--marfil)">50K $LUKA</div>
+        </div>
+        <div class="card" style="text-align:center;padding:14px 8px">
+          <img src="../brand/logos/ISOTIPO V2.png" style="width:52px;height:52px;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:8px;filter:sepia(.5) hue-rotate(15deg) brightness(1.2) saturate(1.5)">
+          <div style="font-family:var(--display);font-size:12px;margin-bottom:2px">Oro</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--oro)">100K $LUKA</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="eyebrow" style="margin-top:0">Tu colección</div>
+        <div style="text-align:center;padding:20px 0;color:var(--marfil-tenue);font-size:13px">Aún no tienes Tótems.<br><span style="font-size:11px;color:var(--verde)">Completa misiones para desbloquear.</span></div>
+      </div>
+      <button class="cta" onclick="toast('Selecciona tu tier para mintear un Tótem Nativo')">Mintear Tótem Nativo</button>
+      <div style="height:10px"></div>
+      <button class="cta ghost" onclick="toast('Explora Tótems Universales y Estándar en el marketplace')">Explorar Marketplace</button>
+    </section>
+
+    <section class="screen" id="s-enviar">
+      <div class="top"><div class="hi"><b>Enviar $LUKA</b></div><div class="lvl">Instantáneo</div></div>
+      <div class="eyebrow">Elige a un felino de tu manada</div>
+      <div style="display:flex;gap:14px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer"><div class="av" style="width:52px;height:52px;border-radius:50%;overflow:hidden;padding:0;border-color:var(--verde);box-shadow:0 0 16px rgba(0,255,136,.35)"><img src="../brand/personajes/jaguar femenino 2.png" style="width:100%;height:100%;object-fit:cover;object-position:center 15%"></div><span style="font-size:11px;color:var(--verde-claro)">Ana</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer"><div class="av" style="width:52px;height:52px;border-radius:50%;overflow:hidden;padding:0"><img src="../brand/personajes/jaguar masculino.png" style="width:100%;height:100%;object-fit:cover;object-position:center 20%"></div><span style="font-size:11px;color:var(--marfil-tenue)">Camilo</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer"><div class="av" style="width:52px;height:52px;border-radius:50%;overflow:hidden;padding:0"><img src="../brand/personajes/luka femenino.png" style="width:100%;height:100%;object-fit:cover;object-position:center 18%"></div><span style="font-size:11px;color:var(--marfil-tenue)">Lucía</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer"><div class="av" style="width:52px;height:52px;border-radius:50%;overflow:hidden;padding:0"><img src="../brand/personajes/jaguar masculino.png" style="width:100%;height:100%;object-fit:cover;object-position:center 22%"></div><span style="font-size:11px;color:var(--marfil-tenue)">Diego</span></div>
+      </div>
+      <div style="text-align:center;padding:24px 0 16px"><div style="font-family:var(--mono);font-weight:700;font-size:44px" id="amt">150<span style="color:var(--oro);font-family:var(--display);font-size:19px">$LUKA</span></div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 16px">
+        <button onclick="key('1')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">1</button>
+        <button onclick="key('2')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">2</button>
+        <button onclick="key('3')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">3</button>
+        <button onclick="key('4')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">4</button>
+        <button onclick="key('5')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">5</button>
+        <button onclick="key('6')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">6</button>
+        <button onclick="key('7')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">7</button>
+        <button onclick="key('8')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">8</button>
+        <button onclick="key('9')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">9</button>
+        <button onclick="key('.')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">.</button>
+        <button onclick="key('0')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">0</button>
+        <button onclick="key('<')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">⌫</button>
+      </div>
+      <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:14px;padding:12px 14px;font-size:11.5px;color:var(--marfil-tenue);line-height:1.55;margin-bottom:14px;backdrop-filter:blur(8px)">De cada pago: una parte <b style="color:var(--ambar)">quema $LUKA</b>, otra <span style="color:var(--verde-claro)">alimenta La Reserva</span>, y otra premia a la manada.</div>
+      <button class="cta" onclick="toast('¡Enviado a Ana! +15 Aura')">Enviar a Ana</button>
+    </section>
+
+    <section class="screen" id="s-reserva">
+      <div class="top"><div class="hi"><b>La Reserva</b></div><div class="lvl">On-chain</div></div>
+      <div class="seal"><div class="s1">◈ VALIDADO POR SIMULACIÓN</div><div class="s2">RESERVA VIVA</div><div class="s3">5.000 escenarios · 1.825 días · auditable</div></div>
+      <div class="metric3">
+        <div class="metric vault"><div class="m-l">La Bóveda · K(t)</div><div class="m-v" id="kval">$18,75M</div></div>
+        <div class="metric fire"><div class="m-l">El Fuego · quemado</div><div class="m-v"><span class="flame">🔥</span> 6,70B</div></div>
+        <div class="metric cola"><div class="m-l">La Cola · diferido</div><div class="m-v">42,1M</div></div>
+        <div class="metric cal"><div class="m-l">Precio KASH · piso</div><div class="m-v">$0,0057</div></div>
+      </div>
+      <div class="card compo" style="margin-top:14px">
+        <div class="eyebrow">Composición de la Reserva · 100% Solana</div>
+        <div class="crow"><span class="cn">cBTC</span><span class="cbar"><i data-w="35" style="background:linear-gradient(90deg,#E8940A,#C9A84C)"></i></span><span class="cp">35%</span></div>
+        <div class="crow"><span class="cn">SOL / LST</span><span class="cbar"><i data-w="35" style="background:linear-gradient(90deg,#00CC6A,#00FF88)"></i></span><span class="cp">35%</span></div>
+        <div class="crow"><span class="cn">USDC reserva</span><span class="cbar"><i data-w="25" style="background:linear-gradient(90deg,#00FF88,#33FFAA)"></i></span><span class="cp">25%</span></div>
+        <div class="crow"><span class="cn">USDC lending</span><span class="cbar"><i data-w="5" style="background:#00CC6A"></i></span><span class="cp">5%</span></div>
+      </div>
+      <button class="cta ghost" onclick="toast('Abriendo el explorador de Solana…')">◈ Verificar on-chain</button>
+    </section>
+
+  </div>
+
+  <div class="modal-overlay" id="missionModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <button class="fab" onclick="toast('LUKAI: ¿Listo para ser dueño de tu ascenso?')" title="LUKAI">
+    <img src="../brand/personajes/LUKAI imagen.png" alt="LUKAI">
+  </button>
+
+  <nav class="tabbar">
+    <button class="tab on" data-t="inicio" onclick="go('inicio')"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 20z"/><path d="M9 21.5V13h6v8.5"/></svg></span><span>Inicio</span></button>
+    <button class="tab" data-t="manadas" onclick="go('manadas')"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3.5"/><path d="M2 21v-1a6 6 0 016-6h2a6 6 0 016 6v1"/><circle cx="18.5" cy="9" r="2.5"/><path d="M22 21v-1a4 4 0 00-3.5-4"/></svg></span><span>Manadas</span></button>
+    <button class="tab" data-t="arena" onclick="go('arena')"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></span><span>Arena</span></button>
+    <button class="tab" data-t="totems" onclick="go('totems')"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12l4 7-10 12L2 10z"/><path d="M2 10h20"/><path d="M12 22L6 10l6-7 6 7z"/></svg></span><span>Tótems</span></button>
+    <button class="tab" data-t="enviar" onclick="go('enviar')"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="5 11 12 4 19 11"/></svg></span><span>Enviar</span></button>
+    <button class="tab" data-t="reserva" onclick="go('reserva')"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2L2 12l10 10 10-10z"/><path d="M12 7L7 12l5 5 5-5z"/></svg></span><span>Reserva</span></button>
+  </nav>
+</div>
+
+<div class="foot">Prototipo de concepto · no procesa fondos reales</div>
+
+<div id="toast" style="position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(140px);z-index:99;background:linear-gradient(135deg,rgba(15,22,18,.95),rgba(6,8,8,.98));border:1px solid rgba(0,255,136,.3);color:var(--marfil);padding:13px 18px;border-radius:14px;font-size:13px;max-width:340px;box-shadow:0 12px 30px rgba(0,0,0,.5),0 0 20px rgba(0,255,136,.15);transition:transform .38s cubic-bezier(.2,.8,.3,1);text-align:center;backdrop-filter:blur(12px)"></div>
+
+<script>
+const LEVELS = [
+  {name:'Cachorro',  min:0,     icon:'🐾', color:'#9d977f'},
+  {name:'Rastreador',min:500,   icon:'👣', color:'#3DAA6B'},
+  {name:'Cazador',   min:1500,  icon:'🏹', color:'#C9A84C'},
+  {name:'Alfa',      min:3000,  icon:'🌙', color:'#E8C96A'},
+  {name:'Emperador', min:5000,  icon:'👑', color:'#E8940A'},
+  {name:'Shamán',    min:10000, icon:'🔮', color:'#9B59B6'},
+  {name:'Titán',     min:25000, icon:'⚡', color:'#FFD700'}
+];
+
+const TRAILS = [
+  {id:'all', name:'Todas', icon:'⚔️'},
+  {id:'A',   name:'Aprendiz', icon:'📖'},
+  {id:'B',   name:'Escuela', icon:'🎓'},
+  {id:'C',   name:'Diario', icon:'☀️'},
+  {id:'D',   name:'Rugido', icon:'📢'},
+  {id:'E',   name:'Tótems', icon:'🔮'},
+  {id:'F',   name:'Manada', icon:'🐾'}
+];
+
+const MISSIONS = [
+  {id:'A01',trail:'A',icon:'🔥',name:'Primeras Huellas',desc:'Conoce qué es LUKASH, la Reserva Sagrada y cómo tu participación la fortalece. LUKAI te guía.',aura:20,req:null},
+  {id:'A02',trail:'A',icon:'◈', name:'El Santuario',desc:'Explora la composición del Vault KASH Core: cBTC, SOL, LST, USDC. Entiende por qué solo crece.',aura:25,req:null},
+  {id:'A03',trail:'A',icon:'🎭',name:'Tu Primer Tótem',desc:'Aprende qué es un Tótem Nativo y cómo depositar $LUKA. Al final, elige tu tier (Bronce/Plata/Oro).',aura:30,req:'A02'},
+  {id:'A04',trail:'A',icon:'💰',name:'Simulador de Ahorro',desc:'Usa el simulador LUKAI: proyecta cuánto crece tu Tótem en 6 y 12 meses con distintos aportes.',aura:20,req:'A03'},
+  {id:'A05',trail:'A',icon:'⚠️', name:'Módulo de Riesgo',desc:'LUKAI explica: qué puede salir mal, cómo funciona el KASH Shield, y por qué la Reserva nunca baja.',aura:25,req:'A04'},
+  {id:'A06',trail:'A',icon:'🔄',name:'Tu Primer Swap',desc:'Haz tu primer intercambio de SOL a $LUKA vía Jupiter. Observa cómo el fee alimenta la Reserva.',aura:30,req:'A05'},
+  {id:'A07',trail:'A',icon:'🛡️',name:'KASH Shield',desc:'Aprende los 6 mecanismos de protección: Anti-Whale, Exit Fee, Circuit Breaker, Guardian, Throttle, ASU.',aura:25,req:null},
+  {id:'A08',trail:'A',icon:'🐾',name:'Crea tu Manada',desc:'Funda tu primera Manada (Vaca de ahorro). Invita a 2 amigos. Experimenta el ahorro colectivo.',aura:35,req:'A06'},
+  {id:'A09',trail:'A',icon:'🌉',name:'El Puente DeFi',desc:'Conecta tu wallet externa, importa SOL, y entiende la diferencia entre custodial y autocustodia.',aura:30,req:'A06'},
+  {id:'A10',trail:'A',icon:'👤',name:'Mintea tu Avatar',desc:'Alcanza Rastreador (500 Aura) y mintea tu Avatar como NFT único en Solana. Tu identidad on-chain.',aura:40,req:500},
+
+  {id:'B01',trail:'B',icon:'📊',name:'Presupuesto Personal',desc:'Track B1: Aprende a armar un presupuesto mensual. Reto: registra tus gastos de la semana.',aura:5,req:null},
+  {id:'B02',trail:'B',icon:'🏦',name:'Fondo de Emergencia',desc:'Track B1: ¿Cuánto necesitas para 3 meses? Calcula y pon la meta en tu Tótem.',aura:5,req:null},
+  {id:'B03',trail:'B',icon:'📈',name:'El Interés Compuesto',desc:'Track B1: La fuerza más poderosa del universo financiero. Simulación interactiva.',aura:5,req:null},
+  {id:'B04',trail:'B',icon:'🌎',name:'Inflación en LatAm',desc:'Track B2: Por qué tus Lukas se escapan como niebla. Historia de 5 monedas latinoamericanas.',aura:5,req:null},
+  {id:'B05',trail:'B',icon:'🏛️',name:'Bancos Centrales',desc:'Track B2: Cómo funcionan, por qué imprimen dinero, y qué significa para tu bolsillo.',aura:5,req:null},
+  {id:'B06',trail:'B',icon:'₿', name:'Bitcoin Básico',desc:'Track B3: Qué es, por qué importa, cómo funciona sin un banco. En 3 minutos.',aura:5,req:null},
+  {id:'B07',trail:'B',icon:'🔐',name:'Wallets y Seguridad',desc:'Track B3: Seed phrase, autocustodia, phishing. Lo que necesitas para no perder tu cripto.',aura:5,req:null},
+  {id:'B08',trail:'B',icon:'⚙️',name:'Los 4 Motores',desc:'Track B4: Cómo cada motor (Cazador/Interno/Escala/Alma) alimenta la Reserva de forma distinta.',aura:5,req:null},
+  {id:'B09',trail:'B',icon:'🏗️',name:'Banco Central Optimizado',desc:'Track B4: LUKASH vs banco central tradicional. La tabla que explica todo el proyecto en 2 minutos.',aura:5,req:null},
+  {id:'B10',trail:'B',icon:'🗳️',name:'El Camino al DAO',desc:'Track B4: Cómo LUKASH pasa de Guardian a gobernanza comunitaria. Tu voto, tu protocolo.',aura:5,req:null},
+
+  {id:'C01',trail:'C',icon:'☀️',name:'Login Diario',desc:'Abre la app cada día. Racha activa: tu Aura no decae.',aura:2,req:null,daily:true},
+  {id:'C02',trail:'C',icon:'💸',name:'Transacción Diaria',desc:'Haz cualquier movimiento de $LUKA hoy: enviar, depositar, intercambiar.',aura:5,req:null,daily:true},
+  {id:'C03',trail:'C',icon:'🔮',name:'Predicción Relámpago',desc:'¿Sube o baja $LUKA mañana? 1 predicción por día. Streak = multiplicador.',aura:3,req:null,daily:true},
+  {id:'C04',trail:'C',icon:'🔥',name:'Modo Fuego',desc:'Participa cuando el Throttle está en ACELERADO. La quema es 25%/semana.',aura:8,req:null},
+  {id:'C07',trail:'C',icon:'📅',name:'Racha de 7 Días',desc:'7 días consecutivos usando la app. Tu compromiso se nota.',aura:15,req:null},
+  {id:'C08',trail:'C',icon:'🌙',name:'Racha de 30 Días',desc:'Un mes completo sin fallar. Los Shamanes empezaron así.',aura:50,req:null},
+
+  {id:'D01',trail:'D',icon:'📢',name:'Primer Rugido',desc:'Publica tu primer contenido sobre LUKASH en X, TikTok o Instagram. Link verificable.',aura:30,req:null},
+  {id:'D02',trail:'D',icon:'📝',name:'Hilo Educativo',desc:'Escribe un thread de 5+ posts explicando LUKASH a tu comunidad. Original, no copy-paste.',aura:35,req:null},
+  {id:'D03',trail:'D',icon:'🎥',name:'Video Creador',desc:'Graba un video de 60s+ explicando o mostrando la app. Autenticidad > producción.',aura:40,req:null},
+  {id:'D04',trail:'D',icon:'🌐',name:'Rugido Bilingüe',desc:'Crea contenido en 2 idiomas (ES+EN o ES+PT). La Manada no tiene fronteras.',aura:35,req:null},
+  {id:'D05',trail:'D',icon:'🤝',name:'Recluta Exitoso',desc:'Invita a alguien que llegue a Rastreador (500 Aura). Tu mentoría vale.',aura:40,req:null},
+  {id:'D06',trail:'D',icon:'⚡',name:'Raid de Manada',desc:'Organiza un raid con 5+ miembros de tu Manada en un espacio de X o TG.',aura:20,req:1500},
+
+  {id:'E01',trail:'E',icon:'🥉',name:'Tótem Bronce',desc:'Deposita 10K $LUKA en un Tótem Nativo Bronce. Tu primer instrumento financiero on-chain.',aura:15,req:null},
+  {id:'E02',trail:'E',icon:'🥈',name:'Tótem Plata',desc:'Sube a Plata: deposita 50K $LUKA en tu Tótem Nativo. Compromiso visible.',aura:25,req:'E01'},
+  {id:'E03',trail:'E',icon:'🥇',name:'Tótem Oro',desc:'El tier máximo del Nativo: 100K $LUKA depositados. Eres un pilar de la Reserva.',aura:50,req:'E02'},
+  {id:'E04',trail:'E',icon:'🌈',name:'Tricolor',desc:'Colecciona 3 Tótems de categorías distintas (Nativo + Universal + Estándar). +2 Aura/semana bonus.',aura:30,req:500},
+
+  {id:'F01',trail:'F',icon:'🐾',name:'Únete a una Manada',desc:'Acepta tu primera invitación o busca una Manada abierta. Ahorro en grupo.',aura:10,req:null},
+  {id:'F02',trail:'F',icon:'👑',name:'Funda tu Manada',desc:'Crea tu propia Manada. Requiere Cazador (1,500+ Aura). Define tipo, nombre y reglas.',aura:30,req:1500},
+  {id:'F03',trail:'F',icon:'🐄',name:'Primera Vaca',desc:'Completa tu primera Vaquita grupal. Todos los miembros alcanzaron la meta.',aura:25,req:'F01'},
+  {id:'F04',trail:'F',icon:'🏰',name:'Dinastía',desc:'Tu Manada tiene 50+ miembros y 3+ meses activa. Los Titanes fundan Dinastías.',aura:100,req:25000}
+];
+
+let state;
+try { state = JSON.parse(localStorage.getItem('lukash_v2')) || {}; } catch(e) { state = {}; }
+if (!state.aura) state.aura = 0;
+if (!state.done) state.done = {};
+function save() { try { localStorage.setItem('lukash_v2', JSON.stringify(state)); } catch(e) {} }
+
+let currentTrail = 'all';
+
+function getLevel(aura) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) if (aura >= LEVELS[i].min) return i;
+  return 0;
+}
+
+function getLevelInfo(aura) {
+  const li = getLevel(aura);
+  const lv = LEVELS[li];
+  const next = LEVELS[li + 1];
+  const pct = next ? Math.min(100, ((aura - lv.min) / (next.min - lv.min)) * 100) : 100;
+  return { level: li, name: lv.name, icon: lv.icon, color: lv.color, pct, nextName: next ? next.name : null, toNext: next ? next.min - aura : 0 };
+}
+
+function updateAuraUI() {
+  const info = getLevelInfo(state.aura);
+  const pathEl = document.getElementById('auraPath');
+  const pathPct = Math.min(100, (getLevel(state.aura) / 6) * 100 + (info.pct / 6));
+  pathEl.style.setProperty('--progress', pathPct + '%');
+  pathEl.querySelectorAll('.step').forEach(s => {
+    const li = +s.dataset.lvl;
+    s.classList.toggle('done', li < info.level);
+    s.classList.toggle('now', li === info.level);
+  });
+  document.getElementById('arenaLvl').textContent = 'Aura ' + state.aura;
+  document.getElementById('homeLvl').textContent = info.name;
+  document.getElementById('homeRingVal').textContent = state.aura;
+  document.getElementById('homeAuraText').textContent = state.aura + ' · ' + info.name;
+  document.getElementById('homeAuraNext').textContent = info.nextName ? (info.toNext + ' para llegar a ' + info.nextName + ' →') : '¡Nivel máximo!';
+  const ring = document.getElementById('homeRing');
+  ring.style.setProperty('--pct', info.pct);
+}
+
+function canDo(m) {
+  if (state.done[m.id] && !m.daily) return 'done';
+  if (typeof m.req === 'number' && state.aura < m.req) return 'locked';
+  if (typeof m.req === 'string' && !state.done[m.req]) return 'locked';
+  return 'available';
+}
+
+function renderMissions() {
+  const list = document.getElementById('missionList');
+  const filtered = currentTrail === 'all' ? MISSIONS : MISSIONS.filter(m => m.trail === currentTrail);
+  const done = filtered.filter(m => state.done[m.id]).length;
+  document.getElementById('trailDone').textContent = done;
+  document.getElementById('trailTotal').textContent = filtered.length;
+  const pct = filtered.length ? Math.round(done / filtered.length * 100) : 0;
+  document.getElementById('trailPct').textContent = pct + '%';
+  document.getElementById('trailBar').style.width = pct + '%';
+
+  list.innerHTML = filtered.map(m => {
+    const s = canDo(m);
+    const cls = s === 'done' ? 'mission done' : s === 'locked' ? 'mission locked' : 'mission';
+    const pts = s === 'done' ? '+' + m.aura + ' ✓' : '+' + m.aura;
+    const trailLabel = TRAILS.find(t => t.id === m.trail);
+    const trailColor = m.trail === 'A' ? 'rgba(0,255,136,.15);color:#33FFAA' :
+                       m.trail === 'B' ? 'rgba(155,89,182,.15);color:#BB7FCF' :
+                       m.trail === 'C' ? 'rgba(232,148,10,.15);color:#E8940A' :
+                       m.trail === 'D' ? 'rgba(201,168,76,.15);color:#E8C96A' :
+                       m.trail === 'E' ? 'rgba(155,89,182,.15);color:#BB7FCF' :
+                       'rgba(0,255,136,.15);color:#33FFAA';
+    const onclick = s === 'locked' ? '' : `onclick="openMission('${m.id}')"`;
+    return `<div class="${cls}" ${onclick}>
+      <div class="mi">${m.icon}</div>
+      <div class="md"><b>${m.name}</b><span>${s === 'locked' ? (typeof m.req === 'number' ? 'Requiere Aura ' + m.req : 'Completa ' + m.req + ' primero') : (m.daily ? 'Diaria' : m.trail === 'A' ? 'Sendero del Aprendiz' : m.trail === 'B' ? 'Escuela Financiera' : m.trail === 'C' ? 'Rastro Diario' : m.trail === 'D' ? 'Rugido de la Manada' : m.trail === 'E' ? 'Tótems' : 'Manada')}</span>
+        <span class="trail-badge" style="background:${trailColor};border:none">${trailLabel ? trailLabel.icon + ' ' + trailLabel.name : ''}</span>
+      </div>
+      <div class="aura-pts">${pts}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrailTabs() {
+  const tabs = document.getElementById('trailTabs');
+  tabs.innerHTML = TRAILS.map(t => {
+    const count = t.id === 'all' ? MISSIONS.length : MISSIONS.filter(m => m.trail === t.id).length;
+    const doneCount = t.id === 'all' ? Object.keys(state.done).length : MISSIONS.filter(m => m.trail === t.id && state.done[m.id]).length;
+    return `<button class="trail-tab ${t.id === currentTrail ? 'on' : ''}" onclick="selectTrail('${t.id}',this)">${t.icon} ${t.name}<span class="count">${doneCount}/${count}</span></button>`;
+  }).join('');
+}
+
+function selectTrail(id, btn) {
+  currentTrail = id;
+  renderTrailTabs();
+  renderMissions();
+}
+
+function openMission(id) {
+  const m = MISSIONS.find(x => x.id === id);
+  if (!m) return;
+  const s = canDo(m);
+  const modal = document.getElementById('missionModal');
+  const content = document.getElementById('modalContent');
+  const trailName = m.trail === 'A' ? 'Sendero del Aprendiz' : m.trail === 'B' ? 'Escuela Financiera' : m.trail === 'C' ? 'Rastro Diario' : m.trail === 'D' ? 'Rugido de la Manada' : m.trail === 'E' ? 'Tótems' : 'Manada';
+  const btnHtml = s === 'done' && !m.daily
+    ? `<button class="cta ghost" onclick="closeModal()">✓ Completada</button>`
+    : `<button class="cta" onclick="completeMission('${m.id}')">Completar Misión · +${m.aura} Aura</button>`;
+  const reqHtml = m.req ? `<div class="m-req"><b>Requisito:</b> ${typeof m.req === 'number' ? 'Aura ≥ ' + m.req : 'Completar misión ' + m.req}</div>` : '';
+  content.innerHTML = `
+    <div class="m-icon">${m.icon}</div>
+    <div class="m-title">${m.name}</div>
+    <div class="m-trail">${trailName} · ${m.id}</div>
+    <div class="m-desc">${m.desc}</div>
+    ${reqHtml}
+    <div class="m-reward">+${m.aura} Aura</div>
+    ${btnHtml}
+  `;
+  modal.classList.add('on');
+}
+
+function closeModal() {
+  document.getElementById('missionModal').classList.remove('on');
+}
+
+function completeMission(id) {
+  const m = MISSIONS.find(x => x.id === id);
+  if (!m) return;
+  const oldLevel = getLevel(state.aura);
+  state.done[m.id] = true;
+  state.aura += m.aura;
+  save();
+  closeModal();
+  const bump = document.createElement('div');
+  bump.className = 'aura-bump';
+  bump.textContent = '+' + m.aura;
+  document.body.appendChild(bump);
+  setTimeout(() => bump.remove(), 1500);
+  const newLevel = getLevel(state.aura);
+  if (newLevel > oldLevel) {
+    setTimeout(() => {
+      const lv = LEVELS[newLevel];
+      toast('¡Subiste a ' + lv.icon + ' ' + lv.name + '! Nuevas misiones desbloqueadas.');
+    }, 800);
+  }
+  updateAuraUI();
+  renderMissions();
+  renderTrailTabs();
+}
+
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('s-' + id).classList.add('on');
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.t === id));
+  document.querySelector('.viewport').scrollTop = 0;
+  if (id === 'arena') { renderMissions(); renderTrailTabs(); }
+  activateBars(document.getElementById('s-' + id));
+}
+
+function activateBars(scr) {
+  scr.querySelectorAll('.bar > i, .cbar > i').forEach(el => {
+    const w = el.dataset.w; if (w) { el.style.width = '0'; requestAnimationFrame(() => requestAnimationFrame(() => el.style.width = w + '%')); }
+  });
+}
+
+let amtVal = '150';
+function key(k) {
+  if (k === '<') amtVal = amtVal.length > 1 ? amtVal.slice(0, -1) : '0';
+  else if (k === '.') { if (!amtVal.includes('.')) amtVal += '.'; }
+  else amtVal = (amtVal === '0' ? '' : amtVal) + k;
+  document.getElementById('amt').innerHTML = amtVal + '<span style="color:var(--oro);font-family:var(--display);font-size:19px">$LUKA</span>';
+}
+
+let tt;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(tt);
+  tt = setTimeout(() => t.style.transform = 'translateX(-50%) translateY(140px)', 2800);
+}
+
+function setLang(l, btn) {
+  document.querySelectorAll('.langs button').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+}
+
+let k = 18.75;
+setInterval(() => {
+  k += Math.random() * 0.004;
+  const s = '$' + k.toFixed(2).replace('.', ',') + 'M';
+  const a = document.getElementById('vaultTop'), b = document.getElementById('kval');
+  if (a) a.textContent = s; if (b) b.textContent = s;
+}, 2200);
+
+(function() {
+  const c = document.getElementById('embers'), x = c.getContext('2d'); let w, h, ps = [];
+  function rs() { w = c.width = innerWidth; h = c.height = innerHeight; } rs(); addEventListener('resize', rs);
+  for (let i = 0; i < 36; i++) ps.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + .4, s: Math.random() * .4 + .1, o: Math.random() * .5 + .2, c: Math.random() > .45 ? '0,255,136' : Math.random() > .3 ? '201,168,76' : '232,148,10' });
+  (function loop() { x.clearRect(0, 0, w, h); for (const p of ps) { p.y -= p.s; p.x += Math.sin(p.y / 40) * .25; if (p.y < -8) { p.y = h + 8; p.x = Math.random() * w; } x.beginPath(); x.arc(p.x, p.y, p.r, 0, 7); x.fillStyle = 'rgba(' + p.c + ',' + p.o + ')'; x.shadowBlur = 8; x.shadowColor = 'rgba(' + p.c + ',.6)'; x.fill(); } requestAnimationFrame(loop); })();
+})();
+
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('.cta,.qa button,.tab');
+  if (!b) return;
+  const r = b.getBoundingClientRect();
+  const rp = document.createElement('span');
+  rp.className = 'ripple';
+  rp.style.left = (e.clientX - r.left) + 'px';
+  rp.style.top = (e.clientY - r.top) + 'px';
+  b.appendChild(rp);
+  setTimeout(() => rp.remove(), 600);
+});
+
+updateAuraUI();
+renderTrailTabs();
+renderMissions();
+activateBars(document.getElementById('s-inicio'));
+setTimeout(() => document.getElementById('splash').classList.add('gone'), 1950);
+</script>
