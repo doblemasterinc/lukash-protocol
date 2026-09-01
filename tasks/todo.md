@@ -30,7 +30,7 @@
 ### FASE C — Pre-lanzamiento (F0 comunidad, 8-12 semanas pre-TGE)
 - [ ] C1. Reservar handles (X, TG, Discord) con alias del fundador
 - [ ] C2. Founding myth + hype de misterio ("ruge desde el génesis")
-- [ ] C3. Landing en producción (Vercel + Supabase waitlist)
+- [x] C3. Landing en producción (Vercel + Supabase waitlist) — **Desplegada** (sesión 21): https://landing-chi-livid-91.vercel.app
 - [ ] C4. Configurar plataformas orgánicas: Zealy (quests), Galxe (credenciales), Guild.xyz (roles)
 - [ ] C5. Contactar KOLs hispanos educativos (Hugo Botto, Catalina Castro, Daniel Muvdi, Criptolawyer)
 - [ ] C6. Contratar community manager 24/7
@@ -124,11 +124,13 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] **CAPA 2 COMPLETA** (sesión 13): process_fee (quema real CPI + distribución atómica + pending swaps) + execute_vault_swaps (USD→native a precio Pyth) verificados end-to-end en devnet v9.1.
    - [x] **Security hardening v10.1 verificado en devnet** (sesión 15, 2026-08-26): has_one=authority en process_fee/refreshVaultValuation/executeVaultSwaps PASS. Pyth owner validation movida a runtime (constraint Anchor bloqueaba fallback devnet; mainnet valida pyth_oracle::ID). Quema real 14M tokens PASS. Vault +980K PASS. Pending swaps→nativos PASS. Client scripts actualizados (caller→authority). RUNBOOK actualizado.
 3. [x] **Análisis de recursos de LUKAI** completado → `docs/analisis/LUKAI_COSTO_ARQUITECTURA.md`. Resultado: v1.0 keeper $150-500/mes (sin LLM), v2.0 con routing 80/20 Haiku/Sonnet = $1.77/usuario/mes. Break-even a ~$3K O&M (Haiku mínimo) o ~$9K (routing). **Recomendación: solo keeper v1.0 hasta Etapa 2A con O&M>$10K/mes.**
-4. [~] **Landing → producción**: Landing actualizada con 7 niveles Aura + waitlist Supabase (sesión 16). **Pendiente:**
-   - [ ] Crear tabla `waitlist` en Supabase (SQL en `landing/supabase-setup.sql`)
-   - [ ] Obtener URL + anon key de Supabase y reemplazar `TU_SUPABASE_URL` y `TU_SUPABASE_ANON_KEY` en `landing/index.html`
-   - [ ] Deploy a Vercel: `cd landing && vercel` (cuenta existente de Oílo)
+4. [x] **Landing → producción** (sesión 21, 2026-08-31): HTML optimizado de 3.6MB a 49KB (base64→archivos). Watermarks Gemini removidos (5 imágenes). Waitlist Supabase operativa (proyecto oilo-miranda). **Desplegada en Vercel:** https://landing-chi-livid-91.vercel.app
+   - [x] Crear tabla `waitlist` en Supabase (SQL en `landing/supabase-setup.sql`)
+   - [x] Obtener URL + anon key de Supabase y reemplazar placeholders en `landing/index.html`
+   - [x] Deploy a Vercel: proyecto `doblemasterincs-projects/landing`, GitHub conectado
    - [ ] Configurar dominio custom cuando se tenga
+   - [ ] Renombrar proyecto Vercel de "landing" a "lukash"
+   - [ ] Regenerar `feature-app.jpg` — dice "JAGUAR Pay", viola ADR-017
 5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
 5b. [ ] **Estrategia Ruta 3 (ADR-018)**: decidir % del Vault Sociedad a ceder, # inversores, estructura legal, capital target, KASH Lock. Fair launch compatible.
 5c. [ ] **Discutir idea de Sebastián sobre prototipos** (`prototype/lukash-app-prototipo.html` y `lukash-genesis.html`).

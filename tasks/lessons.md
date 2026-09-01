@@ -88,5 +88,11 @@ Para mockups con imágenes reales en artifacts de Claude, hay que comprimir las 
 ## 2026-08-31 (sesión 20) — ENAMETOOLONG: no pasar HTML gigante como argumento inline de Python
 Al intentar generar un HTML de ~500KB pasando todo como string literal dentro de `python -c "..."` en Bash, el OS rechaza el comando por exceder el límite de longitud de argumentos. Fix: escribir el script Python a un archivo primero, luego ejecutarlo con `python script.py`. Aplica a cualquier generación de archivos grandes.
 
+## 2026-08-31 (sesión 21) — HTML con imágenes base64 embebidas se vuelve inmanejable rápido
+Una landing con 6 imágenes base64 embebidas creció a 3.6MB — imposible de leer/editar con herramientas normales (Read tiene límite de líneas, PowerShell de argumentos). Lección: SIEMPRE extraer imágenes a archivos separados (`<img src="archivo.jpg">`) desde el inicio. La versión base64 solo tiene sentido para artifacts de Claude (CSP bloquea URLs externas), nunca para archivos HTML de producción. Fix: regex para buscar/reemplazar data URIs sin leer el archivo completo.
+
+## 2026-08-31 (sesión 21) — Browser cache oculta cambios en assets desplegados
+Tras remover el watermark del logotipo y hacer push a Vercel, el usuario reportó que el watermark seguía visible. Era cache del browser — solo necesitaba Ctrl+Shift+R. Lección: cuando un cambio de imagen en producción "no se ve", primero confirmar hard refresh antes de investigar el código. Para assets que cambian, usar cache-busting (query string `?v=2` o hash en el nombre).
+
 ## 2026-08-22 (sesión 8) — Cada motor tiene una ventana temporal: no codificar branches para etapas imposibles
 Motor C (motor=2) estaba en el branch de quema junto con Motor A. Pero Motor C solo existe en Etapa 3 (post-ENZ, supply fijo 3.3B), donde toda quema ya se detuvo. El guard ENZ siempre lo captura antes. Lección: al implementar lógica condicional por motor, verificar en QUÉ ETAPA opera cada motor — si un motor solo existe cuando una condición ya está activa (ej. ENZ), incluirlo en el branch alternativo es dead code que confunde el modelo mental. Patrón: Motor A (Etapas 1-3, quema hasta ENZ) · Motor B (Etapa 2+, B0 quema/B2 recircula) · Motor C (Etapa 3 only, post-ENZ, inyección LP) · Motor D (gradual, throttle).

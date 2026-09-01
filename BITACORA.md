@@ -398,3 +398,25 @@
   Sebastián: "está bien, no es exactamente como quiero pero déjalo así."
 - **Próxima sesión:** (1) buscar inversores activamente (outreach real con pipeline + materiales),
   (2) convertir mockup en prototipo funcional con misiones de Aura interactivas.
+
+## 2026-08-31 (sesión 21) — Landing desplegada en Vercel + waitlist Supabase operativa
+
+- **Landing optimizada de 3.6MB a 49KB:** 6 imágenes base64 embebidas extraídas a archivos separados
+  (`lukash-logotipo.png`, `feature-reserva.jpg`, `feature-arena.jpg`, `feature-app.jpg`, `feature-saldo.jpg`).
+  HTML resultante de ~49KB vs 3.6MB original — 98.6% de reducción.
+- **Watermarks Gemini AI removidos de 5 imágenes** con Pillow (Python): parche de color + gaussian blur
+  en bordes para blending natural. Logotipo PNG (1157KB) + 4 JPEGs de features.
+- **Waitlist conectada a Supabase:** tabla `waitlist` creada en proyecto existente `oilo-miranda`
+  (mbzchbduhefqojyrnqvn, sa-east-1) con RLS (anon insert sí, anon read no).
+  Credenciales reales inyectadas en `landing/index.html`.
+  SQL de setup en `landing/supabase-setup.sql`.
+- **Deploy a Vercel production ✅:** URL https://landing-chi-livid-91.vercel.app
+  Proyecto: `doblemasterincs-projects/landing`. GitHub conectado: `doblemasterinc/lukash-protocol`.
+  Headers de seguridad (X-Content-Type-Options, X-Frame-Options, Referrer-Policy) + cache inmutable para logotipo.
+- **Waitlist verificada end-to-end:** formulario envía email+lang correctamente a Supabase REST API.
+- **Pendiente menor:** `feature-app.jpg` dice "JAGUAR Pay" — viola ADR-017.
+  Necesita regeneración con "LUKASH Pay". No bloquea el deploy actual.
+- **Pendiente:** renombrar proyecto Vercel de "landing" a "lukash", configurar dominio custom.
+- **Próxima sesión:** (1) buscar inversores activamente (outreach real con pipeline + materiales),
+  (2) convertir mockup en prototipo funcional con misiones de Aura interactivas,
+  (3) regenerar feature-app.jpg sin "JAGUAR Pay" (ADR-017).
