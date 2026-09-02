@@ -130,7 +130,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [x] Deploy a Vercel: proyecto `doblemasterincs-projects/landing`, GitHub conectado
    - [ ] Configurar dominio custom cuando se tenga
    - [ ] Renombrar proyecto Vercel de "landing" a "lukash"
-   - [ ] Regenerar `feature-app.jpg` — dice "JAGUAR Pay", viola ADR-017
+   - [x] Regenerar `feature-app.jpg` — actualizada con HOME "Magic Sensei", sin "JAGUAR Pay" (sesión 23)
 5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
 5b. [ ] **Estrategia Ruta 3 (ADR-018)**: decidir % del Vault Sociedad a ceder, # inversores, estructura legal, capital target, KASH Lock. Fair launch compatible.
 5c. [x] **Prototipo app v2** (`prototype/lukash-app-v2.html`): rediseño visual completo con concept art, 6 tabs, SVG icons, assets de marca reales, glassmorphism. Sesión 22, 2026-08-31.
