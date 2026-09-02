@@ -446,6 +446,32 @@
 - **Próxima sesión:** (1) buscar inversores activamente con outreach real, (2) hacer prototipo
   clickeable/interactivo con más flujos, (3) regenerar feature-app.jpg sin "JAGUAR Pay" (ADR-017).
 
+## 2026-09-02 (sesión 24) — Biblioteca completa de prompts visuales: avatares 7 niveles + accesorios 6 tiers (126 piezas)
+
+- **Avatares niveles 5-7 completados** (Emperador/Emperatriz, Shamán/Shamana, Titán/Titana):
+  - Emperador: fortress masiva, trono, 50% biolum mantle fusionado, half-cloak + gorget.
+  - Emperatriz: blade refinada, CENTRO del trono (templo orbita alrededor de ella), 50% dual amber+green, circlet.
+  - Shamán M: elder grandmaster, inner sanctum, 75% geometría sagrada angular (3 colores: amber+green+VIOLET 15%), shaman crown, isotipo FLOTANTE.
+  - Shamán F: elder oracle, GREEN dominant eyes, Fibonacci/fractals, violet 20%, forehead chain, isotipo flotante ROTADO hacia ella.
+  - Titán M: ápice absoluto, 100% biolum (4 colores + WHITE), mandala ROTATING, full crown 5 points, templo TRANSLÚCIDO, isotipo holográfico 3D.
+  - Titán F: density+ethereal synthesis, GREEN 65%, 6 white points, patterns GROW (orgánico), isotipo ORBITANDO, particle bridge, light rings.
+- **Catálogo completo de accesorios: 126 piezas en 6 tiers:**
+  - Bronce (30 piezas): cuero/hueso/bronce, 0% biolum. B01-B30.
+  - Plata (30 piezas): plata/moonstone, 6-12% biolum sutil. P01-P30.
+  - Oro (30 piezas): oro forjado/cristales, 20-35% biolum activa. O01-O30.
+  - Obsidiana (15 piezas, 3 movidas a Diamante): obsidiana/magma, 35-55% biolum. OB01-OB18 (sin OB02/05/08).
+  - Platino (15 piezas, 3 movidas a Diamante): platino/cristales prismáticos, 50-70% biolum. PT02-PT18 (sin PT01/03/04).
+  - **Diamante (6 piezas) — NUEVO:** diamante/luz sólida/hologramas/void, 80-100% biolum trascendente.
+    - D01 Corona del Génesis (PT03+OB03), D02 Pechera del Infinito (PT01+OB01), D03 Guanteletes del Absoluto (OB02+PT02), D04 Capa del Cosmos (OB05+PT04, fusión), D05 Faldón del Vacío (OB08+PT06), D06 Aura Primordial (ÚNICO, efecto full-body 4 capas).
+    - Regla set completo 6/6: ASCENSIÓN (sincronización total + mandala duplicado + particle density 100%).
+    - D04 y D06 requieren Aura Titán; D01-D03/D05 requieren Shamán.
+- **3 ejemplos de avatar + accesorio equipado** (`EJEMPLOS_AVATAR_EQUIPADO_prompt.md`):
+  - Cazador + Collar Colmillo Bronce, Emperatriz + Hombreras Gemelas Oro, Titán + Corona Génesis + Aura Primordial Diamante.
+  - Conclusión: prompts combinados funcionan pero son ~500 palabras cada uno. Producción → compositing in-app (capas PNG) o generación bajo demanda con caché.
+- **Sistema de Aura mínima por pieza:** híbrido donde la mayoría de accesorios son universales, pero ciertas piezas premium requieren nivel de Aura mínimo.
+- **INDICE.md actualizado:** 126 piezas totales, todos los tiers "Listo", conteos corregidos.
+- **Próxima sesión:** (1) buscar inversores activamente con outreach real, (2) regenerar feature-app.jpg con screenshot actualizado, (3) explorar conexión prototipo a devnet, (4) condensar prompts old-format (Cachorro M/F, Cachorra F, Rastreadora F, Cazador M/F) al formato anti-texto.
+
 ## 2026-09-01 (sesión 23) — Prototipo app v2 upgrade: LUKAI chat + misiones interactivas + minting tótems
 
 - **Upgrade completo de `prototype/lukash-app-v2.html`** (~930 líneas): todas las mejoras solicitadas

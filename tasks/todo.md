@@ -135,6 +135,8 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 5b. [ ] **Estrategia Ruta 3 (ADR-018)**: decidir % del Vault Sociedad a ceder, # inversores, estructura legal, capital target, KASH Lock. Fair launch compatible.
 5c. [x] **Prototipo app v2** (`prototype/lukash-app-v2.html`): rediseño visual completo con concept art, 6 tabs, SVG icons, assets de marca reales, glassmorphism. Sesión 22, 2026-08-31.
 5d. [x] **Prototipo app v2 upgrade** (sesión 23, 2026-09-01): LUKAI chat funcional (11 temas), 10+ misiones interactivas (quiz/simulator/checkin/prediction/share/deposit/join), minting de tótems con 3 pasos animados + localStorage, terminología corregida (RESERVA SAGRADA), splash 5s, teléfono 880px, isotipo 48px.
+5e. [x] **Biblioteca completa de prompts visuales** (sesión 24, 2026-09-02): avatares 14 (7 niveles × M/F) + accesorios 126 piezas (6 tiers: Bronce 30, Plata 30, Oro 30, Obsidiana 15, Platino 15, Diamante 6) + 3 ejemplos avatar+accesorio equipado. Todo en `brand/prompts/`. INDICE.md completo.
+   - [ ] Condensar prompts old-format (Cachorro M/F, Cachorra F, Rastreadora F, Cazador M/F) al formato anti-texto condensado (prevenir que Gemini renderice texto)
 6. **Contratos Milestone 2 (restante)**: integración real SPL/Jupiter, quema real, staking, cNFT/Aura, oráculo Pyth+Switchboard, CPI safety.
 6. [x] **Sub-estructura del 45% "Venta"** decidida → Seed dinámico→Public (ADR-013) + fila Equipo/Fundador 2% (ADR-014).
 
