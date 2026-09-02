@@ -36,18 +36,18 @@
   #splash.gone{opacity:0;visibility:hidden}
   .sp-wrap{text-align:center;animation:spin-up 1.1s cubic-bezier(.2,.8,.2,1)}
   @keyframes spin-up{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
-  .sp-iso{width:260px;max-height:160px;object-fit:contain;animation:pulse-logo 3s ease-in-out infinite}
+  .sp-iso{width:340px;max-height:220px;object-fit:contain;animation:pulse-logo 3s ease-in-out infinite}
   @keyframes pulse-logo{0%,100%{filter:drop-shadow(0 0 20px rgba(0,255,136,.4)) drop-shadow(0 0 40px rgba(201,168,76,.2));transform:scale(1)}50%{filter:drop-shadow(0 0 40px rgba(0,255,136,.7)) drop-shadow(0 0 80px rgba(201,168,76,.4));transform:scale(1.05)}}
   .sp-word{font-family:var(--display);font-weight:800;letter-spacing:.3em;font-size:30px;margin:18px 0 6px;margin-left:.3em;text-shadow:0 0 30px rgba(0,255,136,.2),0 0 60px rgba(201,168,76,.15)}
   .sp-word b{color:var(--oro);text-shadow:0 0 20px var(--neon-oro-strong),0 0 40px rgba(0,255,136,.2)}
   .sp-tag{font-family:var(--display);letter-spacing:.16em;font-size:12px;color:var(--verde-claro);text-transform:uppercase;text-shadow:0 0 10px rgba(0,255,136,.3)}
   .sp-bar{width:150px;height:3px;margin:22px auto 0;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
-  .sp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--oro));box-shadow:0 0 8px var(--neon-glow);animation:load 1.7s ease forwards .2s}
+  .sp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--oro));box-shadow:0 0 8px var(--neon-glow);animation:load 4.2s ease forwards .3s}
   @keyframes load{to{width:100%}}
 
   .pitch{position:relative;z-index:1;text-align:center;max-width:440px;margin-bottom:8px}
   .pitch-head{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:2px}
-  .pitch-iso{width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(0,255,136,.5))}
+  .pitch-iso{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 0 14px rgba(0,255,136,.6)) drop-shadow(0 0 28px rgba(201,168,76,.2))}
   .langs{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
   .langs button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:6px 12px;border-radius:999px;border:1px solid var(--linea);background:transparent;color:var(--marfil-tenue);cursor:pointer;transition:.2s}
   .langs button.on{color:var(--obsidiana);background:linear-gradient(135deg,var(--verde-claro),var(--verde));border-color:transparent;font-weight:700;box-shadow:0 0 12px var(--neon-glow)}
@@ -59,7 +59,7 @@
   .badge{display:inline-flex;align-items:center;gap:7px;margin-top:13px;padding:6px 13px;border:1px solid rgba(0,255,136,.25);border-radius:999px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--verde);background:rgba(0,255,136,.05);box-shadow:0 0 12px rgba(0,255,136,.1);text-shadow:0 0 8px rgba(0,255,136,.4)}
   .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--verde);box-shadow:0 0 8px var(--neon-glow),0 0 16px rgba(0,255,136,.3);animation:p 2s infinite}
 
-  .phone{position:relative;z-index:1;width:min(392px,96vw);height:812px;max-height:calc(100vh - 30px);border-radius:44px;
+  .phone{position:relative;z-index:1;width:min(392px,96vw);height:880px;max-height:calc(100vh - 20px);border-radius:44px;
     background:linear-gradient(180deg,#0a0f0d,#060808);border:2px solid rgba(0,255,136,.3);
     box-shadow:0 0 0 6px rgba(6,8,8,.95),0 30px 80px rgba(0,0,0,.7),0 0 40px rgba(0,255,136,.2),0 0 80px rgba(0,255,136,.1),inset 0 0 30px rgba(0,255,136,.02);overflow:hidden;display:flex;flex-direction:column}
   .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:26px;background:#060808;border-radius:0 0 16px 16px;z-index:40}
@@ -214,7 +214,8 @@
 
   .modal-overlay{display:none;position:absolute;inset:0;z-index:50;background:rgba(5,5,4,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
   .modal-overlay.on{display:flex;align-items:flex-end;justify-content:center}
-  .modal{width:100%;max-height:70%;overflow-y:auto;background:linear-gradient(180deg,rgba(15,22,18,.95),rgba(6,8,8,.98));border-top:2px solid var(--verde);border-radius:22px 22px 0 0;padding:24px 20px 30px;animation:slideUp .35s cubic-bezier(.2,.8,.3,1);box-shadow:0 -10px 40px rgba(0,255,136,.1)}
+  .modal{width:100%;max-height:75%;overflow-y:auto;background:linear-gradient(180deg,rgba(15,22,18,.95),rgba(6,8,8,.98));border-top:2px solid var(--verde);border-radius:22px 22px 0 0;padding:24px 20px 30px;animation:slideUp .35s cubic-bezier(.2,.8,.3,1);box-shadow:0 -10px 40px rgba(0,255,136,.1);scrollbar-width:none}
+  .modal::-webkit-scrollbar{display:none}
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
   .modal .m-icon{font-size:40px;text-align:center;margin-bottom:12px}
   .modal .m-title{font-family:var(--display);font-size:20px;text-align:center;margin-bottom:4px;text-shadow:0 0 16px rgba(240,234,214,.15)}
@@ -233,6 +234,64 @@
 
   .ripple{position:absolute;border-radius:50%;transform:translate(-50%,-50%);background:rgba(0,255,136,.25);pointer-events:none;animation:rip .6s ease-out forwards}
   @keyframes rip{from{width:0;height:0;opacity:.5}to{width:220px;height:220px;opacity:0}}
+
+  /* LUKAI Chat */
+  .lukai-overlay{position:absolute;inset:0;z-index:60;background:linear-gradient(180deg,rgba(6,8,8,.97),rgba(10,15,13,.99));display:none;flex-direction:column}
+  .lukai-overlay.on{display:flex}
+  .lukai-head{display:flex;align-items:center;gap:12px;padding:50px 18px 14px;border-bottom:1px solid var(--linea);flex-shrink:0}
+  .lukai-head img{width:42px;height:42px;border-radius:50%;object-fit:cover;object-position:center 38%;border:1px solid var(--verde);box-shadow:0 0 14px rgba(0,255,136,.35)}
+  .lukai-head .lk-info{flex:1}
+  .lukai-head .lk-name{font-family:var(--display);font-size:16px}
+  .lukai-head .lk-status{font-family:var(--mono);font-size:9px;color:var(--verde);letter-spacing:.1em}
+  .lukai-head .lk-close{background:none;border:none;color:var(--marfil-tenue);font-size:24px;cursor:pointer;padding:8px}
+  .lukai-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+  .lukai-msgs::-webkit-scrollbar{display:none}
+  .lk-msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:12.5px;line-height:1.55;animation:rise .3s both}
+  .lk-msg.bot{align-self:flex-start;background:rgba(0,255,136,.07);border:1px solid var(--linea);border-bottom-left-radius:4px}
+  .lk-msg.user{align-self:flex-end;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.18);border-bottom-right-radius:4px}
+  .lk-typing{align-self:flex-start;font-family:var(--mono);font-size:11px;color:var(--verde);letter-spacing:.06em;animation:rise .3s both}
+  .lk-typing span{display:inline-block;animation:dot-bounce 1.4s infinite}
+  .lk-typing span:nth-child(2){animation-delay:.2s}.lk-typing span:nth-child(3){animation-delay:.4s}
+  @keyframes dot-bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+  .lukai-input{display:flex;gap:8px;padding:12px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--linea);flex-shrink:0;background:rgba(6,8,8,.92)}
+  .lukai-input input{flex:1;background:rgba(10,15,13,.7);border:1px solid var(--linea);border-radius:14px;padding:11px 14px;color:var(--marfil);font-family:var(--sans);font-size:13px;outline:none}
+  .lukai-input input::placeholder{color:var(--marfil-tenue)}
+  .lukai-input input:focus{border-color:var(--verde);box-shadow:0 0 10px rgba(0,255,136,.15)}
+  .lukai-input button{background:linear-gradient(135deg,var(--verde-claro),var(--verde));border:none;border-radius:14px;width:42px;cursor:pointer;color:var(--obsidiana);font-size:18px;display:grid;place-items:center;box-shadow:0 0 12px rgba(0,255,136,.2)}
+  .lk-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .lk-chip{font-family:var(--mono);font-size:10px;padding:5px 10px;border-radius:999px;border:1px solid var(--linea);color:var(--verde);cursor:pointer;background:rgba(0,255,136,.04);transition:.2s}
+  .lk-chip:hover{background:rgba(0,255,136,.1);border-color:var(--verde)}
+
+  /* Quiz */
+  .quiz-wrap{display:flex;flex-direction:column;gap:14px}
+  .quiz-q{font-size:14px;font-weight:600;margin-bottom:2px}
+  .quiz-counter{font-family:var(--mono);font-size:10px;color:var(--marfil-tenue);margin-bottom:8px}
+  .quiz-opts{display:flex;flex-direction:column;gap:8px}
+  .quiz-opt{padding:12px 14px;border:1px solid var(--linea);border-radius:12px;background:rgba(10,15,13,.5);cursor:pointer;font-size:13px;transition:.25s;text-align:left}
+  .quiz-opt:hover:not(.correct):not(.wrong){border-color:var(--verde);background:rgba(0,255,136,.05)}
+  .quiz-opt.correct{border-color:var(--verde);background:rgba(0,255,136,.15);color:var(--verde-claro);pointer-events:none}
+  .quiz-opt.wrong{border-color:#ff6b6b;background:rgba(255,107,107,.1);color:#ff6b6b;pointer-events:none}
+
+  /* Simulator */
+  .sim-wrap{text-align:center}
+  .sim-slider{width:100%;-webkit-appearance:none;height:6px;border-radius:999px;background:rgba(255,255,255,.08);outline:none;margin:10px 0 6px}
+  .sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--verde-claro),var(--verde));cursor:pointer;box-shadow:0 0 14px rgba(0,255,136,.5)}
+  .sim-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--oro-claro);margin-bottom:14px}
+  .sim-results{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+  .sim-r{border:1px solid var(--linea);border-radius:12px;padding:12px 8px;background:rgba(10,15,13,.5)}
+  .sim-r span{font-size:10px;color:var(--marfil-tenue);display:block;margin-bottom:4px}
+  .sim-r b{font-family:var(--mono);font-size:15px;color:var(--verde-claro);text-shadow:0 0 10px rgba(0,255,136,.4)}
+
+  /* Mint flow */
+  .mint-steps{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+  .mint-step{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--linea);border-radius:14px;background:rgba(10,15,13,.5);opacity:.35;transition:.4s}
+  .mint-step.active{opacity:1;border-color:var(--verde);box-shadow:0 0 14px rgba(0,255,136,.15)}
+  .mint-step.done{opacity:1;border-color:rgba(0,255,136,.3)}
+  .mint-step .ms-icon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:rgba(0,255,136,.06);border:1px solid var(--linea);flex-shrink:0}
+  .mint-step.active .ms-icon{background:rgba(0,255,136,.15);border-color:var(--verde);animation:p 1.5s infinite}
+  .mint-step.done .ms-icon{background:rgba(0,255,136,.2);border-color:var(--verde)}
+  .mint-success{text-align:center;animation:rise .5s both}
+  .mint-success img{width:80px;height:80px;border-radius:16px;object-fit:cover;object-position:center top;margin-bottom:12px;border:2px solid var(--oro);box-shadow:0 0 24px var(--neon-oro)}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   @media (max-width:440px){.phone{border-radius:0;border:none;box-shadow:none;height:auto;max-height:none;min-height:86vh}.notch{display:none}body{padding-top:14px}}
@@ -258,7 +317,7 @@
 
 <div class="phone">
   <div class="notch"></div>
-  <div class="status"><span>9:41</span><span style="display:flex;align-items:center;gap:6px"><img src="../brand/logos/lukash protocol isotipo.png" style="width:14px;height:14px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(0,255,136,.5))" alt=""> 5G &nbsp; 100%</span></div>
+  <div class="status"><span>9:41</span><span style="display:flex;align-items:center;gap:6px"><img src="../brand/logos/lukash protocol isotipo.png" style="width:20px;height:20px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(0,255,136,.6))" alt=""> 5G &nbsp; 100%</span></div>
   <div class="viewport">
 
     <section class="screen on" id="s-inicio">
@@ -290,7 +349,7 @@
       <div class="section-h">Movimientos recientes</div>
       <div class="card" style="padding:6px 16px">
         <div class="row"><div class="av">🐾</div><div class="txt"><b>Vaquita Familia González</b><span>Aporte mensual · hoy</span></div><div class="amt neg">−200,00<small>$LUKA</small></div></div>
-        <div class="row"><div class="av">🔥</div><div class="txt"><b>Quema del protocolo</b><span>Parte de tu fee · hoy</span></div><div class="amt neg">−1,20<small>a La Bóveda</small></div></div>
+        <div class="row"><div class="av">⭐</div><div class="txt"><b>Misión completada</b><span>Primeras Huellas · ayer</span></div><div class="amt pos">+20<small>Aura</small></div></div>
         <div class="row"><div class="av">⚡</div><div class="txt"><b>Recompensa de staking</b><span>Ayer</span></div><div class="amt pos">+34,50<small>$LUKA</small></div></div>
       </div>
     </section>
@@ -340,27 +399,27 @@
       <div class="top"><div class="hi"><b>Tus Tótems</b></div><div class="lvl">cNFTs</div></div>
       <div class="eyebrow">Instrumentos financieros on-chain</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-        <div class="card" style="text-align:center;padding:14px 8px">
+        <div class="card" style="text-align:center;padding:14px 8px;cursor:pointer" onclick="startMint('bronce')">
           <img src="../brand/logos/ISOTIPO V2.png" style="width:52px;height:52px;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:8px;filter:sepia(.4) hue-rotate(-15deg) brightness(.7)">
           <div style="font-family:var(--display);font-size:12px;margin-bottom:2px">Bronce</div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--ambar)">10K $LUKA</div>
         </div>
-        <div class="card" style="text-align:center;padding:14px 8px">
+        <div class="card" style="text-align:center;padding:14px 8px;cursor:pointer" onclick="startMint('plata')">
           <img src="../brand/logos/ISOTIPO V2.png" style="width:52px;height:52px;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:8px;filter:brightness(1.3) saturate(.6)">
           <div style="font-family:var(--display);font-size:12px;margin-bottom:2px">Plata</div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--marfil)">50K $LUKA</div>
         </div>
-        <div class="card" style="text-align:center;padding:14px 8px">
+        <div class="card" style="text-align:center;padding:14px 8px;cursor:pointer" onclick="startMint('oro')">
           <img src="../brand/logos/ISOTIPO V2.png" style="width:52px;height:52px;object-fit:cover;object-position:center top;border-radius:12px;margin-bottom:8px;filter:sepia(.5) hue-rotate(15deg) brightness(1.2) saturate(1.5)">
           <div style="font-family:var(--display);font-size:12px;margin-bottom:2px">Oro</div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--oro)">100K $LUKA</div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" id="totemCollection">
         <div class="eyebrow" style="margin-top:0">Tu colección</div>
-        <div style="text-align:center;padding:20px 0;color:var(--marfil-tenue);font-size:13px">Aún no tienes Tótems.<br><span style="font-size:11px;color:var(--verde)">Completa misiones para desbloquear.</span></div>
+        <div id="totemList" style="text-align:center;padding:20px 0;color:var(--marfil-tenue);font-size:13px">Aún no tienes Tótems.<br><span style="font-size:11px;color:var(--verde)">Selecciona un tier arriba para mintear.</span></div>
       </div>
-      <button class="cta" onclick="toast('Selecciona tu tier para mintear un Tótem Nativo')">Mintear Tótem Nativo</button>
+      <button class="cta" onclick="startMint('bronce')">Mintear Tótem Nativo</button>
       <div style="height:10px"></div>
       <button class="cta ghost" onclick="toast('Explora Tótems Universales y Estándar en el marketplace')">Explorar Marketplace</button>
     </section>
@@ -389,17 +448,17 @@
         <button onclick="key('0')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">0</button>
         <button onclick="key('<')" style="font-family:var(--mono);font-size:20px;background:rgba(10,15,13,.5);border:1px solid var(--linea);color:var(--marfil);border-radius:14px;padding:12px 0;cursor:pointer;backdrop-filter:blur(8px)">⌫</button>
       </div>
-      <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:14px;padding:12px 14px;font-size:11.5px;color:var(--marfil-tenue);line-height:1.55;margin-bottom:14px;backdrop-filter:blur(8px)">De cada pago: una parte <b style="color:var(--ambar)">quema $LUKA</b>, otra <span style="color:var(--verde-claro)">alimenta La Reserva</span>, y otra premia a la manada.</div>
+      <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:14px;padding:12px 14px;font-size:11.5px;color:var(--marfil-tenue);line-height:1.55;margin-bottom:14px;backdrop-filter:blur(8px)">De cada pago: una parte <b style="color:var(--ambar)">quema $LUKA</b>, otra <span style="color:var(--verde-claro)">alimenta la Reserva Sagrada</span>, y otra premia a la manada.</div>
       <button class="cta" onclick="toast('¡Enviado a Ana! +15 Aura')">Enviar a Ana</button>
     </section>
 
     <section class="screen" id="s-reserva">
-      <div class="top"><div class="hi"><b>La Reserva</b></div><div class="lvl">On-chain</div></div>
-      <div class="seal"><div class="s1">◈ VALIDADO POR SIMULACIÓN</div><div class="s2">RESERVA VIVA</div><div class="s3">5.000 escenarios · 1.825 días · auditable</div></div>
+      <div class="top"><div class="hi"><b>La Reserva Sagrada</b></div><div class="lvl">On-chain</div></div>
+      <div class="seal"><div class="s1">◈ VALIDADO POR SIMULACIÓN</div><div class="s2">RESERVA SAGRADA</div><div class="s3">5.000 escenarios · 1.825 días · auditable</div></div>
       <div class="metric3">
-        <div class="metric vault"><div class="m-l">La Bóveda · K(t)</div><div class="m-v" id="kval">$18,75M</div></div>
-        <div class="metric fire"><div class="m-l">El Fuego · quemado</div><div class="m-v"><span class="flame">🔥</span> 6,70B</div></div>
-        <div class="metric cola"><div class="m-l">La Cola · diferido</div><div class="m-v">42,1M</div></div>
+        <div class="metric vault"><div class="m-l">Reserva Sagrada · K(t)</div><div class="m-v" id="kval">$18,75M</div></div>
+        <div class="metric fire"><div class="m-l">Deflación · quemado</div><div class="m-v"><span class="flame">🔥</span> 6,70B</div></div>
+        <div class="metric cola"><div class="m-l">Cola de quema</div><div class="m-v">42,1M</div></div>
         <div class="metric cal"><div class="m-l">Precio KASH · piso</div><div class="m-v">$0,0057</div></div>
       </div>
       <div class="card compo" style="margin-top:14px">
@@ -418,7 +477,21 @@
     <div class="modal" id="modalContent"></div>
   </div>
 
-  <button class="fab" onclick="toast('LUKAI: ¿Listo para ser dueño de tu ascenso?')" title="LUKAI">
+  <!-- LUKAI Chat -->
+  <div class="lukai-overlay" id="lukaiChat">
+    <div class="lukai-head">
+      <img src="../brand/personajes/LUKAI imagen.png" alt="LUKAI">
+      <div class="lk-info"><div class="lk-name">LUKAI</div><div class="lk-status">● En línea</div></div>
+      <button class="lk-close" onclick="closeLukai()">✕</button>
+    </div>
+    <div class="lukai-msgs" id="lukaiMsgs"></div>
+    <div class="lukai-input">
+      <input type="text" id="lukaiIn" placeholder="Pregunta algo..." onkeydown="if(event.key==='Enter')sendLukai()">
+      <button onclick="sendLukai()">→</button>
+    </div>
+  </div>
+
+  <button class="fab" onclick="openLukai()" title="LUKAI">
     <img src="../brand/personajes/LUKAI imagen.png" alt="LUKAI">
   </button>
 
@@ -458,57 +531,77 @@ const TRAILS = [
 ];
 
 const MISSIONS = [
-  {id:'A01',trail:'A',icon:'🔥',name:'Primeras Huellas',desc:'Conoce qué es LUKASH, la Reserva Sagrada y cómo tu participación la fortalece. LUKAI te guía.',aura:20,req:null},
+  {id:'A01',trail:'A',icon:'🔥',name:'Primeras Huellas',desc:'Conoce qué es LUKASH, la Reserva Sagrada y cómo tu participación la fortalece. LUKAI te guía.',aura:20,req:null,type:'quiz'},
   {id:'A02',trail:'A',icon:'◈', name:'El Santuario',desc:'Explora la composición del Vault KASH Core: cBTC, SOL, LST, USDC. Entiende por qué solo crece.',aura:25,req:null},
   {id:'A03',trail:'A',icon:'🎭',name:'Tu Primer Tótem',desc:'Aprende qué es un Tótem Nativo y cómo depositar $LUKA. Al final, elige tu tier (Bronce/Plata/Oro).',aura:30,req:'A02'},
-  {id:'A04',trail:'A',icon:'💰',name:'Simulador de Ahorro',desc:'Usa el simulador LUKAI: proyecta cuánto crece tu Tótem en 6 y 12 meses con distintos aportes.',aura:20,req:'A03'},
+  {id:'A04',trail:'A',icon:'💰',name:'Simulador de Ahorro',desc:'Usa el simulador LUKAI: proyecta cuánto crece tu Tótem en 6 y 12 meses con distintos aportes.',aura:20,req:'A03',type:'simulator'},
   {id:'A05',trail:'A',icon:'⚠️', name:'Módulo de Riesgo',desc:'LUKAI explica: qué puede salir mal, cómo funciona el KASH Shield, y por qué la Reserva nunca baja.',aura:25,req:'A04'},
   {id:'A06',trail:'A',icon:'🔄',name:'Tu Primer Swap',desc:'Haz tu primer intercambio de SOL a $LUKA vía Jupiter. Observa cómo el fee alimenta la Reserva.',aura:30,req:'A05'},
-  {id:'A07',trail:'A',icon:'🛡️',name:'KASH Shield',desc:'Aprende los 6 mecanismos de protección: Anti-Whale, Exit Fee, Circuit Breaker, Guardian, Throttle, ASU.',aura:25,req:null},
+  {id:'A07',trail:'A',icon:'🛡️',name:'KASH Shield',desc:'Aprende los 6 mecanismos de protección: Anti-Whale, Exit Fee, Circuit Breaker, Guardian, Throttle, ASU.',aura:25,req:null,type:'quiz'},
   {id:'A08',trail:'A',icon:'🐾',name:'Crea tu Manada',desc:'Funda tu primera Manada (Vaca de ahorro). Invita a 2 amigos. Experimenta el ahorro colectivo.',aura:35,req:'A06'},
   {id:'A09',trail:'A',icon:'🌉',name:'El Puente DeFi',desc:'Conecta tu wallet externa, importa SOL, y entiende la diferencia entre custodial y autocustodia.',aura:30,req:'A06'},
   {id:'A10',trail:'A',icon:'👤',name:'Mintea tu Avatar',desc:'Alcanza Rastreador (500 Aura) y mintea tu Avatar como NFT único en Solana. Tu identidad on-chain.',aura:40,req:500},
 
   {id:'B01',trail:'B',icon:'📊',name:'Presupuesto Personal',desc:'Track B1: Aprende a armar un presupuesto mensual. Reto: registra tus gastos de la semana.',aura:5,req:null},
   {id:'B02',trail:'B',icon:'🏦',name:'Fondo de Emergencia',desc:'Track B1: ¿Cuánto necesitas para 3 meses? Calcula y pon la meta en tu Tótem.',aura:5,req:null},
-  {id:'B03',trail:'B',icon:'📈',name:'El Interés Compuesto',desc:'Track B1: La fuerza más poderosa del universo financiero. Simulación interactiva.',aura:5,req:null},
+  {id:'B03',trail:'B',icon:'📈',name:'El Interés Compuesto',desc:'Track B1: La fuerza más poderosa del universo financiero. Simulación interactiva.',aura:5,req:null,type:'simulator'},
   {id:'B04',trail:'B',icon:'🌎',name:'Inflación en LatAm',desc:'Track B2: Por qué tus Lukas se escapan como niebla. Historia de 5 monedas latinoamericanas.',aura:5,req:null},
   {id:'B05',trail:'B',icon:'🏛️',name:'Bancos Centrales',desc:'Track B2: Cómo funcionan, por qué imprimen dinero, y qué significa para tu bolsillo.',aura:5,req:null},
   {id:'B06',trail:'B',icon:'₿', name:'Bitcoin Básico',desc:'Track B3: Qué es, por qué importa, cómo funciona sin un banco. En 3 minutos.',aura:5,req:null},
   {id:'B07',trail:'B',icon:'🔐',name:'Wallets y Seguridad',desc:'Track B3: Seed phrase, autocustodia, phishing. Lo que necesitas para no perder tu cripto.',aura:5,req:null},
-  {id:'B08',trail:'B',icon:'⚙️',name:'Los 4 Motores',desc:'Track B4: Cómo cada motor (Cazador/Interno/Escala/Alma) alimenta la Reserva de forma distinta.',aura:5,req:null},
+  {id:'B08',trail:'B',icon:'⚙️',name:'Los 4 Motores',desc:'Track B4: Cómo cada motor (Cazador/Interno/Escala/Alma) alimenta la Reserva de forma distinta.',aura:5,req:null,type:'quiz'},
   {id:'B09',trail:'B',icon:'🏗️',name:'Banco Central Optimizado',desc:'Track B4: LUKASH vs banco central tradicional. La tabla que explica todo el proyecto en 2 minutos.',aura:5,req:null},
   {id:'B10',trail:'B',icon:'🗳️',name:'El Camino al DAO',desc:'Track B4: Cómo LUKASH pasa de Guardian a gobernanza comunitaria. Tu voto, tu protocolo.',aura:5,req:null},
 
-  {id:'C01',trail:'C',icon:'☀️',name:'Login Diario',desc:'Abre la app cada día. Racha activa: tu Aura no decae.',aura:2,req:null,daily:true},
+  {id:'C01',trail:'C',icon:'☀️',name:'Login Diario',desc:'Abre la app cada día. Racha activa: tu Aura no decae.',aura:2,req:null,daily:true,type:'checkin'},
   {id:'C02',trail:'C',icon:'💸',name:'Transacción Diaria',desc:'Haz cualquier movimiento de $LUKA hoy: enviar, depositar, intercambiar.',aura:5,req:null,daily:true},
-  {id:'C03',trail:'C',icon:'🔮',name:'Predicción Relámpago',desc:'¿Sube o baja $LUKA mañana? 1 predicción por día. Streak = multiplicador.',aura:3,req:null,daily:true},
+  {id:'C03',trail:'C',icon:'🔮',name:'Predicción Relámpago',desc:'¿Sube o baja $LUKA mañana? 1 predicción por día. Streak = multiplicador.',aura:3,req:null,daily:true,type:'prediction'},
   {id:'C04',trail:'C',icon:'🔥',name:'Modo Fuego',desc:'Participa cuando el Throttle está en ACELERADO. La quema es 25%/semana.',aura:8,req:null},
   {id:'C07',trail:'C',icon:'📅',name:'Racha de 7 Días',desc:'7 días consecutivos usando la app. Tu compromiso se nota.',aura:15,req:null},
   {id:'C08',trail:'C',icon:'🌙',name:'Racha de 30 Días',desc:'Un mes completo sin fallar. Los Shamanes empezaron así.',aura:50,req:null},
 
-  {id:'D01',trail:'D',icon:'📢',name:'Primer Rugido',desc:'Publica tu primer contenido sobre LUKASH en X, TikTok o Instagram. Link verificable.',aura:30,req:null},
+  {id:'D01',trail:'D',icon:'📢',name:'Primer Rugido',desc:'Publica tu primer contenido sobre LUKASH en X, TikTok o Instagram. Link verificable.',aura:30,req:null,type:'share'},
   {id:'D02',trail:'D',icon:'📝',name:'Hilo Educativo',desc:'Escribe un thread de 5+ posts explicando LUKASH a tu comunidad. Original, no copy-paste.',aura:35,req:null},
   {id:'D03',trail:'D',icon:'🎥',name:'Video Creador',desc:'Graba un video de 60s+ explicando o mostrando la app. Autenticidad > producción.',aura:40,req:null},
   {id:'D04',trail:'D',icon:'🌐',name:'Rugido Bilingüe',desc:'Crea contenido en 2 idiomas (ES+EN o ES+PT). La Manada no tiene fronteras.',aura:35,req:null},
   {id:'D05',trail:'D',icon:'🤝',name:'Recluta Exitoso',desc:'Invita a alguien que llegue a Rastreador (500 Aura). Tu mentoría vale.',aura:40,req:null},
   {id:'D06',trail:'D',icon:'⚡',name:'Raid de Manada',desc:'Organiza un raid con 5+ miembros de tu Manada en un espacio de X o TG.',aura:20,req:1500},
 
-  {id:'E01',trail:'E',icon:'🥉',name:'Tótem Bronce',desc:'Deposita 10K $LUKA en un Tótem Nativo Bronce. Tu primer instrumento financiero on-chain.',aura:15,req:null},
+  {id:'E01',trail:'E',icon:'🥉',name:'Tótem Bronce',desc:'Deposita 10K $LUKA en un Tótem Nativo Bronce. Tu primer instrumento financiero on-chain.',aura:15,req:null,type:'deposit'},
   {id:'E02',trail:'E',icon:'🥈',name:'Tótem Plata',desc:'Sube a Plata: deposita 50K $LUKA en tu Tótem Nativo. Compromiso visible.',aura:25,req:'E01'},
   {id:'E03',trail:'E',icon:'🥇',name:'Tótem Oro',desc:'El tier máximo del Nativo: 100K $LUKA depositados. Eres un pilar de la Reserva.',aura:50,req:'E02'},
   {id:'E04',trail:'E',icon:'🌈',name:'Tricolor',desc:'Colecciona 3 Tótems de categorías distintas (Nativo + Universal + Estándar). +2 Aura/semana bonus.',aura:30,req:500},
 
-  {id:'F01',trail:'F',icon:'🐾',name:'Únete a una Manada',desc:'Acepta tu primera invitación o busca una Manada abierta. Ahorro en grupo.',aura:10,req:null},
+  {id:'F01',trail:'F',icon:'🐾',name:'Únete a una Manada',desc:'Acepta tu primera invitación o busca una Manada abierta. Ahorro en grupo.',aura:10,req:null,type:'join'},
   {id:'F02',trail:'F',icon:'👑',name:'Funda tu Manada',desc:'Crea tu propia Manada. Requiere Cazador (1,500+ Aura). Define tipo, nombre y reglas.',aura:30,req:1500},
   {id:'F03',trail:'F',icon:'🐄',name:'Primera Vaca',desc:'Completa tu primera Vaquita grupal. Todos los miembros alcanzaron la meta.',aura:25,req:'F01'},
   {id:'F04',trail:'F',icon:'🏰',name:'Dinastía',desc:'Tu Manada tiene 50+ miembros y 3+ meses activa. Los Titanes fundan Dinastías.',aura:100,req:25000}
 ];
 
+const QUIZZES = {
+  'A01': [
+    {q:'¿Qué tipo de token es $LUKA?', opts:['Inflacionario','Deflacionario','Stablecoin','Meme token'], ans:1},
+    {q:'¿Qué alimenta la Reserva Sagrada?', opts:['Minería de Bitcoin','Impuestos gubernamentales','Fees de cada transacción','Donaciones voluntarias'], ans:2},
+    {q:'¿En qué blockchain opera LUKASH?', opts:['Ethereum','Solana','Polygon','Avalanche'], ans:1}
+  ],
+  'A07': [
+    {q:'¿Qué hace el mecanismo Anti-Whale?', opts:['Prohíbe compras grandes','Limita tamaño de transacciones','Congela cuentas sospechosas','Aumenta fees para grandes holders'], ans:1},
+    {q:'¿Cuánto tiempo dura el Timelock para cambios críticos?', opts:['12 horas','24 horas','48 horas','7 días'], ans:2},
+    {q:'¿Qué activa el Circuit Breaker?', opts:['Baja del precio','Volatilidad extrema','Muchos usuarios nuevos','Actualización del protocolo'], ans:1}
+  ],
+  'B08': [
+    {q:'¿Cuál Motor maneja el trading en DEX?', opts:['Motor B — El Interno','Motor C — El de Escala','Motor A — El Cazador','Motor D — El Alma'], ans:2},
+    {q:'¿Cuál es la distribución universal de cada fee?', opts:['50% Vault / 50% Quema','35% Vault / 35% Quema-LP / 15% O&M / 15% Staking','25% cada uno','Todo al Vault'], ans:1},
+    {q:'¿Cuál motor maneja gaming y cNFTs?', opts:['Motor A','Motor B','Motor C','Motor D'], ans:3}
+  ]
+};
+
 let state;
 try { state = JSON.parse(localStorage.getItem('lukash_v2')) || {}; } catch(e) { state = {}; }
 if (!state.aura) state.aura = 0;
 if (!state.done) state.done = {};
+if (!state.totems) state.totems = [];
+if (!state.streak) state.streak = 0;
 function save() { try { localStorage.setItem('lukash_v2', JSON.stringify(state)); } catch(e) {} }
 
 let currentTrail = 'all';
@@ -599,6 +692,172 @@ function selectTrail(id, btn) {
   renderMissions();
 }
 
+function getMissionInteractive(m) {
+  const s = canDo(m);
+  if (s === 'done' && !m.daily) return `<button class="cta ghost" onclick="closeModal()">✓ Completada</button>`;
+  if (!m.type) return `<button class="cta" onclick="completeMission('${m.id}')">Completar Misión · +${m.aura} Aura</button>`;
+
+  switch (m.type) {
+    case 'quiz': return renderQuiz(m);
+    case 'simulator': return renderSimulator(m);
+    case 'checkin': return renderCheckin(m);
+    case 'prediction': return renderPrediction(m);
+    case 'share': return renderShare(m);
+    case 'deposit': return renderDeposit(m);
+    case 'join': return renderJoin(m);
+    default: return `<button class="cta" onclick="completeMission('${m.id}')">Completar Misión · +${m.aura} Aura</button>`;
+  }
+}
+
+function renderQuiz(m) {
+  const qs = QUIZZES[m.id];
+  if (!qs) return `<button class="cta" onclick="completeMission('${m.id}')">Completar Misión · +${m.aura} Aura</button>`;
+  return `<div class="quiz-wrap" id="quizWrap" data-mid="${m.id}" data-q="0" data-score="0">
+    <div class="quiz-counter" id="quizCounter">Pregunta 1 de ${qs.length}</div>
+    <div class="quiz-q" id="quizQ">${qs[0].q}</div>
+    <div class="quiz-opts" id="quizOpts">${qs[0].opts.map((o,i) => `<div class="quiz-opt" onclick="answerQuiz(${i})">${o}</div>`).join('')}</div>
+  </div>`;
+}
+
+function answerQuiz(idx) {
+  const wrap = document.getElementById('quizWrap');
+  const mid = wrap.dataset.mid;
+  const qi = parseInt(wrap.dataset.q);
+  const qs = QUIZZES[mid];
+  const correct = qs[qi].ans;
+  const opts = document.querySelectorAll('#quizOpts .quiz-opt');
+  opts[idx].classList.add(idx === correct ? 'correct' : 'wrong');
+  if (idx === correct) opts[idx].textContent = '✓ ' + opts[idx].textContent;
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  if (idx !== correct) {
+    opts[correct].classList.add('correct');
+    opts[correct].textContent = '✓ ' + opts[correct].textContent;
+  }
+  setTimeout(() => {
+    const next = qi + 1;
+    if (next >= qs.length) {
+      wrap.innerHTML = `<div style="text-align:center"><div style="font-size:40px;margin-bottom:12px">🎉</div><div style="font-family:var(--display);font-size:18px;margin-bottom:8px">¡Quiz completado!</div><div style="font-size:13px;color:var(--marfil-tenue);margin-bottom:18px">${idx === correct ? 'Todas correctas' : 'Revisa las que fallaste — el conocimiento es poder.'}</div><button class="cta" onclick="completeMission('${mid}')">Reclamar +${MISSIONS.find(x=>x.id===mid).aura} Aura</button></div>`;
+    } else {
+      wrap.dataset.q = next;
+      document.getElementById('quizCounter').textContent = `Pregunta ${next + 1} de ${qs.length}`;
+      document.getElementById('quizQ').textContent = qs[next].q;
+      document.getElementById('quizOpts').innerHTML = qs[next].opts.map((o,i) => `<div class="quiz-opt" onclick="answerQuiz(${i})">${o}</div>`).join('');
+    }
+  }, 1200);
+}
+
+function renderSimulator(m) {
+  const isCompound = m.id === 'B03';
+  const label = isCompound ? 'Capital inicial' : 'Aporte mensual';
+  const min = isCompound ? 1000 : 100;
+  const max = isCompound ? 100000 : 10000;
+  const def = isCompound ? 10000 : 1000;
+  return `<div class="sim-wrap">
+    <div style="font-size:12px;color:var(--marfil-tenue);margin-bottom:4px">${label}</div>
+    <input type="range" class="sim-slider" min="${min}" max="${max}" value="${def}" step="${isCompound?1000:100}" oninput="updateSim(this.value,'${m.id}')">
+    <div class="sim-val" id="simVal">${def.toLocaleString('es')} $LUKA</div>
+    <div class="sim-results">
+      <div class="sim-r"><span>6 meses</span><b id="sim6">—</b></div>
+      <div class="sim-r"><span>12 meses</span><b id="sim12">—</b></div>
+      <div class="sim-r"><span>24 meses</span><b id="sim24">—</b></div>
+    </div>
+    <button class="cta" onclick="completeMission('${m.id}')">Entendido · +${m.aura} Aura</button>
+  </div>`;
+}
+
+function updateSim(val, mid) {
+  const v = parseInt(val);
+  const isCompound = mid === 'B03';
+  document.getElementById('simVal').textContent = v.toLocaleString('es') + ' $LUKA';
+  if (isCompound) {
+    const r = 0.008;
+    document.getElementById('sim6').textContent = Math.round(v * Math.pow(1 + r, 6)).toLocaleString('es');
+    document.getElementById('sim12').textContent = Math.round(v * Math.pow(1 + r, 12)).toLocaleString('es');
+    document.getElementById('sim24').textContent = Math.round(v * Math.pow(1 + r, 24)).toLocaleString('es');
+  } else {
+    const r = 0.008;
+    const fv = (n) => { let s = 0; for (let i = 0; i < n; i++) s = (s + v) * (1 + r); return Math.round(s); };
+    document.getElementById('sim6').textContent = fv(6).toLocaleString('es');
+    document.getElementById('sim12').textContent = fv(12).toLocaleString('es');
+    document.getElementById('sim24').textContent = fv(24).toLocaleString('es');
+  }
+}
+
+function renderCheckin(m) {
+  const today = new Date().toDateString();
+  const lastCheckin = state.lastCheckin || '';
+  const isToday = lastCheckin === today;
+  const streak = state.streak || 0;
+  if (isToday) return `<div style="text-align:center"><div style="font-size:40px;margin-bottom:8px">☀️</div><div style="font-family:var(--display);font-size:18px;margin-bottom:6px">Ya registraste hoy</div><div style="font-family:var(--mono);font-size:24px;color:var(--verde-claro);margin-bottom:8px">${streak} días de racha</div><button class="cta ghost" onclick="closeModal()">Volver</button></div>`;
+  return `<div style="text-align:center">
+    <div style="font-family:var(--mono);font-size:12px;color:var(--marfil-tenue);margin-bottom:8px">Racha actual</div>
+    <div style="font-family:var(--mono);font-weight:700;font-size:48px;color:var(--verde-claro);text-shadow:0 0 20px rgba(0,255,136,.5);margin-bottom:4px">${streak}</div>
+    <div style="font-size:13px;color:var(--marfil-tenue);margin-bottom:20px">días consecutivos</div>
+    <button class="cta" onclick="doCheckin('${m.id}')">☀️ Registrar hoy · +${m.aura} Aura</button>
+  </div>`;
+}
+
+function doCheckin(mid) {
+  state.streak = (state.streak || 0) + 1;
+  state.lastCheckin = new Date().toDateString();
+  save();
+  completeMission(mid);
+}
+
+function renderPrediction(m) {
+  return `<div style="text-align:center">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--marfil-tenue);margin-bottom:8px">Precio actual de $LUKA</div>
+    <div style="font-family:var(--mono);font-weight:700;font-size:36px;margin-bottom:6px;text-shadow:0 0 16px rgba(240,234,214,.2)">$0,0199</div>
+    <div style="font-size:13px;color:var(--marfil-tenue);margin-bottom:20px">¿Mañana sube o baja?</div>
+    <div class="pred-btns">
+      <button class="pred-btn up" onclick="completeMission('${m.id}');toast('Predicción registrada: ↑ SUBE')">↑ Sube</button>
+      <button class="pred-btn down" onclick="completeMission('${m.id}');toast('Predicción registrada: ↓ Baja')">↓ Baja</button>
+    </div>
+  </div>`;
+}
+
+function renderShare(m) {
+  return `<div>
+    <div style="font-size:13px;color:var(--marfil-tenue);margin-bottom:10px">Copia este mensaje y publícalo en tu red favorita:</div>
+    <div style="background:rgba(10,15,13,.7);border:1px solid var(--linea);border-radius:12px;padding:14px;font-size:13px;line-height:1.6;margin-bottom:14px;color:var(--marfil)" id="shareText">🐆 Acabo de empezar mi camino en @LUKASHprotocol — la infraestructura financiera que se fortalece con cada transacción. Cada fee alimenta la Reserva Sagrada. $LUKA #DueñoDeTuAscenso</div>
+    <div style="display:flex;gap:10px;margin-bottom:6px">
+      <button class="cta ghost" style="flex:1" onclick="navigator.clipboard?.writeText(document.getElementById('shareText').textContent);toast('¡Texto copiado al portapapeles!')">📋 Copiar</button>
+      <button class="cta" style="flex:1" onclick="completeMission('${m.id}')">Ya lo publiqué · +${m.aura}</button>
+    </div>
+  </div>`;
+}
+
+function renderDeposit(m) {
+  return `<div style="text-align:center">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--marfil-tenue);margin-bottom:8px">Depósito para Tótem Bronce</div>
+    <div style="font-family:var(--mono);font-weight:700;font-size:38px;color:var(--oro-claro);margin-bottom:4px;text-shadow:0 0 16px var(--neon-oro)">10.000 <span style="font-size:16px">$LUKA</span></div>
+    <div style="font-size:12px;color:var(--marfil-tenue);margin-bottom:16px">Balance disponible: 12.450 $LUKA</div>
+    <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:10px 14px;font-size:11.5px;color:var(--marfil-tenue);line-height:1.5;margin-bottom:18px">Tu $LUKA queda comprometido en el Tótem, contribuyendo a fortalecer la Reserva Sagrada. Genera recompensas de staking.</div>
+    <button class="cta" onclick="completeMission('${m.id}');addTotem('bronce');toast('¡Tótem Bronce minteado!')">Confirmar depósito y mintear</button>
+  </div>`;
+}
+
+function renderJoin(m) {
+  return `<div>
+    <div style="font-size:13px;color:var(--marfil-tenue);margin-bottom:14px">Manadas abiertas buscando nuevos miembros:</div>
+    <div class="mission" style="margin-bottom:10px" onclick="completeMission('${m.id}');toast('¡Te uniste a Lobos de Medellín!')">
+      <div class="mi">🐺</div>
+      <div class="md"><b>Lobos de Medellín</b><span>12 miembros · Vaquita · $1.200 meta</span></div>
+      <div class="aura-pts" style="color:var(--verde)">Unirse</div>
+    </div>
+    <div class="mission" style="margin-bottom:10px" onclick="completeMission('${m.id}');toast('¡Te uniste a Leones de Lima!')">
+      <div class="mi">🦁</div>
+      <div class="md"><b>Leones de Lima</b><span>8 miembros · Inversión · +6.2% mes</span></div>
+      <div class="aura-pts" style="color:var(--verde)">Unirse</div>
+    </div>
+    <div class="mission" onclick="completeMission('${m.id}');toast('¡Te uniste a Felinos del Caribe!')">
+      <div class="mi">🐆</div>
+      <div class="md"><b>Felinos del Caribe</b><span>5 miembros · Ahorro · nueva</span></div>
+      <div class="aura-pts" style="color:var(--verde)">Unirse</div>
+    </div>
+  </div>`;
+}
+
 function openMission(id) {
   const m = MISSIONS.find(x => x.id === id);
   if (!m) return;
@@ -606,10 +865,8 @@ function openMission(id) {
   const modal = document.getElementById('missionModal');
   const content = document.getElementById('modalContent');
   const trailName = m.trail === 'A' ? 'Sendero del Aprendiz' : m.trail === 'B' ? 'Escuela Financiera' : m.trail === 'C' ? 'Rastro Diario' : m.trail === 'D' ? 'Rugido de la Manada' : m.trail === 'E' ? 'Tótems' : 'Manada';
-  const btnHtml = s === 'done' && !m.daily
-    ? `<button class="cta ghost" onclick="closeModal()">✓ Completada</button>`
-    : `<button class="cta" onclick="completeMission('${m.id}')">Completar Misión · +${m.aura} Aura</button>`;
   const reqHtml = m.req ? `<div class="m-req"><b>Requisito:</b> ${typeof m.req === 'number' ? 'Aura ≥ ' + m.req : 'Completar misión ' + m.req}</div>` : '';
+  const interactiveHtml = getMissionInteractive(m);
   content.innerHTML = `
     <div class="m-icon">${m.icon}</div>
     <div class="m-title">${m.name}</div>
@@ -617,9 +874,13 @@ function openMission(id) {
     <div class="m-desc">${m.desc}</div>
     ${reqHtml}
     <div class="m-reward">+${m.aura} Aura</div>
-    ${btnHtml}
+    ${interactiveHtml}
   `;
   modal.classList.add('on');
+  if (m.type === 'simulator') {
+    const slider = content.querySelector('.sim-slider');
+    if (slider) updateSim(slider.value, m.id);
+  }
 }
 
 function closeModal() {
@@ -651,12 +912,187 @@ function completeMission(id) {
   renderTrailTabs();
 }
 
+/* Tótem Minting */
+function addTotem(tier) {
+  if (!state.totems) state.totems = [];
+  state.totems.push({ tier, date: new Date().toLocaleDateString('es') });
+  save();
+  renderTotemCollection();
+}
+
+function renderTotemCollection() {
+  const list = document.getElementById('totemList');
+  if (!state.totems || state.totems.length === 0) {
+    list.innerHTML = 'Aún no tienes Tótems.<br><span style="font-size:11px;color:var(--verde)">Selecciona un tier arriba para mintear.</span>';
+    return;
+  }
+  list.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center">' +
+    state.totems.map(t => {
+      const filter = t.tier === 'bronce' ? 'sepia(.4) hue-rotate(-15deg) brightness(.7)' :
+                     t.tier === 'plata' ? 'brightness(1.3) saturate(.6)' :
+                     'sepia(.5) hue-rotate(15deg) brightness(1.2) saturate(1.5)';
+      const color = t.tier === 'bronce' ? 'var(--ambar)' : t.tier === 'plata' ? 'var(--marfil)' : 'var(--oro)';
+      return `<div style="padding:8px"><img src="../brand/logos/ISOTIPO V2.png" style="width:44px;height:44px;object-fit:cover;object-position:center top;border-radius:10px;filter:${filter};border:1px solid ${color};box-shadow:0 0 12px ${color}"><div style="font-family:var(--display);font-size:11px;margin-top:6px;text-transform:capitalize">${t.tier}</div><div style="font-family:var(--mono);font-size:9px;color:var(--marfil-tenue)">${t.date}</div></div>`;
+    }).join('') + '</div>';
+}
+
+function startMint(tier) {
+  const prices = { bronce: '10.000', plata: '50.000', oro: '100.000' };
+  const modal = document.getElementById('missionModal');
+  const content = document.getElementById('modalContent');
+  const filter = tier === 'bronce' ? 'sepia(.4) hue-rotate(-15deg) brightness(.7)' :
+                 tier === 'plata' ? 'brightness(1.3) saturate(.6)' :
+                 'sepia(.5) hue-rotate(15deg) brightness(1.2) saturate(1.5)';
+  content.innerHTML = `
+    <div style="text-align:center">
+      <img src="../brand/logos/ISOTIPO V2.png" style="width:72px;height:72px;object-fit:cover;object-position:center top;border-radius:16px;filter:${filter};margin-bottom:12px;border:2px solid var(--oro);box-shadow:0 0 24px var(--neon-oro)">
+      <div class="m-title">Tótem Nativo ${tier.charAt(0).toUpperCase() + tier.slice(1)}</div>
+      <div style="font-family:var(--mono);font-size:14px;color:var(--oro);margin:8px 0 16px">${prices[tier]} $LUKA</div>
+      <div class="mint-steps" id="mintSteps">
+        <div class="mint-step" id="ms1"><div class="ms-icon">📋</div><div><b style="font-size:13px">Preparando transacción</b><div style="font-size:11px;color:var(--marfil-tenue)">Verificando balance y elegibilidad</div></div></div>
+        <div class="mint-step" id="ms2"><div class="ms-icon">✍️</div><div><b style="font-size:13px">Firmando en blockchain</b><div style="font-size:11px;color:var(--marfil-tenue)">Solana devnet · transacción atómica</div></div></div>
+        <div class="mint-step" id="ms3"><div class="ms-icon">◈</div><div><b style="font-size:13px">Minteando cNFT</b><div style="font-size:11px;color:var(--marfil-tenue)">Registrando en la Reserva Sagrada</div></div></div>
+      </div>
+      <button class="cta" id="mintBtn" onclick="processMint('${tier}')">Confirmar y mintear</button>
+    </div>`;
+  modal.classList.add('on');
+}
+
+function processMint(tier) {
+  const btn = document.getElementById('mintBtn');
+  btn.disabled = true;
+  btn.textContent = 'Procesando...';
+  btn.style.opacity = '.5';
+  const steps = ['ms1','ms2','ms3'];
+  let i = 0;
+  function nextStep() {
+    if (i > 0) document.getElementById(steps[i-1]).classList.remove('active');
+    if (i > 0) document.getElementById(steps[i-1]).classList.add('done');
+    if (i > 0) document.getElementById(steps[i-1]).querySelector('.ms-icon').textContent = '✓';
+    if (i < steps.length) {
+      document.getElementById(steps[i]).classList.add('active');
+      i++;
+      setTimeout(nextStep, 1200);
+    } else {
+      addTotem(tier);
+      const content = document.getElementById('modalContent');
+      const filter = tier === 'bronce' ? 'sepia(.4) hue-rotate(-15deg) brightness(.7)' :
+                     tier === 'plata' ? 'brightness(1.3) saturate(.6)' :
+                     'sepia(.5) hue-rotate(15deg) brightness(1.2) saturate(1.5)';
+      content.innerHTML = `<div class="mint-success">
+        <div style="font-size:48px;margin-bottom:12px">🎉</div>
+        <img src="../brand/logos/ISOTIPO V2.png" style="width:80px;height:80px;object-fit:cover;object-position:center top;border-radius:16px;filter:${filter};margin-bottom:12px;border:2px solid var(--oro);box-shadow:0 0 24px var(--neon-oro)">
+        <div class="m-title">¡Tótem ${tier.charAt(0).toUpperCase() + tier.slice(1)} minteado!</div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--verde);margin:8px 0 4px">Tx: 4xK9...mF2z</div>
+        <div style="font-size:12px;color:var(--marfil-tenue);margin-bottom:18px">Tu $LUKA ahora fortalece la Reserva Sagrada. Puedes ver tu Tótem en tu colección.</div>
+        <button class="cta" onclick="closeModal()">Ver mi colección</button>
+      </div>`;
+    }
+  }
+  nextStep();
+}
+
+/* LUKAI Chat */
+const LUKAI_RESPONSES = {
+  greet: '¡Hola, Sebastián! Soy LUKAI, tu guía en el ecosistema LUKASH. Puedo explicarte sobre la Reserva Sagrada, los Tótems, tu Aura, los 4 Motores, las Misiones, o la seguridad del protocolo. ¿Qué te interesa?',
+  lukash: '$LUKA es un token deflacionario respaldado por la Reserva Sagrada — una bóveda de activos duros 100% on-chain en Solana. Cada transacción alimenta la reserva, quema supply, y recompensa a quien participa. No es un banco: es acceso democratizado a infraestructura financiera real.',
+  reserva: 'La Reserva Sagrada (Vault KASH Core) está compuesta por cBTC, SOL, LST y USDC — todos verificables on-chain. Solo crece: nunca se retira. Meta actual: $25M para activar Motor B2.',
+  aura: 'Aura es tu reputación financiera on-chain. 7 niveles: Cachorro (0) → Rastreador (500) → Cazador (1.500) → Alfa (3.000) → Emperador (5.000) → Shamán (10.000) → Titán (25.000+). Se gana con misiones y participación. Decae 2%/semana tras 90 días inactivo.',
+  totem: 'Los Tótems son instrumentos financieros tokenizados como cNFTs en Solana. 3 tiers de Tótem Nativo: Bronce (10K), Plata (50K), Oro (100K $LUKA). Al depositar, tu $LUKA contribuye a la Reserva Sagrada y genera staking rewards.',
+  motor: 'LUKASH tiene 4 Motores:\n🏹 A (El Cazador): trading DEX, fee 4%\n⚙️ B (El Interno): app, fee 2.5%\n🌐 C (El de Escala): pagos masivos, 0.5%\n🎮 D (El Alma): gaming, cNFTs\n\nCada fee: 35% Vault / 35% Quema-LP / 15% O&M / 15% Staking.',
+  shield: 'KASH Shield protege el ecosistema:\n🛡️ Circuit Breakers — detienen operaciones en volatilidad extrema\n💸 Exit Fee — penaliza retiros masivos\n🐋 Anti-Whale — limita tamaño de tx\n⏰ Timelock 48h — para cambios críticos\n🔱 Tridente Multisig\n🔮 Oráculos redundantes (Pyth + Switchboard)',
+  manada: 'Las Manadas son grupos de ahorro colectivo. Hay Vaquitas de ahorro e inversión. Puedes unirte a una existente o fundar la tuya (requiere Cazador, 1.500 Aura). ¡El ahorro en manada es más poderoso!',
+  mision: 'Hay 46+ misiones en 6 senderos:\n📖 Aprendiz — onboarding\n🎓 Escuela — educación financiera\n☀️ Diario — hábitos\n📢 Rugido — marketing\n🔮 Tótems — progresión\n🐾 Manada — comunidad\n\n¡Ve a la Arena para empezar!',
+  precio: 'El precio de $LUKA está determinado por oferta y demanda en el mercado. La deflación continua (quema + Vault creciente) genera un piso de precio que sube con el tiempo. Actualmente: ~$0,0199.',
+  default: 'Puedo ayudarte con:\n• ¿Qué es LUKASH?\n• La Reserva Sagrada\n• Tu Aura y niveles\n• Tótems y cNFTs\n• Los 4 Motores\n• Seguridad (KASH Shield)\n• Manadas\n• Misiones\n• Precio de $LUKA\n\n¡Pregunta lo que quieras!'
+};
+
+let lukaiOpen = false;
+function openLukai() {
+  const overlay = document.getElementById('lukaiChat');
+  const msgs = document.getElementById('lukaiMsgs');
+  if (!lukaiOpen) {
+    msgs.innerHTML = '';
+    addLukaiMsg('bot', LUKAI_RESPONSES.greet);
+    setTimeout(() => {
+      addLukaiChips(['¿Qué es LUKASH?','Mi Aura','Tótems','Misiones','Seguridad']);
+    }, 400);
+  }
+  lukaiOpen = true;
+  overlay.classList.add('on');
+  setTimeout(() => document.getElementById('lukaiIn').focus(), 300);
+}
+
+function closeLukai() {
+  document.getElementById('lukaiChat').classList.remove('on');
+}
+
+function addLukaiMsg(who, text) {
+  const msgs = document.getElementById('lukaiMsgs');
+  const div = document.createElement('div');
+  div.className = 'lk-msg ' + who;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addLukaiChips(options) {
+  const msgs = document.getElementById('lukaiMsgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'lk-chips';
+  wrap.innerHTML = options.map(o => `<span class="lk-chip" onclick="sendLukaiChip(this,'${o}')">${o}</span>`).join('');
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendLukaiChip(el, text) {
+  el.parentElement.remove();
+  processLukaiInput(text);
+}
+
+function sendLukai() {
+  const input = document.getElementById('lukaiIn');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  processLukaiInput(text);
+}
+
+function processLukaiInput(text) {
+  addLukaiMsg('user', text);
+  const msgs = document.getElementById('lukaiMsgs');
+  const typing = document.createElement('div');
+  typing.className = 'lk-typing';
+  typing.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    typing.remove();
+    const low = text.toLowerCase();
+    let response;
+    if (low.match(/hola|hey|buenas|saludos/)) response = LUKAI_RESPONSES.greet;
+    else if (low.match(/qué es lukash|que es lukash|lukash|luka\b|protocolo/)) response = LUKAI_RESPONSES.lukash;
+    else if (low.match(/reserva|vault|bóveda|boveda|sagrada/)) response = LUKAI_RESPONSES.reserva;
+    else if (low.match(/aura|nivel|reputación|reputacion|cachorro|rastreador|cazador|alfa|emperador|shamán|shaman|titán|titan/)) response = LUKAI_RESPONSES.aura;
+    else if (low.match(/tótem|totem|cnft|nft|instrumento/)) response = LUKAI_RESPONSES.totem;
+    else if (low.match(/motor|fee|comisión|comision|distribución|distribucion/)) response = LUKAI_RESPONSES.motor;
+    else if (low.match(/shield|seguridad|protección|proteccion|circuit|whale|timelock/)) response = LUKAI_RESPONSES.shield;
+    else if (low.match(/manada|vaquita|vaca|grupo|ahorro colectivo/)) response = LUKAI_RESPONSES.manada;
+    else if (low.match(/misión|mision|misiones|arena|sendero|quest/)) response = LUKAI_RESPONSES.mision;
+    else if (low.match(/precio|price|valor|cuánto vale|cuanto vale|cotización|cotizacion/)) response = LUKAI_RESPONSES.precio;
+    else response = LUKAI_RESPONSES.default;
+    addLukaiMsg('bot', response);
+  }, 800 + Math.random() * 600);
+}
+
 function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   document.getElementById('s-' + id).classList.add('on');
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.t === id));
   document.querySelector('.viewport').scrollTop = 0;
   if (id === 'arena') { renderMissions(); renderTrailTabs(); }
+  if (id === 'totems') renderTotemCollection();
   activateBars(document.getElementById('s-' + id));
 }
 
@@ -718,6 +1154,7 @@ document.addEventListener('pointerdown', e => {
 updateAuraUI();
 renderTrailTabs();
 renderMissions();
+renderTotemCollection();
 activateBars(document.getElementById('s-inicio'));
-setTimeout(() => document.getElementById('splash').classList.add('gone'), 1950);
+setTimeout(() => document.getElementById('splash').classList.add('gone'), 5000);
 </script>

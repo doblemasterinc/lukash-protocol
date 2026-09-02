@@ -445,3 +445,39 @@
 - **Servidor de desarrollo** en puerto 8092 (Python HTTP server, `.claude/launch.json`).
 - **Próxima sesión:** (1) buscar inversores activamente con outreach real, (2) hacer prototipo
   clickeable/interactivo con más flujos, (3) regenerar feature-app.jpg sin "JAGUAR Pay" (ADR-017).
+
+## 2026-09-01 (sesión 23) — Prototipo app v2 upgrade: LUKAI chat + misiones interactivas + minting tótems
+
+- **Upgrade completo de `prototype/lukash-app-v2.html`** (~930 líneas): todas las mejoras solicitadas
+  por Sebastián sobre la v2 anterior implementadas y verificadas en browser (0 console errors).
+- **LUKAI chat funcional:** interfaz de chat con overlay dentro del teléfono. Keyword matching con
+  11 temas pre-programados (lukash, reserva, aura, totem, motor, shield, manada, mision, precio +
+  saludo + default). Chips de sugerencia interactivos. Reemplaza el toast anterior del FAB.
+- **10+ misiones con dinámicas interactivas únicas:** sistema de tipos que rutea cada misión a un
+  renderer específico. 7 tipos implementados:
+  - **Quiz:** preguntas multi-opción con feedback correcto/incorrecto (A01, A07, B08)
+  - **Simulator:** slider de inversión con proyecciones 6/12/24 meses (B04)
+  - **Check-in:** login diario con contador de racha persistente (C01)
+  - **Prediction:** botones arriba/abajo para predicción de precio (C04)
+  - **Share:** texto copiable para redes sociales (D03)
+  - **Deposit:** confirmación de depósito para tótem (E01)
+  - **Join:** browse de 3 manadas disponibles (F01)
+- **Minting de tótems funcional:** flujo de 3 pasos animados (Verificando Aura → Acuñando cNFT →
+  Registrando). Tótems minteados persistidos en localStorage y mostrados como colección en la tab.
+  3 tiers: Bronce 10K / Plata 50K / Oro 100K $LUKA.
+- **Correcciones de terminología (ADR-017):**
+  - "RESERVA VIVA" → "RESERVA SAGRADA" (sello de la Reserva)
+  - "Quema del protocolo" eliminado de movimientos de Home
+  - "La Bóveda · K(t)" → "Reserva Sagrada · K(t)"
+  - "El Fuego · quemado" → "Deflación · quemado"
+  - "La Cola · diferido" → "Cola de quema"
+  - "alimenta La Reserva" → "alimenta la Reserva Sagrada"
+- **Mejoras visuales:**
+  - Splash screen: logo 340px (era 260px), duración 5 segundos (era 1.95s)
+  - Teléfono más alto: 880px max-height (era 812px)
+  - Isotipo más prominente: 48px en pitch header (era 34px), 20px en status bar (era 14px)
+- **Estado persistente ampliado:** `state.totems = []`, `state.streak`, `state.lastCheckin` en localStorage.
+- **Pendiente:** regenerar `feature-app.jpg` con screenshot del HOME (reemplazar imagen "JAGUAR Pay"),
+  integración devnet (Phase 2: @solana/web3.js + Phantom wallet).
+- **Próxima sesión:** (1) buscar inversores activamente con outreach real, (2) regenerar feature-app.jpg
+  con screenshot del prototipo actualizado, (3) explorar conexión a devnet para leer datos reales de PDAs.
