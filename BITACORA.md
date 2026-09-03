@@ -507,3 +507,21 @@
   integración devnet (Phase 2: @solana/web3.js + Phantom wallet).
 - **Próxima sesión:** (1) buscar inversores activamente con outreach real, (2) regenerar feature-app.jpg
   con screenshot del prototipo actualizado, (3) explorar conexión a devnet para leer datos reales de PDAs.
+
+## 2026-09-02 — Sesión 24: Biblioteca completa de prompts visuales
+- 14 avatares (7 niveles Aura × M/F) en formato anti-texto condensado.
+- 126 accesorios en 6 tiers: Bronce 30, Plata 30, Oro 30, Obsidiana 15, Platino 15, Diamante 6.
+- 3 ejemplos de avatar+accesorio equipado (prompts combinados).
+- Todo en `brand/prompts/` con `INDICE.md` completo.
+- Tier Diamante: piezas únicas (6) como recompensas élite del ecosistema.
+
+## 2026-09-03 — Sesión 25: Auditoría de proyecto actualizada
+- **Auditoría de proyecto completa** (`audits/AUDITORIA_PROYECTO_2026-09-03.md`): 4 dimensiones
+  (Funcionalidad 4.2, Negocio 2.8, Usabilidad 3.5, Escalabilidad 4.0 → ponderado 3.6 CONDICIONAL).
+- **Artifact de auditoría actualizado** (mismo formato visual del 1 de septiembre, datos al día):
+  29 ADRs, 2129 líneas, v10.2, 24 sesiones. Marca 98%, Prototipo 80%, Materiales 85%.
+- **Corrección de todo.md**: B3 (litepaper) y B4 (one-pagers EN/PT) marcados como completados.
+- **Diagnóstico principal reiterado**: 95% diseño/build completado, 0% ejecución de mercado.
+  Pipeline de 36 contactos + 5 grants + emails listos — nada enviado. Cada día sin outreach es un día perdido.
+- **Próxima sesión**: (1) decidir ADR Ruta 3, (2) enviar Superteam + primer outreach ángeles,
+  (3) reservar handles, (4) dashboard Vault devnet como credibilidad técnica.

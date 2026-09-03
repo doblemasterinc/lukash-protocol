@@ -20,8 +20,8 @@
 ### FASE B — Preparación inversión (pre-ronda seed)
 - [ ] B1. Estructura legal: entidad en El Salvador o equivalente, framing regulatorio cNFT/Motor C
 - [x] B2. Pitch deck para ángeles cripto-nativos — **Completado** (sesión 20, 2026-08-31): 12 slides con ADR-028 (Banco Central Optimizado), MC v4.3, KASH Shield, roadmap, ask. HTML+PDF en `docs/LUKASH_Pitch_Deck_v4_3.*`
-- [ ] B3. Data room / litepaper (tokenomics completo, Vault Sociedad, vesting, proyecciones honestas con rangos)
-- [ ] B4. One-pager EN/PT (ES ya existe)
+- [x] B3. Litepaper v1 — **Completado** (`docs/etapa-0/LITEPAPER_v1.md`, 22.6KB). Pendiente: data room formal con proyecciones y Vault Sociedad.
+- [x] B4. One-pager EN/PT — **Completado** (`docs/etapa-0/ONE_PAGER_en.md` + `ONE_PAGER_pt.md`)
 - [ ] B5. Preparar dashboard de Vault en testnet como pieza de credibilidad
 - [~] B6. Identificar y contactar 10-20 ángeles cripto — **Pipeline de 36 contactos creado** (sesión 19, 2026-08-31): 6 ángeles tier 1 (Santiago Roel Santos máx prioridad), 6 aceleradoras, 12 fondos, 6 grants, 6 redes. Artefacto publicado. Pendiente: contactar.
 - [x] B7. Preparar aplicaciones a grants — **Textos listos** (sesión 20, 2026-08-31): 5 aplicaciones redactadas en `docs/etapa-0/GRANT_APPLICATIONS.md` (Superteam Instagrants, Finternet x Solana, Solana Foundation, Colosseum, Alliance DAO). Finternet cerrado al 31/08, monitorear reapertura. Superteam listo para enviar inmediatamente.
@@ -95,6 +95,15 @@ Estos NO son bloqueantes de desarrollo (devnet funciona sin ellos), pero **el TG
 Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODIA.md`](../specs/07-milestone-2/07-CUENTAS-Y-CUSTODIA.md) §7 (checklist pre-TGE).
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
+### Prioridad: EJECUCIÓN DE MERCADO (no más build)
+1. [ ] **Decidir ADR Ruta 3** — % Vault Sociedad para inversores (habilita conversaciones)
+2. [ ] **Enviar Superteam Instagrants** — application lista, copiar-pegar
+3. [ ] **Reservar handles** — X (@LukashProtocol), Telegram, Discord
+4. [ ] **Primer outreach** — Santiago Roel Santos (ángel T1 máx prioridad)
+5. [ ] **Dashboard Vault devnet** — pieza de credibilidad técnica para demos
+6. [ ] **Hospedar prototipo v2** como URL pública
+
+### Historial de hitos técnicos completados
 0. [x] **★ AUDITORÍA PROFUNDA DE LOS MOTORES por SIMULACIÓN FIEL AL CONTRATO** (sesión 5): suite `simulations/` (engine=réplica de lib.rs + capa económica prima/Markov/vesting). SIM 0 invariantes OK · SIM 1 MC (espiral CONSERV 44%/BASE 0%/AGRESIVO 0% → tesis lanzamiento agresivo confirmada) · SIM 2 sensibilidad (volumen driver #1) · SIM 3 estrés (resiliente salvo Motor A −70% perm) · SIM 4 throttle irrelevante al Vault. Reporte `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` + Artifact `19a8160e`.
    - [x] **Herramientas estáticas DESBLOQUEADAS** (sesión 14, 2026-08-26): GitHub Actions CI con clippy (lints DeFi: arithmetic_side_effects, unwrap_used, expect_used) + Soteria (25+ vulns Solana) + anchor build + anchor test. Sec3 X-Ray descartado (requiere cuenta). Auditoría manual de seguridad: 3 CRITICAL + 2 HIGH + 3 MEDIUM + 5 LOW + 12 patrones positivos → reporte `audits/SECURITY_AUDIT_LIB_RS_V9_1.md`.
    - [x] **Security hardening v10** (sesión 14): 7 fixes aplicados, Build + Deploy ✅ en devnet. Fixes: has_one=authority en process_fee/refresh_vault_valuation/execute_vault_swaps (CRITICAL×3), Pyth owner validation via pyth_oracle::ID (CRITICAL), DEVNET_MODE flag para fallbacks (HIGH), confidence interval check conf/price<2% (MEDIUM), safe u64::try_from en update_market_regime (MEDIUM).
@@ -131,7 +140,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [ ] Configurar dominio custom cuando se tenga
    - [ ] Renombrar proyecto Vercel de "landing" a "lukash"
    - [x] Regenerar `feature-app.jpg` — actualizada con HOME "Magic Sensei", sin "JAGUAR Pay" (sesión 23)
-5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing. [ ] traducir one-pager EN/PT, [ ] pitch deck (Colosseum/grants), [ ] data room/litepaper (ahí va tokenomics completo + Vault Sociedad). Arrancar Superteam Earn + grant Finternet.
+5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing, [x] one-pager EN/PT, [x] litepaper v1. [ ] data room formal (tokenomics completo + Vault Sociedad + proyecciones). Arrancar Superteam Earn + grant Finternet.
 5b. [ ] **Estrategia Ruta 3 (ADR-018)**: decidir % del Vault Sociedad a ceder, # inversores, estructura legal, capital target, KASH Lock. Fair launch compatible.
 5c. [x] **Prototipo app v2** (`prototype/lukash-app-v2.html`): rediseño visual completo con concept art, 6 tabs, SVG icons, assets de marca reales, glassmorphism. Sesión 22, 2026-08-31.
 5d. [x] **Prototipo app v2 upgrade** (sesión 23, 2026-09-01): LUKAI chat funcional (11 temas), 10+ misiones interactivas (quiz/simulator/checkin/prediction/share/deposit/join), minting de tótems con 3 pasos animados + localStorage, terminología corregida (RESERVA SAGRADA), splash 5s, teléfono 880px, isotipo 48px.
@@ -141,45 +150,12 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 6. [x] **Sub-estructura del 45% "Venta"** decidida → Seed dinámico→Public (ADR-013) + fila Equipo/Fundador 2% (ADR-014).
 
 
-## Sesión actual (2026-08-19) — Setup + Auditoría
-- [x] Revisar Protocolo v4.2 y BMC v4.2 completos
-- [x] Crear carpeta LUKASH con scaffold del Studio
-- [x] Migrar todos los documentos y assets de marca desde PROYECTO CRYPTO
-- [x] Definir Aura = rebrand de Jaguar Score (ADR-002)
-- [x] Auditoría de discrepancias del protocolo → `audits/AUDITORIA_PROTOCOLO_v4.2.md`
-- [x] Barrido comprehensivo de todo el corpus (5 revisores) → discovery + auditoría complementaria
-- [x] H1 (Vault 105%) decidido: quitar oráculos → 100%
-- [ ] **DECISIÓN Sebastián — H10 (Monte Carlo)**: elegir modelo oficial de cifras (recomiendo v3.1 conservador) + etiquetar fuente. No usar cifras del código v4.2 en material de inversión
-- [ ] **DECISIÓN Sebastián — marca**: D1 ticker ($LUKA), D2 niveles de Aura (naming), D3 Tótems cNFT
-- [ ] Riesgos abiertos de auditorías v3 (contratos sin auditar, oráculo fallback, vesting seed, correlación Vault) — condiciones de TGE
+## Decisiones pendientes de Sebastián
+- [ ] **DECISIÓN — ADR Ruta 3 (ADR-018)**: % del Vault Sociedad a ceder a inversores, estructura, KASH Lock. Necesario antes de contactar ángeles.
+- [ ] **DECISIÓN — H10 (Monte Carlo)**: elegir modelo oficial de cifras (recomiendo v3.1 conservador) + etiquetar fuente.
+- [ ] **DECISIÓN — marca**: D1 ticker ($LUKA), D2 niveles de Aura (naming), D3 Tótems cNFT
 
-## Diseño de juego / Aura → `specs/01-aura-jungle-arena.md`
-- [x] Diseñar el loop de Jungle Arena (3 senderos: Aprendiz/Rastro Diario/Rugido de la Manada)
-- [x] Definir las Misiones de Caza concretas (catálogo A1-A5, D1-D4, R1-R6 con valores de Aura)
-- [x] Aura 7 niveles (Cachorro→Titán) — ADR-005 actualizado
-- [x] Economía sin emisión inflacionaria (Energía como sink, recompensas desde Marketing/Staking)
-- [ ] Cerrar pendientes de diseño: costos de Energía, reglas de Duelos, pools de Temporada, fórmula de Aura con pesos
-
-## Bloqueantes de smart contract (del protocolo)
+## Diseño pendiente (no bloqueante para outreach)
+- [ ] Cerrar pendientes Jungle Arena: costos de Energía, reglas de Duelos, pools de Temporada, fórmula de Aura con pesos
 - [ ] Mercado secundario cNFTs: fee de venta, herencia del modo de rendimiento, actualización de Aura al transferir
 - [ ] Frecuencia de distribución Modo B (semanal/mensual, fijo/elegible)
-- [ ] Resolver discrepancias numéricas del Vault (105% → 100%)
-
-## Primer milestone — Smart contracts core (devnet) [ADR-003]
-- [x] Spec técnica de contratos → `specs/02-smart-contracts-milestone-1.md`
-- [x] Scaffold Anchor completo → `contracts/` (programa lukash_protocol: lib.rs, state, constants, errors, tests, README)
-- [x] **COMPILA** ✅ "Build successful" en Solana Playground (single-file en `contracts/playground/lib.rs`)
-- [x] Auditoría de lógica vs Protocolo v4.3 → `contracts/AUDITORIA_LOGICA_MILESTONE1.md` (núcleo correcto)
-- [x] Añadido `execute_deferred_burn` (cola de quema al 10%/semana) → recompilado OK
-- [ ] Milestone 2: integración SPL/Jupiter, quema real, staking distributor, cNFT/Aura, fallback oráculo, auditoría externa pre-mainnet
-
-## Fase 0 — Comunidad (pre-token) [ADR-009]
-- [x] Estrategia → `specs/03-estrategia-lanzamiento-comunidad.md`
-- [x] Plan ejecutable 12 semanas → `specs/04-plan-f0-comunidad.md`
-- [x] Marca v2 sin ideología + trilingüe → `brand/POSICIONAMIENTO_NARRATIVA.md` [ADR-010]
-- [x] Niveles de Aura unificados: Cachorro/Rastreador/Cazador/Alfa/Emperador/Shamán/Titán [ADR-005 actualizado]
-- [ ] Acciones semana 1 (Sebastián): reservar handles, founding myth, landing waitlist, lista KOLs
-- [ ] Implementar distribución atómica de fees con overflow checks
-- [ ] Implementar conmutación B0↔B2 (K_min=$25M vía Pyth)
-- [ ] Implementar Throttle dinámico (EMA30)
-- [ ] Tests TypeScript + simulación en devnet
