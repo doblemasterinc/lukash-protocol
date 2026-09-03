@@ -7,6 +7,12 @@
 
 ---
 
+## Founder — Kash Sensei (avatar exclusivo)
+
+| Archivo | Qué genera | Estado |
+|---|---|---|
+| `KASH_SENSEI_FOUNDER_prompt.md` | Retrato 1:1 del fundador. Busto, jacket moderno-ceremonial, biolum mínimo (3 elementos). Para perfil Gmail/X/TG/Discord y pitch deck. | Listo |
+
 ## Identidad de Marca
 
 | Archivo | Qué genera | Estado |

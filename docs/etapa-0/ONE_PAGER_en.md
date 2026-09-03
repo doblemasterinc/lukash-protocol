@@ -62,7 +62,7 @@ We are seeking a **grant / non-dilutive pre-seed** to fund Milestone 2 + externa
 Everything built is open, auditable, and verifiable on-chain.
 
 ## Contact
-Sebastián Botero Pabón · doblemaster.inc@gmail.com · github.com/doblemasterinc/lukash-protocol (private, access upon request)
+Kash Sensei · kash.sensei.sol@gmail.com · github.com/doblemasterinc/lukash-protocol (private, access upon request)
 
 ---
 *$LUKA is a utility token of the ecosystem. The reserve backs the system; it does not constitute a promise of

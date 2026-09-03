@@ -1,7 +1,7 @@
 # LUKASH Protocol — Litepaper v1.0
 
 > August 2026 | Data Room Document | Confidential
-> Contact: Sebastián Botero Pabón · doblemaster.inc@gmail.com
+> Contact: Kash Sensei · kash.sensei.sol@gmail.com
 > GitHub: github.com/doblemasterinc/lukash-protocol (access on request)
 > Devnet Program: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`
 
@@ -350,9 +350,9 @@ Verified end-to-end flows: `update_oracle_state → refresh_vault_valuation (Pyt
 
 ## 12. Team
 
-**Sebastián Botero Pabón** — Founder & Solo Builder
+**Kash Sensei** — Founder & Solo Builder
 - AI-augmented development: protocol design, smart contracts, simulations, brand, pitch — all built with Claude Code as co-pilot
-- Background: [details to be shared under NDA]
+- Background: Solutions architect. Full identity shared under NDA.
 - Identity: Pseudonymous in public (voice, no face). Full KYC for investors and legal.
 
 The lean team structure is intentional: a solo founder with AI tooling can move faster than a 5-person team, with lower burn rate and clearer decision-making. The $500K budget includes hiring a community manager (24/7) and contracting a frontend developer for the App MVP.

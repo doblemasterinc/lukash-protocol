@@ -51,7 +51,7 @@ Sub-cent fees make micro-transactions viable for LatAm users. 400ms finality = t
 - Cultural moment: identity, financial gaming, and self-custody converge in the under-45 demographic
 
 **Team:**
-Sebastián Botero Pabón — Solutions architect. Protocol design, smart contract architecture, economic modeling. Building solo with AI-augmented development (AIRQUITECT studio).
+Kash Sensei — Founder. Solutions architect. Protocol design, smart contract architecture, economic modeling. Building solo with AI-augmented development.
 
 **Links:**
 - GitHub: github.com/doblemasterinc/lukash-protocol (private, access on request)
@@ -59,7 +59,7 @@ Sebastián Botero Pabón — Solutions architect. Protocol design, smart contrac
 - Devnet Token: 2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr
 
 **Contact:**
-doblemaster.inc@gmail.com
+kash.sensei.sol@gmail.com
 
 ---
 

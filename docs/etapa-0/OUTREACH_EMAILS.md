@@ -13,7 +13,7 @@
 
 Hi,
 
-I'm Sebastián Botero Pabón, building LUKASH — a Solana-native financial platform designed to
+I'm Kash Sensei, building LUKASH — a Solana-native financial platform designed to
 bring real financial infrastructure to Latin America's 260M underserved population.
 
 **What LUKASH is:** A deflationary transactional currency ($LUKA) backed by an ever-growing
@@ -42,8 +42,8 @@ extensions natively. LUKASH can only exist on Solana.
 Attached: one-pager and litepaper. Happy to provide GitHub access and a live devnet walkthrough.
 
 Best regards,
-Sebastián Botero Pabón
-doblemaster.inc@gmail.com
+Kash Sensei — Founder, LUKASH Protocol
+kash.sensei.sol@gmail.com
 
 ---
 
@@ -74,8 +74,8 @@ reserve, burns supply, and rewards participants through an on-chain reputation s
 The Superteam LatAm community is exactly the network LUKASH needs to reach its first users.
 I'd love to contribute back through educational content and local meetups.
 
-Sebastián Botero Pabón
-doblemaster.inc@gmail.com
+Kash Sensei — Founder, LUKASH Protocol
+kash.sensei.sol@gmail.com
 
 ---
 
@@ -114,8 +114,8 @@ populations aged 18-45 across Spanish, English, and Portuguese-speaking Latin Am
 Attached: litepaper with full technical architecture and simulation results.
 
 Respectfully,
-Sebastián Botero Pabón
-doblemaster.inc@gmail.com
+Kash Sensei — Founder, LUKASH Protocol
+kash.sensei.sol@gmail.com
 
 ---
 
@@ -145,8 +145,8 @@ participation. 260M potential users in LatAm, zero competitors building this on 
 Solo builder, AI-augmented development. Looking for the Colosseum community and resources to
 accelerate to mainnet.
 
-Sebastián Botero Pabón
-doblemaster.inc@gmail.com
+Kash Sensei — Founder, LUKASH Protocol
+kash.sensei.sol@gmail.com
 
 ---
 
@@ -183,8 +183,8 @@ I'd love to share the full deck and give you devnet access. Open to a 15-minute 
 convenience.
 
 Best,
-Sebastián Botero Pabón
-doblemaster.inc@gmail.com
+Kash Sensei — Founder, LUKASH Protocol
+kash.sensei.sol@gmail.com
 
 ---
 
