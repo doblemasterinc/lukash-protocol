@@ -13,9 +13,11 @@ alternativo: es acceso democratizado a la misma infraestructura (RWA/blockchain)
 mundo institucional ya construye.
 
 ## Source of truth (leer ANTES de proponer cambios)
-- `docs/protocolo/LUKASH_Protocolo_v4_2_FINAL.docx` — **arquitectura técnica DEFINITIVA**. Fuente de verdad.
-- `docs/protocolo/LUKASH_BMC_v4_2_FINAL.docx` — modelo de negocio v4.2 (debe alinearse al protocolo).
-- `extracted/Protocolo_v4.2_texto.txt` y `extracted/BMC_v4.2_FINAL_texto.txt` — versiones en texto plano para lectura rápida por agentes.
+- `docs/protocolo/LUKASH_Protocolo_v4.3.md` — **arquitectura técnica DEFINITIVA (v4.3)**. Fuente de verdad. Consolida v4.2 + correcciones de auditoría 2026-08-19.
+- `docs/protocolo/LUKASH_BMC_v4_3.md` — modelo de negocio v4.3 (consolida ADR-017 a ADR-027).
+- `docs/protocolo/LUKASH_Protocolo_v4_2_FINAL.docx` — versión anterior (v4.2). Referencia narrativa/de mercado donde v4.3 remite.
+- `docs/protocolo/LUKASH_BMC_v4_2_FINAL.docx` — BMC anterior (v4.2). Referencia histórica.
+- `extracted/Protocolo_v4.2_texto.txt` y `extracted/BMC_v4.2_FINAL_texto.txt` — textos planos de v4.2 (lectura rápida por agentes).
 - `.claude/knowledge/key-decisions.md` — decisiones cerradas (ADRs). NO contradecir sin nuevo ADR.
 - `.claude/knowledge/learned-rules.md` — reglas aprendidas.
 - `audits/` — reportes de auditoría del protocolo (discrepancias detectadas).
