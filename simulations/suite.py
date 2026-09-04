@@ -10,22 +10,24 @@ el MOTOR FIEL AL CONTRATO (engine.py = lib.rs). Objetivo doble:
 SIMs:
   0 — Invariantes del contrato (distribución exacta, simetría 15/15, monotonías)
   1 — Monte Carlo 3 campañas (CONSERVADOR/BASE/AGRESIVO) → espiral, timing B2
-  2 — Sensibilidad OAT (qué parámetro mueve más el Vault Y5)
+  2 — Sensibilidad OAT (7 parámetros: fee A/B, K_min, vol, yield, app day, SOL+LST)
   3 — Estrés extremo (8 escenarios)
   4 — Throttle (grilla de umbrales) + Adopción de usuarios
   5 — MM vs NO-MM: fair-launch (ADR-011/019) vs Market Maker desde D1
+  6 — Investor ROI: retorno seed ($500K → X% KASH Sociedad, ADR-030)
 
 PROVENANCE (ADR-008/H10): cifras ABSOLUTAS = familia "modelo v4 optimista".
 Lo válido para decisión = estructural. Todo etiquetado.
 
 Uso:
-  python suite.py all        # corre todo (lento, ~40-50 min) → out/
+  python suite.py all        # corre todo (~50-60 min) → out/
   python suite.py inv        # solo invariantes (rápido)
   python suite.py mc         # solo Monte Carlo 3 campañas
-  python suite.py sens       # sensibilidad
+  python suite.py sens       # sensibilidad (7 params)
   python suite.py stress     # estrés
   python suite.py throttle   # throttle + usuarios
   python suite.py mm         # MM vs no-MM (ADR-019)
+  python suite.py roi        # investor ROI (ADR-030)
 """
 import os, sys, json, time
 import numpy as np
@@ -187,6 +189,8 @@ def sim_sensibilidad(iters=IT_SENS, seed=7):
         "Volumen (×base)":  ("_volmult", [0.3, 0.6, 1.0, 2.0, 4.0]),
         "Yield APY":        ("yield_apy", [0.04, 0.055, 0.07, 0.085, 0.10]),
         "Día launch App":   ("app_dia", [30, 60, 90, 135, 180]),
+        "Fee Motor B (%)":  ("_fee_b_pct", [0.015, 0.020, 0.025, 0.030, 0.035]),
+        "Exposición SOL+LST (%)": ("_sol_lst_pct", [0.20, 0.30, 0.35, 0.45, 0.55]),
     }
     out = {}
     for pname, (key, vals) in params_grid.items():
@@ -201,7 +205,11 @@ def sim_sensibilidad(iters=IT_SENS, seed=7):
                     esc["vol_tge"] = esc["vol_tge"] * v
                     esc["vol_pico"] = esc["vol_pico"] * v
                 elif key == "_fee_a_pct":
-                    params["fee_a_mult"] = v / 0.025  # base Etapa 2 = 2.5%
+                    params["fee_a_mult"] = v / 0.025
+                elif key == "_fee_b_pct":
+                    params["fee_b_mult"] = v / 0.025
+                elif key == "_sol_lst_pct":
+                    params["sol_lst_pct"] = v
                 elif key == "app_dia":
                     esc["app_dia"] = int(v); params["app_dia"] = int(v)
                 elif key == "k_min_usd":
@@ -521,6 +529,165 @@ def _plot_mm_comparison(res, series_ej):
     fig.savefig(os.path.join(OUT, "sim5_mm_vs_nomm.png"), dpi=110); plt.close(fig)
 
 
+# ============================================================ SIM 6 — INVESTOR ROI (KASH Sociedad)
+IT_INV = 150
+
+def sim_investor_roi(iters=IT_INV, seed=33):
+    """
+    Modela el retorno para un seed investor con X% del KASH Sociedad (ADR-030).
+    KASH Sociedad = 30% de todos los fees del protocolo.
+    Bloques: Fundador 10% floor, Operaciones 10%, Inversores 10%.
+    Simula payouts acumulados, IRR y payback period bajo 3 campañas.
+    """
+    print(f"\n=== SIM 6 — INVESTOR ROI / KASH Sociedad ({iters} iters × 3 campañas × 4 stakes) ===")
+
+    stakes = [0.05, 0.06, 0.08, 0.10]  # % del Sociedad que recibe el inversor
+    invest_usd = 500_000  # seed round $500K (ADR-030)
+
+    res = {}
+    series_ej = {}
+
+    for name in ["CONSERVADOR", "BASE", "AGRESIVO"]:
+        for stake in stakes:
+            lbl = f"{name}_{int(stake*100)}pct"
+            payouts_y = {1: [], 2: [], 3: [], 4: [], 5: []}
+            cum_5y = []
+            irrs = []
+            payback_dias = []
+
+            for i in range(iters):
+                rng = np.random.default_rng(seed + i)
+                r = T.simular(MKT[name], {}, rng)
+                soc = r["soc_s"]  # sociedad acumulada por día (USD)
+
+                # payout diario del inversor = delta_sociedad × stake
+                soc_daily = np.diff(np.concatenate([[0], soc]))
+                inv_daily = soc_daily * stake
+
+                # anuales
+                for yr in range(1, 6):
+                    d0 = (yr - 1) * 365; d1 = min(yr * 365, len(inv_daily))
+                    payouts_y[yr].append(float(np.sum(inv_daily[d0:d1])))
+
+                total = float(np.sum(inv_daily))
+                cum_5y.append(total)
+
+                # payback: día en que el acumulado >= invest_usd
+                cum = np.cumsum(inv_daily)
+                pb = np.where(cum >= invest_usd)[0]
+                payback_dias.append(int(pb[0]) if len(pb) > 0 else None)
+
+                # IRR: cashflows = [-500K, payout_Y1, ..., payout_Y5]
+                cfs = [-invest_usd]
+                for yr in range(1, 6):
+                    d0 = (yr - 1) * 365; d1 = min(yr * 365, len(inv_daily))
+                    cfs.append(float(np.sum(inv_daily[d0:d1])))
+                try:
+                    irr = np.irr(cfs) if hasattr(np, 'irr') else _irr(cfs)
+                    irrs.append(irr)
+                except:
+                    irrs.append(None)
+
+                if i == 0:
+                    series_ej[lbl] = {"cum": np.cumsum(inv_daily), "soc": soc}
+
+            valid_irrs = [x for x in irrs if x is not None and np.isfinite(x)]
+            valid_pb = [x for x in payback_dias if x is not None]
+
+            res[lbl] = {
+                "escenario": name, "stake_pct": stake * 100, "invest_usd": invest_usd,
+                "payout_y1_med": float(np.median(payouts_y[1])),
+                "payout_y2_med": float(np.median(payouts_y[2])),
+                "payout_y3_med": float(np.median(payouts_y[3])),
+                "payout_y4_med": float(np.median(payouts_y[4])),
+                "payout_y5_med": float(np.median(payouts_y[5])),
+                "total_5y_med": float(np.median(cum_5y)),
+                "total_5y_p10": float(np.percentile(cum_5y, 10)),
+                "total_5y_p90": float(np.percentile(cum_5y, 90)),
+                "roi_x": float(np.median(cum_5y)) / invest_usd,
+                "irr_med": float(np.median(valid_irrs)) if valid_irrs else None,
+                "payback_med_dias": float(np.median(valid_pb)) if valid_pb else None,
+                "payback_pct": len(valid_pb) / iters * 100,
+            }
+            s = res[lbl]
+            print(f"  [{lbl}] Total 5Y=${s['total_5y_med']/1e6:.2f}M  ROI={s['roi_x']:.1f}x  "
+                  f"IRR={s['irr_med']*100 if s['irr_med'] else 0:.0f}%  "
+                  f"Payback=d{int(s['payback_med_dias']) if s['payback_med_dias'] else 'N/A'}  "
+                  f"P(payback)={s['payback_pct']:.0f}%")
+
+    with open(os.path.join(OUT, "sim6_investor_roi.json"), "w", encoding="utf-8") as f:
+        json.dump(res, f, ensure_ascii=False, indent=2, default=float)
+    _plot_investor_roi(res, series_ej)
+    return res
+
+
+def _irr(cashflows, tol=1e-8, max_iter=200):
+    """Newton-Raphson IRR (np.irr deprecated in newer numpy)."""
+    r = 0.10
+    for _ in range(max_iter):
+        npv = sum(cf / (1 + r) ** t for t, cf in enumerate(cashflows))
+        dnpv = sum(-t * cf / (1 + r) ** (t + 1) for t, cf in enumerate(cashflows))
+        if abs(dnpv) < 1e-15:
+            break
+        r -= npv / dnpv
+        if abs(npv) < tol:
+            break
+    return r
+
+
+def _plot_investor_roi(res, series_ej):
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    fig.suptitle("SIM 6 — Retorno del Inversor Seed ($500K → X% KASH Sociedad, ADR-030)",
+                 weight="bold", fontsize=13)
+    names = ["CONSERVADOR", "BASE", "AGRESIVO"]
+    col = {"CONSERVADOR": "#BA7517", "BASE": "#1D9E75", "AGRESIVO": "#185FA5"}
+    stakes = [5, 6, 8, 10]
+
+    # (a) ROI total 5Y por escenario y stake
+    ax = axes[0, 0]
+    x = np.arange(len(names)); w = 0.18
+    for j, st in enumerate(stakes):
+        vals = [res[f"{n}_{st}pct"]["roi_x"] for n in names]
+        ax.bar(x + (j - 1.5) * w, vals, w, label=f"{st}% Sociedad", alpha=0.85)
+    ax.axhline(1, ls="--", c="red", lw=0.7, label="Breakeven (1×)")
+    ax.set_xticks(x); ax.set_xticklabels(names, fontsize=9)
+    ax.set_ylabel("ROI (× inversión)"); ax.set_title("ROI total a 5 años"); ax.legend(fontsize=7)
+
+    # (b) Payout anual (stake 6%, los 3 escenarios)
+    ax = axes[0, 1]
+    years = [1, 2, 3, 4, 5]
+    for n in names:
+        payouts = [res[f"{n}_6pct"][f"payout_y{y}_med"] / 1e3 for y in years]
+        ax.plot(years, payouts, "o-", color=col[n], label=n, lw=1.5)
+    ax.axhline(500, ls="--", c="red", lw=0.7, label="Inversión ($500K)")
+    ax.set_xlabel("Año"); ax.set_ylabel("Payout anual ($K)")
+    ax.set_title("Payout anual (6% Sociedad, mediana)"); ax.legend(fontsize=8)
+
+    # (c) Cashflow acumulado ejemplo (stake 6%, trayectoria 0)
+    ax = axes[1, 0]
+    for n in names:
+        lbl = f"{n}_6pct"
+        if lbl in series_ej:
+            cum = series_ej[lbl]["cum"] / 1e6
+            ax.plot(cum, color=col[n], label=n, lw=1.3)
+    ax.axhline(0.5, ls="--", c="red", lw=0.7, label="Inversión $500K")
+    ax.set_xlabel("Día"); ax.set_ylabel("Acumulado ($M)")
+    ax.set_title("Cashflow acumulado (6% Sociedad, trayectoria ejemplo)"); ax.legend(fontsize=8)
+
+    # (d) Payback period distribution
+    ax = axes[1, 1]
+    for j, st in enumerate(stakes):
+        vals = [res[f"{n}_{st}pct"]["payback_med_dias"] or 1825 for n in names]
+        ax.bar(x + (j - 1.5) * w, [v / 30 for v in vals], w, label=f"{st}% Sociedad", alpha=0.85)
+    ax.axhline(12, ls="--", c="green", lw=0.7, label="1 año")
+    ax.axhline(24, ls="--", c="gray", lw=0.7, label="2 años")
+    ax.set_xticks(x); ax.set_xticklabels(names, fontsize=9)
+    ax.set_ylabel("Payback (meses)"); ax.set_title("Período de recuperación"); ax.legend(fontsize=7)
+
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    fig.savefig(os.path.join(OUT, "sim6_investor_roi.png"), dpi=110); plt.close(fig)
+
+
 # ============================================================ MAIN
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
@@ -531,6 +698,7 @@ def main():
     if cmd in ("all", "stress"): sim_estres()
     if cmd in ("all", "throttle"): sim_throttle()
     if cmd in ("all", "mm"): sim_mm_comparison()
+    if cmd in ("all", "roi"): sim_investor_roi()
     print(f"\n⏱  Completado en {(time.time()-t0)/60:.1f} min. Salidas en {OUT}")
 
 

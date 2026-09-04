@@ -515,6 +515,43 @@
 - Todo en `brand/prompts/` con `INDICE.md` completo.
 - Tier Diamante: piezas únicas (6) como recompensas élite del ecosistema.
 
+## 2026-09-04 (sesión 26) — ADR-030: Estructura de inversión KASH Sociedad + MM desde TGE
+
+- **ADR-030 aprobado por Sebastián.** Decisión estratégica que estaba bloqueando todo el outreach.
+  Cierra la pregunta "¿qué ofrezco a inversores?" que impedía contactar ángeles.
+- **Estructura 3 bloques de 10%:**
+  - Fundador 10% (innegociable, piso ADR-014).
+  - Operaciones 10% (MM 2-3%, bonus hitos inversores, advisors, key hires).
+  - Inversores 10% (seed base 5-6%, negociable hasta 10% con bonus).
+- **Cláusula de reversión:** todo % no asignado de Operaciones e Inversores revierte al fundador.
+  Los bloques son caps de negociación, no reservas separadas.
+- **Ronda seed única:** $500K por 5-6% base. Bonus +2-4% por hitos verificables (B2 activo, CEX
+  listing, 25K/50K wallets, auditoría). No hay ronda estratégica separada — si los ángeles aportan
+  valor estratégico, lo ganan como bonus del bloque Operaciones.
+- **MM desde TGE día 1 (modifica ADR-019 Fase 1):** 2-3% Sociedad + 100-200M tokens prestados de
+  Marketing (devolución 12-24m). $0 cash. Incentivos perfectamente alineados con volumen (driver #1).
+  Controles: escrow multisig, límite posición neta, reporte semanal.
+- **ADR-019 actualizado:** Fase 1 pasa de "sin MM" a "MM desde día 1".
+- **ADR-020 reemplazado:** split de 2 rondas (seed+estratégica) → 1 ronda seed con bonus por hitos.
+- **Cap total cedido: 20%.** Fundador siempre ≥10%.
+- **Próxima acción:** enviar Superteam Instagrants, reservar handles, primer outreach Santiago Roel Santos.
+- **Simulaciones cuantitativas v4.3 re-ejecutadas** — 7 SIMs con motor fiel al contrato (engine.py = lib.rs v10.2).
+  Suite expandida: 2 nuevos parámetros de sensibilidad (Fee Motor B, Exposición SOL+LST) + SIM 6 nueva (ROI Inversor).
+  - **SIM 0 — Invariantes:** distribución 35/35/15/15, simetría O&M=STK, supply floor 3.3B, muro P_KASH → TODO OK.
+  - **SIM 1 — Monte Carlo (100 iters×3):** CONSERV $85M/42% espiral · BASE $434M/0% · AGRESIVO $1.87B/0%.
+  - **SIM 2 — Sensibilidad (7 params, 40 iters):** Volumen ($1,309M swing) >> Fee Motor A ($283M) >> resto.
+    Fee Motor B y Exposición SOL+LST marginales (<$5M swing).
+  - **SIM 3 — Estrés (8 escenarios, 60 iters):** Crash BTC -80% apenas -4%. Motor A -70% permanente
+    único riesgo real (-68%, 10% espiral). Exploit 15% Vault: -0.3%.
+  - **SIM 4 — Throttle+Usuarios (60 iters):** Config actual 0.50/0.80 óptimo local estable. Usuarios
+    marginales sobre Vault ($381M→$395M de 1K a 100K).
+  - **SIM 5 — MM vs no-MM (80 iters):** MM reduce espiral de 36%→2.5% en CONSERVADOR, acelera B2
+    de d493→d97 en BASE. Vault +11-20% con MM. Valida ADR-030.
+  - **SIM 6 — ROI Inversor (100 iters, NUEVA):** 6% Sociedad → $7.5M en 5Y (15× ROI), IRR 147%,
+    payback ~14 meses (BASE). Incluso CONSERV: 3.6× ROI, payback ~33 meses. 100% probabilidad payback.
+  - Salidas: `simulations/out/sim[0-6]_*.json` + PNGs + `informe_simulaciones_v4.3.html` + `.pdf`.
+  - Artifact informe: https://claude.ai/code/artifact/3bf7538b-aa92-4e9e-8ded-a1d861d7c7c5
+
 ## 2026-09-03 — Sesión 25: Auditoría de proyecto actualizada
 - **Auditoría de proyecto completa** (`audits/AUDITORIA_PROYECTO_2026-09-03.md`): 4 dimensiones
   (Funcionalidad 4.2, Negocio 2.8, Usabilidad 3.5, Escalabilidad 4.0 → ponderado 3.6 CONDICIONAL).

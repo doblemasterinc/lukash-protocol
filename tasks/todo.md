@@ -41,14 +41,15 @@
 
 ### FASE D — Técnica (en paralelo con B y C)
 - [x] **D0. Build + deploy v10.2 en Solana devnet** (sesión 19, 2026-08-31): Guardian 2-de-3, Capa 0→1.5%, Totem Guard placeholder. Build ✅ + Deploy ✅ devnet.
-- [x] **D0b. Ejecutar MC v4.3** (sesión 19, 2026-08-31): suite completa SIMs 0-5 (200 iters × 3 campañas).
+- [x] **D0b. Ejecutar MC v4.3** (sesión 19→actualizado sesión 26, 2026-09-04): suite completa SIMs 0-6, motor fiel lib.rs v10.2.
   - SIM 0: invariantes contrato ✅ (dist 100%, OM=STK, supply floor, muro OK).
-  - SIM 1: MC principal — CONSERV K_med=$90M espiral=40% / BASE K_med=$388M espiral=0% / AGRESIVO K_med=$1.88B espiral=0%.
-  - SIM 2: sensibilidad — Volumen (#1, swing $1.29B) > Fee Motor A ($278M) > Yield ($6M) > App day ($2M) > K_min ($0).
-  - SIM 3: estrés — Crash BTC -80% solo -3.8%. Exploit 15% Vault -0.3%. Motor A -70% perm único riesgo (espiral 5.8%).
-  - SIM 4a: Throttle umbrales actuales óptimos (todos dan K_med=$367M). SIM 4b: masa crítica marginal ($381M→$395M).
-  - **SIM 5: MM vs No-MM** — MM sube Vault 11-19% pero baja precio 10-25% por dilución. Solo CONSERV se beneficia (espiral 34.5%→3.5%). Valida ADR-011/019 (fair-launch + MM contingente).
-  - Salidas en `simulations/out/`. Pendiente: actualizar cifras en BMC/protocolo con rangos MC v4.3.
+  - SIM 1: MC principal — CONSERV $85M/42% espiral · BASE $434M/0% · AGRESIVO $1.87B/0%.
+  - SIM 2: sensibilidad 7 params — Volumen (#1, swing $1,309M) >> Fee Motor A ($283M) >> resto (<$5M).
+  - SIM 3: estrés — Crash BTC -80% solo -4%. Motor A -70% perm único riesgo (-68%, 10% espiral).
+  - SIM 4: Throttle 0.50/0.80 óptimo estable. Usuarios marginal ($381M→$395M).
+  - SIM 5: MM reduce espiral 36%→2.5% CONSERV, acelera B2 d493→d97 BASE. Valida ADR-030 (MM desde TGE).
+  - **SIM 6 (NUEVA): ROI Inversor** — 6% Sociedad → $7.5M/5Y (15× ROI), IRR 147%, payback ~14m (BASE).
+  - Informe HTML+PDF en `simulations/out/informe_simulaciones_v4.3.*`. Artifact: https://claude.ai/code/artifact/3bf7538b-aa92-4e9e-8ded-a1d861d7c7c5
 - [x] **D0c. Crear PDF/versión legible de la presentación v4.3** — **Completado** (sesión 20, 2026-08-31): combinado con B2 en pitch deck 12 slides. PDF 667KB en `docs/LUKASH_Pitch_Deck_v4_3.pdf`
 - [ ] D1. Migración Token-2022 con Transfer Hook (devnet)
 - [ ] D2. Contratos Milestone 2 restantes: staking, cNFT/Aura, CPI safety
@@ -96,7 +97,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
 ### Prioridad: EJECUCIÓN DE MERCADO (no más build)
-1. [ ] **Decidir ADR Ruta 3** — % Vault Sociedad para inversores (habilita conversaciones)
+1. [x] **Decidir ADR Ruta 3 → ADR-030** — 3 bloques de 10% (Fundador/Operaciones/Inversores), MM desde TGE, seed 5-6% base + bonus hitos. Aprobado 2026-09-04.
 2. [ ] **Enviar Superteam Instagrants** — application lista, copiar-pegar
 3. [ ] **Reservar handles** — X (@LukashProtocol), Telegram, Discord
 4. [ ] **Primer outreach** — Santiago Roel Santos (ángel T1 máx prioridad)
@@ -104,7 +105,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 6. [ ] **Hospedar prototipo v2** como URL pública
 
 ### Historial de hitos técnicos completados
-0. [x] **★ AUDITORÍA PROFUNDA DE LOS MOTORES por SIMULACIÓN FIEL AL CONTRATO** (sesión 5): suite `simulations/` (engine=réplica de lib.rs + capa económica prima/Markov/vesting). SIM 0 invariantes OK · SIM 1 MC (espiral CONSERV 44%/BASE 0%/AGRESIVO 0% → tesis lanzamiento agresivo confirmada) · SIM 2 sensibilidad (volumen driver #1) · SIM 3 estrés (resiliente salvo Motor A −70% perm) · SIM 4 throttle irrelevante al Vault. Reporte `audits/VALIDACION_MOTORES_SIM_CONTRACT_FAITHFUL.md` + Artifact `19a8160e`.
+0. [x] **★ AUDITORÍA PROFUNDA DE LOS MOTORES por SIMULACIÓN FIEL AL CONTRATO** (sesión 5, actualizada sesión 26): suite `simulations/` (engine=réplica de lib.rs v10.2 + capa económica prima/Markov/vesting). 7 SIMs: invariantes OK · MC (espiral CONSERV 42%/BASE 0%/AGRESIVO 0%) · sensibilidad 7 params (volumen driver #1, $1,309M swing) · estrés (resiliente salvo Motor A −70% perm) · throttle estable · MM reduce espiral 36%→2.5% · **SIM 6 ROI Inversor: 6% Sociedad = 15× ROI en BASE (ADR-030)**. Informe v4.3 HTML+PDF en `simulations/out/`.
    - [x] **Herramientas estáticas DESBLOQUEADAS** (sesión 14, 2026-08-26): GitHub Actions CI con clippy (lints DeFi: arithmetic_side_effects, unwrap_used, expect_used) + Soteria (25+ vulns Solana) + anchor build + anchor test. Sec3 X-Ray descartado (requiere cuenta). Auditoría manual de seguridad: 3 CRITICAL + 2 HIGH + 3 MEDIUM + 5 LOW + 12 patrones positivos → reporte `audits/SECURITY_AUDIT_LIB_RS_V9_1.md`.
    - [x] **Security hardening v10** (sesión 14): 7 fixes aplicados, Build + Deploy ✅ en devnet. Fixes: has_one=authority en process_fee/refresh_vault_valuation/execute_vault_swaps (CRITICAL×3), Pyth owner validation via pyth_oracle::ID (CRITICAL), DEVNET_MODE flag para fallbacks (HIGH), confidence interval check conf/price<2% (MEDIUM), safe u64::try_from en update_market_regime (MEDIUM).
    - [x] **Specs Milestone 2 en `specs/07-milestone-2/`** (2026-08-21, sesión 5): 07-INDICE + 6 specs (07-a a 07-f). Base: ADR-015.
@@ -141,7 +142,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
    - [ ] Renombrar proyecto Vercel de "landing" a "lukash"
    - [x] Regenerar `feature-app.jpg` — actualizada con HOME "Magic Sensei", sin "JAGUAR Pay" (sesión 23)
 5. **Etapa 0 (continuar)**: [x] one-pager ES, [x] founding myth + micro-myth (ES/EN/PT), [x] landing, [x] one-pager EN/PT, [x] litepaper v1. [ ] data room formal (tokenomics completo + Vault Sociedad + proyecciones). Arrancar Superteam Earn + grant Finternet.
-5b. [ ] **Estrategia Ruta 3 (ADR-018)**: decidir % del Vault Sociedad a ceder, # inversores, estructura legal, capital target, KASH Lock. Fair launch compatible.
+5b. [x] **Estrategia Ruta 3 → ADR-030 (2026-09-04)**: 3 bloques de 10%, MM desde TGE, seed base+bonus, cláusula reversión. Fair launch compatible.
 5c. [x] **Prototipo app v2** (`prototype/lukash-app-v2.html`): rediseño visual completo con concept art, 6 tabs, SVG icons, assets de marca reales, glassmorphism. Sesión 22, 2026-08-31.
 5d. [x] **Prototipo app v2 upgrade** (sesión 23, 2026-09-01): LUKAI chat funcional (11 temas), 10+ misiones interactivas (quiz/simulator/checkin/prediction/share/deposit/join), minting de tótems con 3 pasos animados + localStorage, terminología corregida (RESERVA SAGRADA), splash 5s, teléfono 880px, isotipo 48px.
 5e. [x] **Biblioteca completa de prompts visuales** (sesión 24, 2026-09-02): avatares 14 (7 niveles × M/F) + accesorios 126 piezas (6 tiers: Bronce 30, Plata 30, Oro 30, Obsidiana 15, Platino 15, Diamante 6) + 3 ejemplos avatar+accesorio equipado. Todo en `brand/prompts/`. INDICE.md completo.
@@ -151,7 +152,7 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 
 
 ## Decisiones pendientes de Sebastián
-- [ ] **DECISIÓN — ADR Ruta 3 (ADR-018)**: % del Vault Sociedad a ceder a inversores, estructura, KASH Lock. Necesario antes de contactar ángeles.
+- [x] **DECISIÓN — ADR Ruta 3 → ADR-030 (2026-09-04)**: 3 bloques de 10% (Fundador/Operaciones/Inversores), MM desde TGE con Sociedad+token loan, seed 5-6% base + bonus hitos verificables. Cláusula de reversión: lo no cedido revierte al fundador. Cap 20%.
 - [ ] **DECISIÓN — H10 (Monte Carlo)**: elegir modelo oficial de cifras (recomiendo v3.1 conservador) + etiquetar fuente.
 - [ ] **DECISIÓN — marca**: D1 ticker ($LUKA), D2 niveles de Aura (naming), D3 Tótems cNFT
 

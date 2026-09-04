@@ -58,19 +58,26 @@ def simular(esc, params, rng, throttle_thresholds=None, shocks=None):
         # el fee es lineal en el notional → escalar el notional pasado a process_fee
         # equivale exactamente a escalar la tasa del fee, sin tocar el engine.
         "fee_a_mult": 1.0,
+        "fee_b_mult": 1.0,
+        "sol_lst_pct": None,
     }
     p.update(params or {})
 
     # --- estado del contrato ---
     st = E.ProtocolState(genesis_ts=0, last_queue_exec_ts=0)
     st.k_min_usd = int(p["k_min_usd"] * E.USD)
-    # semilla del Vault (Fase 1): $200K repartidos por composición del contrato
     vi = EC.ECO["vault_ini"]
-    st.cbtc_usd = int(vi * 0.35 * E.USD)
-    st.sol_usd = int(vi * 0.15 * E.USD)
-    st.lst_usd = int(vi * 0.20 * E.USD)
-    st.usdc_res_usd = int(vi * 0.25 * E.USD)
-    st.usdc_lend_usd = int(vi * 0.05 * E.USD)
+    if p["sol_lst_pct"] is not None:
+        sol_lst = p["sol_lst_pct"]
+        sol_pct = sol_lst * 0.43; lst_pct = sol_lst * 0.57
+        cbtc_pct = 0.35; usdc_r_pct = 1.0 - cbtc_pct - sol_pct - lst_pct - 0.05; usdc_l_pct = 0.05
+    else:
+        cbtc_pct = 0.35; sol_pct = 0.15; lst_pct = 0.20; usdc_r_pct = 0.25; usdc_l_pct = 0.05
+    st.cbtc_usd = int(vi * cbtc_pct * E.USD)
+    st.sol_usd = int(vi * sol_pct * E.USD)
+    st.lst_usd = int(vi * lst_pct * E.USD)
+    st.usdc_res_usd = int(vi * usdc_r_pct * E.USD)
+    st.usdc_lend_usd = int(vi * usdc_l_pct * E.USD)
     st.vault_core_usd = int(vi * E.USD)
 
     # throttle override (para SIM 4)
@@ -189,9 +196,10 @@ def simular(esc, params, rng, throttle_thresholds=None, shocks=None):
         # ── Motor B ($LUKA) + Motor D (multi) — Etapa 2A+ ──
         feeD = 0.0
         if st.stage >= 2 and usr > 0:
-            vol_b = usr * 4.5 * 0.25 * vmult   # $4.5/usr/día, 25% DAU
-            run(vol_b * p["pct_wl"], 1, currency=0, is_wl=True)
-            run(vol_b * (1 - p["pct_wl"]), 1, currency=0, is_wl=False)
+            vol_b = usr * 4.5 * 0.25 * vmult
+            vfb = vol_b * p["fee_b_mult"]
+            run(vfb * p["pct_wl"], 1, currency=0, is_wl=True)
+            run(vfb * (1 - p["pct_wl"]), 1, currency=0, is_wl=False)
 
             vol_d = usr * 1.80 * 0.18 * vmult  # Manadas, capa 2 dominante
             # mezcla de capas D: 15% capa1, 70% capa2, 15% capa3A

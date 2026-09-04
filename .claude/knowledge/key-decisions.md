@@ -221,25 +221,30 @@ moderada/agresiva. Nueva distribución:
 - **Reserva operativa 5% ($25K):** O&M fundador meses 1-6, emergencias.
 
 ## ADR-019: Estrategia MM/KOL en 3 fases — separación servicios vs equity (2026-08-28) — Aprobado por Sebastián
-Confirma y extiende la regla de sesión 4: **tokens vesteados = pago por servicio (MM/KOLs).
-KASH Sociedad = solo para capital/largo plazo (inversores).** Nunca mezclar.
-- **Fase 1 (TGE, día 1-30):** Sin MM. Ruta A community-only con liquidez propia ($100K).
-  KOLs hispanos educativos pagados en $LUKA vesteado (cliff 6mo + 12mo linear) del pool
-  Marketing/CEX (8% supply). Prioridad: Hugo Botto, Catalina Castro, Daniel Muvdi, Criptolawyer.
-- **Fase 2 (mes 2-3):** MM contingente (Kairon Labs o Gravity Team). Modelo loan + call option
-  (1-3% supply como inventario). Gate de activación: volumen diario <$500K por 5 días consecutivos.
-  Compatible con fair launch (ADR-011).
+> **Fase 1 modificada por ADR-030:** MM activo desde TGE día 1, compensado con Sociedad + token loan (no cash). Ver ADR-030 §4.
+
+Confirma y extiende la regla de sesión 4: **tokens vesteados = pago por servicio (KOLs).
+KASH Sociedad = para capital/largo plazo (inversores) Y para MM alineado (ADR-030).** Excepción
+explícita: el MM recibe Sociedad porque su incentivo debe estar alineado con volumen (driver #1).
+- **Fase 1 (TGE, día 1):** ~~Sin MM~~ → **MM activo desde día 1** (ADR-030). KOLs hispanos
+  educativos pagados en $LUKA vesteado (cliff 6mo + 12mo linear) del pool Marketing/CEX (8% supply).
+  Prioridad: Hugo Botto, Catalina Castro, Daniel Muvdi, Criptolawyer.
+- **Fase 2 (mes 2-3):** Escala de MM si funciona, renegociación de términos con tracción demostrada.
 - **Fase 3 (mes 4+):** CEX listing (MEXC/Gate.io). Algunos listan gratis si volumen >$500K/día.
 
 ## ADR-020: Rondas de inversión escalonadas + roadmap KASH Sociedad (2026-08-28) — Aprobado por Sebastián
-El KASH Sociedad (30% de los fees del protocolo) se distribuye en rondas con valoración creciente:
-- **Ronda Seed (pre-TGE):** ángeles cripto-nativos, $500K por 5-8%, valoración implícita ~$6-10M.
-- **Ronda Estratégica (mes 6-12, post-tracción):** entidades financieras LatAm (fintechs, cooperativas,
-  remesadoras), $1-2M por 5-8%, valoración implícita ~$15-25M.
-- **Distribución resultante:** ~17% fundador / 5-8% seed / 5-8% estratégica / ~6-13% reserva DAO/futuro.
-Razón del escalonamiento: (1) inversores ángeles invierten en visión y diseño, entidades financieras
-invierten en tracción demostrada; (2) la naturaleza blockchain exige legitimidad en el ecosistema cripto
-ANTES de buscar socios TradFi; (3) la revalorización entre rondas es el incentivo de early-stage para ángeles.
+> **Reemplazado por ADR-030:** la estructura de 2 rondas (seed + estratégica) se simplifica a 1 ronda seed
+> con bonus por hitos que absorbe el componente estratégico. El split del 30% pasa a 3 bloques de 10%.
+> Ver ADR-030 para la estructura vigente.
+
+~~El KASH Sociedad (30% de los fees del protocolo) se distribuye en rondas con valoración creciente:~~
+- ~~Ronda Seed (pre-TGE): ángeles cripto-nativos, $500K por 5-8%, valoración implícita ~$6-10M.~~
+- ~~Ronda Estratégica (mes 6-12, post-tracción): entidades financieras LatAm.~~
+- ~~Distribución resultante: ~17% fundador / 5-8% seed / 5-8% estratégica / ~6-13% reserva DAO/futuro.~~
+Razón histórica del escalonamiento original: (1) inversores ángeles invierten en visión, entidades financieras
+en tracción; (2) blockchain exige legitimidad cripto ANTES de TradFi; (3) revalorización entre rondas.
+**ADR-030 mantiene estos principios pero elimina la ronda estratégica separada** — si los ángeles aportan
+valor estratégico, lo ganan como bonus verificable del bloque Operaciones.
 
 ## ADR-021: Identidad del fundador — pseudónimo conocido (2026-08-28) — Aprobado por Sebastián
 El fundador opera con exposición escalonada por niveles de confianza:
@@ -431,3 +436,57 @@ inflación, con transparencia total. Es infraestructura financiera, no especulac
 **Uso en pitch:** esta narrativa debe ser el segundo slide del pitch deck (después del problema)
 y el primer párrafo del litepaper. No presentar LUKASH como "crypto project" sino como
 "optimized monetary infrastructure".
+
+## ADR-030: Estructura de inversión KASH Sociedad + Market Maker desde TGE (2026-09-04) — Aprobado por Sebastián
+Modifica parcialmente ADR-019 (Fase 1: MM desde día 1) y reemplaza ADR-020 (split del 30%).
+Mantiene intactos ADR-006, ADR-011, ADR-013, ADR-014, ADR-018.
+
+**Estructura: 3 bloques de 10%.** El 30% KASH Sociedad se divide en:
+- **Fundador 10%:** patrimonio personal, innegociable. Piso absoluto (ADR-014).
+- **Operaciones 10%:** MM, advisors, key hires, bonus por hitos de inversores.
+- **Inversores 10%:** ronda seed — ángeles cripto-nativos.
+
+**Cláusula de reversión:** todo porcentaje no asignado de los bloques Operaciones e Inversores
+**revierte al fundador.** El 10% en cada bloque es un cap de negociación, no una reserva separada.
+Si solo se ceden 7% en total (ej: 5% seed + 2% MM), el fundador conserva 23%. Los bloques no
+se "guardan" — lo no cedido es del fundador. Piso mínimo del fundador: siempre ≥10%.
+**Cap total cedido: nunca más de 20%.** Suma de Inversores + Operaciones ≤ 20%.
+
+**Ronda Seed (bloque Inversores):**
+- Capital: $500K. Base ofrecida: 5-6%. Máximo negociable (base + bonus): 10%.
+- Valuación implícita: $5-10M. Instrumento: post-money SAFE + token warrant.
+- KASH Lock: 48 meses lineal post-trigger (ADR-006).
+- No hay ronda estratégica separada. Si los ángeles aportan valor estratégico, lo ganan como
+  bonus por hitos del bloque Operaciones. Un solo tipo de inversor, no dos rondas.
+- Target: Santiago Roel Santos (prioridad #1).
+
+**Bonus por hitos (+2-4%, del bloque Operaciones, vesting verificable):**
+| Hito | Bonus | Verificación |
+|---|---|---|
+| Vault alcanza K_min ($25M) → Motor B2 activo | +1% | Evento `MotorBSwitched` on-chain |
+| Listing en CEX tier 2+ (MEXC/Gate/Bybit) | +1% | Token live en exchange |
+| 25,000 wallets activas 90d post-TGE | +0.5% | On-chain (≥1 tx/mes) |
+| 50,000 wallets activas 90d post-TGE | +0.5% | On-chain (≥1 tx/mes) |
+| Auditoría externa cerrada | +1% | Reporte publicado |
+
+**Market Maker desde TGE (bloque Operaciones):**
+Modifica ADR-019 Fase 1: MM activo desde día 1, no contingente.
+- Sociedad: 2% oferta, 3% cap de negociación. KASH Lock aplica.
+- Token loan: 100-200M tokens del bucket Marketing (8% supply). Préstamo, no cesión.
+  Devolución 12-24 meses. Controles: escrow multisig, límite posición neta diaria,
+  restricción de venta masiva, reporte semanal. Incumplimiento = pérdida del Sociedad.
+- Cash: $0 del runway. La partida "MM contingente $40-60K" de ADR-018 se reasigna a
+  marketing operativo (campañas, ads, community manager).
+- Justificación: volumen es driver #1 (SIM 2). Sin MM, riesgo de arranque en frío →
+  el loop volumen→fees→Vault no arranca → 40% espiral (SIM 1 CONSERVADOR).
+  Un MM con Sociedad tiene incentivos perfectamente alineados: genera volumen →
+  Vault crece → trigger → cobra. Fair launch intacto (MM provee liquidez, no cambia
+  distribución del token).
+
+**Escenarios resultantes:**
+| Escenario | Seed | Bonus | MM | Otros | Total cedido | Fundador |
+|---|---|---|---|---|---|---|
+| Mejor caso | 5% | 0% | 2% | 0% | 7% | 23% |
+| Probable | 6% | +2% | 2% | 1% | 11% | 19% |
+| Negociado fuerte | 6% | +4% | 3% | 1% | 14% | 16% |
+| Máximo absoluto | 6% | +4% | 3% | 7% | 20% | 10% |
