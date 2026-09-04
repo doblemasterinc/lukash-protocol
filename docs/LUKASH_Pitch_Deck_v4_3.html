@@ -510,9 +510,9 @@ ul li::before {
 
 <!-- SLIDE 6: MONTE CARLO -->
 <div class="slide">
-  <div class="eyebrow">Validación cuantitativa &mdash; MC v4.3 (Ago 2026)</div>
+  <div class="eyebrow">Validación cuantitativa &mdash; MC v4.3 (Sep 2026)</div>
   <h2>Monte Carlo: 200 iteraciones &times; 3 campañas &times; 5 años</h2>
-  <p style="font-size: 12px; color: var(--gris-ll); margin-bottom: 16px;">Motor de simulación fiel al contrato (replica aritmética entera de lib.rs). 6 SIMs ejecutadas.</p>
+  <p style="font-size: 12px; color: var(--gris-ll); margin-bottom: 16px;">Motor de simulación fiel al contrato (replica aritmética entera de lib.rs). 7 SIMs ejecutadas.</p>
 
   <table>
     <thead>
@@ -526,37 +526,37 @@ ul li::before {
     <tbody>
       <tr>
         <td>Vault Mediana (5 años)</td>
-        <td class="highlight">$90M</td>
-        <td class="highlight">$388M</td>
-        <td class="highlight">$1,882M</td>
+        <td class="highlight">$85M</td>
+        <td class="highlight">$434M</td>
+        <td class="highlight">$1,872M</td>
       </tr>
       <tr>
         <td>Rango P10–P90</td>
-        <td>$38M – $326M</td>
-        <td>$197M – $1,146M</td>
-        <td>$741M – $5,705M</td>
+        <td>$33M – $365M</td>
+        <td>$189M – $1,322M</td>
+        <td>$949M – $5,743M</td>
       </tr>
       <tr>
         <td>Espiral de Muerte</td>
-        <td class="amber">40%</td>
+        <td class="amber">42%</td>
         <td class="green">0%</td>
         <td class="green">0%</td>
       </tr>
       <tr>
         <td>Múltiplo precio vs TGE</td>
-        <td>4,381&times;</td>
-        <td>22,799&times;</td>
-        <td>107,126&times;</td>
+        <td>4,095&times;</td>
+        <td>22,203&times;</td>
+        <td>111,401&times;</td>
       </tr>
       <tr>
         <td>Supply quemado</td>
         <td>67%</td>
         <td>67%</td>
-        <td>66%</td>
+        <td>65%</td>
       </tr>
       <tr>
         <td style="color: var(--verde-light); font-weight: 600;">Riesgo de Ruina Total</td>
-        <td class="green" style="font-weight: 700;">0.0%</td>
+        <td class="amber" style="font-weight: 700;">5.0%</td>
         <td class="green" style="font-weight: 700;">0.0%</td>
         <td class="green" style="font-weight: 700;">0.0%</td>
       </tr>
@@ -611,7 +611,7 @@ ul li::before {
 
 <!-- SLIDE 8: TRACCIÓN -->
 <div class="slide">
-  <div class="eyebrow">Tracción / Estado &mdash; Agosto 2026</div>
+  <div class="eyebrow">Tracción / Estado &mdash; Septiembre 2026</div>
   <h2>Todo construido, validado, desplegado</h2>
 
   <div class="grid-2" style="gap: 24px;">
@@ -626,7 +626,7 @@ ul li::before {
       </div>
       <div class="flow-step">
         <div class="flow-num" style="color: var(--verde);">&check;</div>
-        <div class="flow-text"><strong>Monte Carlo v4.3</strong> — 6 SIMs completas. Motor fiel al contrato. 0.0% riesgo de ruina.</div>
+        <div class="flow-text"><strong>Monte Carlo v4.3</strong> — 7 SIMs completas. Motor fiel al contrato. 0.0% riesgo de ruina (Base).</div>
       </div>
       <div class="flow-step">
         <div class="flow-num" style="color: var(--verde);">&check;</div>
@@ -716,7 +716,7 @@ ul li::before {
   <div class="grid-2" style="gap: 24px;">
     <div>
       <h3>Revenue del protocolo</h3>
-      <p style="font-size: 13px; margin-bottom: 12px;">15% de cada fee = O&M. A escala (escenario Base, $388M Vault) esto genera revenue sostenible del protocolo sin depender de capital externo post-Fase 1.</p>
+      <p style="font-size: 13px; margin-bottom: 12px;">15% de cada fee = O&M. A escala (escenario Base, $434M Vault) esto genera revenue sostenible del protocolo sin depender de capital externo post-Fase 1.</p>
 
       <h3>Distribución del capital ($500K Fase 1)</h3>
       <table style="font-size: 12px;">
@@ -739,15 +739,15 @@ ul li::before {
       </div>
       <div class="flow-step">
         <div class="flow-num">3</div>
-        <div class="flow-text"><strong>Seed ángeles LatAm</strong> — $500K / 5-8%. SAFE + token warrant.</div>
+        <div class="flow-text"><strong>Seed ángeles LatAm</strong> — $500K / 5-6% base Sociedad + hasta 4% bonus por hitos.</div>
       </div>
       <div class="flow-step">
         <div class="flow-num">4</div>
-        <div class="flow-text"><strong>Estratégica</strong> — fintech $1-2M / 5-8%. Post-TGE + tracción.</div>
+        <div class="flow-text"><strong>Market Maker</strong> — desde TGE día 1. 2-3% Sociedad + préstamo token.</div>
       </div>
 
-      <h3 style="margin-top: 12px;">Tokenomics KASH Sociedad</h3>
-      <p style="font-size: 12px; color: var(--gris-ll);">~17% fundador · 5-8% seed · 5-8% estratégica · reserva. Vesting equipo: 2% (200M), cliff 12m + lineal 48m, publicado on-chain antes del TGE.</p>
+      <h3 style="margin-top: 12px;">KASH Sociedad (30% fee stream)</h3>
+      <p style="font-size: 12px; color: var(--gris-ll);">3 bloques de 10%: <span class="highlight">Fundador</span> (floor) · <span class="highlight">Operaciones</span> (MM, advisors, bonos) · <span class="highlight">Inversores</span> (seed base + bonus hitos). Cap: máx 20% cedido. Vesting equipo: 2% (200M), cliff 12m + lineal 48m, on-chain.</p>
     </div>
   </div>
 
@@ -824,22 +824,43 @@ ul li::before {
 <!-- SLIDE 12: THE ASK + CONTACTO -->
 <div class="slide" style="justify-content: center;">
   <div class="eyebrow">El ask</div>
-  <h2>Grant / Pre-seed para Milestone 2</h2>
+  <h2>$500K Seed — ROI simulado Monte Carlo</h2>
 
-  <div class="grid-2" style="gap: 24px; margin-bottom: 24px;">
+  <div class="grid-2" style="gap: 24px; margin-bottom: 16px;">
     <div class="card card-accent" style="text-align: center;">
       <div class="big-stat">$500K</div>
-      <div class="stat-label" style="margin-bottom: 12px;">Fase 1 — Seed</div>
-      <p style="font-size: 12px; color: var(--marfil-dark);">Auditoría externa + TGE + App Etapa 2A + comunidad génesis + 6 meses runway</p>
+      <div class="stat-label" style="margin-bottom: 12px;">Seed — 5-6% base Sociedad</div>
+      <p style="font-size: 12px; color: var(--marfil-dark);">Auditoría externa + TGE + App Etapa 2A + comunidad génesis + 6 meses runway. Bonus hasta +4% por hitos (cap 20% cedido total).</p>
     </div>
     <div class="card" style="text-align: center;">
-      <div class="big-stat" style="color: var(--gris-ll);">$2M</div>
-      <div class="stat-label" style="margin-bottom: 12px;">Fase 2 — Estratégica (post-TGE)</div>
-      <p style="font-size: 12px; color: var(--marfil-dark);">Escala regional + Motor C + RWA Capa 3 + equipo de 8-12</p>
+      <div class="big-stat" style="color: var(--oro-light);">15&times;</div>
+      <div class="stat-label" style="margin-bottom: 12px;">ROI mediano (Base, 6% Sociedad)</div>
+      <table style="font-size: 11px; margin-top: 8px;">
+        <tr><td>Total 5 años</td><td class="highlight" style="text-align: right;">$7.5M</td></tr>
+        <tr><td>IRR</td><td class="highlight" style="text-align: right;">147%</td></tr>
+        <tr><td>Payback</td><td class="highlight" style="text-align: right;">~14 meses</td></tr>
+        <tr><td>Prob. payback</td><td class="green" style="text-align: right;">100%</td></tr>
+      </table>
     </div>
   </div>
 
-  <div style="text-align: center; margin-bottom: 20px;">
+  <table style="font-size: 11px; margin-bottom: 16px;">
+    <thead>
+      <tr>
+        <th>Escenario (6% Sociedad)</th>
+        <th>Total 5Y</th>
+        <th>ROI</th>
+        <th>Payback</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Conservador</td><td>$1.8M</td><td>3.6&times;</td><td>~33 meses</td></tr>
+      <tr><td><strong>Base</strong></td><td class="highlight"><strong>$7.5M</strong></td><td class="highlight"><strong>15&times;</strong></td><td class="highlight"><strong>~14 meses</strong></td></tr>
+      <tr><td>Agresivo</td><td>$37.5M</td><td>75&times;</td><td>~6 meses</td></tr>
+    </tbody>
+  </table>
+
+  <div style="text-align: center; margin-bottom: 16px;">
     <p style="font-size: 15px; color: var(--marfil);">Todo lo construido es open, auditable y verificable on-chain.</p>
     <p style="font-size: 15px; color: var(--oro-light); font-weight: 500;">Las finanzas del futuro, disponibles hoy.</p>
   </div>
@@ -849,7 +870,7 @@ ul li::before {
     <p style="font-size: 12px; color: var(--gris-ll);">kash.sensei.sol@gmail.com &middot; github.com/doblemasterinc/lukash-protocol</p>
   </div>
 
-  <p class="disclaimer">$LUKA es un token de utilidad del ecosistema. La reserva respalda el sistema; no constituye una promesa de rendimiento ni un valor negociable. Nada aquí es asesoría financiera. Datos de simulación Monte Carlo v4.3, agosto 2026.</p>
+  <p class="disclaimer">$LUKA es un token de utilidad del ecosistema. La reserva respalda el sistema; no constituye una promesa de rendimiento ni un valor negociable. Nada aquí es asesoría financiera. Proyecciones de SIM 6 (Monte Carlo v4.3) son medianas sobre 150 iteraciones, septiembre 2026.</p>
 
   <span class="stamp">Monte Carlo Validated &mdash; 0.0% Riesgo de Ruina</span>
   <span class="slide-number">12 / 12</span>
