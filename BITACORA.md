@@ -551,6 +551,10 @@
     payback ~14 meses (BASE). Incluso CONSERV: 3.6× ROI, payback ~33 meses. 100% probabilidad payback.
   - Salidas: `simulations/out/sim[0-6]_*.json` + PNGs + `informe_simulaciones_v4.3.html` + `.pdf`.
   - Artifact informe: https://claude.ai/code/artifact/3bf7538b-aa92-4e9e-8ded-a1d861d7c7c5
+- **Pitch deck v4.3 actualizado** con datos SIM 6 + ADR-030:
+  - Slide 12 (The Ask): tabla ROI por escenario (15× BASE, 3.6× CONSERV, 75× AGRESIVO), payback 14 meses, IRR 147%.
+  - Slide 10 (Modelo): estructura 3 bloques 10% Sociedad, seed 5-6% + bonus hitos, MM desde TGE.
+  - MC table: cifras actualizadas ($85M/$434M/$1,872M). Fechas → Sep 2026. 7 SIMs.
 
 ## 2026-09-03 — Sesión 25: Auditoría de proyecto actualizada
 - **Auditoría de proyecto completa** (`audits/AUDITORIA_PROYECTO_2026-09-03.md`): 4 dimensiones
