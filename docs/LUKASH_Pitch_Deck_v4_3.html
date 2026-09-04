@@ -333,7 +333,8 @@ ul li::before {
 }
 
 @media print {
-  body { background: #000; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  body { background: var(--obsidiana) !important; }
   .slide {
     page-break-after: always;
     page-break-inside: avoid;
@@ -341,8 +342,12 @@ ul li::before {
     margin: 0 auto;
     border: none;
     border-radius: 0;
+    background: var(--carbon) !important;
   }
   .slide + .slide { margin-top: 0; }
+  .card { background: var(--carbon-light) !important; }
+  .card-accent { background: linear-gradient(135deg, var(--oro-dark), var(--oro)) !important; }
+  table { background: rgba(255,255,255,0.03) !important; }
 }
 </style>
 </head>
