@@ -2,7 +2,7 @@
 
 > Reglas aprendidas (máx 1-2 líneas c/u). Se promueven desde `tasks/lessons.md` cuando un patrón se repite 2+ veces.
 
-- El Protocolo v4.2 es la fuente de verdad; ante conflicto Protocolo↔BMC↔presentación, gana el Protocolo.
+- El Protocolo v4.3 es la fuente de verdad; ante conflicto Protocolo↔BMC↔presentación, gana el Protocolo.
 - Al reescribir cualquier texto o UI, "Jaguar Score" → "Aura" (ADR-002). La mecánica no cambia. Niveles (ADR-005): Cachorro→Rastreador→Cazador→Alfa→Emperador→Shamán→Titán (7 niveles, nombres en español, no se traducen).
 - Verificar SIEMPRE que los porcentajes de composición del Vault y distribución de fees sumen 100% antes de codificar (hay una discrepancia histórica de 105% en el Vault).
 - Distinguir "Fase" (1/2/3 de inversión/capital) de "Etapa" (0-4 del protocolo, condiciones on-chain). No son lo mismo.

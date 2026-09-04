@@ -1,13 +1,14 @@
 # Key Decisions — LUKASH Protocol
 
 > ADRs = decisiones cerradas. No contradecir sin un nuevo ADR que lo reemplace.
-> Los ADR-P## capturan decisiones ya consolidadas en el Protocolo v4.2 (fuente de verdad).
+> Los ADR-P## capturan decisiones ya consolidadas en el Protocolo v4.3 (fuente de verdad).
 > Los ADR-0## son decisiones tomadas en las sesiones de trabajo del Studio.
 
-## ADR-001: Protocolo v4.2 es la arquitectura definitiva (2026-08-19)
-El `LUKASH_Protocolo_v4_2_FINAL.docx` (carpeta "Back up conversación 16-03", más reciente
-que el de raíz) es la fuente técnica de verdad. El BMC debe alinearse a él, no al revés.
-Versiones anteriores (v1–v4.1) se conservan en `docs/protocolo/` solo como historial.
+## ADR-001: Protocolo v4.3 es la arquitectura definitiva (2026-08-19, actualizado por ADR-007)
+`docs/protocolo/LUKASH_Protocolo_v4.3.md` consolida v4.2 + correcciones de auditoría (C1-C9).
+Es la fuente técnica de verdad. Los .docx v4.2 quedan como respaldo histórico/narrativo.
+El BMC v4.3 (`docs/protocolo/LUKASH_BMC_v4_3.md`) debe alinearse al Protocolo, no al revés.
+Versiones anteriores (v1–v4.2) se conservan en `docs/protocolo/` solo como historial.
 
 ## ADR-002: Sistema de reputación = "Aura" (2026-08-19) — Aprobado por Sebastián
 El sistema de reputación financiera on-chain pasa a llamarse **Aura**. Es un rebrand puro:
@@ -156,11 +157,11 @@ Los oráculos (PYTH/Switchboard/Jupiter) son **infraestructura operativa (O&M), 
 discrepancia del 105% de v4.2, ADR corregido). 0% riesgo de bridge. Nunca liquidable; solo crece.
 Determina el Precio KASH (P_KASH) y activa Motor B2 en K_min=$25M.
 
-## ADR-P02: Regla universal 35/35/15/15 (Protocolo v4.2)
+## ADR-P02: Regla universal 35/35/15/15 (Protocolo v4.3)
 Todos los motores y todas las capas del Motor D distribuyen cada fee así:
 35% Vault/Asset Layer · 35% LP/Quema · 15% O&M · 15% Staking. Inamovible.
 
-## ADR-P03: Emisión Neta Cero al alcanzar 3.3B supply (Protocolo v4.2)
+## ADR-P03: Emisión Neta Cero al alcanzar 3.3B supply (Protocolo v4.3)
 Supply inicial 10B → objetivo 3.3B (quemar 6.7B). Al llegar a 3.3B, PDA on-chain suspende
 la quema y redirige el valor capturado a recompensas perpetuas. $LUKA pasa a comportarse
 como acción preferente con dividendos reales del Vault.
@@ -171,22 +172,22 @@ estabilización de último recurso. En B0 el tramo LP quema directo sin USDC; en
 se recupera por inercia estructural (Motor A + Exit Fee + Anti-Whale + cola diferida +
 arbitraje natural). Cualquier residuo v3.1 que diga lo contrario es un error a corregir.
 
-## ADR-P05: cNFT = instrumento financiero tokenizado, no llave de acceso (Protocolo v4.2)
+## ADR-P05: cNFT = instrumento financiero tokenizado, no llave de acceso (Protocolo v4.3)
 Cada cNFT representa una posición de inversión (capital + rendimiento). APY variable,
 transferible, con disclaimer on-chain obligatorio en metadata. 3 tipos: Nativo $LUKA (Capa 0,
 0%, nivel Cachorro), Tótem Universal (Capas 1/3A, 1.5%, gated por Aura ≥500), Tótem Estándar SOL/USDC
 (Capa 3B, 2%, sin gate).
 
-## ADR-P06: El Vault NO se toca para defender el precio en B2 (Protocolo v4.2)
+## ADR-P06: El Vault NO se toca para defender el precio en B2 (Protocolo v4.3)
 En B2 consolidado la defensa del precio opera vía flujos de fees, no tocando el Vault existente
 ni la R_op. La redención soberana directa al Precio KASH queda como opción del DAO en Etapa 3,
 nunca automática.
 
-## ADR-P07: Hub legal El Salvador (CNAD), expansión todo LatAm + Brasil + España (Protocolo v4.2)
+## ADR-P07: Hub legal El Salvador (CNAD), expansión todo LatAm + Brasil + España (Protocolo v4.3)
 Fundación en El Salvador (0% impuestos cripto, capital mínimo $2K, tarifa registro ~$5.5K).
 Lanzamiento primario simultáneo Colombia + México. Expansión escalonada por prioridad y CAC.
 
-## ADR-P08: Inversión por fases $500K / $2M / $5M autofinanciada (Protocolo v4.2)
+## ADR-P08: Inversión por fases $500K / $2M / $5M autofinanciada (Protocolo v4.3)
 Solo la Fase 1 requiere capital externo. Fases 2 y 3 se co-financian con el Vault Sociedad
 acumulado en Etapa 1. Sin dependencia de VCs, sin dilución de socios fundadores.
 

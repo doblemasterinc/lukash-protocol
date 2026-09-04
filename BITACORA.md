@@ -555,6 +555,19 @@
   - Slide 12 (The Ask): tabla ROI por escenario (15× BASE, 3.6× CONSERV, 75× AGRESIVO), payback 14 meses, IRR 147%.
   - Slide 10 (Modelo): estructura 3 bloques 10% Sociedad, seed 5-6% + bonus hitos, MM desde TGE.
   - MC table: cifras actualizadas ($85M/$434M/$1,872M). Fechas → Sep 2026. 7 SIMs.
+- **Litepaper v1 actualizado** con ADR-030 + SIM 6:
+  - §5.3: Sociedad = "30% equity, structure per ADR-030, shared under NDA, cap 20%". SIM 6 ROI table.
+  - §6.1-6.5: cifras MC actualizadas, MM desde TGE, espiral 36%→2.5%, nueva §6.5 Investor ROI.
+  - §10/§14: MM strategy + risk mitigation. Appendix: 30 ADRs, 7 SIMs.
+- **One-pagers ES/EN/PT actualizados:** 30 ADRs, SIM 6 "15× ROI", MM alineado desde TGE (ADR-030).
+- **Script hash anchoring** (`scripts/anchor-doc-hash.ts`): SHA-256 de 4 docs, Memo Program v2.
+  Para ejecutar en MAINNET via Phantom antes del outreach. Hashes cambian si los docs se editan.
+- **Dashboard Vault KASH Core** (`docs/vault-dashboard.html`): demo investor dark-mode, on-brand,
+  datos snapshot devnet, 7 mecanismos KASH Shield, links a explorer. Artifact publicado.
+- **VPS Solana CLI instalado** (Contabo 80.190.75.189): Solana CLI v4.2.2 + spl-token 5.6.1,
+  devnet config, wallet `3GcivBXk...`. Lee programa y token LUKASH. Pendiente: fondear con SOL.
+- **Próxima sesión:** migración Token-2022 con Transfer Hook (D1) → conectar app con contratos →
+  deploy VPS con nginx + acceso privado (ruta secreta + basic auth) → hash mainnet → outreach.
 
 ## 2026-09-03 — Sesión 25: Auditoría de proyecto actualizada
 - **Auditoría de proyecto completa** (`audits/AUDITORIA_PROYECTO_2026-09-03.md`): 4 dimensiones
@@ -564,5 +577,15 @@
 - **Corrección de todo.md**: B3 (litepaper) y B4 (one-pagers EN/PT) marcados como completados.
 - **Diagnóstico principal reiterado**: 95% diseño/build completado, 0% ejecución de mercado.
   Pipeline de 36 contactos + 5 grants + emails listos — nada enviado. Cada día sin outreach es un día perdido.
+- **Próxima sesión**: (1) decidir ADR Ruta 3, (2) enviar Superteam + primer outreach ángeles,
+  (3) reservar handles, (4) dashboard Vault devnet como credibilidad técnica.
+
+## 2026-09-04 — Sesión 27: Pitch deck + simulaciones v4.3 + corrección versionamiento
+- **Pitch deck regenerado** con print styles mejorados + SIM 6 ROI + ADR-030.
+- **Simulaciones v4.3 completas**: 7 SIMs (0-6) incluyendo SIM 6 ROI Inversor (ADR-030).
+- **Corrección de versionamiento**: detectada inconsistencia — `key-decisions.md` y `learned-rules.md`
+  seguían apuntando a v4.2 como "fuente de verdad" pese a que ADR-007 declaró v4.3 como canónica.
+  Corregido: ADR-001 actualizado (v4.3 definitiva, v4.2=respaldo histórico), 7 ADR-P## actualizados
+  (Protocolo v4.2 → v4.3), learned-rules línea 1 corregida. CLAUDE.md ya estaba correcto.
 - **Próxima sesión**: (1) decidir ADR Ruta 3, (2) enviar Superteam + primer outreach ángeles,
   (3) reservar handles, (4) dashboard Vault devnet como credibilidad técnica.
