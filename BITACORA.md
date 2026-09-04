@@ -515,7 +515,7 @@
 - Todo en `brand/prompts/` con `INDICE.md` completo.
 - Tier Diamante: piezas únicas (6) como recompensas élite del ecosistema.
 
-## 2026-09-04 (sesión 26) — ADR-030: Estructura de inversión KASH Sociedad + MM desde TGE
+## 2026-09-04 (sesión 26) — ADR-030 + Simulaciones v4.3 (7 SIMs + ROI Inversor)
 
 - **ADR-030 aprobado por Sebastián.** Decisión estratégica que estaba bloqueando todo el outreach.
   Cierra la pregunta "¿qué ofrezco a inversores?" que impedía contactar ángeles.
