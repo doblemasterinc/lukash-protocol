@@ -22,7 +22,7 @@
 - [x] B2. Pitch deck para ángeles cripto-nativos — **Completado** (sesión 20, 2026-08-31): 12 slides con ADR-028 (Banco Central Optimizado), MC v4.3, KASH Shield, roadmap, ask. HTML+PDF en `docs/LUKASH_Pitch_Deck_v4_3.*`
 - [x] B3. Litepaper v1 — **Completado** (`docs/etapa-0/LITEPAPER_v1.md`, 22.6KB). Pendiente: data room formal con proyecciones y Vault Sociedad.
 - [x] B4. One-pager EN/PT — **Completado** (`docs/etapa-0/ONE_PAGER_en.md` + `ONE_PAGER_pt.md`)
-- [ ] B5. Preparar dashboard de Vault en testnet como pieza de credibilidad
+- [x] B5. Preparar dashboard de Vault en testnet como pieza de credibilidad — **Completado** (sesión 26): `docs/vault-dashboard.html` + Artifact. Pendiente: deploy como URL pública en VPS.
 - [~] B6. Identificar y contactar 10-20 ángeles cripto — **Pipeline de 36 contactos creado** (sesión 19, 2026-08-31): 6 ángeles tier 1 (Santiago Roel Santos máx prioridad), 6 aceleradoras, 12 fondos, 6 grants, 6 redes. Artefacto publicado. Pendiente: contactar.
 - [x] B7. Preparar aplicaciones a grants — **Textos listos** (sesión 20, 2026-08-31): 5 aplicaciones redactadas en `docs/etapa-0/GRANT_APPLICATIONS.md` (Superteam Instagrants, Finternet x Solana, Solana Foundation, Colosseum, Alliance DAO). Finternet cerrado al 31/08, monitorear reapertura. Superteam listo para enviar inmediatamente.
 - [ ] B8. Consulta legal: abogado cripto (framing cNFT como no-security, Motor C como no-transmisión)
@@ -96,13 +96,35 @@ Estos NO son bloqueantes de desarrollo (devnet funciona sin ellos), pero **el TG
 Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODIA.md`](../specs/07-milestone-2/07-CUENTAS-Y-CUSTODIA.md) §7 (checklist pre-TGE).
 
 ## ⭐ PRÓXIMA SESIÓN (empezar por aquí)
-### Prioridad: EJECUCIÓN DE MERCADO (no más build)
-1. [x] **Decidir ADR Ruta 3 → ADR-030** — 3 bloques de 10% (Fundador/Operaciones/Inversores), MM desde TGE, seed 5-6% base + bonus hitos. Aprobado 2026-09-04.
-2. [ ] **Enviar Superteam Instagrants** — application lista, copiar-pegar
-3. [ ] **Reservar handles** — X (@LukashProtocol), Telegram, Discord
-4. [ ] **Primer outreach** — Santiago Roel Santos (ángel T1 máx prioridad)
-5. [ ] **Dashboard Vault devnet** — pieza de credibilidad técnica para demos
-6. [ ] **Hospedar prototipo v2** como URL pública
+### Prioridad: PROFUNDIDAD TÉCNICA → DEPLOY → OUTREACH (en ese orden)
+
+**Bloque 1 — Migración Token-2022 + Transfer Hook (D1)**
+- [ ] Nuevo mint Token-2022 en devnet con extensión Transfer Hook
+- [ ] Transfer Hook program (Anchor) — Anti-Whale + Exit Fee + MM exemptions
+- [ ] Migrar cuentas (burn vault, pool, etc.)
+- [ ] Re-deploy y verificar motores A/B/D funcionando
+
+**Bloque 2 — Conectar app con contratos**
+- [ ] Wallet adapter (Phantom) en prototipo v2
+- [ ] Lectura del Vault on-chain real desde el prototipo
+- [ ] Dashboard Vault con datos live de devnet
+
+**Bloque 3 — Deploy VPS con acceso privado** ✅ (sesión 28, 2026-09-08)
+- [x] Instalar nginx en VPS Contabo (80.190.75.189)
+- [x] Configurar ruta secreta (URL obscurity /ruge2026/, auth removido por fricción)
+- [x] Subir dashboard + prototipo + landing + litepaper como paquete completo
+- [x] Splash page en / como entry point (logotipo + Entrar)
+- [x] Litepaper reader trilingüe con marked.js (ES/EN/PT)
+- [x] Landing default en inglés
+- [x] Dashboard UTF-8 corregido
+- [x] Probar acceso: splash → landing → materiales
+
+**Bloque 4 — Hash anchoring MAINNET + Outreach**
+- [ ] Recalcular hashes SHA-256 de docs finales
+- [ ] Anclar en mainnet via Phantom (adaptar script)
+- [ ] Enviar Superteam Instagrants
+- [ ] Reservar handles (X, TG, Discord)
+- [ ] Primer outreach: Santiago Roel Santos + pipeline 36 contactos
 
 ### Historial de hitos técnicos completados
 0. [x] **★ AUDITORÍA PROFUNDA DE LOS MOTORES por SIMULACIÓN FIEL AL CONTRATO** (sesión 5, actualizada sesión 26): suite `simulations/` (engine=réplica de lib.rs v10.2 + capa económica prima/Markov/vesting). 7 SIMs: invariantes OK · MC (espiral CONSERV 42%/BASE 0%/AGRESIVO 0%) · sensibilidad 7 params (volumen driver #1, $1,309M swing) · estrés (resiliente salvo Motor A −70% perm) · throttle estable · MM reduce espiral 36%→2.5% · **SIM 6 ROI Inversor: 6% Sociedad = 15× ROI en BASE (ADR-030)**. Informe v4.3 HTML+PDF en `simulations/out/`.

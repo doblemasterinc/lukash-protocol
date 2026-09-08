@@ -1,6 +1,6 @@
 # LUKASH Protocol — Litepaper v1.0
 
-> August 2026 | Data Room Document | Confidential
+> September 2026 | Data Room Document | Confidential
 > Contact: Kash Sensei · kash.sensei.sol@gmail.com
 > GitHub: github.com/doblemasterinc/lukash-protocol (access on request)
 > Devnet Program: `AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy`
@@ -17,7 +17,7 @@ Unlike traditional central banks that emit currency against sovereign debt (infl
 
 The protocol targets 260 million Latin Americans who have digital bank accounts but zero access to the institutional financial infrastructure (RWA, blockchain, yield on hard assets) that the developed world already uses.
 
-**Current state:** Smart contracts v10.2 deployed on Solana devnet (~2,100 lines Anchor/Rust). Monte Carlo v4.3 validated across 600 scenarios. 0.0% ruin risk in base and aggressive campaigns. Landing page live. Pre-TGE.
+**Current state:** Smart contracts v10.2 deployed on Solana devnet (~2,100 lines Anchor/Rust). Monte Carlo v4.3 validated across 7 simulations (600+ scenarios). 0.0% ruin risk in base and aggressive campaigns. SIM 6 ROI analysis: 15x return for seed investors in base scenario. Landing page live. Pre-TGE.
 
 ---
 
@@ -158,26 +158,27 @@ A founder with 0% token allocation signals "no skin in the game" — uncomfortab
 The Vault Sociedad represents **30% of all protocol fees** — a growing revenue stream, not a fixed pool. It is the equity-equivalent of the protocol.
 
 **What a seed investor gets:**
-- A percentage of the Vault Sociedad (5-8% of the 30% = 1.5-2.4% of all protocol fees)
+- A percentage of the Vault Sociedad, negotiated per deal
 - Structured as SAFE + token warrant with on-chain vesting
-- Subject to KASH Lock (unlocks at $30M Vault or 12 months, whichever first)
+- Subject to KASH Lock (unlocks at $30M Vault KASH Core or 12 months, whichever first)
 - Liquid from month 13, linear over 48 months
 
-**Implied valuation:** $500K for 5-8% → ~$6-10M pre-money. This is reasonable for a protocol with:
+**Implied valuation:** $500K seed → ~$6-10M pre-money. This is reasonable for a protocol with:
 - Live devnet deployment (not vaporware)
 - Validated economics (Monte Carlo, not napkin math)
 - Solo founder with AI-augmented development (lean capital structure)
+
+**SIM 6 — Investor ROI (Monte Carlo, base scenario):**
+- 6% Sociedad stake → **$7.5M in 5 years (15x ROI)**
+- IRR: 147% | Payback: ~14 months
+- Conservative scenario: 5x ROI | Aggressive scenario: 57x ROI
 
 **What a seed investor does NOT get:**
 - Control over the Vault KASH Core (it only grows, never liquidable)
 - Token supply allocation (fair-launch is preserved)
 - Override on protocol parameters (governed by Timelock + Guardian + DAO)
 
-**Planned distribution of the 30% Sociedad:**
-- ~17% founder
-- 5-8% seed round (angels, pre-TGE)
-- 5-8% strategic round (fintech/cooperatives, month 6-12, at higher valuation)
-- ~6-13% reserve for DAO/future
+The internal distribution of the 30% Sociedad (founder, seed, operations, reserve) is structured per ADR-030 and shared under NDA during due diligence. Cap on external allocation: 20%.
 
 ---
 
@@ -191,18 +192,18 @@ All simulations use a **contract-faithful engine**: the Python simulation replic
 
 | Scenario | Daily Volume | Vault Median (5yr) | Spiral Risk | B2 Activation (median) |
 |---|---|---|---|---|
-| **Conservative** | ~$100K-500K | $90M | **40%** | Day 1,034 |
-| **Base** | ~$500K-2M | $388M | 0.0% | Day 448 |
-| **Aggressive** | ~$2M-10M | $1,880M | 0.0% | Day 195 |
+| **Conservative** | ~$100K-500K | $85M | **42%** | Day 1,034 |
+| **Base** | ~$500K-2M | $434M | 0.0% | Day 448 |
+| **Aggressive** | ~$2M-10M | $1,870M | 0.0% | Day 195 |
 
-**The honest truth:** In the conservative scenario (low volume, weak community), there is a 40% probability of death spiral. This is why **volume is the existential risk** and why the budget allocates 30% ($150K) to marketing. The protocol's economic design is sound — but it needs volume to work.
+**The honest truth:** In the conservative scenario (low volume, weak community), there is a 42% probability of death spiral. This is why **volume is the existential risk** and why the budget allocates 30% ($150K) to marketing — and why ADR-030 mandates a Market Maker from TGE day 1 (reducing conservative spiral from 36% to 2.5% per SIM 5). The protocol's economic design is sound — but it needs volume to work.
 
 ### 6.2 Sensitivity Analysis (SIM 2)
 
 | Factor | Vault Impact (5yr) |
 |---|---|
-| Trading Volume | **$1,287M** (driver #1) |
-| Motor A Fee Rate | $278M |
+| Trading Volume | **$1,309M** (driver #1) |
+| Motor A Fee Rate | $283M |
 | Vault Yield | $7M |
 | App Launch Day | $2M |
 | K_min Threshold | $0 (neutral) |
@@ -226,9 +227,20 @@ The protocol survives market crashes. The only existential threat is sustained l
 |---|---|---|
 | Vault | Baseline | +11-19% |
 | Price | Baseline | -10-25% (dilution from MM inventory) |
-| Conservative spiral | 40% | 3.5% |
+| Conservative spiral | 36% | 2.5% |
+| B2 activation (BASE) | Day 493 | Day 97 |
 
-MM improves survival in conservative scenarios but damages price via dilution. Strategy: **fair-launch without MM** (ADR-011), with contingent MM activation only if volume falls below $500K/day for 5 consecutive days (ADR-019).
+MM dramatically improves survival: conservative spiral drops from 36% to 2.5%, and B2 activates 5x faster in the base scenario. Strategy (ADR-030): **MM active from TGE day 1**, compensated with Sociedad equity + token loan (aligned incentive, not cash). This replaces the prior contingent-only strategy (ADR-019).
+
+### 6.5 Investor ROI (SIM 6)
+
+| Scenario | 6% Sociedad Value (5yr) | ROI | IRR | Payback |
+|---|---|---|---|---|
+| **Conservative** | $2.6M | 5x | 68% | ~22 months |
+| **Base** | $7.5M | **15x** | **147%** | **~14 months** |
+| **Aggressive** | $28.5M | 57x | 312% | ~8 months |
+
+A 6% Sociedad stake (seed) generates $7.5M in cumulative fee revenue over 5 years in the base scenario — a 15x return on a $500K investment. The model assumes the Vault KASH Core reaches $25M (activating Motor B2) at the median timeline. Conservative and aggressive scenarios bracket the range.
 
 ---
 
@@ -296,7 +308,7 @@ The Vault KASH Core is NEVER used to cover losses. The insurance layers exist pr
 
 | Stage | Timeline | Milestones |
 |---|---|---|
-| **Stage 0: Pre-launch** | Now - TGE | External audit, community genesis, TGE preparation |
+| **Stage 0: Pre-launch** | Now → TGE | External audit, community genesis, MM onboarding, TGE preparation |
 | **Stage 1: Genesis** | TGE | Motor A active, fair-launch, Vault begins filling |
 | **Stage 2A: App** | Month 2-6 | LUKASH App (payments, Tótems, Jungle Arena), Motor B0 |
 | **Stage 2B: Maturity** | Month 6-18 | K reaches $25M, Motor B2 activates, LUKAI v2.0 |
@@ -319,7 +331,7 @@ The Vault KASH Core is NEVER used to cover losses. The insurance layers exist pr
 |---|---|---|
 | **App / Tech** | $175K (35%) | External audit ($15-25K), frontend MVP, LUKAI v1.0 keeper, infrastructure |
 | **Initial Liquidity** | $100K (20%) | $LUKA/SOL pool on Meteora, LP-locked permanently |
-| **Marketing + Contingent MM** | $150K (30%) | KOLs (vested tokens, $0 cash), community manager, organic platforms, ads. MM contingent $40-60K (only if vol <$500K/day for 5d). CEX listing $30K |
+| **Marketing + MM** | $150K (30%) | KOLs (vested tokens, $0 cash), community manager, organic platforms, ads. MM active from TGE (compensated with Sociedad equity + token loan, not cash — ADR-030). CEX listing $30K |
 | **Legal** | $50K (10%) | Crypto lawyer, El Salvador entity, regulatory framing |
 | **Operating Reserve** | $25K (5%) | Founder O&M months 1-6, emergencies |
 
@@ -377,7 +389,7 @@ We believe in transparent disclosure. These are the real risks:
 
 | Risk | Severity | Mitigation |
 |---|---|---|
-| **Low volume (death spiral)** | HIGH | 30% budget to marketing. MM contingent gate. Motor A drives 4.6x more Vault growth than any other factor. |
+| **Low volume (death spiral)** | HIGH | 30% budget to marketing. MM active from TGE (ADR-030) reduces conservative spiral from 36% to 2.5%. Motor A drives 4.6x more Vault growth than any other factor. |
 | **Smart contract exploit** | HIGH | External audit pre-TGE (non-negotiable). CI pipeline. KASH Shield. ASU insurance. Vault composition diversified. |
 | **Regulatory action** | MEDIUM | El Salvador jurisdiction. Utility token framing. Guardian cannot move funds. cNFTs with disclaimer. Motor C deferred. |
 | **Oracle manipulation** | MEDIUM | Pyth + Switchboard redundancy. 2% confidence interval check. Circuit breaker auto-pause. |
@@ -399,10 +411,10 @@ We believe in transparent disclosure. These are the real risks:
 ## Appendices
 
 ### A. ADR Registry
-29 Architecture Decision Records governing all protocol decisions. Available in `.claude/knowledge/key-decisions.md`. Key ADRs for investors: ADR-013 (Seed structure), ADR-014 (Team allocation), ADR-018 (Budget), ADR-019 (MM strategy), ADR-020 (Investment rounds), ADR-028 (Banco Central Optimizado narrative).
+30 Architecture Decision Records governing all protocol decisions. Available in `.claude/knowledge/key-decisions.md`. Key ADRs for investors: ADR-013 (Seed structure), ADR-014 (Team allocation), ADR-018 (Budget), ADR-030 (Sociedad structure + MM strategy), ADR-028 (Banco Central Optimizado narrative).
 
 ### B. Simulation Outputs
-Full Monte Carlo outputs available in `simulations/out/`. Includes: SIM 0 (invariants), SIM 1 (core MC), SIM 2 (sensitivity), SIM 3 (stress), SIM 4 (throttle optimization), SIM 5 (MM vs No-MM).
+Full Monte Carlo v4.3 outputs available in `simulations/out/`. 7 simulations: SIM 0 (invariants), SIM 1 (core MC), SIM 2 (sensitivity), SIM 3 (stress), SIM 4 (throttle optimization), SIM 5 (MM impact), SIM 6 (investor ROI). HTML + PDF report in `simulations/out/informe_simulaciones_v4.3.*`.
 
 ### C. Audit Reports
 - `audits/SECURITY_AUDIT_LIB_RS_V9_1.md` — Manual security audit (10 categories, 13 findings, all resolved)

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUKASH Protocol — Litepaper v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.0/marked.min.js"></script>
+<style>
+  :root{
+    --obsidiana:#0A0A0C; --carbon:#0F0F12; --carbon-2:#15151A; --carbon-3:#1C1C22;
+    --oro:#C9A84C; --oro-light:#E8C96A; --oro-dark:#9A7030;
+    --ambar:#E8940A; --ambar-light:#F4B340;
+    --verde:#3DAA6B; --verde-light:#5FCA8E;
+    --marfil:#F0EAD6; --marfil-2:#C8C0A8;
+    --gris:#2C2C30; --gris-txt:#8B8B98;
+    --linea:rgba(201,168,76,.18);
+    --f-display:'Cinzel',Georgia,serif;
+    --f-body:'IBM Plex Sans',system-ui,sans-serif;
+    --f-mono:'Space Mono',ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--obsidiana); color:var(--marfil);
+    font-family:var(--f-body); font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .topbar{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,10,12,.92); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--linea);
+    padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .topbar a{
+    color:var(--oro-light); text-decoration:none;
+    font-family:var(--f-mono); font-size:13px; letter-spacing:.06em;
+    transition:color .2s;
+  }
+  .topbar a:hover{color:var(--marfil)}
+  .langs{display:flex; gap:6px}
+  .langs button{
+    background:transparent; border:1px solid var(--linea);
+    color:var(--gris-txt); font-family:var(--f-mono); font-size:12px;
+    padding:4px 10px; border-radius:6px; cursor:pointer; letter-spacing:.08em;
+    transition:all .2s;
+  }
+  .langs button.on{background:rgba(201,168,76,.15); border-color:var(--oro); color:var(--oro-light)}
+  .langs button:hover{border-color:var(--oro); color:var(--oro-light)}
+
+  article{
+    max-width:780px; margin:0 auto;
+    padding:48px 24px 80px;
+  }
+  article h1{
+    font-family:var(--f-display); font-size:clamp(1.6rem,4vw,2.2rem);
+    color:var(--oro-light); margin-bottom:8px; line-height:1.3;
+  }
+  article h2{
+    font-family:var(--f-display); font-size:clamp(1.15rem,2.5vw,1.5rem);
+    color:var(--oro-light); margin:40px 0 14px; padding-bottom:8px;
+    border-bottom:1px solid var(--linea);
+  }
+  article h3{
+    font-family:var(--f-display); font-size:1.1rem;
+    color:var(--oro); margin:28px 0 10px;
+  }
+  article p{margin:12px 0; color:var(--marfil-2)}
+  article strong, article b{color:var(--marfil); font-weight:600}
+  article blockquote{
+    border-left:3px solid var(--oro); padding:8px 16px; margin:16px 0;
+    background:rgba(201,168,76,.05); border-radius:0 8px 8px 0;
+    color:var(--gris-txt); font-size:.92rem;
+  }
+  article ul, article ol{margin:12px 0 12px 22px; color:var(--marfil-2)}
+  article li{margin:6px 0}
+  article li strong{color:var(--oro-light)}
+  article code{
+    font-family:var(--f-mono); font-size:.88em;
+    background:var(--carbon-2); padding:2px 6px; border-radius:4px;
+    color:var(--ambar-light);
+  }
+  article pre{
+    background:var(--carbon-2); border:1px solid var(--linea);
+    border-radius:10px; padding:16px; margin:16px 0;
+    overflow-x:auto; font-family:var(--f-mono); font-size:.85rem;
+    color:var(--marfil-2); line-height:1.5;
+  }
+  article pre code{background:none; padding:0; color:inherit}
+  article table{
+    width:100%; border-collapse:collapse; margin:18px 0;
+    font-size:.9rem; overflow-x:auto; display:block;
+  }
+  article th{
+    background:var(--carbon-2); color:var(--oro-light);
+    font-family:var(--f-display); font-size:.85rem;
+    padding:10px 12px; text-align:left;
+    border:1px solid var(--linea);
+  }
+  article td{
+    padding:10px 12px; border:1px solid var(--linea);
+    color:var(--marfil-2); vertical-align:top;
+  }
+  article tr:nth-child(even) td{background:rgba(201,168,76,.03)}
+  article hr{border:none; border-top:1px solid var(--linea); margin:32px 0}
+  article a{color:var(--verde-light); text-decoration:none}
+  article a:hover{text-decoration:underline}
+
+  .loading{text-align:center; padding:80px 24px; color:var(--gris-txt); font-family:var(--f-mono); font-size:14px}
+
+  footer{
+    text-align:center; padding:40px 24px; border-top:1px solid var(--linea);
+    font-size:12px; color:var(--gris-txt); line-height:1.6;
+  }
+
+  @media (max-width:600px){
+    article{padding:32px 16px 60px}
+    article table{font-size:.82rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../landing/">&#8592; LUKASH</a>
+  <div class="langs">
+    <button type="button" data-lang="es" class="on" onclick="setLang('es')">ES</button>
+    <button type="button" data-lang="en" onclick="setLang('en')">EN</button>
+    <button type="button" data-lang="pt" onclick="setLang('pt')">PT</button>
+  </div>
+</div>
+
+<article id="content">
+  <div class="loading">Cargando litepaper...</div>
+</article>
+
+<footer>
+  LUKASH Protocol &mdash; Litepaper v1.0 &mdash; September 2026<br>
+  Confidential &mdash; Data Room Document
+</footer>
+
+<script>
+  var FILES = {
+    es: 'LITEPAPER_v1_es.md',
+    en: 'LITEPAPER_v1.md',
+    pt: 'LITEPAPER_v1_pt.md'
+  };
+  var cache = {};
+  var currentLang = 'es';
+  var contentEl = document.getElementById('content');
+
+  function renderMd(md){
+    contentEl.innerHTML = marked.parse(md);
+  }
+
+  function setLang(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    var btns = document.querySelectorAll('.langs button');
+    Array.prototype.forEach.call(btns, function(b){
+      b.classList.toggle('on', b.getAttribute('data-lang') === lang);
+    });
+    if(cache[lang]){
+      renderMd(cache[lang]);
+      return;
+    }
+    contentEl.innerHTML = '<div class="loading">Loading...</div>';
+    fetch(FILES[lang])
+      .then(function(r){ return r.text(); })
+      .then(function(t){
+        cache[lang] = t;
+        if(currentLang === lang) renderMd(t);
+      })
+      .catch(function(){
+        contentEl.innerHTML = '<div class="loading">Error loading document.</div>';
+      });
+  }
+
+  setLang('es');
+</script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 # LUKASH — One-Pager (ES · v1)
 
-> Etapa 0 · 2026-08-20. Audiencia: grants (Superteam Earn, Finternet, Solana Foundation), Colosseum,
+> Etapa 0 · 2026-09-04. Audiencia: grants (Superteam Earn, Finternet, Solana Foundation), Colosseum,
 > ángeles LatAm. Tono ADR-010 (aspiracional, sin ideología, sin promesa de retornos). Marco de utilidad
 > ADR-009: $LUKA es moneda transaccional; la reserva es respaldo, **no se reparte a holders**.
 > Términos de marca no se traducen (LUKA/KASH/Aura/Manada/LUKAI/Titán/Shamán/Emperador).
@@ -43,19 +43,20 @@ Fees mínimos + velocidad hacen viable el micro-uso masivo en LatAm. Ecosistema 
 Pyth) para construir sin reinventar. Momento cultural: identidad, gaming financiero y autocustodia convergen en la
 audiencia <45, trilingüe (ES/EN/PT), sin fronteras.
 
-## Tracción / estado (Ago 2026)
-- ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + KASH Shield), 28 ADRs, 3 auditorías internas.
+## Tracción / estado (Sep 2026)
+- ✅ Protocolo **v4.3** cerrado (arquitectura + 4 motores + Vault + KASH Shield), 30 ADRs, 3 auditorías internas.
 - ✅ Smart contracts **v10.2 desplegados en Solana devnet** (~2,100 líneas Anchor/Rust: 4 motores + Vault + KASH Shield + Guardian de Pausa 2-de-3 + oráculos Pyth).
-- ✅ **Monte Carlo v4.3** completo: 200 iteraciones × 3 campañas × 5 años. 0.0% riesgo de ruina. Vault mediana $90M (conservador) a $1.9B (agresivo).
+- ✅ **Monte Carlo v4.3** completo: 7 simulaciones, 600+ escenarios. 0.0% riesgo de ruina (base/agresivo). **SIM 6: 15× ROI para seed en escenario base.**
 - ✅ Marca, identidad visual (felino) y diseño de app (Jungle Arena) listos, trilingües.
 - ✅ Pitch deck v4.3 con narrativa ADR-028 (Banco Central Optimizado).
+- ✅ Landing page en producción con waitlist.
 - ▶ Siguiente: auditoría externa pre-TGE, App Etapa 2A.
 
 ## Modelo y financiación (no dilutiva primero)
 Ecosistema autofinanciado por fases ($500K / $2M / $5M); solo la Fase 1 requiere capital externo. Ruta de
 capital priorizada: **grants no dilutivos** (Solana Foundation, Finternet-inclusión) → **Colosseum** (pre-seed) →
-SAFE + token warrant chico con ángeles LatAm al final. Lanzamiento **fair-launch community-only** (sin market
-maker): volumen 100% orgánico, liquidez propia lockeada, anti-dump on-chain.
+SAFE + token warrant chico con ángeles LatAm al final. Lanzamiento **fair-launch** con MM alineado desde TGE
+(compensado con equity Sociedad + token loan, sin cash — ADR-030). Liquidez propia lockeada, anti-dump on-chain.
 
 ## El ask
 Buscamos **grant / pre-seed no dilutivo** para financiar Milestone 2 + auditoría externa + Génesis de comunidad.

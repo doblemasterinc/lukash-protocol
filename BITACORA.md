@@ -589,3 +589,17 @@
   (Protocolo v4.2 → v4.3), learned-rules línea 1 corregida. CLAUDE.md ya estaba correcto.
 - **Próxima sesión**: (1) decidir ADR Ruta 3, (2) enviar Superteam + primer outreach ángeles,
   (3) reservar handles, (4) dashboard Vault devnet como credibilidad técnica.
+
+## 2026-09-08 (sesión 28) — Deploy VPS: splash + investor area + litepaper reader
+- **VPS Contabo (80.190.75.189) operativo** con nginx sirviendo investor area completa:
+  - `/` → Splash page (logotipo en marco circular 200px + botón "Entrar →" + footer "PRE-SEED · DATA ROOM · CONFIDENTIAL"). Sin auth.
+  - `/ruge2026/` → Investor area con landing, dashboard, app prototype, litepaper, brand assets. Sin auth (URL obscurity only).
+  - LUMI Docker containers intactos en Tailscale only (`100.118.160.86:8080/8443`).
+- **Landing integrada como hub de inversores**: nueva sección "Investor Materials" con 3 cards SVG (Dashboard Vault → `/ruge2026/dashboard/`, App Prototype → `/ruge2026/app/`, Litepaper → `/ruge2026/litepaper/`). Iconos SVG stroke con fondos de marca (verde/ámbar/oro).
+- **Litepaper reader creado** (`litepaper/index.html`): renderizado client-side con marked.js v15.0.0, topbar sticky con back link + switcher ES/EN/PT, cache de contenido, dark theme on-brand. Traducciones: `LITEPAPER_v1_es.md` (español) + `LITEPAPER_v1_pt.md` (portugués) creadas desde el original en inglés.
+- **Splash page creada** (`splash/index.html` → deployada en `/opt/lukash/splash/`): logotipo, animación fadeIn, gradientes radiales sutiles, enlace directo a `/ruge2026/landing/`.
+- **Decisión: auth removido** — basic auth causaba fricción para inversores y popups 401 incompatibles con testing automatizado. Solo URL obscurity (`/ruge2026/`) como gate de acceso.
+- **Landing default cambiado a inglés** (antes español). `let LANG = 'en'`, botón EN con `class="on"`.
+- **Dashboard UTF-8 corregido**: `<meta charset="UTF-8">` añadido como primera línea. Em-dash (—) renderiza correctamente.
+- **Iteraciones nginx (4+)**: `alias` con exact match causa duplicación de path (`index.htmlindex.html`); solución: `root + rewrite ^ /index.html break;`.
+- **Próxima sesión**: (1) Hash anchoring en mainnet vía Phantom, (2) Outreach: Santiago Roel Santos + pipeline 36 contactos, (3) Reservar handles (X, TG, Discord), (4) Enviar Superteam Instagrants.

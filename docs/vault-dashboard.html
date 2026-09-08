@@ -1,0 +1,804 @@
+<title>LUKASH Vault Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  :root {
+    --obsidiana: #0A0A0C;
+    --carbon: #0F0F12;
+    --carbon-light: #1A1A1E;
+    --gris: #2C2C30;
+    --gris-light: #555560;
+    --gris-ll: #888898;
+    --marfil: #F0EAD6;
+    --marfil-dim: #C8C0A8;
+    --oro: #C9A84C;
+    --oro-light: #E8C96A;
+    --oro-glow: rgba(201, 168, 76, 0.12);
+    --verde: #3DAA6B;
+    --verde-dim: rgba(61, 170, 107, 0.15);
+    --ambar: #E8940A;
+    --ambar-dim: rgba(232, 148, 10, 0.15);
+    --azul: #5B8DEF;
+    --azul-dim: rgba(91, 141, 239, 0.15);
+    --sol-purple: #9945FF;
+    --sol-green: #14F195;
+    --danger: #E05252;
+    --bg: var(--obsidiana);
+    --surface: var(--carbon-light);
+    --border: rgba(201, 168, 76, 0.14);
+    --text-primary: var(--marfil);
+    --text-secondary: var(--gris-ll);
+    --text-dim: var(--gris-light);
+  }
+  /* Dark-only design per brand rules */
+  body {
+    background: linear-gradient(180deg, var(--obsidiana) 0%, #12121a 100%);
+    color: var(--text-primary);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .protocol-mark {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--oro) 0%, var(--oro-light) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px;
+    color: var(--obsidiana);
+    flex-shrink: 0;
+  }
+  .protocol-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--oro);
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+  }
+  .protocol-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    letter-spacing: 0.02em;
+  }
+  .header-right {
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .badge-devnet {
+    background: var(--verde-dim);
+    color: var(--verde);
+    border: 1px solid rgba(61, 170, 107, 0.3);
+  }
+  .badge-live {
+    background: var(--verde-dim);
+    color: var(--verde);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .badge-live::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--verde);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .sync-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ── KPI Grid ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 800px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 12px 12px 0 0;
+  }
+  .kpi-card.vault::after { background: var(--verde); }
+  .kpi-card.supply::after { background: var(--oro); }
+  .kpi-card.burned::after { background: var(--ambar); }
+  .kpi-card.pkash::after { background: var(--azul); }
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-value.vault-v { color: var(--verde); }
+  .kpi-value.supply-v { color: var(--marfil); }
+  .kpi-value.burned-v { color: var(--ambar); }
+  .kpi-value.pkash-v { color: var(--azul); }
+  .kpi-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 24px;
+  }
+  .section-head {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--oro);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-head::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  /* ── Vault Composition Bar ── */
+  .vault-bar-wrap {
+    margin-bottom: 16px;
+  }
+  .vault-bar {
+    height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    background: var(--gris);
+  }
+  .vault-bar-seg {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--obsidiana);
+    transition: width 0.6s ease;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .seg-cbtc { background: var(--ambar); }
+  .seg-sol { background: var(--sol-purple); }
+  .seg-lst { background: linear-gradient(90deg, var(--sol-purple), var(--sol-green)); }
+  .seg-usdc-r { background: var(--azul); }
+  .seg-usdc-l { background: #3B6FBF; }
+
+  .vault-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin-top: 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .legend-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .legend-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--marfil);
+    font-variant-numeric: tabular-nums;
+  }
+  .legend-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ── Two-column ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  /* ── Status rows ── */
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.07);
+  }
+  .status-row:last-child { border-bottom: none; }
+  .status-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .status-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .status-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .pill-green { background: var(--verde-dim); color: var(--verde); }
+  .pill-amber { background: var(--ambar-dim); color: var(--ambar); }
+  .pill-blue { background: var(--azul-dim); color: var(--azul); }
+  .pill-neutral { background: rgba(136,136,152,0.15); color: var(--gris-ll); }
+
+  /* ── Fee flow bars ── */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .flow-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .flow-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(201, 168, 76, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .flow-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+  .flow-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--marfil);
+    width: 70px;
+    text-align: right;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .flow-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── Shield grid ── */
+  .shield-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .shield-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(201, 168, 76, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(201, 168, 76, 0.06);
+  }
+  .shield-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .shield-icon.active { background: var(--verde-dim); }
+  .shield-icon.standby { background: rgba(136,136,152,0.12); }
+  .shield-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--marfil);
+    margin-bottom: 2px;
+  }
+  .shield-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .shield-status.on { color: var(--verde); }
+  .shield-status.standby { color: var(--gris-ll); }
+
+  /* ── Addresses ── */
+  .addr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+  }
+  .addr-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 14px;
+    background: rgba(201, 168, 76, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(201, 168, 76, 0.05);
+  }
+  .addr-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+  .addr-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--oro);
+    word-break: break-all;
+    line-height: 1.4;
+  }
+  .addr-value a {
+    color: var(--oro);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+    transition: border-color 0.2s;
+  }
+  .addr-value a:hover { border-color: var(--oro); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-left {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .footer-right {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gris-ll);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .mc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--oro);
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  /* ── Deflation progress ── */
+  .deflation-wrap {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(201, 168, 76, 0.07);
+  }
+  .deflation-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .deflation-label {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .deflation-track {
+    height: 6px;
+    background: rgba(232, 148, 10, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .deflation-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ambar), var(--oro-light));
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+  .deflation-target {
+    position: absolute;
+    right: 0; top: -18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+</style>
+
+<div class="dashboard">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="protocol-mark">L</div>
+      <div>
+        <div class="protocol-title">LUKASH PROTOCOL</div>
+        <div class="protocol-subtitle">Vault KASH Core — La Reserva Sagrada</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="badge badge-devnet">Solana Devnet</span>
+      <span class="badge badge-live">Deployed</span>
+      <span class="sync-time">Synced Sep 4, 2026 · Slot 488,093,788</span>
+    </div>
+  </header>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card vault">
+      <div class="kpi-label">Vault KASH Core</div>
+      <div class="kpi-value vault-v">$66,300</div>
+      <div class="kpi-sub">K_min target: $25,000,000</div>
+    </div>
+    <div class="kpi-card supply">
+      <div class="kpi-label">Current Supply</div>
+      <div class="kpi-value supply-v">9.999B</div>
+      <div class="kpi-sub">Initial: 10,000,000,000</div>
+    </div>
+    <div class="kpi-card burned">
+      <div class="kpi-label">Total Burned</div>
+      <div class="kpi-value burned-v">14.0M</div>
+      <div class="kpi-sub">14 LUKA · via CPI burn</div>
+    </div>
+    <div class="kpi-card pkash">
+      <div class="kpi-label">Price KASH (Floor)</div>
+      <div class="kpi-value pkash-v">$0.0000066</div>
+      <div class="kpi-sub">Vault / Supply</div>
+    </div>
+  </div>
+
+  <!-- Vault Composition -->
+  <div class="section">
+    <div class="section-head">Vault Composition</div>
+    <div class="panel">
+      <div class="vault-bar-wrap">
+        <div class="vault-bar">
+          <div class="vault-bar-seg seg-cbtc" style="width:49%">cBTC 49%</div>
+          <div class="vault-bar-seg seg-sol" style="width:22.6%">SOL</div>
+          <div class="vault-bar-seg seg-lst" style="width:19.3%">LST</div>
+          <div class="vault-bar-seg seg-usdc-r" style="width:7.5%"></div>
+          <div class="vault-bar-seg seg-usdc-l" style="width:1.5%"></div>
+        </div>
+      </div>
+      <div class="vault-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--ambar)"></div>
+          <span class="legend-label">cBTC</span>
+          <span class="legend-value">$32,500</span>
+          <span class="legend-pct">49.0%</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--sol-purple)"></div>
+          <span class="legend-label">SOL</span>
+          <span class="legend-value">$15,000</span>
+          <span class="legend-pct">22.6%</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--sol-green)"></div>
+          <span class="legend-label">LST (JitoSOL/mSOL)</span>
+          <span class="legend-value">$12,800</span>
+          <span class="legend-pct">19.3%</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--azul)"></div>
+          <span class="legend-label">USDC Reserve</span>
+          <span class="legend-value">$5,000</span>
+          <span class="legend-pct">7.5%</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#3B6FBF"></div>
+          <span class="legend-label">USDC Lending</span>
+          <span class="legend-value">$1,000</span>
+          <span class="legend-pct">1.5%</span>
+        </div>
+      </div>
+
+      <!-- Deflation Progress -->
+      <div class="deflation-wrap">
+        <div class="deflation-labels">
+          <span class="deflation-label">Deflation progress toward ENZ (3.3B floor)</span>
+          <span class="deflation-label" style="font-family:'Space Mono',monospace; font-size:10px;">14M / 6,700M to burn</span>
+        </div>
+        <div class="deflation-track">
+          <div class="deflation-fill" style="width:0.21%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two column: Protocol Status + Fee Distribution -->
+  <div class="two-col">
+    <!-- Protocol Status -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-head">Protocol Status</div>
+      <div class="panel">
+        <div class="status-row">
+          <span class="status-label">Stage</span>
+          <span class="status-pill pill-green">1 · Genesis</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Motor B State</span>
+          <span class="status-pill pill-amber">B0 · Direct Burn</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Market Regime</span>
+          <span class="status-pill pill-neutral">Neutral</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Throttle Mode</span>
+          <span class="status-pill pill-neutral">Normal</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Protocol Paused</span>
+          <span class="status-value" style="color:var(--verde)">No</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Guardian 2-of-3</span>
+          <span class="status-pill pill-neutral">Standby</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">LUKA Price</span>
+          <span class="status-value" style="color:var(--marfil)">$0.1000</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">EMA-30</span>
+          <span class="status-value" style="color:var(--marfil)">$0.1000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fee Distribution -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-head">Fee Distribution (Cumulative)</div>
+      <div class="panel">
+        <div style="font-size:11px; color:var(--text-dim); margin-bottom:14px; font-family:'Space Mono',monospace; letter-spacing:0.03em;">
+          ATOMIC 35 / 35 / 15 / 15
+        </div>
+        <div class="flow-row">
+          <span class="flow-label">Vault</span>
+          <div class="flow-bar-track">
+            <div class="flow-bar-fill" style="width:35%; background:var(--verde);"></div>
+          </div>
+          <span class="flow-value">$1.40</span>
+          <span class="flow-pct">35%</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-label">Burn/LP</span>
+          <div class="flow-bar-track">
+            <div class="flow-bar-fill" style="width:35%; background:var(--ambar);"></div>
+          </div>
+          <span class="flow-value">$1.40</span>
+          <span class="flow-pct">35%</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-label">O&M</span>
+          <div class="flow-bar-track">
+            <div class="flow-bar-fill" style="width:15%; background:var(--gris-ll);"></div>
+          </div>
+          <span class="flow-value">$0.60</span>
+          <span class="flow-pct">15%</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-label">Staking</span>
+          <div class="flow-bar-track">
+            <div class="flow-bar-fill" style="width:15%; background:var(--azul);"></div>
+          </div>
+          <span class="flow-value">$0.60</span>
+          <span class="flow-pct">15%</span>
+        </div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid rgba(201,168,76,0.07);">
+          <div class="status-row" style="border:none; padding:0;">
+            <span class="status-label">Total Fees Processed</span>
+            <span class="status-value" style="color:var(--oro);">$4.00</span>
+          </div>
+          <div class="status-row" style="border:none; padding-top:6px;">
+            <span class="status-label">Deferred Burn Queue</span>
+            <span class="status-value" style="color:var(--text-secondary);">$0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KASH Shield -->
+  <div class="section">
+    <div class="section-head">KASH Shield</div>
+    <div class="panel">
+      <div class="shield-grid">
+        <div class="shield-item">
+          <div class="shield-icon active">&#x1f6e1;</div>
+          <div>
+            <div class="shield-name">Anti-Whale</div>
+            <div class="shield-status on">Active · 3/6/10% tiers</div>
+          </div>
+        </div>
+        <div class="shield-item">
+          <div class="shield-icon active">&#x26a0;</div>
+          <div>
+            <div class="shield-name">KASH Exit Fee</div>
+            <div class="shield-status on">Active · 5% (Genesis)</div>
+          </div>
+        </div>
+        <div class="shield-item">
+          <div class="shield-icon active">&#x23f8;</div>
+          <div>
+            <div class="shield-name">Circuit Breaker</div>
+            <div class="shield-status on">Active · 10%/1h trigger</div>
+          </div>
+        </div>
+        <div class="shield-item">
+          <div class="shield-icon standby">&#x1f512;</div>
+          <div>
+            <div class="shield-name">Guardian 2-of-3</div>
+            <div class="shield-status standby">Standby · Pre-TGE</div>
+          </div>
+        </div>
+        <div class="shield-item">
+          <div class="shield-icon standby">&#x23f0;</div>
+          <div>
+            <div class="shield-name">Timelock 48h</div>
+            <div class="shield-status on">Active · No pending</div>
+          </div>
+        </div>
+        <div class="shield-item">
+          <div class="shield-icon standby">&#x1f9e9;</div>
+          <div>
+            <div class="shield-name">Transfer Hook</div>
+            <div class="shield-status standby">Token-2022 · Mainnet</div>
+          </div>
+        </div>
+        <div class="shield-item">
+          <div class="shield-icon standby">&#x1f6e1;</div>
+          <div>
+            <div class="shield-name">Totem Guard (ASU)</div>
+            <div class="shield-status standby">Stage 2B · K ≥ $25M</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- On-chain Addresses -->
+  <div class="section">
+    <div class="section-head">On-Chain Verification</div>
+    <div class="panel">
+      <div class="addr-grid">
+        <div class="addr-item">
+          <span class="addr-label">Program ID</span>
+          <span class="addr-value"><a href="https://explorer.solana.com/address/AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy?cluster=devnet" target="_blank" rel="noopener">AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy</a></span>
+        </div>
+        <div class="addr-item">
+          <span class="addr-label">Token $LUKA (SPL, 6 dec)</span>
+          <span class="addr-value"><a href="https://explorer.solana.com/address/2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr?cluster=devnet" target="_blank" rel="noopener">2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr</a></span>
+        </div>
+        <div class="addr-item">
+          <span class="addr-label">Config PDA</span>
+          <span class="addr-value"><a href="https://explorer.solana.com/address/3MqnJPy3RtUhqkTL2bmkTfp7vPHwt5ALUCg7MbcWsgPf?cluster=devnet" target="_blank" rel="noopener">3MqnJPy3RtUhqkTL2bmkTfp7vPHwt5ALUCg7MbcWsgPf</a></span>
+        </div>
+        <div class="addr-item">
+          <span class="addr-label">State PDA</span>
+          <span class="addr-value"><a href="https://explorer.solana.com/address/6bzY2xkCkkUTAwmZhVS67Jxygc5phMMUb2knWY124MWC?cluster=devnet" target="_blank" rel="noopener">6bzY2xkCkkUTAwmZhVS67Jxygc5phMMUb2knWY124MWC</a></span>
+        </div>
+        <div class="addr-item">
+          <span class="addr-label">Burn Vault PDA</span>
+          <span class="addr-value"><a href="https://explorer.solana.com/address/7iD2hbX9FawsHLW4NyrNzzBy46qr4p3JuiEX8UNAyF2f?cluster=devnet" target="_blank" rel="noopener">7iD2hbX9FawsHLW4NyrNzzBy46qr4p3JuiEX8UNAyF2f</a></span>
+        </div>
+        <div class="addr-item">
+          <span class="addr-label">Verified Tx (Motor A Fee)</span>
+          <span class="addr-value"><a href="https://explorer.solana.com/tx/Q1BBq6hmekT8caxANoNysF9k1D1cktGoxiQTStrcB6YCtiNBLx4jkNCiMLaf3KdtGvWftHPmCMfM9xXC1D6dRy6?cluster=devnet" target="_blank" rel="noopener">Q1BBq6...Ry6</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div>
+      <div class="footer-left">LUKASH PROTOCOL · SOLANA DEVNET</div>
+      <div class="mc-badge">MONTE CARLO VALIDATED — 0.0% RUIN RISK</div>
+    </div>
+    <div class="footer-right">Smart contracts v10.2 · ~2,100 lines Anchor/Rust</div>
+  </footer>
+</div>
