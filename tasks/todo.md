@@ -120,11 +120,14 @@ Detalle completo y procedimientos en [`specs/07-milestone-2/07-CUENTAS-Y-CUSTODI
 - [x] Probar acceso: splash → landing → materiales
 
 **Bloque 4 — Hash anchoring MAINNET + Outreach**
-- [ ] Recalcular hashes SHA-256 de docs finales
-- [ ] Anclar en mainnet via Phantom (adaptar script)
-- [ ] Enviar Superteam Instagrants
-- [ ] Reservar handles (X, TG, Discord)
-- [ ] Primer outreach: Santiago Roel Santos + pipeline 36 contactos
+- [x] Recalcular hashes SHA-256 de docs finales (6 docs, sesión 29)
+- [x] Anclar en mainnet via Phantom — Tx: tAeVJ2VTLzdWbSQHBNpTzYHyJAyXYFxqzAK2DFBvuLwsjp4SsKqzq4Xkh6YXzpjjjcuWnK64LM6AVdWDhexazwQ
+- [x] Repo lukash-protocol público (sesión 30)
+- [x] Perfil Superteam Earn creado (Kash Sensei, sesión 30)
+- [x] Superteam Instagrants revisado — no hay grants generales abiertos, solo Webacy (API credits) y Agentic (200 USDG). Monitorear.
+- [x] Solana Foundation grant aplicado — $25K, categoría Consumer (sesión 30)
+- [x] Reservar handles: X (@lukashprotocol), Discord (kash.sensei), Telegram (@lukashprotocol)
+- [~] Primer outreach: Santiago Roel Santos + pipeline 36 contactos — mensajes preparados, pendiente publicar tweets y enviar
 
 ### Historial de hitos técnicos completados
 0. [x] **★ AUDITORÍA PROFUNDA DE LOS MOTORES por SIMULACIÓN FIEL AL CONTRATO** (sesión 5, actualizada sesión 26): suite `simulations/` (engine=réplica de lib.rs v10.2 + capa económica prima/Markov/vesting). 7 SIMs: invariantes OK · MC (espiral CONSERV 42%/BASE 0%/AGRESIVO 0%) · sensibilidad 7 params (volumen driver #1, $1,309M swing) · estrés (resiliente salvo Motor A −70% perm) · throttle estable · MM reduce espiral 36%→2.5% · **SIM 6 ROI Inversor: 6% Sociedad = 15× ROI en BASE (ADR-030)**. Informe v4.3 HTML+PDF en `simulations/out/`.

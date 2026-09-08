@@ -1,7 +1,7 @@
 # LUKASH — Textos de aplicación a Grants
 
-> Preparados: 2026-08-31. Listos para copiar/pegar en formularios.
-> Fuentes de datos: MC v4.3, ADR-028, Protocolo v4.3, devnet activo.
+> Preparados: 2026-08-31. Actualizados: 2026-09-08. Listos para copiar/pegar en formularios.
+> Fuentes de datos: MC v4.3, ADR-028/030, Protocolo v4.3, devnet activo, mainnet proof-of-existence.
 
 ---
 
@@ -31,12 +31,14 @@ Traditional central banks emit currency against sovereign debt, creating structu
 **How it works:**
 Every transaction across 4 engines (DEX trading, in-app, payments, social/gaming) distributes fees atomically: 35% Vault / 35% Burn-LP / 15% O&M / 15% Staking. This creates a self-reinforcing loop: usage grows the reserve, burns supply, and rewards participants.
 
-**What's built:**
+**What's built (not planned — built and verifiable):**
 - Smart contracts v10.2 deployed on Solana devnet (~2,100 lines Anchor/Rust)
 - 4 engines + Vault + KASH Shield (circuit breakers, anti-whale, exit fee, transfer hook, 2-of-3 guardian, Pyth oracles)
 - Monte Carlo v4.3 validated: 200 iterations × 3 campaigns × 5 years. Contract-faithful engine. 0.0% ruin risk across all scenarios. Vault median: $90M (conservative) to $1.9B (aggressive) at 5 years.
 - CI pipeline: Clippy DeFi + Soteria (25+ Solana vulns) + Anchor build/test
 - Full brand identity, UI Kit, trilingual (ES/EN/PT)
+- Investor data room live: litepaper (3 languages), Vault dashboard, app prototype
+- Document hashes anchored on Solana mainnet (Proof of Existence): explorer.solana.com/tx/tAeVJ2VTLzdWbSQHBNpTzYHyJAyXYFxqzAK2DFBvuLwsjp4SsKqzq4Xkh6YXzpjjjcuWnK64LM6AVdWDhexazwQ
 
 **What the grant funds:**
 External security audit (Halborn/OtterSec/Areta) — the #1 blocker for TGE. This is the non-negotiable step between a fully-built, devnet-validated protocol and mainnet launch.
@@ -54,9 +56,11 @@ Sub-cent fees make micro-transactions viable for LatAm users. 400ms finality = t
 Kash Sensei — Founder. Solutions architect. Protocol design, smart contract architecture, economic modeling. Building solo with AI-augmented development.
 
 **Links:**
-- GitHub: github.com/doblemasterinc/lukash-protocol (private, access on request)
+- Data Room (investor access): http://80.190.75.189/ruge2026/landing/
+- GitHub: github.com/doblemasterinc/lukash-protocol (public)
 - Devnet Program: AmRWTQtJHiuRdFcTwZdVDUkWvv5w3rxCFebsgWqmiCuy
 - Devnet Token: 2DatjaKezpYkB3TitgwYGvpwTAWiFxN4JEwpYnk3Luvr
+- Mainnet Proof of Existence: explorer.solana.com/tx/tAeVJ2VTLzdWbSQHBNpTzYHyJAyXYFxqzAK2DFBvuLwsjp4SsKqzq4Xkh6YXzpjjjcuWnK64LM6AVdWDhexazwQ
 
 **Contact:**
 kash.sensei.sol@gmail.com

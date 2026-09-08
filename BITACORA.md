@@ -603,3 +603,24 @@
 - **Dashboard UTF-8 corregido**: `<meta charset="UTF-8">` añadido como primera línea. Em-dash (—) renderiza correctamente.
 - **Iteraciones nginx (4+)**: `alias` con exact match causa duplicación de path (`index.htmlindex.html`); solución: `root + rewrite ^ /index.html break;`.
 - **Próxima sesión**: (1) Hash anchoring en mainnet vía Phantom, (2) Outreach: Santiago Roel Santos + pipeline 36 contactos, (3) Reservar handles (X, TG, Discord), (4) Enviar Superteam Instagrants.
+
+## 2026-09-08 (sesión 29) — Hash anchoring mainnet + proxy Solana RPC
+- **Hashes SHA-256 anclados en Solana mainnet** vía Phantom wallet + Memo Program v2. 6 documentos (3 Litepaper + 3 One-Pager). Tx: `tAeVJ2VTLzdWbSQHBNpTzYHyJAyXYFxqzAK2DFBvuLwsjp4SsKqzq4Xkh6YXzpjjjcuWnK64LM6AVdWDhexazwQ`
+- **HTML de anchoring** (`scripts/anchor-mainnet.html`): dark theme, muestra hashes, preview del memo, conecta Phantom, firma y envía tx.
+- **Python proxy** (`scripts/serve-anchor.py`): BaseHTTPRequestHandler sirve HTML + proxy `/rpc` a Solana mainnet RPC. Necesario porque Phantom requiere localhost/HTTPS y Solana RPC bloquea requests con header Origin desde browser.
+- **nginx proxy en VPS** (`/solana-rpc`): reverse proxy a Solana mainnet con Origin stripping.
+- **Litepaper default cambiado a inglés** (litepaper/index.html): `setLang('en')` al init.
+- **GRANT_APPLICATIONS.md actualizado**: links de mainnet proof-of-existence, data room URL, GitHub link.
+- **Debugging extenso (10+ iteraciones)**: Phantom no conecta en HTTP no-localhost, Solana RPC 403 con Origin, CORS bloqueando RPCs cross-origin, Phantom `provider.request()` no soporta RPC arbitrario. Solución final: proxy Python same-origin en localhost.
+
+## 2026-09-08 (sesión 30) — Grants + handles + outreach prep
+- **Repo lukash-protocol hecho público** (`gh repo edit --visibility public`). Solo este repo, resto privado.
+- **Perfil Superteam Earn creado** (Kash Sensei, @kashsensei, Colombia, Backend/Blockchain/Rust/Business Development).
+- **Superteam Instagrants revisados**: solo 2 grants disponibles (Webacy API credits, Agentic 200 USDG). Ninguno aplica. Monitorear.
+- **Solana Foundation grant aplicado**: $25K, categoría Consumer, milestones (audit $10K → TGE $8K → App 2A $7K).
+- **Handles reservados**: X (@lukashprotocol), Discord (servidor "LUKASH Protocol", usuario kash.sensei), Telegram (canal @lukashprotocol).
+- **Outreach preparado**: mensaje para Santiago Roel Santos + template general para ángeles en `docs/etapa-0/OUTREACH_MESSAGES.md`. Sin monto en primer contacto. LUKAI descrito como "in-app guide" (no AI — v1.0 es keeper).
+- **Pipeline de ángeles investigado**: Mert Mumtaz (@0xMert_, prefiere X DM), Raj Gokal (intro.co booking pagado), Tristan Yver (AskForFunding), Vibhu Norby (Solana Foundation).
+- **Twitter launch posts preparados** (`docs/etapa-0/TWITTER_LAUNCH_POSTS.md`): 4 tweets + reply a Santiago. Sin links privados en tweets públicos — data room y GitHub solo por DM.
+- **Banner X creado** (`brand/lukash-x-banner.png`): 1500x500, fondo obsidiana, LUKASH en dorado, anillos concéntricos, tagline.
+- **Próxima sesión**: (1) Configurar perfil X (avatar, banner, bio), (2) Publicar 4 tweets inaugurales, (3) Reply a Santiago Roel, (4) DMs a Mert Mumtaz y otros ángeles del pipeline, (5) Considerar verificación X ($8/mes).
