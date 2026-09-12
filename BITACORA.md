@@ -624,3 +624,13 @@
 - **Twitter launch posts preparados** (`docs/etapa-0/TWITTER_LAUNCH_POSTS.md`): 4 tweets + reply a Santiago. Sin links privados en tweets públicos — data room y GitHub solo por DM.
 - **Banner X creado** (`brand/lukash-x-banner.png`): 1500x500, fondo obsidiana, LUKASH en dorado, anillos concéntricos, tagline.
 - **Próxima sesión**: (1) Configurar perfil X (avatar, banner, bio), (2) Publicar 4 tweets inaugurales, (3) Reply a Santiago Roel, (4) DMs a Mert Mumtaz y otros ángeles del pipeline, (5) Considerar verificación X ($8/mes).
+
+## 2026-09-11/12 (sesión 31) — Restauración VPS: nginx + LUMI + imágenes
+- **nginx caído desde sep 11**: `proxy_pass https://api.mainnet-beta.solana.com/` resolvía DNS al arranque; fallo DNS → nginx no arrancaba → todas las páginas LUKASH en puerto 80 caídas.
+- **Fix nginx DNS**: `resolver 8.8.8.8 1.1.1.1 valid=300s` + `set $solana_upstream` (variable fuerza resolución en runtime, no al arranque).
+- **LUMI/Caddy restaurado**: se había cambiado erróneamente de Tailscale-only (`100.118.160.86:8080`) a público (`0.0.0.0:80`). Revertido desde backup. LUMI NO es público por diseño.
+- **Caddyfile limpiado**: se habían agregado rutas LUKASH a Caddy por error (LUKASH usa nginx, no Caddy). Revertido desde backup.
+- **Splash restaurada**: se había eliminado el splash (redirect 302 directo a landing) sin consultar documentación. `tasks/todo.md` confirma que splash era el diseño correcto (`[x] Splash page en / como entry point`). La "eliminación de fricción" (sesión 28) era del basic auth, no del splash.
+- **Imagen de splash corregida**: usaba `lukash-logotipo.png` (horizontal, 1408x768) en un círculo 200×200px → se recortaba mal. Cambiado a `ISOTIPO V2.png` (cuadrado, felino-bóveda-infinito) que encaja correctamente en el círculo.
+- **Botón splash**: cambiado de "Entrar" a "Enter" (inglés, consistente con landing).
+- **Estado final VPS**: nginx activo (splash `/` → landing `/ruge2026/landing/` → dashboard/app/litepaper), LUMI/Caddy en Tailscale, TRADER en Docker.
